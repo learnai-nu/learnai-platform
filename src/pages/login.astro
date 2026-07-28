@@ -1,0 +1,49 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../lib/supabase/server';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: claimsData } = await supabase.auth.getClaims();
+if (claimsData?.claims) return Astro.redirect('/dashboard');
+
+const messages: Record<string, string> = {
+	invalid: 'Kontrollér din e-mail og vælg en adgangskode på mindst otte tegn.',
+	'signin-error': 'Vi kunne ikke logge dig ind. Kontrollér e-mail og adgangskode.',
+	'signup-error': 'Din profil kunne ikke oprettes. Prøv igen om et øjeblik.',
+	'check-email': 'Tjek din indbakke og bekræft din e-mail for at fortsætte.',
+	'callback-error': 'Loginlinket kunne ikke bekræftes. Bed om et nyt link.',
+	required: 'Log ind for at åbne dit dashboard.',
+};
+const message = messages[Astro.url.searchParams.get('status') ?? ''];
+---
+
+<SiteLayout title="Log ind — LearnAI.nu" description="Log ind eller opret din LearnAI-profil.">
+	<section class="section auth-section">
+		<div class="shell auth-shell">
+			<div class="section-intro">
+				<p class="eyebrow">Din LearnAI-profil</p>
+				<h1>Fortsæt din læring.</h1>
+				<p class="hero-copy">Gem din progression, fortsæt hvor du slap, og få et tydeligt næste skridt.</p>
+			</div>
+			<div class="auth-panel">
+				{message && <p class="notice" role="status">{message}</p>}
+				<div class="auth-grid">
+					<form method="post" action="/auth/sign-in">
+						<h2>Log ind</h2>
+						<label>E-mail<input type="email" name="email" autocomplete="email" required /></label>
+						<label>Adgangskode<input type="password" name="password" autocomplete="current-password" minlength="8" required /></label>
+						<button class="button" type="submit">Log ind</button>
+					</form>
+					<form method="post" action="/auth/sign-up">
+						<h2>Opret profil</h2>
+						<label>E-mail<input type="email" name="email" autocomplete="email" required /></label>
+						<label>Adgangskode<input type="password" name="password" autocomplete="new-password" minlength="8" required /></label>
+						<button class="button button-ghost" type="submit">Opret gratis profil</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+</SiteLayout>

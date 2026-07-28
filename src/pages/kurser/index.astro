@@ -1,0 +1,55 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: courses, error } = await supabase
+	.from('courses')
+	.select('id,title,slug,description,level,estimated_minutes,price_dkk,is_featured')
+	.eq('status', 'published')
+	.order('is_featured', { ascending: false })
+	.order('published_at', { ascending: false });
+
+const levelLabels = { beginner: 'Begynder', intermediate: 'Øvet', advanced: 'Avanceret' } as const;
+function levelLabel(value: unknown) {
+	return typeof value === 'string' && value in levelLabels
+		? levelLabels[value as keyof typeof levelLabels]
+		: 'Alle niveauer';
+}
+---
+
+<SiteLayout title="AI-kurser — LearnAI.nu" description="Praktiske danske AI-kurser med tydelige lektioner og øvelser.">
+	<section class="hero hero-compact">
+		<div class="shell section-intro">
+			<p class="eyebrow">Læringsforløb</p>
+			<h1>Lær AI ved at bruge det.</h1>
+			<p class="hero-copy">Korte, strukturerede kurser med konkrete eksempler fra det danske arbejdsliv.</p>
+		</div>
+	</section>
+	<section class="section section-tight">
+		<div class="shell">
+			{error ? (
+				<div class="notice notice-error" role="alert">Kurserne kunne ikke hentes lige nu. Prøv igen senere.</div>
+			) : courses?.length ? (
+				<div class="course-grid">
+					{courses.map((course) => (
+						<article class="course-card">
+							<div class="course-meta">
+								<span>{levelLabel(course.level)}</span>
+								<span>{course.estimated_minutes ?? '—'} min.</span>
+								<span>{Number(course.price_dkk) === 0 ? 'Gratis' : `${course.price_dkk} kr.`}</span>
+							</div>
+							<h2>{course.title}</h2>
+							<p>{course.description}</p>
+							<a class="button button-ghost" href={`/kurser/${course.slug}`}>Se kurset →</a>
+						</article>
+					))}
+				</div>
+			) : (
+				<div class="empty-state"><h2>Kurserne er på vej</h2><p>Kom snart tilbage.</p></div>
+			)}
+		</div>
+	</section>
+</SiteLayout>

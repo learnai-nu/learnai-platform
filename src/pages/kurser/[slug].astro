@@ -1,0 +1,66 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: course, error } = await supabase
+	.from('courses')
+	.select('id,title,slug,description,level,estimated_minutes,price_dkk')
+	.eq('slug', slug)
+	.eq('status', 'published')
+	.maybeSingle();
+
+if (error || !course) return new Response(null, { status: 404, statusText: 'Kurset blev ikke fundet' });
+
+const { data: modules } = await supabase
+	.from('course_modules')
+	.select('id,title,description,sort_order,lessons(id,title,slug,description,estimated_minutes,sort_order,is_preview)')
+	.eq('course_id', course.id)
+	.order('sort_order');
+
+const sortedModules = (modules ?? []).map((module) => ({
+	...module,
+	lessons: [...module.lessons].sort((a, b) => a.sort_order - b.sort_order),
+}));
+---
+
+<SiteLayout title={`${course.title} — LearnAI.nu`} description={course.description ?? 'Praktisk AI-kursus på dansk.'}>
+	<section class="hero hero-compact">
+		<div class="shell course-hero">
+			<div>
+				<p class="eyebrow">Kursus · {course.estimated_minutes ?? '—'} minutter</p>
+				<h1>{course.title}</h1>
+				<p class="hero-copy">{course.description}</p>
+			</div>
+			<div class="course-summary">
+				<strong>{Number(course.price_dkk) === 0 ? 'Gratis kursus' : `${course.price_dkk} kr.`}</strong>
+				<p>{sortedModules.length} moduler · {sortedModules.reduce((sum, module) => sum + module.lessons.length, 0)} lektioner</p>
+				<a class="button" href="/login">Start kurset</a>
+			</div>
+		</div>
+	</section>
+	<section class="section section-tight">
+		<div class="shell module-list">
+			{sortedModules.map((module, moduleIndex) => (
+				<article class="module-card">
+					<div class="module-number">{String(moduleIndex + 1).padStart(2, '0')}</div>
+					<div>
+						<h2>{module.title}</h2>
+						{module.description && <p>{module.description}</p>}
+						<ol class="lesson-list">
+							{module.lessons.map((lesson) => (
+								<li>
+									<span>{lesson.title}</span>
+									<small>{lesson.estimated_minutes ?? '—'} min.{lesson.is_preview ? ' · Preview' : ''}</small>
+								</li>
+							))}
+						</ol>
+					</div>
+				</article>
+			))}
+		</div>
+	</section>
+</SiteLayout>

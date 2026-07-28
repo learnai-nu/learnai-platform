@@ -1,17 +1,14 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 
+export const prerender = true;
+
 export function getStaticPaths() {
 	const pages = {
 		laer: {
 			title: 'Lær AI',
 			description: 'Praktiske danske guides til at forstå og anvende AI.',
 			kicker: 'Vidensportal',
-		},
-		kurser: {
-			title: 'Kurser',
-			description: 'Strukturerede AI-forløb med lektioner, øvelser og quizzer.',
-			kicker: 'Læringsforløb',
 		},
 		vaerktoejer: {
 			title: 'AI-værktøjer',
@@ -27,11 +24,6 @@ export function getStaticPaths() {
 			title: 'LearnAI for virksomheder',
 			description: 'Kompetenceudvikling, læringsforløb og ansvarlig AI-anvendelse.',
 			kicker: 'B2B',
-		},
-		login: {
-			title: 'Log ind',
-			description: 'Fortsæt dit læringsforløb på LearnAI.',
-			kicker: 'Din profil',
 		},
 		om: {
 			title: 'Om LearnAI',

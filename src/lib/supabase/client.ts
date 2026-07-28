@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 function requiredPublicEnv(name: 'PUBLIC_SUPABASE_URL' | 'PUBLIC_SUPABASE_PUBLISHABLE_KEY') {
 	const value = import.meta.env[name];
@@ -9,15 +9,8 @@ function requiredPublicEnv(name: 'PUBLIC_SUPABASE_URL' | 'PUBLIC_SUPABASE_PUBLIS
 }
 
 export function createBrowserSupabaseClient() {
-	return createClient(
+	return createBrowserClient(
 		requiredPublicEnv('PUBLIC_SUPABASE_URL'),
 		requiredPublicEnv('PUBLIC_SUPABASE_PUBLISHABLE_KEY'),
-		{
-			auth: {
-				persistSession: true,
-				autoRefreshToken: true,
-				detectSessionInUrl: true,
-			},
-		},
 	);
 }

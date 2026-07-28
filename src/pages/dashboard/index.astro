@@ -1,0 +1,58 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: claimsData } = await supabase.auth.getClaims();
+const claims = claimsData?.claims;
+if (!claims) return Astro.redirect('/login?status=required');
+
+const email = typeof claims.email === 'string' ? claims.email : 'Din profil';
+const { data: enrollments } = await supabase
+	.from('enrollments')
+	.select('id,status,enrolled_at,courses(title,slug)')
+	.eq('user_id', claims.sub)
+	.order('enrolled_at', { ascending: false });
+
+const courseEnrollments = (enrollments ?? []).map((enrollment) => ({
+	...enrollment,
+	course: Array.isArray(enrollment.courses) ? enrollment.courses[0] : enrollment.courses,
+}));
+---
+
+<SiteLayout title="Dit dashboard — LearnAI.nu" description="Se din progression og fortsæt dit læringsforløb.">
+	<section class="section">
+		<div class="shell dashboard-head">
+			<div>
+				<p class="eyebrow">Dit dashboard</p>
+				<h1>Velkommen tilbage.</h1>
+				<p class="hero-copy">{email}</p>
+			</div>
+			<form method="post" action="/auth/sign-out"><button class="button button-ghost" type="submit">Log ud</button></form>
+		</div>
+	</section>
+	<section class="section section-tight">
+		<div class="shell">
+			<h2>Dine kurser</h2>
+			{courseEnrollments.length ? (
+				<div class="course-grid">
+					{courseEnrollments.map((enrollment) => (
+						<article class="course-card">
+							<p class="course-meta">{enrollment.status === 'active' ? 'I gang' : 'Gennemført'}</p>
+							<h3>{enrollment.course?.title}</h3>
+							<a class="text-link" href={`/kurser/${enrollment.course?.slug}`}>Fortsæt kurset →</a>
+						</article>
+					))}
+				</div>
+			) : (
+				<div class="empty-state">
+					<h3>Du er klar til dit første kursus</h3>
+					<p>Vælg et gratis forløb og begynd, når det passer dig.</p>
+					<a class="button" href="/kurser">Find et kursus</a>
+				</div>
+			)}
+		</div>
+	</section>
+</SiteLayout>
