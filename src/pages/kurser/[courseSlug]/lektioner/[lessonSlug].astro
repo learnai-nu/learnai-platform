@@ -1,11 +1,13 @@
 ---
 import SiteLayout from '../../../../layouts/SiteLayout.astro';
+import QuizPlayer from '../../../../components/QuizPlayer';
 import {
 	calculateCourseProgress,
 	findNextIncompleteLesson,
 	sortCourseLessons,
 	type CourseLesson,
 } from '../../../../lib/learning/progress';
+import type { QuizQuestionView, QuizView } from '../../../../lib/quiz/contracts';
 import { createServerSupabaseClient } from '../../../../lib/supabase/server';
 
 export const prerender = false;
@@ -75,6 +77,8 @@ const { data: claimsData } = await supabase.auth.getClaims();
 const userId = claimsData?.claims?.sub;
 let progressLoadError = false;
 let completedLessonIds = new Set<string>();
+let quizLoadError = false;
+let quiz: QuizView | null = null;
 
 if (userId && courseLessons.length > 0) {
 	const { data: progressRows, error } = await supabase
@@ -87,6 +91,37 @@ if (userId && courseLessons.length > 0) {
 	completedLessonIds = new Set(
 		(progressRows ?? []).filter((row) => row.completed).map((row) => row.lesson_id),
 	);
+
+	const { data: quizData, error: quizError } = await supabase
+		.from('quizzes')
+		.select('id,title,description,passing_score,max_attempts,quiz_questions(id,type,question,points,sort_order,quiz_options(id,option_text,sort_order))')
+		.eq('lesson_id', lesson.id)
+		.maybeSingle();
+
+	quizLoadError = Boolean(quizError);
+	if (quizData) {
+		quiz = {
+			id: quizData.id,
+			title: quizData.title,
+			description: quizData.description,
+			passingScore: quizData.passing_score,
+			maxAttempts: quizData.max_attempts,
+			questions: [...quizData.quiz_questions]
+				.sort((a, b) => a.sort_order - b.sort_order)
+				.map((question) => ({
+					id: question.id,
+					type: question.type as QuizQuestionView['type'],
+					question: question.question,
+					points: question.points,
+					options: [...question.quiz_options]
+						.sort((a, b) => a.sort_order - b.sort_order)
+						.map((option) => ({
+							id: option.id,
+							optionText: option.option_text,
+						})),
+				})),
+		};
+	}
 }
 
 const isCompleted = completedLessonIds.has(lesson.id);
@@ -178,6 +213,13 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 						</div>
 					)}
 				</div>
+
+				{quizLoadError && (
+					<p class="notice notice-error quiz-load-error" role="alert">
+						Quizzen kunne ikke hentes. Genindlæs siden og prøv igen.
+					</p>
+				)}
+				{quiz && <QuizPlayer quiz={quiz} client:load />}
 			</article>
 		</div>
 	</section>
