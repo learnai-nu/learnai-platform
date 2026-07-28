@@ -14,6 +14,15 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const navigation = [
+	{ href: '/laer', label: 'Lær AI' },
+	{ href: '/kurser', label: 'Kurser' },
+	{ href: '/vaerktoejer', label: 'Værktøjer' },
+	{ href: '/nyheder', label: 'Nyheder' },
+	{ href: '/virksomheder', label: 'Virksomheder' },
+];
+const isActive = (href: string) =>
+	Astro.url.pathname === href || Astro.url.pathname.startsWith(`${href}/`);
 ---
 
 <!doctype html>
@@ -36,14 +45,28 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 					<span class="brand-mark" aria-hidden="true">L</span>
 					<span>LearnAI<span class="brand-dot">.</span>nu</span>
 				</a>
-				<nav aria-label="Primær navigation">
-					<a href="/laer">Lær AI</a>
-					<a href="/kurser">Kurser</a>
-					<a href="/vaerktoejer">Værktøjer</a>
-					<a href="/nyheder">Nyheder</a>
-					<a href="/virksomheder">Virksomheder</a>
+				<nav class="primary-nav" aria-label="Primær navigation">
+					{navigation.map((item) => (
+						<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+							{item.label}
+						</a>
+					))}
 				</nav>
-				<a class="button button-small button-ghost" href="/login">Log ind</a>
+				<a class="button button-small button-ghost header-login" href="/login">Log ind</a>
+				<details class="mobile-nav">
+					<summary>
+						<span>Menu</span>
+						<span class="mobile-nav-icon" aria-hidden="true"></span>
+					</summary>
+					<nav aria-label="Mobil navigation">
+						{navigation.map((item) => (
+							<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+								{item.label}
+							</a>
+						))}
+						<a class="mobile-login" href="/login">Log ind</a>
+					</nav>
+				</details>
 			</div>
 		</header>
 		<main id="main-content">

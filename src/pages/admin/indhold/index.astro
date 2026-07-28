@@ -21,6 +21,19 @@ const statusMessages: Record<string, string> = {
 	created: 'Indholdet er oprettet som kladde.',
 	saved: 'Ændringerne er gemt.',
 };
+const typeLabels = {
+	article: 'Artikel',
+	guide: 'Guide',
+	news: 'Nyhed',
+	prompt: 'Prompt',
+	tool: 'Værktøj',
+} as const;
+const itemStatusLabels = {
+	draft: 'Kladde',
+	review: 'Gennemgang',
+	published: 'Publiceret',
+	archived: 'Arkiveret',
+} as const;
 ---
 
 <AdminLayout
@@ -46,17 +59,62 @@ const statusMessages: Record<string, string> = {
 		{error ? (
 			<p class="notice notice-error" role="alert">Indholdslisten kunne ikke hentes.</p>
 		) : items?.length ? (
-			<div class="admin-list">
-				{items.map((item) => (
-					<a href={`/admin/indhold/${item.id}`}>
-						<span>
-							<strong>{item.title}</strong>
-							<small>{item.type} · /{item.slug}</small>
-						</span>
-						<span class={`status-badge status-${item.status}`}>{item.status}</span>
-					</a>
-				))}
-			</div>
+			<>
+				<form class="admin-filter-bar" data-content-filters>
+					<label>
+						Søg i indhold
+						<input type="search" name="query" placeholder="Søg efter titel…" autocomplete="off" />
+					</label>
+					<label>
+						Type
+						<select name="type">
+							<option value="">Alle typer</option>
+							<option value="article">Artikler</option>
+							<option value="guide">Guides</option>
+							<option value="news">Nyheder</option>
+							<option value="prompt">Prompts</option>
+							<option value="tool">Værktøjer</option>
+						</select>
+					</label>
+					<label>
+						Status
+						<select name="status">
+							<option value="">Alle statusser</option>
+							<option value="draft">Kladde</option>
+							<option value="review">Gennemgang</option>
+							<option value="published">Publiceret</option>
+							<option value="archived">Arkiveret</option>
+						</select>
+					</label>
+					<button class="button button-ghost" type="reset">Nulstil</button>
+				</form>
+				<p class="admin-filter-summary" aria-live="polite" data-filter-summary>
+					Viser {items.length} af {items.length}
+				</p>
+				<div class="admin-list" data-content-list>
+					{items.map((item) => (
+						<a
+							href={`/admin/indhold/${item.id}`}
+							data-content-row
+							data-title={item.title}
+							data-type={item.type}
+							data-status={item.status}
+						>
+							<span>
+								<strong>{item.title}</strong>
+								<small>{typeLabels[item.type as keyof typeof typeLabels] ?? 'Indhold'} · /{item.slug}</small>
+							</span>
+							<span class={`status-badge status-${item.status}`}>
+								{itemStatusLabels[item.status as keyof typeof itemStatusLabels] ?? item.status}
+							</span>
+						</a>
+					))}
+				</div>
+				<div class="admin-empty" data-filter-empty hidden>
+					<h2>Ingen resultater</h2>
+					<p>Prøv en anden søgning eller nulstil filtrene.</p>
+				</div>
+			</>
 		) : (
 			<div class="admin-empty">
 				<h2>Indholdsbiblioteket er tomt</h2>
@@ -65,3 +123,40 @@ const statusMessages: Record<string, string> = {
 		)}
 	</section>
 </AdminLayout>
+
+<script>
+	import { matchesAdminContentFilters } from '../../../lib/admin/filter';
+
+	const filterForm = document.querySelector<HTMLFormElement>('[data-content-filters]');
+	const contentRows = [...document.querySelectorAll<HTMLElement>('[data-content-row]')];
+	const filterSummary = document.querySelector<HTMLElement>('[data-filter-summary]');
+	const filterEmpty = document.querySelector<HTMLElement>('[data-filter-empty]');
+
+	function updateContentFilters() {
+		if (!filterForm) return;
+		const data = new FormData(filterForm);
+		const filters = {
+			query: String(data.get('query') ?? ''),
+			type: String(data.get('type') ?? ''),
+			status: String(data.get('status') ?? ''),
+		};
+		let visible = 0;
+
+		for (const row of contentRows) {
+			const matches = matchesAdminContentFilters({
+				title: row.dataset.title ?? '',
+				type: row.dataset.type ?? '',
+				status: row.dataset.status ?? '',
+			}, filters);
+			row.hidden = !matches;
+			if (matches) visible += 1;
+		}
+
+		if (filterSummary) filterSummary.textContent = `Viser ${visible} af ${contentRows.length}`;
+		if (filterEmpty) filterEmpty.hidden = visible > 0;
+	}
+
+	filterForm?.addEventListener('submit', (event) => event.preventDefault());
+	filterForm?.addEventListener('input', updateContentFilters);
+	filterForm?.addEventListener('reset', () => requestAnimationFrame(updateContentFilters));
+</script>
