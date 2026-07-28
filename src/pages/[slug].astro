@@ -1,0 +1,73 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+export function getStaticPaths() {
+	const pages = {
+		laer: {
+			title: 'Lær AI',
+			description: 'Praktiske danske guides til at forstå og anvende AI.',
+			kicker: 'Vidensportal',
+		},
+		kurser: {
+			title: 'Kurser',
+			description: 'Strukturerede AI-forløb med lektioner, øvelser og quizzer.',
+			kicker: 'Læringsforløb',
+		},
+		vaerktoejer: {
+			title: 'AI-værktøjer',
+			description: 'Find det rigtige AI-værktøj til dit arbejde og dit niveau.',
+			kicker: 'Værktøjskatalog',
+		},
+		nyheder: {
+			title: 'AI-nyheder',
+			description: 'Dansk overblik over de AI-nyheder, der betyder noget i praksis.',
+			kicker: 'Aktuelt',
+		},
+		virksomheder: {
+			title: 'LearnAI for virksomheder',
+			description: 'Kompetenceudvikling, læringsforløb og ansvarlig AI-anvendelse.',
+			kicker: 'B2B',
+		},
+		login: {
+			title: 'Log ind',
+			description: 'Fortsæt dit læringsforløb på LearnAI.',
+			kicker: 'Din profil',
+		},
+		om: {
+			title: 'Om LearnAI',
+			description: 'Vores ambition er at gøre AI forståelig og anvendelig for alle.',
+			kicker: 'Mission',
+		},
+		privatliv: {
+			title: 'Privatliv',
+			description: 'Sådan beskytter LearnAI dine oplysninger.',
+			kicker: 'Tillid',
+		},
+		kontakt: {
+			title: 'Kontakt',
+			description: 'Kontakt LearnAI om læring, partnerskaber eller virksomheder.',
+			kicker: 'Skriv til os',
+		},
+	} as const;
+
+	return Object.entries(pages).map(([slug, page]) => ({
+		params: { slug },
+		props: page,
+	}));
+}
+
+const { title, description, kicker } = Astro.props;
+---
+
+<SiteLayout title={`${title} — LearnAI.nu`} description={description}>
+	<section class="hero">
+		<div class="shell section-intro">
+			<p class="eyebrow">{kicker}</p>
+			<h1>{title}</h1>
+			<p class="hero-copy">{description}</p>
+			<div class="hero-actions">
+				<a class="button" href="/">Tilbage til forsiden</a>
+			</div>
+		</div>
+	</section>
+</SiteLayout>
