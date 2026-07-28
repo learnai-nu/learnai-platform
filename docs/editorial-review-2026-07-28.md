@@ -18,9 +18,9 @@ Anbefalet fordeling:
 | Redaktionel handling | Antal | Bemærkning |
 | --- | ---: | --- |
 | Prioritér til første publiceringsbølge | 25 | 20 prompts og 5 evergreen-artikler |
-| Opdatér og faktatjek før publicering | 10 | Produktguider og aktuelle analyser |
+| Opdatér og faktatjek før publicering | 5 | Produktguider og aktuelle analyser |
 | Saml eller omskriv | 9 | Års-/ugehistorier med betydeligt overlap |
-| Udgiv senere i tematiske promptpakker | 35 | Gode prompts, men kræver ensartet produktformat |
+| Udgiv senere i tematiske promptpakker | 40 | Gode prompts, men kræver ensartet produktformat |
 
 ## Redaktionelle principper
 
