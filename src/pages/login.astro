@@ -7,7 +7,12 @@ Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
 
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: claimsData } = await supabase.auth.getClaims();
-if (claimsData?.claims) return Astro.redirect('/dashboard');
+if (claimsData?.claims) {
+	return new Response(null, {
+		status: 302,
+		headers: { Location: '/dashboard', 'Cache-Control': 'private, no-store, max-age=0' },
+	});
+}
 
 const messages: Record<string, string> = {
 	invalid: 'Kontrollér din e-mail og vælg en adgangskode på mindst otte tegn.',

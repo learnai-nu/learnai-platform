@@ -8,7 +8,12 @@ Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: claimsData } = await supabase.auth.getClaims();
 const claims = claimsData?.claims;
-if (!claims) return Astro.redirect('/login?status=required');
+if (!claims) {
+	return new Response(null, {
+		status: 302,
+		headers: { Location: '/login?status=required', 'Cache-Control': 'private, no-store, max-age=0' },
+	});
+}
 
 const email = typeof claims.email === 'string' ? claims.email : 'Din profil';
 const { data: enrollments } = await supabase
