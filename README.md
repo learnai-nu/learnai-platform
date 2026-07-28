@@ -43,3 +43,8 @@ Den reproducerbare og privacy-afgrænsede import af den oprindelige
 LearnAI-backup er beskrevet i
 [`docs/content-import.md`](docs/content-import.md). Kildebackup og genererede
 SQL-batches er bevidst udeladt fra Git.
+
+Den redaktionelle vurdering og første publiceringskø findes i
+[`docs/editorial-review-2026-07-28.md`](docs/editorial-review-2026-07-28.md).
+Den maskinlæsbare prioritering findes i
+[`config/editorial-priorities.json`](config/editorial-priorities.json).

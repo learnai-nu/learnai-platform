@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-07-28",
+  "source": "learnai-backup-2026-07-28.json",
+  "policy": "Review only. Do not publish automatically.",
+  "first_wave": {
+    "articles": [
+      "ai-guide-mus-samtaler",
+      "saadan-skill-engineering-med-ai",
+      "ai-first-lederskab-fremtidens-arbejde",
+      "den-agentiske-virksomhed-ai-agenter-guide",
+      "saadan-vaelger-du-den-rigtige-ai-assistent"
+    ],
+    "prompts": [
+      "svar-paa-email",
+      "follow-up-efter-moede",
+      "goer-tekst-mere-laesbar",
+      "rediger-med-feedback",
+      "linkedin-opslag",
+      "blogindlaeg-med-struktur",
+      "moededagsorden",
+      "moedereferat",
+      "moedeforberedelse",
+      "praesentationsstruktur",
+      "analyser-langt-dokument",
+      "opsummer-lang-tekst",
+      "brainstorm-ideer",
+      "forklar-koncept",
+      "laeringsplan",
+      "prioriter-opgaver",
+      "beslutningshjaelp",
+      "projektplan",
+      "ai-strategi-for-ledere",
+      "swot-analyse"
+    ]
+  },
+  "update_before_publication": [
+    "hvad-er-chatgpt-guide",
+    "hvad-er-claude-ai-guide",
+    "hvad-er-google-gemini",
+    "claude-design-guide",
+    "uge-11-canva-ai-24-milliarder-marketing"
+  ],
+  "rewrite_or_merge": [
+    "ai-2025-fra-piloter-til-agenter",
+    "uge-11-multi-agent-systemer-ai-agenter-laering",
+    "uge-11-ai-sikkerhed-pentagon-amazon-nedbrud",
+    "uge-27-model-product-releases",
+    "uge-27-robotics",
+    "uge-27-marketing",
+    "uge-27-business",
+    "uge-27-society-education",
+    "uge-27-miscellaneous"
+  ]
+}
