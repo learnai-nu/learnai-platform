@@ -3,6 +3,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
 
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: claimsData } = await supabase.auth.getClaims();

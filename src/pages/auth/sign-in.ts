@@ -7,13 +7,18 @@ const credentialsSchema = z.object({
 	password: z.string().min(8).max(128),
 });
 
-export const POST: APIRoute = async ({ request, cookies, redirect }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
+	const redirectWithoutCache = (location: string) =>
+		new Response(null, {
+			status: 303,
+			headers: { Location: location, 'Cache-Control': 'private, no-store, max-age=0' },
+		});
 	const parsed = credentialsSchema.safeParse(Object.fromEntries(await request.formData()));
-	if (!parsed.success) return redirect('/login?status=invalid', 303);
+	if (!parsed.success) return redirectWithoutCache('/login?status=invalid');
 
 	const supabase = createServerSupabaseClient(request, cookies);
 	const { error } = await supabase.auth.signInWithPassword(parsed.data);
-	if (error) return redirect('/login?status=signin-error', 303);
+	if (error) return redirectWithoutCache('/login?status=signin-error');
 
-	return redirect('/dashboard', 303);
+	return redirectWithoutCache('/dashboard');
 };
