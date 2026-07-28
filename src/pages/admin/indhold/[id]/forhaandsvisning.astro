@@ -1,0 +1,55 @@
+---
+import ContentBody from '../../../../components/ContentBody.astro';
+import PromptBuilder from '../../../../components/PromptBuilder';
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../../../lib/auth/admin';
+import { parsePromptDefinition } from '../../../../lib/prompts/contracts';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const { data: item, error } = await context.supabase
+	.from('content_items')
+	.select('id,title,slug,type,status,excerpt,body,source_metadata,updated_at')
+	.eq('id', Astro.params.id)
+	.maybeSingle();
+
+if (error || !item) return new Response('Indholdet blev ikke fundet.', { status: 404 });
+const promptDefinition = item.type === 'prompt'
+	? parsePromptDefinition(item.source_metadata)
+	: null;
+---
+
+<AdminLayout
+	title={`Forhåndsvisning: ${item.title}`}
+	description="Privat forhåndsvisning af LearnAI-indhold."
+	active="content"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href={`/admin/indhold/${item.id}`}>← Tilbage til redigering</a>
+			<p class="eyebrow">Privat forhåndsvisning · {item.status}</p>
+			<h1>{item.title}</h1>
+			{item.excerpt && <p>{item.excerpt}</p>}
+		</div>
+		<a class="button" href={`/admin/indhold/${item.id}`}>Redigér</a>
+	</header>
+
+	<p class="notice">Denne side er kun synlig for administratorer og redaktører. Indholdet er ikke publiceret.</p>
+
+	<div class="admin-preview">
+		{promptDefinition ? (
+			<PromptBuilder client:load definition={promptDefinition} title={item.title} />
+		) : (
+			<ContentBody body={item.body} />
+		)}
+	</div>
+</AdminLayout>

@@ -48,3 +48,6 @@ Den redaktionelle vurdering og første publiceringskø findes i
 [`docs/editorial-review-2026-07-28.md`](docs/editorial-review-2026-07-28.md).
 Den maskinlæsbare prioritering findes i
 [`config/editorial-priorities.json`](config/editorial-priorities.json).
+
+Promptbibliotekets kontrakt, privacy-model og redaktionelle arbejdsgang er
+beskrevet i [`docs/prompt-library.md`](docs/prompt-library.md).

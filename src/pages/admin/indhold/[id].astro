@@ -51,7 +51,12 @@ const status = Astro.url.searchParams.get('status');
 			<h1>{isNew ? 'Opret indhold' : 'Redigér indhold'}</h1>
 			<p>Brug kladde og gennemgang, før indholdet publiceres.</p>
 		</div>
-		{item?.status === 'published' && <a class="button button-ghost" href={`/laer/${item.slug}`}>Se publiceret side</a>}
+		{item && (
+			<div class="admin-actions">
+				<a class="button button-ghost" href={`/admin/indhold/${item.id}/forhaandsvisning`}>Forhåndsvis</a>
+				{item.status === 'published' && <a class="button button-ghost" href={`/laer/${item.slug}`}>Se publiceret side</a>}
+			</div>
+		)}
 	</header>
 
 	{status === 'created' && <p class="notice" role="status">Indholdet er oprettet som kladde.</p>}

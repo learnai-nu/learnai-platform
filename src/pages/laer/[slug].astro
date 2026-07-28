@@ -1,6 +1,8 @@
 ---
 import ContentBody from '../../components/ContentBody.astro';
+import PromptBuilder from '../../components/PromptBuilder';
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import { parsePromptDefinition } from '../../lib/prompts/contracts';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
@@ -8,12 +10,15 @@ export const prerender = false;
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: item, error } = await supabase
 	.from('content_items')
-	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at')
+	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at,source_metadata')
 	.eq('slug', Astro.params.slug)
 	.eq('status', 'published')
 	.maybeSingle();
 
 if (error || !item) return new Response('Indholdet blev ikke fundet.', { status: 404 });
+const promptDefinition = item.type === 'prompt'
+	? parsePromptDefinition(item.source_metadata)
+	: null;
 
 const typeLabels = {
 	article: 'Artikel',
@@ -37,7 +42,11 @@ const typeLabels = {
 			<p class="article-date">Opdateret {new Date(item.updated_at).toLocaleDateString('da-DK')}</p>
 		</header>
 		<div class="shell article-content">
-			<ContentBody body={item.body} />
+			{promptDefinition ? (
+				<PromptBuilder client:load definition={promptDefinition} title={item.title} />
+			) : (
+				<ContentBody body={item.body} />
+			)}
 		</div>
 	</article>
 </SiteLayout>

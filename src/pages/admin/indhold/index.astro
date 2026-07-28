@@ -25,7 +25,7 @@ const statusMessages: Record<string, string> = {
 
 <AdminLayout
 	title="Indhold"
-	description="Administrér artikler, guides og nyheder."
+	description="Administrér artikler, guides, nyheder og prompts."
 	active="content"
 	email={adminEmail(context.claims)}
 	role={context.role}
@@ -33,7 +33,7 @@ const statusMessages: Record<string, string> = {
 	<header class="admin-page-head">
 		<div>
 			<p class="eyebrow">Indhold</p>
-			<h1>Guides og artikler</h1>
+			<h1>Indhold og prompts</h1>
 			<p>Opret, redigér og publicér LearnAI’s redaktionelle indhold.</p>
 		</div>
 		<a class="button" href="/admin/indhold/ny">Opret indhold</a>
