@@ -1,21 +1,29 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import {
+	calculateCourseProgress,
+	findNextIncompleteLesson,
+	type CourseLesson,
+} from '../../lib/learning/progress';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
 
 const { slug } = Astro.params;
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
-const { data: course, error } = await supabase
+const { data: course, error: courseError } = await supabase
 	.from('courses')
 	.select('id,title,slug,description,level,estimated_minutes,price_dkk')
 	.eq('slug', slug)
 	.eq('status', 'published')
 	.maybeSingle();
 
-if (error || !course) return new Response(null, { status: 404, statusText: 'Kurset blev ikke fundet' });
+if (courseError || !course) {
+	return new Response(null, { status: 404, statusText: 'Kurset blev ikke fundet' });
+}
 
-const { data: modules } = await supabase
+const { data: modules, error: modulesError } = await supabase
 	.from('course_modules')
 	.select('id,title,description,sort_order,lessons(id,title,slug,description,estimated_minutes,sort_order,is_preview)')
 	.eq('course_id', course.id)
@@ -25,6 +33,41 @@ const sortedModules = (modules ?? []).map((module) => ({
 	...module,
 	lessons: [...module.lessons].sort((a, b) => a.sort_order - b.sort_order),
 }));
+const courseLessons: CourseLesson[] = sortedModules.flatMap((module) =>
+	module.lessons.map((lesson) => ({
+		id: lesson.id,
+		slug: lesson.slug,
+		moduleSortOrder: module.sort_order,
+		lessonSortOrder: lesson.sort_order,
+	})),
+);
+
+const { data: claimsData } = await supabase.auth.getClaims();
+const userId = claimsData?.claims?.sub;
+let progressError = false;
+let completedLessonIds = new Set<string>();
+
+if (userId && courseLessons.length > 0) {
+	const { data: progressRows, error } = await supabase
+		.from('lesson_progress')
+		.select('lesson_id,completed')
+		.eq('user_id', userId)
+		.in('lesson_id', courseLessons.map((lesson) => lesson.id));
+
+	progressError = Boolean(error);
+	completedLessonIds = new Set(
+		(progressRows ?? []).filter((row) => row.completed).map((row) => row.lesson_id),
+	);
+}
+
+const progressPercent = calculateCourseProgress(courseLessons, completedLessonIds);
+const nextLesson = findNextIncompleteLesson(courseLessons, completedLessonIds);
+const firstLesson = courseLessons[0] ?? null;
+const continueLesson = nextLesson ?? firstLesson;
+const statusMessages: Record<string, string> = {
+	'lesson-completed': 'Lektionen er gemt som færdig. Godt arbejde!',
+};
+const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? ''];
 ---
 
 <SiteLayout title={`${course.title} — LearnAI.nu`} description={course.description ?? 'Praktisk AI-kursus på dansk.'}>
@@ -37,30 +80,81 @@ const sortedModules = (modules ?? []).map((module) => ({
 			</div>
 			<div class="course-summary">
 				<strong>{Number(course.price_dkk) === 0 ? 'Gratis kursus' : `${course.price_dkk} kr.`}</strong>
-				<p>{sortedModules.length} moduler · {sortedModules.reduce((sum, module) => sum + module.lessons.length, 0)} lektioner</p>
-				<a class="button" href="/login">Start kurset</a>
+				<p>{sortedModules.length} moduler · {courseLessons.length} lektioner</p>
+
+				{userId ? (
+					<>
+						<div class="course-progress-copy">
+							<span>Din progression</span>
+							<strong>{progressPercent}%</strong>
+						</div>
+						<div class="course-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressPercent}>
+							<span style={`width: ${progressPercent}%`}></span>
+						</div>
+						{continueLesson ? (
+							<a class="button" href={`/kurser/${course.slug}/lektioner/${continueLesson.slug}`}>
+								{progressPercent === 0 ? 'Start kurset' : progressPercent === 100 ? 'Se kurset igen' : 'Fortsæt kurset'}
+							</a>
+						) : (
+							<p class="muted-copy">Kurset har endnu ingen lektioner.</p>
+						)}
+					</>
+				) : (
+					<a class="button" href="/login">Log ind for at starte</a>
+				)}
 			</div>
 		</div>
 	</section>
+
 	<section class="section section-tight">
 		<div class="shell module-list">
-			{sortedModules.map((module, moduleIndex) => (
-				<article class="module-card">
-					<div class="module-number">{String(moduleIndex + 1).padStart(2, '0')}</div>
-					<div>
-						<h2>{module.title}</h2>
-						{module.description && <p>{module.description}</p>}
-						<ol class="lesson-list">
-							{module.lessons.map((lesson) => (
-								<li>
-									<span>{lesson.title}</span>
-									<small>{lesson.estimated_minutes ?? '—'} min.{lesson.is_preview ? ' · Preview' : ''}</small>
-								</li>
-							))}
-						</ol>
-					</div>
-				</article>
-			))}
+			{statusMessage && <p class="notice" role="status">{statusMessage}</p>}
+			{progressError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Genindlæs siden og prøv igen.</p>}
+			{modulesError ? (
+				<div class="empty-state">
+					<h2>Indholdet kunne ikke hentes</h2>
+					<p>Prøv at genindlæse siden om et øjeblik.</p>
+				</div>
+			) : sortedModules.length ? (
+				sortedModules.map((module, moduleIndex) => (
+					<article class="module-card">
+						<div class="module-number">{String(moduleIndex + 1).padStart(2, '0')}</div>
+						<div>
+							<h2>{module.title}</h2>
+							{module.description && <p>{module.description}</p>}
+							{module.lessons.length ? (
+								<ol class="lesson-list">
+									{module.lessons.map((lesson) => {
+										const completed = completedLessonIds.has(lesson.id);
+										const isNext = nextLesson?.id === lesson.id;
+										return (
+											<li class:list={{ completed, next: isNext }}>
+												<a href={`/kurser/${course.slug}/lektioner/${lesson.slug}`}>
+													<span class="lesson-title">
+														<span class="completion-mark" aria-hidden="true">{completed ? '✓' : '→'}</span>
+														{lesson.title}
+													</span>
+													<small>
+														{lesson.estimated_minutes ?? '—'} min.
+														{completed ? ' · Færdig' : isNext && userId ? ' · Næste' : lesson.is_preview ? ' · Preview' : ''}
+													</small>
+												</a>
+											</li>
+										);
+									})}
+								</ol>
+							) : (
+								<p class="muted-copy">Der er endnu ingen lektioner i modulet.</p>
+							)}
+						</div>
+					</article>
+				))
+			) : (
+				<div class="empty-state">
+					<h2>Kurset er ved at blive gjort klar</h2>
+					<p>Der er endnu ingen moduler eller lektioner.</p>
+				</div>
+			)}
 		</div>
 	</section>
 </SiteLayout>

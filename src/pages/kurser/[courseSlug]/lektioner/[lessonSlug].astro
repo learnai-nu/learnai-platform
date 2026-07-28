@@ -1,0 +1,197 @@
+---
+import SiteLayout from '../../../../layouts/SiteLayout.astro';
+import {
+	calculateCourseProgress,
+	findNextIncompleteLesson,
+	sortCourseLessons,
+	type CourseLesson,
+} from '../../../../lib/learning/progress';
+import { createServerSupabaseClient } from '../../../../lib/supabase/server';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+interface LessonBlock {
+	type: string;
+	text?: string;
+	items?: string[];
+}
+
+function parseBlocks(body: unknown): LessonBlock[] {
+	if (!body || typeof body !== 'object' || !('blocks' in body)) return [];
+	const blocks = (body as { blocks?: unknown }).blocks;
+	if (!Array.isArray(blocks)) return [];
+
+	return blocks.flatMap((block) => {
+		if (!block || typeof block !== 'object' || !('type' in block) || typeof block.type !== 'string') return [];
+		const value = block as Record<string, unknown>;
+		return [{
+			type: block.type,
+			text: typeof value.text === 'string' ? value.text : undefined,
+			items: Array.isArray(value.items) ? value.items.filter((item): item is string => typeof item === 'string') : undefined,
+		}];
+	});
+}
+
+const { courseSlug, lessonSlug } = Astro.params;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: course, error: courseError } = await supabase
+	.from('courses')
+	.select('id,title,slug')
+	.eq('slug', courseSlug)
+	.eq('status', 'published')
+	.maybeSingle();
+
+if (courseError || !course) return new Response(null, { status: 404 });
+
+const { data: modules, error: modulesError } = await supabase
+	.from('course_modules')
+	.select('id,title,sort_order,lessons(id,title,slug,description,body,estimated_minutes,sort_order)')
+	.eq('course_id', course.id)
+	.order('sort_order');
+
+if (modulesError) return new Response(null, { status: 503, statusText: 'Kursusindholdet kunne ikke hentes' });
+
+const sortedModules = (modules ?? []).map((module) => ({
+	...module,
+	lessons: [...module.lessons].sort((a, b) => a.sort_order - b.sort_order),
+}));
+const currentModule = sortedModules.find((module) => module.lessons.some((lesson) => lesson.slug === lessonSlug));
+const lesson = currentModule?.lessons.find((item) => item.slug === lessonSlug);
+
+if (!currentModule || !lesson) return new Response(null, { status: 404 });
+
+const courseLessons: CourseLesson[] = sortedModules.flatMap((module) =>
+	module.lessons.map((item) => ({
+		id: item.id,
+		slug: item.slug,
+		moduleSortOrder: module.sort_order,
+		lessonSortOrder: item.sort_order,
+	})),
+);
+const orderedLessons = sortCourseLessons(courseLessons);
+const currentIndex = orderedLessons.findIndex((item) => item.id === lesson.id);
+const { data: claimsData } = await supabase.auth.getClaims();
+const userId = claimsData?.claims?.sub;
+let progressLoadError = false;
+let completedLessonIds = new Set<string>();
+
+if (userId && courseLessons.length > 0) {
+	const { data: progressRows, error } = await supabase
+		.from('lesson_progress')
+		.select('lesson_id,completed')
+		.eq('user_id', userId)
+		.in('lesson_id', courseLessons.map((item) => item.id));
+
+	progressLoadError = Boolean(error);
+	completedLessonIds = new Set(
+		(progressRows ?? []).filter((row) => row.completed).map((row) => row.lesson_id),
+	);
+}
+
+const isCompleted = completedLessonIds.has(lesson.id);
+const progressPercent = calculateCourseProgress(courseLessons, completedLessonIds);
+const nextLesson =
+	findNextIncompleteLesson(orderedLessons.slice(currentIndex + 1), completedLessonIds) ??
+	findNextIncompleteLesson(orderedLessons.slice(0, currentIndex), completedLessonIds);
+const blocks = parseBlocks(lesson.body);
+const statusMessages: Record<string, { text: string; error?: boolean }> = {
+	'save-error': { text: 'Progressionen kunne ikke gemmes. Prøv igen.', error: true },
+	'not-allowed': { text: 'Du har ikke adgang til at gemme progression for denne lektion.', error: true },
+};
+const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? ''];
+---
+
+<SiteLayout title={`${lesson.title} — ${course.title}`} description={lesson.description ?? `Lektion i ${course.title}.`}>
+	<section class="section lesson-page">
+		<div class="shell lesson-shell">
+			<aside class="lesson-sidebar">
+				<a class="text-link" href={`/kurser/${course.slug}`}>← Tilbage til kurset</a>
+				<p class="course-meta">{currentModule.title}</p>
+				<div class="course-progress-copy">
+					<span>Din progression</span>
+					<strong>{userId ? `${progressPercent}%` : '—'}</strong>
+				</div>
+				<div class="course-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={userId ? progressPercent : 0}>
+					<span style={`width: ${userId ? progressPercent : 0}%`}></span>
+				</div>
+			</aside>
+
+			<article class="lesson-content">
+				<p class="eyebrow">Lektion · {lesson.estimated_minutes ?? '—'} minutter</p>
+				<h1>{lesson.title}</h1>
+				{lesson.description && <p class="lesson-lead">{lesson.description}</p>}
+
+				{statusMessage && (
+					<p class:list={['notice', { 'notice-error': statusMessage.error }]} role={statusMessage.error ? 'alert' : 'status'}>
+						{statusMessage.text}
+					</p>
+				)}
+				{progressLoadError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Prøv at genindlæse siden.</p>}
+
+				<div class="lesson-body">
+					{blocks.length ? (
+						blocks.map((block) => {
+							if (block.type === 'checklist' && block.items?.length) {
+								return <ul class="content-checklist">{block.items.map((item) => <li>{item}</li>)}</ul>;
+							}
+							if (block.type === 'callout' && block.text) return <aside class="content-callout">{block.text}</aside>;
+							if (block.type === 'example' && block.text) return <pre class="content-example"><code>{block.text}</code></pre>;
+							if (block.text) return <p>{block.text}</p>;
+							return null;
+						})
+					) : (
+						<div class="empty-state">
+							<h2>Lektionen er ved at blive gjort klar</h2>
+							<p>Der er endnu ikke tilføjet lektionsindhold.</p>
+						</div>
+					)}
+				</div>
+
+				<div class="lesson-actions">
+					{userId ? (
+						isCompleted ? (
+							<>
+								<span class="completed-badge">✓ Lektionen er færdig</span>
+								{nextLesson ? (
+									<a class="button" href={`/kurser/${course.slug}/lektioner/${nextLesson.slug}`}>Fortsæt til næste ufærdige →</a>
+								) : (
+									<a class="button" href={`/kurser/${course.slug}`}>Se dit gennemførte kursus</a>
+								)}
+							</>
+						) : (
+							<form method="post" action="/api/progress/complete" data-progress-form>
+								<input type="hidden" name="lessonId" value={lesson.id} />
+								<input type="hidden" name="courseSlug" value={course.slug} />
+								<input type="hidden" name="lessonSlug" value={lesson.slug} />
+								<button class="button" type="submit" data-submit-button>
+									<span data-button-label>Markér lektion som færdig</span>
+									<span class="button-loader" aria-hidden="true"></span>
+								</button>
+								<p class="form-status" aria-live="polite" data-form-status></p>
+							</form>
+						)
+					) : (
+						<div class="login-prompt">
+							<p>Log ind for at gemme din progression.</p>
+							<a class="button" href="/login">Log ind</a>
+						</div>
+					)}
+				</div>
+			</article>
+		</div>
+	</section>
+
+	<script>
+		for (const form of document.querySelectorAll<HTMLFormElement>('[data-progress-form]')) {
+			form.addEventListener('submit', () => {
+				const button = form.querySelector<HTMLButtonElement>('[data-submit-button]');
+				const label = form.querySelector<HTMLElement>('[data-button-label]');
+				const status = form.querySelector<HTMLElement>('[data-form-status]');
+				if (button) button.disabled = true;
+				if (label) label.textContent = 'Gemmer progression…';
+				if (status) status.textContent = 'Vent et øjeblik, mens vi gemmer.';
+			});
+		}
+	</script>
+</SiteLayout>
