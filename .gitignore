@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 .vercel
 .env*
+
+# local one-off content imports (the source backup is never committed)
+.content-import/

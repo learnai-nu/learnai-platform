@@ -26,8 +26,8 @@ describe('admin authorization', () => {
 	});
 });
 
-describe('admin content blocks', () => {
-	it('maps the editor format to structured blocks and back', () => {
+describe('admin content format', () => {
+	it('preserves Markdown from the editor', () => {
 		const editorText = [
 			'## Kom godt i gang',
 			'Et praktisk afsnit.',
@@ -36,15 +36,7 @@ describe('admin content blocks', () => {
 		].join('\n\n');
 		const body = editorTextToBody(editorText);
 
-		expect(body).toEqual({
-			format: 'blocks',
-			blocks: [
-				{ type: 'heading', level: 2, text: 'Kom godt i gang' },
-				{ type: 'paragraph', text: 'Et praktisk afsnit.' },
-				{ type: 'callout', text: 'Kontrollér altid resultatet.' },
-				{ type: 'checklist', items: ['Første trin', 'Andet trin'] },
-			],
-		});
+		expect(body).toEqual({ format: 'markdown', markdown: editorText });
 		expect(bodyToEditorText(body)).toBe(editorText);
 	});
 });

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "locale": "da",
+  "status": "draft",
+  "articles": {
+    "includeTypes": ["guide", "viden"],
+    "newsPublishedOnOrAfter": "2026-07-05"
+  },
+  "prompts": {
+    "includeAll": true
+  },
+  "batchSize": 10,
+  "maxBatchCharacters": 24000
+}

@@ -36,3 +36,10 @@ Brugere med `app_metadata.role` sat til `admin` eller `editor` kan åbne
 `/admin`. CMS'et administrerer indhold, kurser, lektioner og quizzer gennem
 brugerens egen Supabase-session og eksisterende RLS. Se
 [`docs/admin-cms.md`](docs/admin-cms.md) for sikkerhedsmodel og begrænsninger.
+
+## Indholdsimport
+
+Den reproducerbare og privacy-afgrænsede import af den oprindelige
+LearnAI-backup er beskrevet i
+[`docs/content-import.md`](docs/content-import.md). Kildebackup og genererede
+SQL-batches er bevidst udeladt fra Git.
