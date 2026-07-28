@@ -223,13 +223,28 @@ select
   ${jsonSql(item.sourceMetadata)}
 from public.categories c
 where c.slug = ${sqlString(item.categorySlug)}
-on conflict do nothing;`;
+on conflict (source_key) where source_key is not null do update
+set type = excluded.type,
+    status = excluded.status,
+    title = excluded.title,
+    slug = excluded.slug,
+    excerpt = excluded.excerpt,
+    body = excluded.body,
+    cover_image_url = excluded.cover_image_url,
+    category_id = excluded.category_id,
+    seo_title = excluded.seo_title,
+    seo_description = excluded.seo_description,
+    published_at = excluded.published_at,
+    locale = excluded.locale,
+    difficulty = excluded.difficulty,
+    source_metadata = excluded.source_metadata,
+    updated_at = now();`;
 }
 
 function tagSql(tag) {
 	return `insert into public.tags (name, slug)
 values (${sqlString(tag.name)}, ${sqlString(tag.slug)})
-on conflict (slug) do nothing;`;
+on conflict (slug) do update set name = excluded.name;`;
 }
 
 function contentTagSql(item, tag) {

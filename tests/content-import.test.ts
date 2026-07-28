@@ -68,6 +68,8 @@ describe('backup-import', () => {
 		expect(sql).toContain('learnai-backup:article:article-1');
 		expect(sql).toContain('learnai-backup:prompt:prompt-1');
 		expect(sql).toContain("values ('AI', 'ai')");
+		expect(sql).toContain('on conflict (source_key) where source_key is not null do update');
+		expect(sql).toContain('on conflict (slug) do update set name = excluded.name');
 		expect(sql).not.toContain('skal-ikke-importeres@example.com');
 		expect(sql).not.toContain('skal-ikke-importeres');
 	});

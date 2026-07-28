@@ -23,6 +23,11 @@ Kommandoen opretter en checksum, en rapport og idempotente SQL-batches i den
 git-ignorerede mappe `.content-import/`. Batches begrænses både efter antal
 elementer og tegnstørrelse, så lange guides ikke afkortes under overførslen.
 
+SQL-filerne er UTF-8 og skal læses eksplicit som UTF-8 i Windows PowerShell.
+Importen bruger `source_key` til upsert, så en ny kørsel kan reparere eller
+opdatere importerede kildefelter uden at skabe dubletter. Den redaktionelle
+første bølge anvendes efter basisimporten.
+
 ## Datamodel
 
 `content_items` udvides med:
