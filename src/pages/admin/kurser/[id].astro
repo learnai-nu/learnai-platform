@@ -1,0 +1,204 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { bodyToEditorText } from '../../../lib/admin/content';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const isNew = Astro.params.id === 'ny';
+let course: {
+	id: string;
+	title: string;
+	slug: string;
+	status: 'draft' | 'review' | 'published' | 'archived';
+	level: 'beginner' | 'intermediate' | 'advanced';
+	description: string | null;
+	estimated_minutes: number | null;
+	price_dkk: number;
+	is_featured: boolean;
+} | null = null;
+let modules: Array<{
+	id: string;
+	title: string;
+	description: string | null;
+	sort_order: number;
+	lessons: Array<{
+		id: string;
+		title: string;
+		slug: string;
+		description: string | null;
+		body: unknown;
+		estimated_minutes: number | null;
+		sort_order: number;
+		is_preview: boolean;
+	}>;
+}> = [];
+
+if (!isNew) {
+	const courseResult = await context.supabase
+		.from('courses')
+		.select('id,title,slug,status,level,description,estimated_minutes,price_dkk,is_featured')
+		.eq('id', Astro.params.id)
+		.maybeSingle();
+	if (courseResult.error || !courseResult.data) return new Response('Kurset blev ikke fundet.', { status: 404 });
+	course = { ...courseResult.data, price_dkk: Number(courseResult.data.price_dkk) };
+
+	const moduleResult = await context.supabase
+		.from('course_modules')
+		.select('id,title,description,sort_order,lessons(id,title,slug,description,body,estimated_minutes,sort_order,is_preview)')
+		.eq('course_id', course.id)
+		.order('sort_order');
+	if (!moduleResult.error) {
+		modules = (moduleResult.data ?? []).map((module) => ({
+			...module,
+			lessons: [...module.lessons].sort((a, b) => a.sort_order - b.sort_order),
+		}));
+	}
+}
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Kurset er oprettet. Du kan nu tilføje moduler.',
+	saved: 'Ændringerne er gemt.',
+	'module-saved': 'Modulet er gemt.',
+	'lesson-saved': 'Lektionen er gemt.',
+};
+---
+
+<AdminLayout
+	title={isNew ? 'Nyt kursus' : course?.title ?? 'Redigér kursus'}
+	description="Redigér kursusstruktur."
+	active="courses"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href="/admin/kurser">← Kurser</a>
+			<h1>{isNew ? 'Opret kursus' : course?.title}</h1>
+			<p>Kursets status styrer, om hele forløbet er offentligt.</p>
+		</div>
+		{course?.status === 'published' && <a class="button button-ghost" href={`/kurser/${course.slug}`}>Se kurset</a>}
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Ændringerne kunne ikke gemmes. Kontrollér felterne.</p>}
+
+	<form class="admin-form" method="post" action="/api/admin/courses/save">
+		<input type="hidden" name="id" value={course?.id ?? ''} />
+		<div class="admin-form-grid">
+			<label class="field-wide">Titel<input name="title" required maxlength="200" value={course?.title ?? ''} /></label>
+			<label>Slug<input name="slug" required maxlength="160" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={course?.slug ?? ''} /></label>
+			<label>
+				Status
+				<select name="status">
+					<option value="draft" selected={!course || course.status === 'draft'}>Kladde</option>
+					<option value="review" selected={course?.status === 'review'}>Gennemgang</option>
+					<option value="published" selected={course?.status === 'published'}>Publiceret</option>
+					<option value="archived" selected={course?.status === 'archived'}>Arkiveret</option>
+				</select>
+			</label>
+			<label>
+				Niveau
+				<select name="level">
+					<option value="beginner" selected={!course || course.level === 'beginner'}>Begynder</option>
+					<option value="intermediate" selected={course?.level === 'intermediate'}>Øvet</option>
+					<option value="advanced" selected={course?.level === 'advanced'}>Avanceret</option>
+				</select>
+			</label>
+			<label class="field-wide">Beskrivelse<textarea name="description" rows="4" maxlength="2000">{course?.description ?? ''}</textarea></label>
+			<label>Estimerede minutter<input name="estimatedMinutes" type="number" min="1" value={course?.estimated_minutes ?? ''} /></label>
+			<label>Pris i DKK<input name="priceDkk" type="number" min="0" step="0.01" value={course?.price_dkk ?? 0} /></label>
+			<label class="checkbox-field">
+				<input type="hidden" name="isFeatured" value="false" />
+				<input type="checkbox" name="isFeatured" value="true" checked={course?.is_featured ?? false} />
+				Fremhævet kursus
+			</label>
+		</div>
+		<div class="admin-form-actions">
+			<button class="button" type="submit">{isNew ? 'Opret som kladde' : 'Gem kursus'}</button>
+		</div>
+	</form>
+
+	{course && (
+		<section class="admin-structure">
+			<div class="admin-panel-head">
+				<div><p class="eyebrow">Struktur</p><h2>Moduler og lektioner</h2></div>
+				<span>{modules.length} moduler</span>
+			</div>
+
+			{modules.map((module) => (
+				<article class="admin-module">
+					<form class="admin-inline-form" method="post" action="/api/admin/courses/module/save">
+						<input type="hidden" name="id" value={module.id} />
+						<input type="hidden" name="courseId" value={course.id} />
+						<label>Titel<input name="title" required maxlength="200" value={module.title} /></label>
+						<label>Rækkefølge<input name="sortOrder" type="number" min="0" value={module.sort_order} /></label>
+						<label class="field-wide">Beskrivelse<textarea name="description" rows="2" maxlength="2000">{module.description ?? ''}</textarea></label>
+						<button class="button button-small button-ghost" type="submit">Gem modul</button>
+					</form>
+
+					<div class="admin-lessons">
+						{module.lessons.map((lesson) => (
+							<details>
+								<summary><span>{lesson.title}</span><small>/{lesson.slug} · {lesson.estimated_minutes ?? '—'} min.</small></summary>
+								<form class="admin-inline-form" method="post" action="/api/admin/courses/lesson/save">
+									<input type="hidden" name="id" value={lesson.id} />
+									<input type="hidden" name="courseId" value={course.id} />
+									<input type="hidden" name="moduleId" value={module.id} />
+									<label>Titel<input name="title" required maxlength="200" value={lesson.title} /></label>
+									<label>Slug<input name="slug" required value={lesson.slug} /></label>
+									<label>Minutter<input name="estimatedMinutes" type="number" min="1" value={lesson.estimated_minutes ?? ''} /></label>
+									<label>Rækkefølge<input name="sortOrder" type="number" min="0" value={lesson.sort_order} /></label>
+									<label class="field-wide">Beskrivelse<textarea name="description" rows="2">{lesson.description ?? ''}</textarea></label>
+									<label class="field-wide">Lektionsindhold<textarea name="bodyText" rows="12">{bodyToEditorText(lesson.body)}</textarea></label>
+									<label class="checkbox-field">
+										<input type="hidden" name="isPreview" value="false" />
+										<input type="checkbox" name="isPreview" value="true" checked={lesson.is_preview} />
+										Gratis preview
+									</label>
+									<button class="button button-small" type="submit">Gem lektion</button>
+								</form>
+							</details>
+						))}
+						<details class="admin-create-row">
+							<summary>+ Tilføj lektion</summary>
+							<form class="admin-inline-form" method="post" action="/api/admin/courses/lesson/save">
+								<input type="hidden" name="id" value="" />
+								<input type="hidden" name="courseId" value={course.id} />
+								<input type="hidden" name="moduleId" value={module.id} />
+								<label>Titel<input name="title" required maxlength="200" /></label>
+								<label>Slug<input name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" /></label>
+								<label>Minutter<input name="estimatedMinutes" type="number" min="1" /></label>
+								<label>Rækkefølge<input name="sortOrder" type="number" min="0" value={module.lessons.length} /></label>
+								<label class="field-wide">Beskrivelse<textarea name="description" rows="2"></textarea></label>
+								<label class="field-wide">Lektionsindhold<textarea name="bodyText" rows="10"></textarea></label>
+								<input type="hidden" name="isPreview" value="false" />
+								<button class="button button-small" type="submit">Opret lektion</button>
+							</form>
+						</details>
+					</div>
+				</article>
+			))}
+
+			<details class="admin-create-row admin-panel">
+				<summary>+ Tilføj modul</summary>
+				<form class="admin-inline-form" method="post" action="/api/admin/courses/module/save">
+					<input type="hidden" name="id" value="" />
+					<input type="hidden" name="courseId" value={course.id} />
+					<label>Titel<input name="title" required maxlength="200" /></label>
+					<label>Rækkefølge<input name="sortOrder" type="number" min="0" value={modules.length} /></label>
+					<label class="field-wide">Beskrivelse<textarea name="description" rows="2"></textarea></label>
+					<button class="button button-small" type="submit">Opret modul</button>
+				</form>
+			</details>
+		</section>
+	)}
+</AdminLayout>

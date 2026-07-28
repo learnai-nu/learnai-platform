@@ -1,0 +1,113 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { bodyToEditorText } from '../../../lib/admin/content';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const isNew = Astro.params.id === 'ny';
+let item: {
+	id: string;
+	title: string;
+	slug: string;
+	type: 'article' | 'guide' | 'news' | 'prompt' | 'tool';
+	status: 'draft' | 'review' | 'published' | 'archived';
+	excerpt: string | null;
+	body: unknown;
+	seo_title: string | null;
+	seo_description: string | null;
+} | null = null;
+
+if (!isNew) {
+	const result = await context.supabase
+		.from('content_items')
+		.select('id,title,slug,type,status,excerpt,body,seo_title,seo_description')
+		.eq('id', Astro.params.id)
+		.maybeSingle();
+	if (result.error || !result.data) return new Response('Indholdet blev ikke fundet.', { status: 404 });
+	item = result.data;
+}
+
+const status = Astro.url.searchParams.get('status');
+---
+
+<AdminLayout
+	title={isNew ? 'Nyt indhold' : item?.title ?? 'Redigér indhold'}
+	description="Redigér LearnAI-indhold."
+	active="content"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href="/admin/indhold">← Indhold</a>
+			<h1>{isNew ? 'Opret indhold' : 'Redigér indhold'}</h1>
+			<p>Brug kladde og gennemgang, før indholdet publiceres.</p>
+		</div>
+		{item?.status === 'published' && <a class="button button-ghost" href={`/laer/${item.slug}`}>Se publiceret side</a>}
+	</header>
+
+	{status === 'created' && <p class="notice" role="status">Indholdet er oprettet som kladde.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Indholdet kunne ikke gemmes. Kontrollér felterne og sluggen.</p>}
+
+	<form class="admin-form" method="post" action="/api/admin/content/save">
+		<input type="hidden" name="id" value={item?.id ?? ''} />
+		<div class="admin-form-grid">
+			<label class="field-wide">
+				Titel
+				<input name="title" required maxlength="200" value={item?.title ?? ''} />
+			</label>
+			<label>
+				Slug
+				<input name="slug" required maxlength="160" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={item?.slug ?? ''} />
+			</label>
+			<label>
+				Type
+				<select name="type">
+					<option value="guide" selected={item?.type === 'guide'}>Guide</option>
+					<option value="article" selected={item?.type === 'article'}>Artikel</option>
+					<option value="news" selected={item?.type === 'news'}>Nyhed</option>
+					<option value="prompt" selected={item?.type === 'prompt'}>Prompt</option>
+					<option value="tool" selected={item?.type === 'tool'}>Værktøj</option>
+				</select>
+			</label>
+			<label>
+				Status
+				<select name="status">
+					<option value="draft" selected={!item || item.status === 'draft'}>Kladde</option>
+					<option value="review" selected={item?.status === 'review'}>Gennemgang</option>
+					<option value="published" selected={item?.status === 'published'}>Publiceret</option>
+					<option value="archived" selected={item?.status === 'archived'}>Arkiveret</option>
+				</select>
+			</label>
+			<label class="field-wide">
+				Kort resumé
+				<textarea name="excerpt" rows="3" maxlength="600">{item?.excerpt ?? ''}</textarea>
+			</label>
+			<label class="field-wide">
+				Brødtekst
+				<textarea name="bodyText" rows="18" maxlength="100000">{bodyToEditorText(item?.body)}</textarea>
+				<small>Brug ## til overskrifter, &gt; til fremhævelse og - til tjeklister. Adskil afsnit med en tom linje.</small>
+			</label>
+			<label>
+				SEO-titel
+				<input name="seoTitle" maxlength="200" value={item?.seo_title ?? ''} />
+			</label>
+			<label>
+				SEO-beskrivelse
+				<textarea name="seoDescription" rows="3" maxlength="500">{item?.seo_description ?? ''}</textarea>
+			</label>
+		</div>
+		<div class="admin-form-actions">
+			<button class="button" type="submit">{isNew ? 'Opret som kladde' : 'Gem ændringer'}</button>
+			<a class="button button-ghost" href="/admin/indhold">Annullér</a>
+		</div>
+	</form>
+</AdminLayout>

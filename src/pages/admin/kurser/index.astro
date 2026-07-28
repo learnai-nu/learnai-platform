@@ -1,0 +1,75 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const [courseResult, moduleResult, lessonResult] = await Promise.all([
+	context.supabase
+		.from('courses')
+		.select('id,title,slug,status,level,updated_at')
+		.order('updated_at', { ascending: false }),
+	context.supabase.from('course_modules').select('id,course_id'),
+	context.supabase.from('lessons').select('id,module_id'),
+]);
+
+const modules = moduleResult.data ?? [];
+const lessons = lessonResult.data ?? [];
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Kurset er oprettet som kladde.',
+	saved: 'Kurset er gemt.',
+};
+---
+
+<AdminLayout
+	title="Kurser"
+	description="Administrér kurser, moduler og lektioner."
+	active="courses"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Læringsstruktur</p>
+			<h1>Kurser og lektioner</h1>
+			<p>Byg forløb i en fast rækkefølge og publicér dem samlet.</p>
+		</div>
+		<a class="button" href="/admin/kurser/ny">Opret kursus</a>
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Kurset kunne ikke gemmes.</p>}
+
+	<section class="admin-panel">
+		{courseResult.error || moduleResult.error || lessonResult.error ? (
+			<p class="notice notice-error" role="alert">Kursusoversigten kunne ikke hentes.</p>
+		) : courseResult.data?.length ? (
+			<div class="admin-list">
+				{courseResult.data.map((course) => {
+					const courseModules = modules.filter((module) => module.course_id === course.id);
+					const moduleIds = new Set(courseModules.map((module) => module.id));
+					const lessonCount = lessons.filter((lesson) => moduleIds.has(lesson.module_id)).length;
+					return (
+						<a href={`/admin/kurser/${course.id}`}>
+							<span>
+								<strong>{course.title}</strong>
+								<small>{courseModules.length} moduler · {lessonCount} lektioner · /{course.slug}</small>
+							</span>
+							<span class={`status-badge status-${course.status}`}>{course.status}</span>
+						</a>
+					);
+				})}
+			</div>
+		) : (
+			<div class="admin-empty"><h2>Ingen kurser endnu</h2><p>Opret det første læringsforløb.</p></div>
+		)}
+	</section>
+</AdminLayout>

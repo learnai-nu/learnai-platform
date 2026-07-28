@@ -1,0 +1,43 @@
+---
+import ContentBody from '../../components/ContentBody.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: item, error } = await supabase
+	.from('content_items')
+	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at')
+	.eq('slug', Astro.params.slug)
+	.eq('status', 'published')
+	.maybeSingle();
+
+if (error || !item) return new Response('Indholdet blev ikke fundet.', { status: 404 });
+
+const typeLabels = {
+	article: 'Artikel',
+	guide: 'Guide',
+	news: 'Nyhed',
+	prompt: 'Prompt',
+	tool: 'Værktøj',
+} as const;
+---
+
+<SiteLayout
+	title={`${item.seo_title ?? item.title} — LearnAI.nu`}
+	description={item.seo_description ?? item.excerpt ?? 'Praktisk AI-læring på dansk.'}
+>
+	<article class="article-page">
+		<header class="shell article-header">
+			<a class="admin-back" href="/laer">← Lær AI</a>
+			<p class="eyebrow">{typeLabels[item.type as keyof typeof typeLabels] ?? 'Indhold'}</p>
+			<h1>{item.title}</h1>
+			{item.excerpt && <p class="hero-copy">{item.excerpt}</p>}
+			<p class="article-date">Opdateret {new Date(item.updated_at).toLocaleDateString('da-DK')}</p>
+		</header>
+		<div class="shell article-content">
+			<ContentBody body={item.body} />
+		</div>
+	</article>
+</SiteLayout>

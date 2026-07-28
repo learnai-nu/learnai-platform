@@ -4,11 +4,13 @@ import '../styles/global.css';
 interface Props {
 	title: string;
 	description: string;
+	noindex?: boolean;
 }
 
 const {
 	title,
 	description,
+	noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
@@ -21,6 +23,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={canonicalURL} />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>{title}</title>

@@ -29,3 +29,10 @@ pnpm build
 Offentlige indholdssider prerenderes som standard. Login, dashboard, progression,
 quiz og betaling overgår til on-demand rendering, efterhånden som de implementeres.
 Læs `../LearnAI-CODEX-MASTER.md` før større ændringer.
+
+## Administration
+
+Brugere med `app_metadata.role` sat til `admin` eller `editor` kan åbne
+`/admin`. CMS'et administrerer indhold, kurser, lektioner og quizzer gennem
+brugerens egen Supabase-session og eksisterende RLS. Se
+[`docs/admin-cms.md`](docs/admin-cms.md) for sikkerhedsmodel og begrænsninger.

@@ -1,0 +1,109 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const [quizResult, questionResult, lessonResult, moduleResult, courseResult] = await Promise.all([
+	context.supabase.from('quizzes').select('id,title,lesson_id,passing_score,max_attempts,updated_at').order('updated_at', { ascending: false }),
+	context.supabase.from('quiz_questions').select('id,quiz_id'),
+	context.supabase.from('lessons').select('id,title,slug,module_id').order('sort_order'),
+	context.supabase.from('course_modules').select('id,title,course_id').order('sort_order'),
+	context.supabase.from('courses').select('id,title,slug,status').order('title'),
+]);
+
+const quizzes = quizResult.data ?? [];
+const questions = questionResult.data ?? [];
+const lessons = lessonResult.data ?? [];
+const modules = moduleResult.data ?? [];
+const courses = courseResult.data ?? [];
+const usedLessonIds = new Set(quizzes.map((quiz) => quiz.lesson_id));
+const availableLessons = lessons.filter((lesson) => !usedLessonIds.has(lesson.id));
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Quizzen er oprettet.',
+	saved: 'Quizindstillingerne er gemt.',
+};
+
+function lessonContext(lessonId: string) {
+	const lesson = lessons.find((candidate) => candidate.id === lessonId);
+	const module = modules.find((candidate) => candidate.id === lesson?.module_id);
+	const course = courses.find((candidate) => candidate.id === module?.course_id);
+	return { lesson, module, course };
+}
+---
+
+<AdminLayout
+	title="Quizzer"
+	description="Administrér quizzer og beskyttede facit."
+	active="quizzes"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Bedømmelse</p>
+			<h1>Quizzer og spørgsmål</h1>
+			<p>Facit vises kun her for godkendte redaktører og sendes aldrig med kursussiden.</p>
+		</div>
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Quizzen kunne ikke gemmes.</p>}
+
+	<section class="admin-panel">
+		<div class="admin-panel-head"><div><p class="eyebrow">Eksisterende</p><h2>Quizzer</h2></div></div>
+		{quizResult.error || questionResult.error ? (
+			<p class="notice notice-error" role="alert">Quizoversigten kunne ikke hentes.</p>
+		) : quizzes.length ? (
+			<div class="admin-list">
+				{quizzes.map((quiz) => {
+					const related = lessonContext(quiz.lesson_id);
+					return (
+						<a href={`/admin/quizzer/${quiz.id}`}>
+							<span>
+								<strong>{quiz.title}</strong>
+								<small>{related.course?.title} · {related.lesson?.title} · {questions.filter((question) => question.quiz_id === quiz.id).length} spørgsmål</small>
+							</span>
+							<span class="status-badge">{quiz.passing_score}%</span>
+						</a>
+					);
+				})}
+			</div>
+		) : (
+			<div class="admin-empty"><p>Der er endnu ingen quizzer.</p></div>
+		)}
+	</section>
+
+	<section class="admin-panel">
+		<div class="admin-panel-head"><div><p class="eyebrow">Ny quiz</p><h2>Knyt en quiz til en lektion</h2></div></div>
+		{availableLessons.length ? (
+			<form class="admin-inline-form" method="post" action="/api/admin/quizzes/save">
+				<input type="hidden" name="id" value="" />
+				<label class="field-wide">
+					Lektion
+					<select name="lessonId" required>
+						{availableLessons.map((lesson) => {
+							const related = lessonContext(lesson.id);
+							return <option value={lesson.id}>{related.course?.title} · {lesson.title}</option>;
+						})}
+					</select>
+				</label>
+				<label class="field-wide">Quiztitel<input name="title" required maxlength="200" /></label>
+				<label class="field-wide">Beskrivelse<textarea name="description" rows="3"></textarea></label>
+				<label>Beståelseskrav (%)<input name="passingScore" type="number" min="0" max="100" value="70" /></label>
+				<label>Maks. forsøg<input name="maxAttempts" type="number" min="1" placeholder="Ubegrænset" /></label>
+				<button class="button button-small" type="submit">Opret quiz</button>
+			</form>
+		) : (
+			<p class="muted-copy">Alle lektioner har allerede en quiz.</p>
+		)}
+	</section>
+</AdminLayout>

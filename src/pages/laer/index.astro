@@ -1,0 +1,54 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: items, error } = await supabase
+	.from('content_items')
+	.select('id,title,slug,type,excerpt,published_at,updated_at')
+	.eq('status', 'published')
+	.order('published_at', { ascending: false });
+
+const typeLabels = {
+	article: 'Artikel',
+	guide: 'Guide',
+	news: 'Nyhed',
+	prompt: 'Prompt',
+	tool: 'Værktøj',
+} as const;
+---
+
+<SiteLayout title="Lær AI — LearnAI.nu" description="Praktiske danske guides til at forstå og anvende AI.">
+	<section class="hero hero-compact">
+		<div class="shell section-intro">
+			<p class="eyebrow">Vidensportal</p>
+			<h1>Lær AI i praksis.</h1>
+			<p class="hero-copy">Danske guider og artikler, der hjælper dig fra idé til konkret anvendelse.</p>
+		</div>
+	</section>
+	<section class="section section-tight">
+		<div class="shell">
+			{error ? (
+				<p class="notice notice-error" role="alert">Indholdet kunne ikke hentes lige nu.</p>
+			) : items?.length ? (
+				<div class="article-grid">
+					{items.map((item) => (
+						<article class="article-card">
+							<div class="course-meta">
+								<span>{typeLabels[item.type as keyof typeof typeLabels] ?? 'Indhold'}</span>
+								<span>{new Date(item.published_at ?? item.updated_at).toLocaleDateString('da-DK')}</span>
+							</div>
+							<h2>{item.title}</h2>
+							<p>{item.excerpt ?? 'Praktisk AI-læring på dansk.'}</p>
+							<a class="text-link" href={`/laer/${item.slug}`}>Læs mere →</a>
+						</article>
+					))}
+				</div>
+			) : (
+				<div class="empty-state"><h2>Guides er på vej</h2><p>Kom snart tilbage.</p></div>
+			)}
+		</div>
+	</section>
+</SiteLayout>

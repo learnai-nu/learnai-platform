@@ -1,0 +1,98 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, {
+		status: 302,
+		headers: { Location: '/login?status=required', 'Cache-Control': 'private, no-store, max-age=0' },
+	});
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const [contentResult, courseResult, lessonResult, quizResult, recentContentResult] = await Promise.all([
+	context.supabase.from('content_items').select('id', { count: 'exact', head: true }),
+	context.supabase.from('courses').select('id', { count: 'exact', head: true }),
+	context.supabase.from('lessons').select('id', { count: 'exact', head: true }),
+	context.supabase.from('quizzes').select('id', { count: 'exact', head: true }),
+	context.supabase
+		.from('content_items')
+		.select('id,title,status,updated_at')
+		.order('updated_at', { ascending: false })
+		.limit(5),
+]);
+
+const stats = [
+	{ label: 'Indhold', value: contentResult.count ?? 0, href: '/admin/indhold' },
+	{ label: 'Kurser', value: courseResult.count ?? 0, href: '/admin/kurser' },
+	{ label: 'Lektioner', value: lessonResult.count ?? 0, href: '/admin/kurser' },
+	{ label: 'Quizzer', value: quizResult.count ?? 0, href: '/admin/quizzer' },
+];
+const hasLoadError = [
+	contentResult.error,
+	courseResult.error,
+	lessonResult.error,
+	quizResult.error,
+	recentContentResult.error,
+].some(Boolean);
+---
+
+<AdminLayout
+	title="Overblik"
+	description="Redaktionelt overblik for LearnAI."
+	active="dashboard"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Sprint 6</p>
+			<h1>God arbejdslyst.</h1>
+			<p>Administrér LearnAI’s indhold og læringsforløb fra ét sikkert sted.</p>
+		</div>
+		<div class="admin-actions">
+			<a class="button" href="/admin/indhold/ny">Nyt indhold</a>
+			<a class="button button-ghost" href="/admin/kurser/ny">Nyt kursus</a>
+		</div>
+	</header>
+
+	{hasLoadError && <p class="notice notice-error" role="alert">Nogle admin-data kunne ikke hentes. Genindlæs siden.</p>}
+
+	<div class="admin-stat-grid">
+		{stats.map((stat) => (
+			<a class="admin-stat" href={stat.href}>
+				<span>{stat.label}</span>
+				<strong>{stat.value}</strong>
+			</a>
+		))}
+	</div>
+
+	<section class="admin-panel">
+		<div class="admin-panel-head">
+			<div>
+				<p class="eyebrow">Senest ændret</p>
+				<h2>Redaktionelt indhold</h2>
+			</div>
+			<a class="text-link" href="/admin/indhold">Se alt →</a>
+		</div>
+		{recentContentResult.data?.length ? (
+			<div class="admin-list">
+				{recentContentResult.data.map((item) => (
+					<a href={`/admin/indhold/${item.id}`}>
+						<span>
+							<strong>{item.title}</strong>
+							<small>{new Date(item.updated_at).toLocaleDateString('da-DK')}</small>
+						</span>
+						<span class={`status-badge status-${item.status}`}>{item.status}</span>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="admin-empty"><p>Der er endnu intet indhold.</p></div>
+		)}
+	</section>
+</AdminLayout>

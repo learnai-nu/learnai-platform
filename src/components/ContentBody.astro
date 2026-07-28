@@ -1,0 +1,41 @@
+---
+interface Props {
+	body: unknown;
+}
+
+const { body } = Astro.props;
+const blocks =
+	body &&
+	typeof body === 'object' &&
+	'blocks' in body &&
+	Array.isArray((body as { blocks?: unknown }).blocks)
+		? (body as { blocks: unknown[] }).blocks
+		: [];
+
+function record(value: unknown): Record<string, unknown> | null {
+	return value && typeof value === 'object' && !Array.isArray(value)
+		? value as Record<string, unknown>
+		: null;
+}
+---
+
+<div class="article-body">
+	{blocks.map((value) => {
+		const block = record(value);
+		if (!block || typeof block.type !== 'string') return null;
+		const text = typeof block.text === 'string' ? block.text : '';
+
+		if (block.type === 'heading') {
+			return block.level === 3 ? <h3>{text}</h3> : <h2>{text}</h2>;
+		}
+		if (block.type === 'callout') return <aside class="content-callout">{text}</aside>;
+		if (block.type === 'checklist' && Array.isArray(block.items)) {
+			return (
+				<ul class="content-checklist">
+					{block.items.filter((item): item is string => typeof item === 'string').map((item) => <li>{item}</li>)}
+				</ul>
+			);
+		}
+		return <p>{text}</p>;
+	})}
+</div>

@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getContentManagerRole } from '../../lib/auth/admin';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
@@ -16,6 +17,7 @@ if (!claims) {
 }
 
 const email = typeof claims.email === 'string' ? claims.email : 'Din profil';
+const contentManagerRole = getContentManagerRole(claims);
 const { data: enrollments } = await supabase
 	.from('enrollments')
 	.select('id,status,enrolled_at,courses(title,slug)')
@@ -36,7 +38,10 @@ const courseEnrollments = (enrollments ?? []).map((enrollment) => ({
 				<h1>Velkommen tilbage.</h1>
 				<p class="hero-copy">{email}</p>
 			</div>
-			<form method="post" action="/auth/sign-out"><button class="button button-ghost" type="submit">Log ud</button></form>
+			<div class="dashboard-actions">
+				{contentManagerRole && <a class="button" href="/admin">Åbn admin-CMS</a>}
+				<form method="post" action="/auth/sign-out"><button class="button button-ghost" type="submit">Log ud</button></form>
+			</div>
 		</div>
 	</section>
 	<section class="section section-tight">

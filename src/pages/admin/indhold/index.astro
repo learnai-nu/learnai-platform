@@ -1,0 +1,67 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const { data: items, error } = await context.supabase
+	.from('content_items')
+	.select('id,title,slug,type,status,excerpt,updated_at')
+	.order('updated_at', { ascending: false });
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Indholdet er oprettet som kladde.',
+	saved: 'Ændringerne er gemt.',
+};
+---
+
+<AdminLayout
+	title="Indhold"
+	description="Administrér artikler, guides og nyheder."
+	active="content"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Indhold</p>
+			<h1>Guides og artikler</h1>
+			<p>Opret, redigér og publicér LearnAI’s redaktionelle indhold.</p>
+		</div>
+		<a class="button" href="/admin/indhold/ny">Opret indhold</a>
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Indholdet kunne ikke gemmes. Kontrollér felterne.</p>}
+
+	<section class="admin-panel">
+		{error ? (
+			<p class="notice notice-error" role="alert">Indholdslisten kunne ikke hentes.</p>
+		) : items?.length ? (
+			<div class="admin-list">
+				{items.map((item) => (
+					<a href={`/admin/indhold/${item.id}`}>
+						<span>
+							<strong>{item.title}</strong>
+							<small>{item.type} · /{item.slug}</small>
+						</span>
+						<span class={`status-badge status-${item.status}`}>{item.status}</span>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="admin-empty">
+				<h2>Indholdsbiblioteket er tomt</h2>
+				<p>Opret den første guide eller artikel.</p>
+			</div>
+		)}
+	</section>
+</AdminLayout>

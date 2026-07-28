@@ -1,0 +1,163 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { adminQuizSchema } from '../../../lib/admin/contracts';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const quizId = Astro.params.id;
+const [{ data: quizData, error: quizError }, { data: lessonData }] = await Promise.all([
+	context.supabase.rpc('admin_get_quiz', { p_quiz_id: quizId }),
+	context.supabase
+		.from('quizzes')
+		.select('lesson_id,lessons(title,slug,module_id)')
+		.eq('id', quizId)
+		.maybeSingle(),
+]);
+const parsedQuiz = adminQuizSchema.safeParse(quizData);
+if (quizError || !parsedQuiz.success) return new Response('Quizzen blev ikke fundet eller kunne ikke læses.', { status: 404 });
+const quiz = parsedQuiz.data;
+const lesson = Array.isArray(lessonData?.lessons) ? lessonData.lessons[0] : lessonData?.lessons;
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Quizzen er oprettet. Tilføj nu spørgsmål og facit.',
+	saved: 'Quizindstillingerne er gemt.',
+	'question-saved': 'Spørgsmålet og facit er gemt sikkert.',
+};
+const questionTypeLabels = {
+	single_choice: 'Ét korrekt svar',
+	multiple_choice: 'Flere korrekte svar',
+	true_false: 'Sandt/falsk',
+	free_text: 'Fritekst',
+} as const;
+---
+
+<AdminLayout
+	title={quiz.title}
+	description="Redigér quiz og facit."
+	active="quizzes"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href="/admin/quizzer">← Quizzer</a>
+			<h1>{quiz.title}</h1>
+			<p>{lesson?.title ?? 'Tilknyttet lektion'} · Facit beskyttes af en privat databasefunktion.</p>
+		</div>
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Quizzen kunne ikke gemmes. Kontrollér spørgsmål og facit.</p>}
+
+	<form class="admin-form" method="post" action="/api/admin/quizzes/save">
+		<input type="hidden" name="id" value={quiz.id} />
+		<input type="hidden" name="lessonId" value={quiz.lesson_id} />
+		<div class="admin-form-grid">
+			<label class="field-wide">Titel<input name="title" required maxlength="200" value={quiz.title} /></label>
+			<label class="field-wide">Beskrivelse<textarea name="description" rows="3">{quiz.description ?? ''}</textarea></label>
+			<label>Beståelseskrav (%)<input name="passingScore" type="number" min="0" max="100" value={quiz.passing_score} /></label>
+			<label>Maks. forsøg<input name="maxAttempts" type="number" min="1" value={quiz.max_attempts ?? ''} placeholder="Ubegrænset" /></label>
+		</div>
+		<button class="button button-small" type="submit">Gem quizindstillinger</button>
+	</form>
+
+	<section class="admin-structure">
+		<div class="admin-panel-head">
+			<div><p class="eyebrow">Spørgsmålsbygger</p><h2>{quiz.questions.length} spørgsmål</h2></div>
+		</div>
+
+		{quiz.questions.map((question, questionIndex) => (
+			<details class="admin-question">
+				<summary>
+					<span>{questionIndex + 1}. {question.question}</span>
+					<small>{questionTypeLabels[question.type]} · {question.points} point</small>
+				</summary>
+				<form class="admin-inline-form" method="post" action="/api/admin/quizzes/question/save">
+					<input type="hidden" name="id" value={question.id} />
+					<input type="hidden" name="quizId" value={quiz.id} />
+					<input type="hidden" name="type" value={question.type} />
+					<label class="field-wide">Spørgsmål<textarea name="question" rows="3" required>{question.question}</textarea></label>
+					<label class="field-wide">Forklaring efter aflevering<textarea name="explanation" rows="3">{question.explanation ?? ''}</textarea></label>
+					<label>Point<input name="points" type="number" min="1" value={question.points} /></label>
+					<label>Rækkefølge<input name="sortOrder" type="number" min="0" value={question.sort_order} /></label>
+
+					{question.type !== 'free_text' && (
+						<fieldset class="admin-options field-wide">
+							<legend>Svarmuligheder og facit</legend>
+							{question.options.map((option, optionIndex) => (
+								<div class="admin-option-row">
+									<input type="hidden" name={`option${optionIndex}Id`} value={option.id} />
+									<label>
+										Svar {optionIndex + 1}
+										<input name={`option${optionIndex}Text`} required maxlength="500" value={option.option_text} />
+									</label>
+									<label class="checkbox-field">
+										<input type="checkbox" name={`option${optionIndex}Correct`} value="true" checked={option.is_correct} />
+										Korrekt
+									</label>
+								</div>
+							))}
+							{Array.from({ length: Math.max(0, 4 - question.options.length) }).map((_, extraIndex) => {
+								const optionIndex = question.options.length + extraIndex;
+								return (
+									<div class="admin-option-row">
+										<input type="hidden" name={`option${optionIndex}Id`} value="" />
+										<label>Svar {optionIndex + 1}<input name={`option${optionIndex}Text`} maxlength="500" /></label>
+										<label class="checkbox-field">
+											<input type="checkbox" name={`option${optionIndex}Correct`} value="true" />
+											Korrekt
+										</label>
+									</div>
+								);
+							})}
+						</fieldset>
+					)}
+					<button class="button button-small" type="submit">Gem spørgsmål og facit</button>
+				</form>
+			</details>
+		))}
+
+		<details class="admin-create-row admin-panel">
+			<summary>+ Tilføj spørgsmål</summary>
+			<form class="admin-inline-form" method="post" action="/api/admin/quizzes/question/save">
+				<input type="hidden" name="id" value="" />
+				<input type="hidden" name="quizId" value={quiz.id} />
+				<label>
+					Type
+					<select name="type">
+						<option value="single_choice">Ét korrekt svar</option>
+						<option value="multiple_choice">Flere korrekte svar</option>
+						<option value="true_false">Sandt/falsk</option>
+						<option value="free_text">Fritekst</option>
+					</select>
+				</label>
+				<label>Point<input name="points" type="number" min="1" value="1" /></label>
+				<label>Rækkefølge<input name="sortOrder" type="number" min="0" value={quiz.questions.length} /></label>
+				<label class="field-wide">Spørgsmål<textarea name="question" rows="3" required></textarea></label>
+				<label class="field-wide">Forklaring efter aflevering<textarea name="explanation" rows="3"></textarea></label>
+				<fieldset class="admin-options field-wide">
+					<legend>Svarmuligheder — lad dem stå tomme ved fritekst</legend>
+					{Array.from({ length: 4 }).map((_, optionIndex) => (
+						<div class="admin-option-row">
+							<input type="hidden" name={`option${optionIndex}Id`} value="" />
+							<label>Svar {optionIndex + 1}<input name={`option${optionIndex}Text`} maxlength="500" /></label>
+							<label class="checkbox-field">
+								<input type="checkbox" name={`option${optionIndex}Correct`} value="true" />
+								Korrekt
+							</label>
+						</div>
+					))}
+				</fieldset>
+				<button class="button button-small" type="submit">Opret spørgsmål</button>
+			</form>
+		</details>
+	</section>
+</AdminLayout>
