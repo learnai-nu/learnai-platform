@@ -1,0 +1,68 @@
+:root {
+	color-scheme: light;
+	--orbit-primary: #0b45ff;
+	--orbit-on-primary: #ffffff;
+	--orbit-primary-container: #dce5ff;
+	--orbit-on-primary-container: #001849;
+	--orbit-deep: #06246b;
+	--orbit-deepest: #04143e;
+	--orbit-signal: #78e8ff;
+	--orbit-violet: #7257ff;
+	--orbit-success: #08775b;
+	--orbit-surface: #f7f8ff;
+	--orbit-surface-low: #f0f2fb;
+	--orbit-surface-container: #e9ecf7;
+	--orbit-surface-high: #e2e6f3;
+	--orbit-surface-bright: #ffffff;
+	--orbit-on-surface: #111827;
+	--orbit-on-surface-variant: #4e5669;
+	--orbit-outline: #747c91;
+	--orbit-outline-variant: #c5cad8;
+	--orbit-display: clamp(3.55rem, 7.7vw, 7.4rem);
+	--orbit-headline-lg: clamp(2.65rem, 5.6vw, 5.2rem);
+	--orbit-headline-md: clamp(2rem, 3.7vw, 3.5rem);
+	--orbit-body-lg: clamp(1.05rem, 1.4vw, 1.2rem);
+	--orbit-shape-xs: .5rem;
+	--orbit-shape-sm: 1rem;
+	--orbit-shape-md: 1.5rem;
+	--orbit-shape-lg: 2rem;
+	--orbit-shape-xl: 3rem;
+	--orbit-shape-full: 999px;
+	--orbit-shadow-1: 0 2px 10px rgb(6 36 107 / 8%);
+	--orbit-shadow-2: 0 14px 44px rgb(6 36 107 / 12%);
+	--orbit-shadow-3: 0 32px 100px rgb(6 36 107 / 18%);
+	--orbit-ease: cubic-bezier(.2, 0, 0, 1);
+	--orbit-ease-emphasized: cubic-bezier(.2, 0, 0, 1.4);
+	--orbit-shell: min(1380px, calc(100% - 3rem));
+}
+
+:root.orbit-deep-mode {
+	color-scheme: dark;
+	--orbit-primary: #9bb6ff;
+	--orbit-on-primary: #001849;
+	--orbit-primary-container: #234fae;
+	--orbit-on-primary-container: #dce5ff;
+	--orbit-surface: #06143a;
+	--orbit-surface-low: #091a45;
+	--orbit-surface-container: #0d2051;
+	--orbit-surface-high: #12275b;
+	--orbit-surface-bright: #17306d;
+	--orbit-on-surface: #f6f7ff;
+	--orbit-on-surface-variant: #c5cbe0;
+	--orbit-outline: #9098b0;
+	--orbit-outline-variant: #34446e;
+}
+
+@media (max-width: 1100px) {
+	:root { --orbit-shell: min(100% - 2rem, 1380px); }
+}
+
+@media (max-width: 560px) {
+	:root {
+		--orbit-shell: calc(100% - 1.25rem);
+		--orbit-display: clamp(3rem, 15vw, 4.5rem);
+		--orbit-headline-lg: clamp(2.35rem, 12vw, 3.5rem);
+		--orbit-headline-md: clamp(2rem, 10vw, 3rem);
+		--orbit-shape-xl: 2rem;
+	}
+}

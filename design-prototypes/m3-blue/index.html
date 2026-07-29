@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="da">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Blue Orbit — nyt M3-inspireret designbud til LearnAI.nu" />
+		<title>Blue Orbit — LearnAI.nu designprototype</title>
+		<link rel="stylesheet" href="./styles.css?v=20260729-4" />
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Gå til indhold</a>
+		<div class="prototype-ribbon" role="note">
+			<span>Designprototype · Blue Orbit</span>
+			<a href="#system">Se designsystem</a>
+		</div>
+
+		<header class="top-app-bar">
+			<a class="brand" href="#top" aria-label="LearnAI.nu – forside">
+				<svg class="brand-symbol" viewBox="0 0 44 44" aria-hidden="true">
+					<rect width="44" height="44" rx="14"></rect>
+					<path d="M12 14v13.2c0 3 2 4.8 5 4.8h8"></path>
+					<path d="m21 27 6-13 6 13M23.5 22h7"></path>
+				</svg>
+				<span>LearnAI<span>.nu</span></span>
+			</a>
+
+			<nav class="desktop-nav" aria-label="Primær navigation">
+				<a href="#learn">Lær AI</a>
+				<a href="#courses">Kurser</a>
+				<a href="#tools">Prompts & værktøjer</a>
+				<a href="#business">Virksomheder</a>
+			</nav>
+
+			<div class="header-actions">
+				<button class="icon-button theme-button" type="button" aria-label="Brug mørkt tema" aria-pressed="false">
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"></path>
+						<circle cx="12" cy="12" r="4"></circle>
+					</svg>
+				</button>
+				<a class="text-button" href="#dashboard">Log ind</a>
+				<a class="filled-button compact" href="#courses">Kom i gang</a>
+			</div>
+
+			<button class="icon-button menu-button" type="button" aria-label="Åbn menu" aria-expanded="false" aria-controls="mobile-menu">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+			</button>
+		</header>
+
+		<nav class="mobile-menu" id="mobile-menu" aria-label="Mobil navigation" hidden>
+			<a href="#learn">Lær AI</a>
+			<a href="#courses">Kurser</a>
+			<a href="#tools">Prompts & værktøjer</a>
+			<a href="#business">Virksomheder</a>
+			<a href="#dashboard">Log ind</a>
+			<a class="filled-button" href="#courses">Kom i gang</a>
+		</nav>
+
+		<main id="main">
+			<section class="hero" id="top">
+				<div class="aurora aurora-one"></div>
+				<div class="aurora aurora-two"></div>
+				<div class="hero-copy">
+					<div class="eyebrow"><span class="eyebrow-spark"></span>Praktisk AI-læring · på dansk</div>
+					<h1>Bliv bedre til AI.<br /><span>Én praktisk sejr ad gangen.</span></h1>
+					<p>
+						Korte læringsforløb, stærke prompts og konkret vejledning, der gør AI
+						til en reel kompetence i dit arbejdsliv.
+					</p>
+					<div class="hero-actions">
+						<a class="filled-button large" href="#courses">
+							Find dit første kursus
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+						</a>
+						<a class="tonal-button large" href="#learn">
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"></path></svg>
+							Se hvordan det virker
+						</a>
+					</div>
+					<div class="proof-row" aria-label="Fordele">
+						<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-9"></path></svg>Dansk kvalitetsindhold</span>
+						<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-9"></path></svg>Bygget til arbejdslivet</span>
+						<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-9"></path></svg>Lær i dit tempo</span>
+					</div>
+				</div>
+
+				<div class="hero-stage" aria-label="Eksempel på personligt læringsdashboard">
+					<div class="orbit orbit-a"></div>
+					<div class="orbit orbit-b"></div>
+					<div class="float-chip float-chip-one"><span>AI</span>+12 færdigheder</div>
+					<div class="float-chip float-chip-two">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"></path></svg>
+						Nyt læringsmål
+					</div>
+					<div class="product-window">
+						<div class="window-bar">
+							<div class="mini-brand">
+								<svg viewBox="0 0 44 44" aria-hidden="true">
+									<rect width="44" height="44" rx="14"></rect>
+									<path d="M12 14v13.2c0 3 2 4.8 5 4.8h8"></path>
+									<path d="m21 27 6-13 6 13M23.5 22h7"></path>
+								</svg>
+								<span>Mit læringsrum</span>
+							</div>
+							<div class="avatar" aria-hidden="true">JS</div>
+						</div>
+						<div class="window-body">
+							<div class="progress-panel">
+								<div>
+									<span class="overline">Ugens mål</span>
+									<strong>3 af 4 lektioner</strong>
+								</div>
+								<div class="progress-ring" aria-label="75 procent gennemført">
+									<svg viewBox="0 0 48 48" aria-hidden="true">
+										<circle cx="24" cy="24" r="19"></circle>
+										<circle class="ring-value" cx="24" cy="24" r="19"></circle>
+									</svg>
+									<span>75%</span>
+								</div>
+							</div>
+							<div class="continue-card">
+								<div class="course-icon">
+									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18V8l7-4 7 4v10l-7 4z"></path><path d="m9 12 2 2 4-5"></path></svg>
+								</div>
+								<div>
+									<span class="overline">Fortsæt hvor du slap</span>
+									<strong>Skriv prompts, der virker</strong>
+									<small>Modul 2 · 8 minutter</small>
+								</div>
+								<button class="round-action" type="button" aria-label="Fortsæt lektionen">
+									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+								</button>
+							</div>
+							<div class="skill-row">
+								<div><span class="skill-dot purple"></span><small>Prompting</small><strong>Øvet</strong></div>
+								<div><span class="skill-dot cyan"></span><small>AI-sikkerhed</small><strong>Basis</strong></div>
+								<div><span class="skill-dot blue"></span><small>Automatisering</small><strong>Næste</strong></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="signal-strip" aria-label="LearnAI i tal">
+				<div><strong>79+</strong><span>guides, nyheder og prompts</span></div>
+				<div><strong>100%</strong><span>dansk og praksisnært</span></div>
+				<div><strong>&lt; 1 time</strong><span>til din første AI-kompetence</span></div>
+				<div><strong>24/7</strong><span>læring i dit eget tempo</span></div>
+			</section>
+
+			<section class="section learning-model" id="learn">
+				<div class="section-heading">
+					<div>
+						<span class="section-kicker">En bedre måde at lære på</span>
+						<h2>Fra “hvad kan AI?”<br />til “se hvad jeg kan.”</h2>
+					</div>
+					<p>
+						Vi har skåret støjen væk. Hvert forløb kombinerer forklaring, handling og
+						feedback, så din nye viden bliver til noget, du faktisk bruger.
+					</p>
+				</div>
+
+				<div class="bento-grid">
+					<article class="bento-card bento-main">
+						<div class="bento-number">01</div>
+						<div class="bento-copy">
+							<span class="section-kicker">Lær</span>
+							<h3>Kort nok til i dag.<br />Godt nok til i morgen.</h3>
+							<p>Kompakte lektioner, danske eksempler og kun den teori, du har brug for.</p>
+						</div>
+						<div class="lesson-stack" aria-hidden="true">
+							<div class="stack-card back"><span></span><span></span></div>
+							<div class="stack-card middle"><span></span><span></span></div>
+							<div class="stack-card front">
+								<div class="play-disc"><svg viewBox="0 0 24 24"><path d="M9 6v12l9-6z"></path></svg></div>
+								<div><small>04:32</small><strong>Sådan tænker sprogmodeller</strong></div>
+							</div>
+						</div>
+					</article>
+
+					<article class="bento-card bento-accent" id="tools">
+						<div class="bento-number">02</div>
+						<span class="section-kicker">Prøv</span>
+						<h3>Gå direkte fra idé til handling.</h3>
+						<div class="prompt-demo">
+							<span class="prompt-cursor"></span>
+							<p>Lav en mødeagenda til mit team med fokus på...</p>
+							<button type="button" aria-label="Send prompt">
+								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 12-7-4 14-3-5z"></path></svg>
+							</button>
+						</div>
+					</article>
+
+					<article class="bento-card bento-dark">
+						<div class="bento-number">03</div>
+						<span class="section-kicker">Byg videre</span>
+						<h3>Se din udvikling. Vælg dit næste skridt.</h3>
+						<div class="path-visual" aria-hidden="true">
+							<div class="path-node complete"><span>1</span><small>Grundlag</small></div>
+							<div class="path-line active"></div>
+							<div class="path-node current"><span>2</span><small>Prompting</small></div>
+							<div class="path-line"></div>
+							<div class="path-node"><span>3</span><small>Workflow</small></div>
+						</div>
+					</article>
+				</div>
+			</section>
+
+			<section class="section courses-section" id="courses">
+				<div class="section-heading align-end">
+					<div>
+						<span class="section-kicker">Vælg din næste kompetence</span>
+						<h2>Læring, der passer<br />til din arbejdsdag.</h2>
+					</div>
+					<a class="text-link" href="#course-list">Se alle kurser
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+					</a>
+				</div>
+
+				<div class="filter-chips" role="group" aria-label="Filtrér kurser">
+					<button class="filter-chip selected" type="button" data-filter="all" aria-pressed="true">Alle</button>
+					<button class="filter-chip" type="button" data-filter="starter" aria-pressed="false">Kom godt i gang</button>
+					<button class="filter-chip" type="button" data-filter="work" aria-pressed="false">AI på jobbet</button>
+					<button class="filter-chip" type="button" data-filter="leadership" aria-pressed="false">Ledelse</button>
+					<button class="filter-chip" type="button" data-filter="automation" aria-pressed="false">Automatisering</button>
+				</div>
+
+				<div class="course-grid" id="course-list">
+					<article class="course-card course-featured" data-category="starter">
+						<div class="course-art art-orbit">
+							<svg viewBox="0 0 360 220" aria-hidden="true">
+								<defs><linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b8c8ff"/><stop offset="1" stop-color="#3b63ff"/></linearGradient></defs>
+								<circle cx="180" cy="110" r="76" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+								<circle cx="180" cy="110" r="52" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+								<path d="M116 128c38-82 103-81 129-26 17 36-19 70-55 58-31-10-38-57-8-78" fill="none" stroke="url(#glow)" stroke-width="13" stroke-linecap="round"/>
+								<circle cx="116" cy="128" r="8" fill="#fff"/><circle cx="182" cy="82" r="8" fill="#91f2ff"/>
+							</svg>
+							<span class="course-badge">Mest populær</span>
+						</div>
+						<div class="course-card-body">
+							<div class="course-meta"><span>Begynder</span><span>55 min.</span><span>Gratis</span></div>
+							<h3>AI i praksis — dit første kursus</h3>
+							<p>Forstå mulighederne, skriv din første gode prompt og brug AI sikkert på jobbet.</p>
+							<div class="course-footer">
+								<span><strong>6</strong> lektioner</span>
+								<a class="round-action" href="#course-detail" aria-label="Se AI i praksis">
+									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+								</a>
+							</div>
+						</div>
+					</article>
+
+					<article class="course-card" data-category="work">
+						<div class="course-art art-grid">
+							<div class="grid-tile tile-one"><span>AI</span></div>
+							<div class="grid-tile tile-two"></div>
+							<div class="grid-tile tile-three"></div>
+							<div class="grid-tile tile-four"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg></div>
+						</div>
+						<div class="course-card-body">
+							<div class="course-meta"><span>Begynder</span><span>42 min.</span><span>Gratis</span></div>
+							<h3>Skriv bedre med AI</h3>
+							<p>Fra tom side til klar tekst: research, struktur, tone og kvalitetssikring.</p>
+							<div class="course-footer"><span><strong>5</strong> lektioner</span><a class="round-action" href="#course-detail" aria-label="Se Skriv bedre med AI"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></a></div>
+						</div>
+					</article>
+
+					<article class="course-card" data-category="leadership">
+						<div class="course-art art-wave">
+							<div class="wave wave-one"></div><div class="wave wave-two"></div><div class="wave wave-three"></div>
+							<div class="wave-label"><span>Strategi</span><strong>→</strong><span>Handling</span></div>
+						</div>
+						<div class="course-card-body">
+							<div class="course-meta"><span>Øvet</span><span>70 min.</span><span>Ny</span></div>
+							<h3>AI for ledere</h3>
+							<p>Skab retning, sæt rammer og få organisationen sikkert fra pilot til praksis.</p>
+							<div class="course-footer"><span><strong>7</strong> lektioner</span><a class="round-action" href="#course-detail" aria-label="Se AI for ledere"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></a></div>
+						</div>
+					</article>
+				</div>
+				<p class="filter-empty" hidden>Ingen kurser matcher dette emne endnu. Prøv et andet filter.</p>
+			</section>
+
+			<section class="section course-detail-demo" id="course-detail">
+				<div class="demo-label">Kursusdetalje / læringsafspiller</div>
+				<div class="detail-shell">
+					<aside class="lesson-rail">
+						<div class="rail-heading">
+							<span class="overline">AI i praksis</span>
+							<strong>Modul 2 af 3</strong>
+							<div class="linear-progress"><span></span></div>
+						</div>
+						<ol>
+							<li class="done"><span>1</span><div><strong>Hvad er en god prompt?</strong><small>Gennemført</small></div></li>
+							<li class="active"><span>2</span><div><strong>Byg prompten i fire lag</strong><small>8 minutter</small></div></li>
+							<li><span>3</span><div><strong>Test og forbedr</strong><small>10 minutter</small></div></li>
+						</ol>
+					</aside>
+					<article class="lesson-canvas">
+						<div class="lesson-topline"><span>LEKTION 2 · PROMPTING</span><button class="icon-button" type="button" aria-label="Bogmærk lektionen"><svg viewBox="0 0 24 24"><path d="M6 4h12v17l-6-4-6 4z"></path></svg></button></div>
+						<h2>Byg prompten<br />i fire klare lag.</h2>
+						<p class="lesson-lead">En stærk prompt giver modellen kontekst, retning og et tydeligt billede af det ønskede resultat.</p>
+						<div class="formula-card">
+							<div><span>01</span><strong>Rolle</strong><small>Hvem skal AI være?</small></div>
+							<div><span>02</span><strong>Opgave</strong><small>Hvad skal løses?</small></div>
+							<div><span>03</span><strong>Kontekst</strong><small>Hvad skal AI vide?</small></div>
+							<div><span>04</span><strong>Format</strong><small>Hvordan ser svaret ud?</small></div>
+						</div>
+						<div class="lesson-bottom">
+							<span>Estimeret tid: 8 min.</span>
+							<button class="filled-button" type="button">Markér som færdig <svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-9"></path></svg></button>
+						</div>
+					</article>
+				</div>
+			</section>
+
+			<section class="section product-views" id="dashboard">
+				<div class="section-heading">
+					<div><span class="section-kicker">Ét sammenhængende produkt</span><h2>Fra første klik<br />til næste milepæl.</h2></div>
+					<p>Det samme visuelle sprog skifter karakter efter opgaven: inspirerende udadtil, fokuseret i læringen og effektivt i administrationen.</p>
+				</div>
+				<div class="view-tabs" role="tablist" aria-label="Produktvisninger">
+					<button role="tab" aria-selected="true" aria-controls="view-dashboard" id="tab-dashboard" type="button" data-view="dashboard">Dashboard</button>
+					<button role="tab" aria-selected="false" aria-controls="view-admin" id="tab-admin" type="button" data-view="admin">Admin</button>
+					<button role="tab" aria-selected="false" aria-controls="view-library" id="tab-library" type="button" data-view="library">Lær AI</button>
+				</div>
+
+				<div class="product-view" id="view-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
+					<div class="app-sidebar">
+						<a class="mini-brand" href="#top"><svg viewBox="0 0 44 44"><rect width="44" height="44" rx="14"></rect><path d="M12 14v13.2c0 3 2 4.8 5 4.8h8M21 27l6-13 6 13M23.5 22h7"></path></svg><span>LearnAI</span></a>
+						<nav aria-label="Dashboardnavigation">
+							<a class="selected" href="#dashboard"><span>◉</span>Overblik</a>
+							<a href="#courses"><span>▷</span>Mine kurser</a>
+							<a href="#learn"><span>◇</span>Mine gemte</a>
+							<a href="#system"><span>⌁</span>Indstillinger</a>
+						</nav>
+						<div class="sidebar-profile"><div class="avatar">JS</div><div><strong>Jesper</strong><small>Min profil</small></div></div>
+					</div>
+					<div class="dashboard-canvas">
+						<div class="dashboard-welcome"><span class="section-kicker">Onsdag 29. juli</span><h3>Godmorgen, Jesper.</h3><p>Du er én lektion fra ugens mål.</p></div>
+						<div class="dashboard-grid">
+							<div class="continue-large">
+								<div><span class="overline">Fortsæt læringen</span><h4>Skriv prompts,<br />der virker</h4><p>Modul 2 · Lektion 2</p></div>
+								<div class="big-progress"><span>68%</span><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"></circle><circle class="value" cx="50" cy="50" r="40"></circle></svg></div>
+								<a class="filled-button" href="#course-detail">Fortsæt lektion <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></a>
+							</div>
+							<div class="streak-card"><span class="overline">Din rytme</span><strong>4</strong><p>dage i træk</p><div class="week-dots"><i class="on">M</i><i class="on">T</i><i class="today">O</i><i>T</i><i>F</i></div></div>
+							<div class="next-card"><span class="overline">Anbefalet til dig</span><div class="next-icon">↗</div><h4>AI til research</h4><p>18 minutter · Begynder</p><a class="text-link" href="#courses">Se forløbet →</a></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="product-view" id="view-admin" role="tabpanel" aria-labelledby="tab-admin" hidden>
+					<div class="app-sidebar admin-sidebar-demo">
+						<a class="mini-brand" href="#top"><svg viewBox="0 0 44 44"><rect width="44" height="44" rx="14"></rect><path d="M12 14v13.2c0 3 2 4.8h8M21 27l6-13 6 13M23.5 22h7"></path></svg><span>LearnAI CMS</span></a>
+						<nav aria-label="Adminnavigation"><a class="selected" href="#dashboard">▦ Overblik</a><a href="#learn">▤ Indhold</a><a href="#courses">▷ Kurser</a><a href="#system">✓ Quizzer</a></nav>
+						<div class="sidebar-profile"><div class="avatar">JS</div><div><strong>Jesper</strong><small>Administrator</small></div></div>
+					</div>
+					<div class="admin-canvas">
+						<div class="admin-head-demo"><div><span class="section-kicker">Redaktion</span><h3>Indhold</h3><p>25 elementer venter på gennemgang.</p></div><button class="filled-button" type="button">+ Nyt indhold</button></div>
+						<div class="admin-stats"><div><small>Kladder</small><strong>54</strong><span>+9 denne uge</span></div><div><small>Til gennemgang</small><strong>25</strong><span>Kræver handling</span></div><div><small>Publiceret</small><strong>1</strong><span>Live nu</span></div></div>
+						<div class="admin-table-demo"><div class="table-tools"><label><span class="sr-only">Søg i indhold</span><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input placeholder="Søg i indhold" /></label><button type="button">Status ▾</button><button type="button">Type ▾</button></div><div class="table-row"><span class="content-symbol">P</span><div><strong>Lav en stærk mødeagenda med AI</strong><small>Prompt · Opdateret i går</small></div><span class="status-pill review">Gennemgang</span><button class="icon-button" type="button" aria-label="Flere handlinger">•••</button></div><div class="table-row"><span class="content-symbol article">A</span><div><strong>Hvad er generativ AI?</strong><small>Artikel · Opdateret 27. jul.</small></div><span class="status-pill draft">Kladde</span><button class="icon-button" type="button" aria-label="Flere handlinger">•••</button></div></div>
+					</div>
+				</div>
+
+				<div class="product-view" id="view-library" role="tabpanel" aria-labelledby="tab-library" hidden>
+					<div class="library-canvas">
+						<div class="library-search"><span class="section-kicker">LearnAI bibliotek</span><h3>Hvad vil du blive bedre til?</h3><label><span class="sr-only">Søg efter AI-emne</span><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4 4"></path></svg><input placeholder="Søg fx prompting, Copilot eller AI-strategi" /></label></div>
+						<div class="topic-row"><button type="button">Prompting <span>18</span></button><button type="button">AI på jobbet <span>12</span></button><button type="button">Ledelse <span>8</span></button><button type="button">Værktøjer <span>21</span></button></div>
+						<div class="library-list"><article><span class="content-symbol article">G</span><div><small>GUIDE · 7 MIN.</small><h4>Sådan skriver du en prompt, der virker</h4><p>En enkel model med fire lag og konkrete eksempler.</p></div><a class="round-action" href="#learn" aria-label="Læs guiden"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></a></article><article><span class="content-symbol">P</span><div><small>PROMPT · 3 FELTER</small><h4>Forbered dit næste møde med AI</h4><p>Fra rå noter til en skarp og anvendelig agenda.</p></div><a class="round-action" href="#tools" aria-label="Brug prompten"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></a></article></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="section system-section" id="system">
+				<div class="section-heading">
+					<div><span class="section-kicker">Blue Orbit systemet</span><h2>Genkendeligt.<br />Ikke generisk.</h2></div>
+					<p>Material 3 giver os robuste adfærdsmønstre og tokens. LearnAI giver systemet sin egen stemme gennem farve, typografi, rytme og læringsmetaforer.</p>
+				</div>
+				<div class="system-grid">
+					<div class="token-card color-card">
+						<span class="overline">Farver</span>
+						<div class="swatches">
+							<div style="--swatch:#0b45ff"><span>Orbit</span><code>#0B45FF</code></div>
+							<div style="--swatch:#06246b"><span>Deep</span><code>#06246B</code></div>
+							<div style="--swatch:#dce5ff"><span>Tonal</span><code>#DCE5FF</code></div>
+							<div style="--swatch:#78e8ff"><span>Signal</span><code>#78E8FF</code></div>
+							<div style="--swatch:#f7f8ff"><span>Canvas</span><code>#F7F8FF</code></div>
+						</div>
+					</div>
+					<div class="token-card type-card"><span class="overline">Typografi</span><strong class="type-display">Aa</strong><h3>Store idéer.<br />Klart fortalt.</h3><p>Display / 64 · Headline / 40 · Title / 24 · Body / 16 · Label / 13</p></div>
+					<div class="token-card shape-card"><span class="overline">Shapes</span><div class="shape-row"><span class="shape-xs">8</span><span class="shape-sm">16</span><span class="shape-md">24</span><span class="shape-full">∞</span></div><p>Bløde containere til læring. Skarpere rytme i admin. Fuld pill-shape til valg og status.</p></div>
+					<div class="token-card motion-card"><span class="overline">Motion</span><div class="motion-orbit"><span></span></div><h3>Rolig fremdrift</h3><p>200–400 ms, fysik-inspireret easing og bevægelse, der forklarer relationer — aldrig pynt for pyntens skyld.</p></div>
+				</div>
+			</section>
+
+			<section class="final-cta" id="business">
+				<div class="final-orbit"></div>
+				<span class="section-kicker">Din næste AI-kompetence starter her</span>
+				<h2>Gør AI til noget,<br />du kan — ikke bare noget,<br />du har hørt om.</h2>
+				<a class="light-button large" href="#courses">Start gratis <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg></a>
+			</section>
+		</main>
+
+		<footer>
+			<div class="footer-brand-block"><a class="brand light" href="#top"><svg class="brand-symbol" viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="14"></rect><path d="M12 14v13.2c0 3 2 4.8 5 4.8h8M21 27l6-13 6 13M23.5 22h7"></path></svg><span>LearnAI<span>.nu</span></span></a><p>Praktisk AI-læring på dansk.</p></div>
+			<div class="footer-column"><strong>Udforsk</strong><a href="#learn">Lær AI</a><a href="#courses">Kurser</a><a href="#tools">Prompts</a></div>
+			<div class="footer-column"><strong>LearnAI</strong><a href="#business">For virksomheder</a><a href="#system">Om os</a><a href="#system">Kontakt</a></div>
+			<div class="footer-column"><strong>Følg med</strong><a href="#top">LinkedIn</a><a href="#top">Nyhedsbrev</a><a href="#top">Privatliv</a></div>
+			<p class="copyright">© 2026 LearnAI.nu</p>
+		</footer>
+
+		<script>
+			const menuButton = document.querySelector('.menu-button');
+			const mobileMenu = document.querySelector('#mobile-menu');
+			const setMenuOpen = (open) => {
+				menuButton?.setAttribute('aria-expanded', String(open));
+				menuButton?.setAttribute('aria-label', open ? 'Luk menu' : 'Åbn menu');
+				mobileMenu.hidden = !open;
+			};
+			menuButton?.addEventListener('click', () => {
+				const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+				setMenuOpen(!isOpen);
+			});
+
+			mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+				setMenuOpen(false);
+			}));
+			document.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') {
+					setMenuOpen(false);
+					menuButton.focus();
+				}
+			});
+
+			document.querySelectorAll('.filter-chip').forEach((button) => {
+				button.addEventListener('click', () => {
+					const filter = button.dataset.filter;
+					document.querySelectorAll('.filter-chip').forEach((chip) => {
+						const selected = chip === button;
+						chip.classList.toggle('selected', selected);
+						chip.setAttribute('aria-pressed', String(selected));
+					});
+					let visible = 0;
+					document.querySelectorAll('.course-card').forEach((card) => {
+						const show = filter === 'all' || card.dataset.category === filter;
+						card.hidden = !show;
+						if (show) visible += 1;
+					});
+					document.querySelector('.filter-empty').hidden = visible > 0;
+				});
+			});
+
+			const tabs = [...document.querySelectorAll('[role="tab"]')];
+			const activateTab = (tab, moveFocus = false) => {
+				tabs.forEach((item) => {
+					const selected = item === tab;
+					item.setAttribute('aria-selected', String(selected));
+					item.tabIndex = selected ? 0 : -1;
+				});
+				document.querySelectorAll('[role="tabpanel"]').forEach((panel) => {
+					panel.hidden = panel.id !== `view-${tab.dataset.view}`;
+				});
+				if (moveFocus) tab.focus();
+			};
+			tabs.forEach((tab, index) => {
+				tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
+				tab.addEventListener('click', () => activateTab(tab));
+				tab.addEventListener('keydown', (event) => {
+					const targetIndex = event.key === 'ArrowRight'
+						? (index + 1) % tabs.length
+						: event.key === 'ArrowLeft'
+							? (index - 1 + tabs.length) % tabs.length
+							: event.key === 'Home'
+								? 0
+								: event.key === 'End'
+									? tabs.length - 1
+									: -1;
+					if (targetIndex >= 0) {
+						event.preventDefault();
+						activateTab(tabs[targetIndex], true);
+					}
+				});
+			});
+
+			const themeButton = document.querySelector('.theme-button');
+			themeButton?.addEventListener('click', () => {
+				const deepMode = document.documentElement.classList.toggle('deep-mode');
+				themeButton.setAttribute('aria-pressed', String(deepMode));
+				themeButton.setAttribute('aria-label', deepMode ? 'Brug lyst tema' : 'Brug mørkt tema');
+			});
+		</script>
+	</body>
+</html>

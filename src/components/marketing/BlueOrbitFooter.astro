@@ -1,0 +1,28 @@
+---
+import OrbitBrand from '../ui/OrbitBrand.astro';
+---
+
+<footer class="orbit-footer">
+	<div class="orbit-footer-brand">
+		<OrbitBrand light />
+		<p>Praktisk AI-læring på dansk.</p>
+	</div>
+	<div class="orbit-footer-column">
+		<strong>Udforsk</strong>
+		<a href="/laer">Lær AI</a>
+		<a href="/kurser">Kurser</a>
+		<a href="/laer?type=prompt">Prompts</a>
+	</div>
+	<div class="orbit-footer-column">
+		<strong>LearnAI</strong>
+		<a href="/virksomheder">For virksomheder</a>
+		<a href="/om">Om os</a>
+		<a href="/kontakt">Kontakt</a>
+	</div>
+	<div class="orbit-footer-column">
+		<strong>Følg med</strong>
+		<a href="/nyheder">Nyheder</a>
+		<a href="/privatliv">Privatliv</a>
+	</div>
+	<p class="orbit-copyright">© {new Date().getFullYear()} LearnAI.nu</p>
+</footer>
