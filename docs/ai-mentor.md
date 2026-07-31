@@ -7,7 +7,7 @@ LearnAI-indhold og linker tilbage til kilderne.
 
 ```text
 OPENAI_API_KEY=<server-only secret>
-OPENAI_MODEL=gpt-5.6-terra
+OPENAI_MODEL=gpt-5.6-sol
 ```
 
 Sæt variablerne i Vercel for Preview og Production. Nøglen må aldrig ligge i

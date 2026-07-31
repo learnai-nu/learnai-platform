@@ -117,12 +117,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				model: import.meta.env.OPENAI_MODEL || 'gpt-5.6-terra',
+				model: import.meta.env.OPENAI_MODEL || 'gpt-5.6-sol',
 				store: false,
 				safety_identifier: await safetyIdentifier(userId),
 				instructions: buildMentorInstructions(profile),
 				input: `Brugerens spørgsmål:\n${parsed.data.question}\n\nGodkendt LearnAI-kontekst:\n${buildMentorContext(sources)}`,
-				reasoning: { effort: 'low', context: 'current_turn' },
+				reasoning: { effort: 'low' },
 				text: { verbosity: 'low' },
 				max_output_tokens: 900,
 			}),
@@ -133,6 +133,21 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	}
 
 	if (!openAIResponse.ok) {
+		let providerDetails: Record<string, unknown> = { status: openAIResponse.status };
+		try {
+			const providerPayload = await openAIResponse.json() as {
+				error?: { code?: unknown; type?: unknown; param?: unknown };
+			};
+			providerDetails = {
+				...providerDetails,
+				code: providerPayload.error?.code,
+				type: providerPayload.error?.type,
+				param: providerPayload.error?.param,
+			};
+		} catch {
+			// Keep diagnostics intentionally limited when the provider returns non-JSON.
+		}
+		console.error('AI Mentor provider request failed', providerDetails);
 		return json({ code: 'provider_error', message: 'AI Mentor kunne ikke danne et svar lige nu.' }, 503);
 	}
 	const openAIPayload: unknown = await openAIResponse.json();

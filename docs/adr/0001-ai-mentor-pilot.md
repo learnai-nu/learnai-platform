@@ -12,9 +12,9 @@ prompts samt Supabase Auth og RLS.
 ## Beslutning
 
 - AI Mentor er kun tilgængelig for loggede, ikke-anonyme brugere.
-- Svar dannes med OpenAI Responses API og `gpt-5.6-terra` som konfigurerbar
-  standard. Terra er valgt som balance mellem kvalitet og omkostning til en
-  interaktiv læringsfunktion.
+- Svar dannes med OpenAI Responses API og `gpt-5.6-sol` som konfigurerbar
+  standard. Modellen er valgt ud fra OpenAI's aktuelle modelvejledning og kan
+  udskiftes via miljøvariablen uden en kodeændring.
 - Hver forespørgsel groundes i op til seks publicerede danske LearnAI-elementer.
 - Kilder vises som interne links, og modellen instrueres i at afvise svar, når
   konteksten ikke rækker.
