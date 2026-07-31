@@ -1,103 +1,40 @@
 ---
 import OrbitButton from '../ui/OrbitButton.astro';
 
-const courses = [
-	{
-		category: 'starter',
-		label: 'Mest populær',
-		level: 'Begynder',
-		duration: '55 min.',
-		price: 'Gratis',
-		title: 'AI i praksis — dit første kursus',
-		description: 'Forstå mulighederne, skriv din første gode prompt og brug AI sikkert på jobbet.',
-		lessons: 6,
-		href: '/kurser/ai-i-praksis-dit-foerste-kursus',
-		art: 'orbit-course-art-primary',
-	},
-	{
-		category: 'work',
-		label: 'AI',
-		level: 'Begynder',
-		duration: '42 min.',
-		price: 'Gratis',
-		title: 'Skriv bedre med AI',
-		description: 'Fra tom side til klar tekst: research, struktur, tone og kvalitetssikring.',
-		lessons: 5,
-		href: '/kurser',
-		art: 'orbit-course-art-grid',
-	},
-	{
-		category: 'leadership',
-		label: 'Strategi → handling',
-		level: 'Øvet',
-		duration: '70 min.',
-		price: 'Ny',
-		title: 'AI for ledere',
-		description: 'Skab retning, sæt rammer og få organisationen sikkert fra pilot til praksis.',
-		lessons: 7,
-		href: '/kurser',
-		art: 'orbit-course-art-wave',
-	},
-];
+const course = {
+	label: 'Start her',
+	level: 'Begynder',
+	duration: '55 min.',
+	price: 'Gratis',
+	title: 'AI i praksis — dit første kursus',
+	description: 'Forstå mulighederne, skriv din første gode prompt og brug AI sikkert på jobbet.',
+	lessons: 6,
+	href: '/kurser/ai-i-praksis-dit-foerste-kursus',
+};
 ---
 
 <section class="orbit-section orbit-courses" id="udvalgte-kurser">
 	<div class="orbit-section-heading">
 		<div>
-			<p class="orbit-section-kicker">Vælg din næste kompetence</p>
-			<h2>Læring, der passer<br />til din arbejdsdag.</h2>
+			<p class="orbit-section-kicker">Udvalgt kursus</p>
+			<h2>Dit bedste sted<br />at begynde.</h2>
 		</div>
 		<OrbitButton href="/kurser" variant="text" arrow>Se alle kurser</OrbitButton>
 	</div>
-	<div class="orbit-filter-chips" role="group" aria-label="Filtrér kurser">
-		<button class="selected" type="button" data-filter="all" aria-pressed="true">Alle</button>
-		<button type="button" data-filter="starter" aria-pressed="false">Kom godt i gang</button>
-		<button type="button" data-filter="work" aria-pressed="false">AI på jobbet</button>
-		<button type="button" data-filter="leadership" aria-pressed="false">Ledelse</button>
-	</div>
-	<div class="orbit-course-grid">
-		{courses.map((course) => (
-			<article class="orbit-course-card" data-course-card data-category={course.category}>
-				<div class:list={['orbit-course-art', course.art]}>
-					<span>{course.label}</span>
-					<div class="orbit-art-orbit"></div>
-					<div class="orbit-art-node"></div>
-				</div>
-				<div class="orbit-course-body">
-					<p class="orbit-course-meta">{course.level} · {course.duration} · {course.price}</p>
-					<h3>{course.title}</h3>
-					<p>{course.description}</p>
-					<div class="orbit-course-footer">
-						<span><strong>{course.lessons}</strong> lektioner</span>
-						<OrbitButton href={course.href} variant="tonal" arrow>Se kurset</OrbitButton>
-					</div>
-				</div>
-			</article>
-		))}
-	</div>
-	<p class="orbit-filter-empty" hidden>Ingen kurser matcher dette emne endnu. Prøv et andet filter.</p>
+	<article class="orbit-course-card orbit-course-card-featured">
+		<div class="orbit-course-art orbit-course-art-primary">
+			<span>{course.label}</span>
+			<div class="orbit-art-orbit"></div>
+			<div class="orbit-art-node"></div>
+		</div>
+		<div class="orbit-course-body">
+			<p class="orbit-course-meta">{course.level} · {course.duration} · {course.price}</p>
+			<h3>{course.title}</h3>
+			<p>{course.description}</p>
+			<div class="orbit-course-footer">
+				<span><strong>{course.lessons}</strong> lektioner</span>
+				<OrbitButton href={course.href} variant="tonal" arrow>Se kurset</OrbitButton>
+			</div>
+		</div>
+	</article>
 </section>
-
-<script>
-	const filterButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
-	const courseCards = [...document.querySelectorAll<HTMLElement>('[data-course-card]')];
-	const emptyState = document.querySelector<HTMLElement>('.orbit-filter-empty');
-
-	for (const button of filterButtons) {
-		button.addEventListener('click', () => {
-			const filter = button.dataset.filter;
-			for (const chip of filterButtons) {
-				const selected = chip === button;
-				chip.classList.toggle('selected', selected);
-				chip.setAttribute('aria-pressed', String(selected));
-			}
-			let visible = 0;
-			for (const card of courseCards) {
-				const show = filter === 'all' || card.dataset.category === filter;
-				card.hidden = !show;
-				if (show) visible += 1;
-			}
-			if (emptyState) emptyState.hidden = visible > 0;
-		});
-	}
-</script>

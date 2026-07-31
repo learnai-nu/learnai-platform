@@ -7,6 +7,18 @@ const header = readFileSync(
 	new URL('../src/components/marketing/BlueOrbitHeader.astro', import.meta.url),
 	'utf8',
 );
+const hero = readFileSync(
+	new URL('../src/components/marketing/HeroLearningPreview.astro', import.meta.url),
+	'utf8',
+);
+const learningModel = readFileSync(
+	new URL('../src/components/marketing/LearningModel.astro', import.meta.url),
+	'utf8',
+);
+const featuredCourses = readFileSync(
+	new URL('../src/components/marketing/FeaturedCourses.astro', import.meta.url),
+	'utf8',
+);
 const tokens = readFileSync(
 	new URL('../src/styles/blue-orbit-tokens.css', import.meta.url),
 	'utf8',
@@ -24,21 +36,39 @@ describe('Blue Orbit homepage', () => {
 	it('keeps the public navigation connected to real platform routes', () => {
 		expect(header).toContain("href: '/laer'");
 		expect(header).toContain("href: '/kurser'");
+		expect(header).toContain("href: '/virksomheder'");
 		expect(header).toContain('href="/login"');
 		expect(header).toContain('href="/kurser"');
+		expect(header).not.toContain("label: 'Prompts & værktøjer'");
 	});
 
-	it('preserves keyboard and accessible menu/theme states', () => {
-		expect(header).toContain('aria-pressed="false"');
+	it('preserves keyboard access while removing the premature theme control', () => {
 		expect(header).toContain("event.key === 'Escape'");
 		expect(header).toContain("'Luk menu' : 'Åbn menu'");
+		expect(header).not.toContain('orbit-theme-button');
 		expect(layout).toContain('class="orbit-skip-link"');
 	});
 
-	it('defines semantic light/dark tokens and responsive overflow protection', () => {
+	it('keeps the hero focused on one proof line and two dashboard modules', () => {
+		expect(hero).toContain('Første kursus på under én time');
+		expect(hero).toContain('orbit-goal-card');
+		expect(hero).toContain('orbit-continue-card');
+		expect(hero).not.toContain('orbit-signal-strip');
+		expect(hero).not.toContain('orbit-skill-grid');
+		expect(hero).not.toContain('orbit-ring-small');
+	});
+
+	it('uses three compact learning steps and one flagship course', () => {
+		expect(learningModel.match(/<article class="orbit-learning-card/g)).toHaveLength(3);
+		expect(learningModel).not.toContain('orbit-prompt-demo');
+		expect(learningModel).not.toContain('orbit-lesson-stack');
+		expect(featuredCourses).toContain('orbit-course-card-featured');
+		expect(featuredCourses).not.toContain('data-filter');
+		expect(featuredCourses).not.toContain('const courses');
+	});
+
+	it('defines semantic color tokens and responsive overflow protection', () => {
 		expect(tokens).toContain('--orbit-primary: #0b45ff');
-		expect(tokens).toContain(':root.orbit-deep-mode');
-		expect(tokens).toContain('--orbit-primary: #9bb6ff');
 		expect(styles).toContain('overflow-x: clip');
 		expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
 	});
