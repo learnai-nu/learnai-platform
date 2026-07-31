@@ -24,13 +24,13 @@ const profileComplete = Boolean(profile?.onboarding_completed_at);
 const profileSaved = Astro.url.searchParams.get('status') === 'profile-saved';
 ---
 
-<SiteLayout title="AI Mentor â€” LearnAI.nu" description="FÃ¥ en personlig vej gennem LearnAI's danske indhold.">
+<SiteLayout title="AI Mentor — LearnAI.nu" description="Få en personlig vej gennem LearnAI's danske indhold.">
 	<section class="hero hero-compact mentor-hero">
 		<div class="shell section-intro">
 			<p class="eyebrow">AI Mentor beta</p>
-			<h1>Fra spÃ¸rgsmÃ¥l til <span>nÃ¦ste skridt.</span></h1>
-			<p class="hero-copy">FÃ¥ praktiske svar baseret pÃ¥ godkendte danske guides, artikler og prompts fra LearnAI.</p>
-			{profileSaved && <p class="notice">Din lÃ¦ringsprofil er gemt. Svarene kan nu tilpasses bedre.</p>}
+			<h1>Fra spørgsmål til <span>næste skridt.</span></h1>
+			<p class="hero-copy">Få praktiske svar baseret på godkendte danske guides, artikler og prompts fra LearnAI.</p>
+			{profileSaved && <p class="notice">Din læringsprofil er gemt. Svarene kan nu tilpasses bedre.</p>}
 		</div>
 	</section>
 	<section class="section section-tight">

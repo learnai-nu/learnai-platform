@@ -26,29 +26,29 @@ function json(body: unknown, status = 200) {
 
 function quotaError(error: { message?: string } | null) {
 	if (error?.message?.includes('AI_DAILY_LIMIT_REACHED')) {
-		return json({ code: 'daily_limit', message: 'Du har brugt dagens 20 mentor-spÃ¸rgsmÃ¥l.' }, 429);
+		return json({ code: 'daily_limit', message: 'Du har brugt dagens 20 mentor-spørgsmål.' }, 429);
 	}
 	return json({ code: 'quota_error', message: 'Din adgang kunne ikke kontrolleres.' }, 503);
 }
 
 export const POST: APIRoute = async ({ request, cookies }) => {
 	if (!hasSameOrigin(request)) {
-		return json({ code: 'invalid_origin', message: 'Ugyldig forespÃ¸rgsel.' }, 403);
+		return json({ code: 'invalid_origin', message: 'Ugyldig forespørgsel.' }, 403);
 	}
 	const contentType = request.headers.get('content-type') ?? '';
 	if (!contentType.includes('application/json')) {
-		return json({ code: 'invalid_content_type', message: 'Ugyldig forespÃ¸rgsel.' }, 415);
+		return json({ code: 'invalid_content_type', message: 'Ugyldig forespørgsel.' }, 415);
 	}
 
 	let payload: unknown;
 	try {
 		payload = await request.json();
 	} catch {
-		return json({ code: 'invalid_json', message: 'Ugyldig forespÃ¸rgsel.' }, 400);
+		return json({ code: 'invalid_json', message: 'Ugyldig forespørgsel.' }, 400);
 	}
 	const parsed = mentorRequestSchema.safeParse(payload);
 	if (!parsed.success) {
-		return json({ code: 'invalid_question', message: 'Skriv et spÃ¸rgsmÃ¥l pÃ¥ 3-1.200 tegn.' }, 400);
+		return json({ code: 'invalid_question', message: 'Skriv et spørgsmål på 3-1.200 tegn.' }, 400);
 	}
 
 	const apiKey = import.meta.env.OPENAI_API_KEY;
@@ -121,7 +121,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 				store: false,
 				safety_identifier: await safetyIdentifier(userId),
 				instructions: buildMentorInstructions(profile),
-				input: `Brugerens spÃ¸rgsmÃ¥l:\n${parsed.data.question}\n\nGodkendt LearnAI-kontekst:\n${buildMentorContext(sources)}`,
+				input: `Brugerens spørgsmål:\n${parsed.data.question}\n\nGodkendt LearnAI-kontekst:\n${buildMentorContext(sources)}`,
 				reasoning: { effort: 'low', context: 'current_turn' },
 				text: { verbosity: 'low' },
 				max_output_tokens: 900,
@@ -129,7 +129,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 			signal: AbortSignal.timeout(30_000),
 		});
 	} catch {
-		return json({ code: 'provider_unavailable', message: 'AI Mentor svarer ikke lige nu. PrÃ¸v igen om lidt.' }, 503);
+		return json({ code: 'provider_unavailable', message: 'AI Mentor svarer ikke lige nu. Prøv igen om lidt.' }, 503);
 	}
 
 	if (!openAIResponse.ok) {

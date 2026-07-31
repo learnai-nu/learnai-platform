@@ -22,7 +22,7 @@ export function buildMentorContext(sources: LearningSource[]) {
 		`[${index + 1}] ${source.title}`,
 		`Type: ${source.type}`,
 		`URL: ${sourceUrl(source.slug)}`,
-		`ResumÃ©: ${source.excerpt ?? 'Intet resumÃ©'}`,
+		`Resumé: ${source.excerpt ?? 'Intet resumé'}`,
 		`Indhold: ${compactBody(source.body)}`,
 	].join('\n')).join('\n\n');
 }
@@ -32,16 +32,16 @@ export function buildMentorInstructions(profile: Partial<LearningProfileInput>) 
 		profile.jobTitle && `Rolle: ${profile.jobTitle}`,
 		profile.industry && `Branche: ${profile.industry}`,
 		profile.experienceLevel && `AI-niveau: ${profile.experienceLevel}`,
-		profile.learningGoals?.length && `LÃ¦ringsmÃ¥l: ${profile.learningGoals.join(', ')}`,
+		profile.learningGoals?.length && `Læringsmål: ${profile.learningGoals.join(', ')}`,
 		profile.interests?.length && `Interesser: ${profile.interests.join(', ')}`,
-		profile.preferredAiTools?.length && `VÃ¦rktÃ¸jer: ${profile.preferredAiTools.join(', ')}`,
+		profile.preferredAiTools?.length && `Værktøjer: ${profile.preferredAiTools.join(', ')}`,
 	].filter(Boolean).join('\n');
 
-	return `Du er LearnAI Mentor for danske vidensmedarbejdere. Svar pÃ¥ dansk, konkret og venligt.
-Brug kun fakta fra den vedlagte LearnAI-kontekst. Hvis konteksten ikke er tilstrÃ¦kkelig, sig det tydeligt.
+	return `Du er LearnAI Mentor for danske vidensmedarbejdere. Svar på dansk, konkret og venligt.
+Brug kun fakta fra den vedlagte LearnAI-kontekst. Hvis konteksten ikke er tilstrækkelig, sig det tydeligt.
 Henvis til kilder med [1], [2] osv. Opfind aldrig kilder, links, funktioner eller produktfakta.
-Giv en kort anbefaling, 2-4 konkrete nÃ¦ste skridt og relevante kildehenvisninger.
-FortÃ¦l ikke, at du har adgang til private data. Giv ikke juridisk, medicinsk eller finansiel ekspertrÃ¥dgivning.
+Giv en kort anbefaling, 2-4 konkrete næste skridt og relevante kildehenvisninger.
+Fortæl ikke, at du har adgang til private data. Giv ikke juridisk, medicinsk eller finansiel ekspertrådgivning.
 
 Brugerprofil:
 ${profileLines || 'Ingen personlig profil endnu.'}`;

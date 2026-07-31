@@ -4,7 +4,7 @@ import { buildMentorContext, buildMentorInstructions, extractResponseText, sourc
 
 describe('AI Mentor contracts', () => {
 	it('accepts a bounded question and rejects oversized input', () => {
-		expect(mentorRequestSchema.safeParse({ question: 'Hvad skal jeg lÃ¦re?' }).success).toBe(true);
+		expect(mentorRequestSchema.safeParse({ question: 'Hvad skal jeg lære?' }).success).toBe(true);
 		expect(mentorRequestSchema.safeParse({ question: 'x'.repeat(1201) }).success).toBe(false);
 	});
 

@@ -7,8 +7,8 @@ interface Props {
 
 const suggestions = [
 	'Hvordan kommer jeg bedst i gang med AI i mit arbejde?',
-	'Hvilken prompt-teknik bÃ¸r jeg lÃ¦re som den nÃ¦ste?',
-	'Lav en enkel lÃ¦ringsplan for mine nÃ¦ste 30 dage.',
+	'Hvilken prompt-teknik bør jeg lære som den næste?',
+	'Lav en enkel læringsplan for mine næste 30 dage.',
 ];
 
 export default function AIMentor({ profileComplete }: Props) {
@@ -21,7 +21,7 @@ export default function AIMentor({ profileComplete }: Props) {
 		event.preventDefault();
 		const trimmed = question.trim();
 		if (trimmed.length < 3) {
-			setError('Skriv et lidt mere konkret spÃ¸rgsmÃ¥l.');
+			setError('Skriv et lidt mere konkret spørgsmål.');
 			return;
 		}
 		setLoading(true);
@@ -55,8 +55,8 @@ export default function AIMentor({ profileComplete }: Props) {
 			{!profileComplete && (
 				<aside className="mentor-profile-nudge">
 					<div>
-						<strong>FÃ¥ mere personlige anbefalinger</strong>
-						<p>FortÃ¦l kort om din rolle, branche og dine lÃ¦ringsmÃ¥l.</p>
+						<strong>Få mere personlige anbefalinger</strong>
+						<p>Fortæl kort om din rolle, branche og dine læringsmål.</p>
 					</div>
 					<a className="button button-ghost button-small" href="/dashboard/profil">Udfyld profil</a>
 				</aside>
@@ -65,28 +65,28 @@ export default function AIMentor({ profileComplete }: Props) {
 			<div className="mentor-grid">
 				<section className="mentor-composer" aria-labelledby="mentor-question-title">
 					<div>
-						<p className="eyebrow">Dit spÃ¸rgsmÃ¥l</p>
-						<h2 id="mentor-question-title">Hvad vil du lÃ¦re eller lÃ¸se?</h2>
+						<p className="eyebrow">Dit spørgsmål</p>
+						<h2 id="mentor-question-title">Hvad vil du lære eller løse?</h2>
 					</div>
 					<form onSubmit={submit}>
-						<label htmlFor="mentor-question">SpÃ¸rg AI Mentor</label>
+						<label htmlFor="mentor-question">Spørg AI Mentor</label>
 						<textarea
 							id="mentor-question"
 							maxLength={1200}
 							rows={7}
 							value={question}
 							onChange={(event) => setQuestion(event.target.value)}
-							placeholder="Fx: Jeg er marketingchef. Hvilke tre AI-kompetencer bÃ¸r jeg prioritere fÃ¸rst?"
+							placeholder="Fx: Jeg er marketingchef. Hvilke tre AI-kompetencer bør jeg prioritere først?"
 							aria-describedby="mentor-privacy"
 						/>
 						<div className="mentor-submit-row">
 							<span>{question.length}/1.200</span>
 							<button className="button" type="submit" disabled={loading}>
-								{loading ? 'Finder svarâ€¦' : 'SpÃ¸rg AI Mentor'}
+								{loading ? 'Finder svar…' : 'Spørg AI Mentor'}
 							</button>
 						</div>
 					</form>
-					<div className="mentor-suggestions" aria-label="Forslag til spÃ¸rgsmÃ¥l">
+					<div className="mentor-suggestions" aria-label="Forslag til spørgsmål">
 						{suggestions.map((suggestion) => (
 							<button type="button" key={suggestion} onClick={() => setQuestion(suggestion)}>{suggestion}</button>
 						))}
@@ -98,7 +98,7 @@ export default function AIMentor({ profileComplete }: Props) {
 					{loading ? (
 						<div className="mentor-loading">
 							<span aria-hidden="true"></span>
-							<div><strong>Finder den bedste vejâ€¦</strong><p>Jeg gennemgÃ¥r godkendt LearnAI-indhold.</p></div>
+							<div><strong>Finder den bedste vej…</strong><p>Jeg gennemgår godkendt LearnAI-indhold.</p></div>
 						</div>
 					) : error ? (
 						<div className="notice notice-error" role="alert"><strong>Det lykkedes ikke</strong><p>{error}</p></div>
@@ -106,7 +106,7 @@ export default function AIMentor({ profileComplete }: Props) {
 						<>
 							<div className="mentor-answer-head">
 								<div><p className="eyebrow">AI-genereret svar</p><h2>Mit forslag</h2></div>
-								<span>{result.remaining} spÃ¸rgsmÃ¥l tilbage i dag</span>
+								<span>{result.remaining} spørgsmål tilbage i dag</span>
 							</div>
 							<div className="mentor-answer-copy">{result.answer}</div>
 							<div className="mentor-sources">
@@ -120,7 +120,7 @@ export default function AIMentor({ profileComplete }: Props) {
 						<div className="mentor-empty">
 							<div className="mentor-orbit" aria-hidden="true"><span>AI</span></div>
 							<h2>Et svar med en vej videre</h2>
-							<p>Du fÃ¥r et konkret svar, nÃ¦ste skridt og links til det LearnAI-indhold, svaret bygger pÃ¥.</p>
+							<p>Du får et konkret svar, næste skridt og links til det LearnAI-indhold, svaret bygger på.</p>
 						</div>
 					)}
 				</section>
