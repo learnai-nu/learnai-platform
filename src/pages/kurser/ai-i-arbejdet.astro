@@ -1,0 +1,87 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, { text: string; error?: boolean }> = {
+	success: { text: 'Tak! Du er på listen og får besked, når næste kursus åbner.' },
+	invalid: { text: 'Kontrollér din e-mail og acceptér samtykket.', error: true },
+	'save-error': { text: 'Tilmeldingen kunne ikke gemmes lige nu. Prøv igen om lidt.', error: true },
+};
+const statusMessage = statusMessages[status ?? ''];
+---
+
+<SiteLayout
+	title="AI i arbejdet – fra prompts til workflows"
+	description="Kom på ventelisten til LearnAI's næste kursus om at omsætte AI-prompts til målbare arbejdsgange."
+>
+	<section class="hero hero-compact level-two-hero">
+		<div class="shell course-hero">
+			<div>
+				<p class="eyebrow">Niveau 2 · Kommer snart</p>
+				<h1>Fra gode prompts til bedre arbejdsgange.</h1>
+				<p class="hero-copy">Lær at vælge de rigtige AI-opgaver, bygge genbrugelige workflows og dokumentere den værdi, AI skaber i din arbejdsdag.</p>
+			</div>
+			<aside class="course-summary waitlist-summary">
+				<strong>Få besked først</strong>
+				<p>Tilmeld dig ventelisten. Du får kursusplanen og introduktionsprisen, når forløbet åbner.</p>
+				<a class="button" href="#venteliste">Kom på ventelisten</a>
+			</aside>
+		</div>
+	</section>
+
+	<section class="section section-tight">
+		<div class="shell level-two-grid">
+			<article class="level-two-card">
+				<span>01</span>
+				<h2>Find opgaven</h2>
+				<p>Kortlæg gentagne opgaver, flaskehalse og kvalitetsproblemer, hvor AI kan skabe målbar værdi.</p>
+			</article>
+			<article class="level-two-card">
+				<span>02</span>
+				<h2>Byg workflowet</h2>
+				<p>Gå fra enkeltstående chats til en robust proces med input, kontrolpunkter, genbrugelige prompts og menneskelig vurdering.</p>
+			</article>
+			<article class="level-two-card">
+				<span>03</span>
+				<h2>Mål effekten</h2>
+				<p>Definér et lille pilotprojekt og mål tid, kvalitet og risiko, før du skalerer løsningen.</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="section waitlist-section" id="venteliste">
+		<div class="shell waitlist-panel">
+			<div>
+				<p class="eyebrow">Venteliste</p>
+				<h2>Tag det næste skridt med LearnAI.</h2>
+				<p>Ingen spam. Du får kun relevante opdateringer om Niveau 2 og kan altid afmelde dig igen.</p>
+			</div>
+			<div>
+				{statusMessage && (
+					<p class:list={['notice', { 'notice-error': statusMessage.error }]} role={statusMessage.error ? 'alert' : 'status'}>
+						{statusMessage.text}
+					</p>
+				)}
+				<form class="waitlist-form" method="post" action="/api/waitlist">
+					<label>
+						Fornavn <span>(valgfrit)</span>
+						<input name="firstName" autocomplete="given-name" maxlength="80" />
+					</label>
+					<label>
+						E-mail
+						<input type="email" name="email" autocomplete="email" maxlength="254" required />
+					</label>
+					<label class="waitlist-consent">
+						<input type="checkbox" name="consent" value="yes" required />
+						<span>Jeg accepterer at modtage e-mails om kurset og LearnAI. Se vores <a href="/privatliv">privatlivspolitik</a>.</span>
+					</label>
+					<div class="honeypot" aria-hidden="true">
+						<label for="company-website">Website</label>
+						<input id="company-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+					</div>
+					<button class="button" type="submit">Giv mig besked</button>
+				</form>
+			</div>
+		</div>
+	</section>
+</SiteLayout>

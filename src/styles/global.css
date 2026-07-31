@@ -247,6 +247,12 @@ input:focus, select:focus, textarea:focus { outline: 3px solid rgb(118 185 255 /
 .lesson-body > p { margin: 0; }
 .content-callout { padding: 1.2rem 1.3rem; border-left: .3rem solid var(--green); border-radius: 0 .9rem .9rem 0; background: var(--mint); color: var(--green-dark); font-weight: 700; }
 .content-example { max-width: 100%; margin: 0; padding: 1.3rem; overflow-x: auto; border-radius: 1rem; background: var(--ink); color: #eef7f2; white-space: pre-wrap; font: inherit; line-height: 1.65; }
+.lesson-body > h2 { margin: 1.5rem 0 0; font-size: clamp(1.7rem, 3.5vw, 2.5rem); letter-spacing: -.04em; }
+.lesson-cta { margin-top: 1.4rem; padding: clamp(1.5rem, 4vw, 2.4rem); border-radius: 1.5rem; background: var(--ink); color: white; }
+.lesson-cta .eyebrow { margin-bottom: 1rem; color: #b7c9ff; }
+.lesson-cta h2 { margin: 0 0 .8rem; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -.045em; }
+.lesson-cta p:not(.eyebrow) { margin: 0; color: #cad2e6; }
+.lesson-cta .button { margin-top: 1.4rem; }
 .content-checklist { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
 .content-checklist li { position: relative; padding-left: 2rem; }
 .content-checklist li::before { content: "✓"; position: absolute; left: 0; top: .05rem; display: grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 99px; background: var(--mint); color: var(--green); font-size: .75rem; font-weight: 900; }
@@ -287,6 +293,23 @@ input:focus, select:focus, textarea:focus { outline: 3px solid rgb(118 185 255 /
 .quiz-feedback h3 { margin: 0 0 .5rem; font-size: 1rem; line-height: 1.45; }
 .quiz-feedback p { margin: 0; color: var(--muted); line-height: 1.55; }
 .quiz-result > .button { justify-self: start; }
+
+.level-two-hero { background: radial-gradient(circle at 86% 10%, rgb(11 69 255 / 14%), transparent 28rem); }
+.level-two-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.level-two-card { min-height: 250px; padding: 1.6rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.level-two-card > span { color: var(--green); font-size: .8rem; font-weight: 900; letter-spacing: .1em; }
+.level-two-card h2 { margin: 4rem 0 .7rem; font-size: 1.7rem; letter-spacing: -.04em; }
+.level-two-card p { margin: 0; color: var(--muted); line-height: 1.6; }
+.waitlist-panel { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(2rem, 7vw, 6rem); align-items: start; padding: clamp(1.6rem, 5vw, 4rem); border-radius: 2rem; background: var(--surface); box-shadow: var(--shadow); }
+.waitlist-panel h2 { margin-top: 0; }
+.waitlist-panel > div > p:last-child { color: var(--muted); line-height: 1.65; }
+.waitlist-form { display: grid; gap: 1rem; }
+.waitlist-form label > span:first-child { color: var(--muted); font-weight: 500; }
+.waitlist-consent { grid-template-columns: auto 1fr; align-items: start; gap: .7rem; font-weight: 500; line-height: 1.5; }
+.waitlist-consent input { width: 1.1rem; min-height: auto; margin-top: .2rem; accent-color: var(--green); }
+.waitlist-consent a { color: var(--green-dark); text-decoration: underline; }
+.waitlist-form .button { justify-self: start; }
+.honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
 
 .admin-section { min-height: 78vh; padding: 2rem 0 5rem; }
 .admin-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 2rem; align-items: start; }
@@ -487,7 +510,8 @@ label small { color: var(--muted); font-weight: 500; line-height: 1.45; }
 @media (max-width: 850px) {
 	.primary-nav, .header-login { display: none; }
 	.mobile-nav { display: block; }
-	.hero-grid, .cta-panel, .auth-shell, .course-hero, .lesson-shell, .admin-shell { grid-template-columns: 1fr; }
+	.hero-grid, .cta-panel, .auth-shell, .course-hero, .lesson-shell, .admin-shell, .waitlist-panel { grid-template-columns: 1fr; }
+	.level-two-grid { grid-template-columns: 1fr; }
 	.hero { padding-top: 4rem; }
 	.learning-card { max-width: 560px; transform: none; }
 	.feature-grid { grid-template-columns: 1fr; }

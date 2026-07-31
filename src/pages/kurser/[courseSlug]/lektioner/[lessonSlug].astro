@@ -17,6 +17,9 @@ interface LessonBlock {
 	type: string;
 	text?: string;
 	items?: string[];
+	title?: string;
+	label?: string;
+	href?: string;
 }
 
 function parseBlocks(body: unknown): LessonBlock[] {
@@ -31,6 +34,9 @@ function parseBlocks(body: unknown): LessonBlock[] {
 			type: block.type,
 			text: typeof value.text === 'string' ? value.text : undefined,
 			items: Array.isArray(value.items) ? value.items.filter((item): item is string => typeof item === 'string') : undefined,
+			title: typeof value.title === 'string' ? value.title : undefined,
+			label: typeof value.label === 'string' ? value.label : undefined,
+			href: typeof value.href === 'string' && value.href.startsWith('/') ? value.href : undefined,
 		}];
 	});
 }
@@ -167,11 +173,22 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 				<div class="lesson-body">
 					{blocks.length ? (
 						blocks.map((block) => {
+							if (block.type === 'heading' && block.text) return <h2>{block.text}</h2>;
 							if (block.type === 'checklist' && block.items?.length) {
 								return <ul class="content-checklist">{block.items.map((item) => <li>{item}</li>)}</ul>;
 							}
 							if (block.type === 'callout' && block.text) return <aside class="content-callout">{block.text}</aside>;
 							if (block.type === 'example' && block.text) return <pre class="content-example"><code>{block.text}</code></pre>;
+							if (block.type === 'cta' && block.title && block.text && block.href && block.label) {
+								return (
+									<aside class="lesson-cta">
+										<p class="eyebrow">Dit næste niveau</p>
+										<h2>{block.title}</h2>
+										<p>{block.text}</p>
+										<a class="button" href={block.href}>{block.label}</a>
+									</aside>
+								);
+							}
 							if (block.text) return <p>{block.text}</p>;
 							return null;
 						})

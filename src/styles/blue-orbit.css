@@ -311,6 +311,11 @@ body.blue-orbit {
 .blue-orbit .article-body blockquote { border-left-color: var(--orbit-primary); background: var(--orbit-surface-low); }
 .blue-orbit .content-callout { border-left-color: var(--orbit-primary); background: var(--orbit-primary-container); color: var(--orbit-on-primary-container); }
 .blue-orbit .content-example, .blue-orbit .article-body pre { background: var(--orbit-deepest); color: #f4f7ff; }
+.blue-orbit .lesson-cta { background: linear-gradient(145deg, var(--orbit-deepest), var(--orbit-deep)); box-shadow: var(--orbit-shadow-3); }
+.blue-orbit .level-two-card, .blue-orbit .waitlist-panel { border-color: var(--orbit-outline-variant); background: var(--orbit-surface-bright); }
+.blue-orbit .level-two-card > span { color: var(--orbit-primary); }
+.blue-orbit .waitlist-panel { box-shadow: var(--orbit-shadow-2); }
+.blue-orbit .waitlist-consent a { color: var(--orbit-primary); }
 .blue-orbit .article-body pre { max-width: 100%; }
 .blue-orbit .article-body pre code { display: block; max-width: 100%; overflow-wrap: anywhere; white-space: pre-wrap; }
 .blue-orbit .quiz-option { background: var(--orbit-surface-low); }
