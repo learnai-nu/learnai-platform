@@ -6,13 +6,17 @@ const navigation = [
 	{ href: '/kurser', label: 'Kurser' },
 	{ href: '/virksomheder', label: 'Virksomheder' },
 ];
+const isActive = (href: string) =>
+	Astro.url.pathname === href || Astro.url.pathname.startsWith(`${href}/`);
 ---
 
 <header class="orbit-header">
 	<div class="orbit-header-inner">
 		<OrbitBrand />
 		<nav class="orbit-desktop-nav" aria-label="Primær navigation">
-			{navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+			{navigation.map((item) => (
+				<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+			))}
 		</nav>
 		<div class="orbit-header-actions">
 			<a class="orbit-login-link" href="/login">Log ind</a>
@@ -23,7 +27,9 @@ const navigation = [
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
 			</summary>
 			<nav aria-label="Mobil navigation">
-				{navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+				{navigation.map((item) => (
+					<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+				))}
 				<a href="/login">Log ind</a>
 				<a class="orbit-mobile-cta" href="/kurser">Kom i gang</a>
 			</nav>

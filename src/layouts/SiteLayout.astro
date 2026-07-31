@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+import '../styles/blue-orbit-tokens.css';
+import '../styles/blue-orbit.css';
+import BlueOrbitFooter from '../components/marketing/BlueOrbitFooter.astro';
+import BlueOrbitHeader from '../components/marketing/BlueOrbitHeader.astro';
 
 interface Props {
 	title: string;
@@ -14,77 +18,27 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
-const navigation = [
-	{ href: '/laer', label: 'Lær AI' },
-	{ href: '/kurser', label: 'Kurser' },
-	{ href: '/vaerktoejer', label: 'Værktøjer' },
-	{ href: '/nyheder', label: 'Nyheder' },
-	{ href: '/virksomheder', label: 'Virksomheder' },
-];
-const isActive = (href: string) =>
-	Astro.url.pathname === href || Astro.url.pathname.startsWith(`${href}/`);
 ---
 
 <!doctype html>
 <html lang="da">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		<meta name="theme-color" content="#f7f8ff" />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={canonicalURL} />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>{title}</title>
 	</head>
-	<body>
-		<a class="skip-link" href="#main-content">Gå til indhold</a>
-		<header class="site-header">
-			<div class="shell header-inner">
-				<a class="brand" href="/" aria-label="LearnAI.nu – forside">
-					<span class="brand-mark" aria-hidden="true">L</span>
-					<span>LearnAI<span class="brand-dot">.</span>nu</span>
-				</a>
-				<nav class="primary-nav" aria-label="Primær navigation">
-					{navigation.map((item) => (
-						<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-							{item.label}
-						</a>
-					))}
-				</nav>
-				<a class="button button-small button-ghost header-login" href="/login">Log ind</a>
-				<details class="mobile-nav">
-					<summary>
-						<span>Menu</span>
-						<span class="mobile-nav-icon" aria-hidden="true"></span>
-					</summary>
-					<nav aria-label="Mobil navigation">
-						{navigation.map((item) => (
-							<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-								{item.label}
-							</a>
-						))}
-						<a class="mobile-login" href="/login">Log ind</a>
-					</nav>
-				</details>
-			</div>
-		</header>
+	<body class="blue-orbit">
+		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>
+		<BlueOrbitHeader />
 		<main id="main-content">
 			<slot />
 		</main>
-		<footer>
-			<div class="shell footer-inner">
-				<div>
-					<a class="brand footer-brand" href="/">LearnAI.nu</a>
-					<p>Praktisk AI-læring på dansk.</p>
-				</div>
-				<div class="footer-links">
-					<a href="/om">Om LearnAI</a>
-					<a href="/privatliv">Privatliv</a>
-					<a href="/kontakt">Kontakt</a>
-				</div>
-				<p>© {new Date().getFullYear()} LearnAI.nu</p>
-			</div>
-		</footer>
+		<BlueOrbitFooter />
 	</body>
 </html>

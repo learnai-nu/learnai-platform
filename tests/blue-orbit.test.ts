@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const homepage = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../src/layouts/BlueOrbitLayout.astro', import.meta.url), 'utf8');
+const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const header = readFileSync(
 	new URL('../src/components/marketing/BlueOrbitHeader.astro', import.meta.url),
 	'utf8',
@@ -46,7 +47,18 @@ describe('Blue Orbit homepage', () => {
 		expect(header).toContain("event.key === 'Escape'");
 		expect(header).toContain("'Luk menu' : 'Åbn menu'");
 		expect(header).not.toContain('orbit-theme-button');
-		expect(layout).toContain('class="orbit-skip-link"');
+		expect(siteLayout).toContain('class="orbit-skip-link"');
+	});
+
+	it('uses Blue Orbit as the shared shell for every public SiteLayout page', () => {
+		expect(layout).toContain("import SiteLayout from './SiteLayout.astro'");
+		expect(siteLayout).toContain("import BlueOrbitHeader from '../components/marketing/BlueOrbitHeader.astro'");
+		expect(siteLayout).toContain("import BlueOrbitFooter from '../components/marketing/BlueOrbitFooter.astro'");
+		expect(siteLayout).toContain('body class="blue-orbit"');
+		expect(siteLayout).not.toContain('class="site-header"');
+		expect(styles).toContain('Shared Blue Orbit treatment for the platform pages using SiteLayout.');
+		expect(styles).toContain('.blue-orbit .article-body pre code');
+		expect(styles).toContain('white-space: pre-wrap');
 	});
 
 	it('keeps the hero focused on one proof line and two dashboard modules', () => {
