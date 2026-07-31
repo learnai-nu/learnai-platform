@@ -69,6 +69,9 @@ describe('Blue Orbit homepage', () => {
 
 	it('defines semantic color tokens and responsive overflow protection', () => {
 		expect(tokens).toContain('--orbit-primary: #0b45ff');
+		expect(styles).toContain(':where(.blue-orbit) a { color: inherit;');
+		expect(styles).toContain('.orbit-button-filled { background: var(--orbit-primary); color: var(--orbit-on-primary);');
+		expect(styles).not.toContain('.blue-orbit a { color: inherit;');
 		expect(styles).toContain('overflow-x: clip');
 		expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
 	});
