@@ -4,6 +4,8 @@ interface ImportMetaEnv {
 	readonly PUBLIC_SITE_URL?: string;
 	readonly PUBLIC_SUPABASE_URL: string;
 	readonly PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
+	readonly OPENAI_API_KEY?: string;
+	readonly OPENAI_MODEL?: string;
 }
 
 interface ImportMeta {

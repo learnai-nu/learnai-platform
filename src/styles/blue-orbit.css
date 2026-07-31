@@ -317,6 +317,70 @@ body.blue-orbit {
 .blue-orbit .quiz-option:hover { border-color: var(--orbit-primary); background: var(--orbit-surface-bright); }
 .blue-orbit .prompt-builder-head { background: linear-gradient(135deg, var(--orbit-deepest), var(--orbit-deep)); }
 
+/* AI Mentor and personal learning profile */
+.mentor-hero .section-intro { max-width: 920px; }
+.mentor-workspace { display: grid; gap: 1rem; padding-bottom: 4rem; }
+.mentor-profile-nudge {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem 1.2rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-md);
+	background: var(--orbit-primary-container);
+	color: var(--orbit-on-primary-container);
+}
+.mentor-profile-nudge p { margin: .2rem 0 0; color: color-mix(in srgb, currentColor 78%, transparent); }
+.mentor-grid { display: grid; grid-template-columns: minmax(320px, .82fr) minmax(0, 1.18fr); gap: 1rem; align-items: stretch; }
+.mentor-composer, .mentor-answer, .profile-form {
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-lg);
+	background: var(--orbit-surface-bright);
+	box-shadow: var(--orbit-shadow-2);
+}
+.mentor-composer { display: grid; align-content: start; gap: 1.3rem; padding: clamp(1.25rem, 3vw, 2rem); }
+.mentor-composer h2, .mentor-answer h2 { margin: 0; font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.045em; }
+.mentor-composer form { display: grid; gap: .7rem; }
+.mentor-composer textarea { min-height: 12rem; }
+.mentor-submit-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.mentor-submit-row > span { color: var(--orbit-on-surface-variant); font-size: .78rem; }
+.mentor-suggestions { display: grid; gap: .55rem; }
+.mentor-suggestions button {
+	padding: .75rem .85rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-sm);
+	background: var(--orbit-surface-low);
+	color: var(--orbit-on-surface);
+	font: inherit;
+	font-size: .86rem;
+	font-weight: 680;
+	text-align: left;
+}
+.mentor-suggestions button:hover { border-color: var(--orbit-primary); background: var(--orbit-primary-container); color: var(--orbit-on-primary-container); }
+.mentor-privacy { margin: 0; color: var(--orbit-on-surface-variant); font-size: .78rem; }
+.mentor-answer { min-height: 590px; padding: clamp(1.25rem, 3vw, 2rem); }
+.mentor-answer-head { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+.mentor-answer-head > span { padding: .45rem .65rem; border-radius: 999px; background: var(--orbit-surface-low); color: var(--orbit-on-surface-variant); font-size: .72rem; font-weight: 760; }
+.mentor-answer-copy { margin-top: 1.8rem; color: var(--orbit-on-surface); font-size: 1.02rem; line-height: 1.75; white-space: pre-wrap; }
+.mentor-sources { margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--orbit-outline-variant); }
+.mentor-sources h3 { margin-bottom: .9rem; font-size: 1rem; letter-spacing: -.02em; }
+.mentor-sources ul { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.mentor-sources a { display: grid; gap: .18rem; padding: .8rem; border-radius: var(--orbit-shape-sm); background: var(--orbit-surface-low); }
+.mentor-sources a:hover { background: var(--orbit-primary-container); color: var(--orbit-on-primary-container); }
+.mentor-sources span { color: var(--orbit-primary); font-size: .68rem; font-weight: 820; letter-spacing: .05em; text-transform: uppercase; }
+.mentor-empty, .mentor-loading { display: grid; min-height: 520px; place-content: center; justify-items: center; text-align: center; }
+.mentor-empty p, .mentor-loading p { max-width: 490px; margin: .7rem 0 0; color: var(--orbit-on-surface-variant); }
+.mentor-orbit { display: grid; width: 8rem; height: 8rem; margin-bottom: 1.5rem; place-items: center; border: 1px solid color-mix(in srgb, var(--orbit-primary) 30%, transparent); border-radius: 50%; background: radial-gradient(circle, var(--orbit-primary-container), transparent 72%); }
+.mentor-orbit span { display: grid; width: 3.6rem; height: 3.6rem; place-items: center; border-radius: 1.1rem; background: var(--orbit-primary); color: var(--orbit-on-primary); font-weight: 850; }
+.mentor-loading { grid-template-columns: auto 1fr; gap: 1rem; justify-items: start; text-align: left; }
+.mentor-loading > span { width: 2rem; height: 2rem; border: 3px solid var(--orbit-primary-container); border-top-color: var(--orbit-primary); border-radius: 50%; animation: spin .8s linear infinite; }
+.mentor-answer .notice p { margin: .3rem 0 0; }
+.profile-shell { max-width: 900px; }
+.profile-form { padding: clamp(1.25rem, 4vw, 2.5rem); }
+.profile-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.profile-form-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.3rem; }
+
 .orbit-footer { display: grid; grid-template-columns: 1.5fr repeat(3, .6fr); gap: 2rem; padding: 4rem max(1.5rem, calc((100vw - 1380px) / 2)) 2rem; background: var(--orbit-deepest); color: #b7c2e6; }
 .orbit-footer-brand p { margin-top: 1rem; font-size: .85rem; }
 .orbit-footer-column { display: grid; align-content: start; gap: .65rem; font-size: .8rem; }
@@ -347,6 +411,8 @@ body.blue-orbit {
 	.orbit-final-cta { align-items: flex-start; flex-direction: column; text-align: left; }
 	.orbit-footer { grid-template-columns: 1.3fr 1fr 1fr; }
 	.blue-orbit .shell { width: calc(100% - 2rem); }
+	.mentor-grid { grid-template-columns: 1fr; }
+	.mentor-answer { min-height: 480px; }
 }
 
 @media (max-width: 560px) {
@@ -382,6 +448,13 @@ body.blue-orbit {
 		overflow-wrap: anywhere;
 	}
 	.blue-orbit .article-header h1 { font-size: clamp(2.35rem, 10.5vw, 3rem); overflow-wrap: break-word; }
+	.mentor-profile-nudge, .mentor-answer-head, .mentor-submit-row { align-items: stretch; flex-direction: column; }
+	.mentor-profile-nudge .button, .mentor-submit-row .button { width: 100%; }
+	.mentor-answer { min-height: 420px; }
+	.mentor-empty, .mentor-loading { min-height: 360px; }
+	.profile-form-grid { grid-template-columns: 1fr; }
+	.profile-form-grid .field-wide { grid-column: auto; }
+	.profile-form-actions { align-items: stretch; flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {

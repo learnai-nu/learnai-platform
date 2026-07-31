@@ -1,0 +1,39 @@
+---
+import AIMentor from '../components/AIMentor';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../lib/supabase/server';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: claimsData } = await supabase.auth.getClaims();
+const userId = claimsData?.claims?.sub;
+if (!userId) {
+	return new Response(null, {
+		status: 302,
+		headers: { Location: '/login?status=required', 'Cache-Control': 'private, no-store, max-age=0' },
+	});
+}
+const { data: profile } = await supabase
+	.from('profiles')
+	.select('onboarding_completed_at')
+	.eq('id', userId)
+	.maybeSingle();
+const profileComplete = Boolean(profile?.onboarding_completed_at);
+const profileSaved = Astro.url.searchParams.get('status') === 'profile-saved';
+---
+
+<SiteLayout title="AI Mentor â€” LearnAI.nu" description="FÃ¥ en personlig vej gennem LearnAI's danske indhold.">
+	<section class="hero hero-compact mentor-hero">
+		<div class="shell section-intro">
+			<p class="eyebrow">AI Mentor beta</p>
+			<h1>Fra spÃ¸rgsmÃ¥l til <span>nÃ¦ste skridt.</span></h1>
+			<p class="hero-copy">FÃ¥ praktiske svar baseret pÃ¥ godkendte danske guides, artikler og prompts fra LearnAI.</p>
+			{profileSaved && <p class="notice">Din lÃ¦ringsprofil er gemt. Svarene kan nu tilpasses bedre.</p>}
+		</div>
+	</section>
+	<section class="section section-tight">
+		<div class="shell"><AIMentor client:load profileComplete={profileComplete} /></div>
+	</section>
+</SiteLayout>

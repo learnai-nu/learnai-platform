@@ -1,0 +1,59 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: claimsData } = await supabase.auth.getClaims();
+const userId = claimsData?.claims?.sub;
+if (!userId) {
+	return new Response(null, {
+		status: 302,
+		headers: { Location: '/login?status=required', 'Cache-Control': 'private, no-store, max-age=0' },
+	});
+}
+const { data: profile, error } = await supabase
+	.from('profiles')
+	.select('display_name,job_title,company,industry,experience_level,learning_goals,interests,preferred_ai_tools')
+	.eq('id', userId)
+	.maybeSingle();
+const status = Astro.url.searchParams.get('status');
+---
+
+<SiteLayout title="Din lÃ¦ringsprofil â€” LearnAI.nu" description="Tilpas dine personlige lÃ¦ringsanbefalinger.">
+	<section class="hero hero-compact">
+		<div class="shell section-intro">
+			<a class="admin-back" href="/dashboard">â† Dashboard</a>
+			<p class="eyebrow">Personlig lÃ¦ring</p>
+			<h1>Din lÃ¦ringsprofil.</h1>
+			<p class="hero-copy">Bruges kun til at tilpasse anbefalinger og AI Mentor. Du kan Ã¦ndre den nÃ¥r som helst.</p>
+		</div>
+	</section>
+	<section class="section section-tight">
+		<div class="shell profile-shell">
+			{error ? <p class="notice notice-error" role="alert">Profilen kunne ikke hentes.</p> : (
+				<form class="profile-form" method="post" action="/api/profile/learning">
+					{status === 'invalid' && <p class="notice notice-error" role="alert">KontrollÃ©r felterne og prÃ¸v igen.</p>}
+					{status === 'save-error' && <p class="notice notice-error" role="alert">Profilen kunne ikke gemmes lige nu.</p>}
+					<div class="profile-form-grid">
+						<label>Navn<input name="displayName" maxlength="120" value={profile?.display_name ?? ''} autocomplete="name" /></label>
+						<label>Jobtitel<input name="jobTitle" maxlength="120" value={profile?.job_title ?? ''} autocomplete="organization-title" /></label>
+						<label>Virksomhed<input name="company" maxlength="120" value={profile?.company ?? ''} autocomplete="organization" /></label>
+						<label>Branche<input name="industry" maxlength="120" value={profile?.industry ?? ''} placeholder="Fx installation, marketing eller uddannelse" /></label>
+						<label>Dit AI-niveau<select name="experienceLevel" required>
+							<option value="beginner" selected={(profile?.experience_level ?? 'beginner') === 'beginner'}>Begynder</option>
+							<option value="intermediate" selected={profile?.experience_level === 'intermediate'}>Let Ã¸vet</option>
+							<option value="advanced" selected={profile?.experience_level === 'advanced'}>Avanceret</option>
+						</select></label>
+						<label>AI-vÃ¦rktÃ¸jer du bruger<input name="preferredAiTools" value={(profile?.preferred_ai_tools ?? []).join(', ')} placeholder="Fx ChatGPT, Copilot, Claude" /></label>
+						<label class="field-wide">Dine lÃ¦ringsmÃ¥l<textarea name="learningGoals" rows="5" placeholder="Ã‰t mÃ¥l pr. linje">{(profile?.learning_goals ?? []).join('\n')}</textarea></label>
+						<label class="field-wide">Emner du interesserer dig for<input name="interests" value={(profile?.interests ?? []).join(', ')} placeholder="Fx prompting, automatisering, ledelse" /></label>
+					</div>
+					<div class="profile-form-actions"><button class="button" type="submit">Gem og Ã¥bn AI Mentor</button><a class="button button-ghost" href="/mentor">Spring over</a></div>
+				</form>
+			)}
+		</div>
+	</section>
+</SiteLayout>
