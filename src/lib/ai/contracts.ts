@@ -7,7 +7,7 @@ export const mentorRequestSchema = z.object({
 export const mentorSourceSchema = z.object({
 	title: z.string(),
 	type: z.string(),
-	url: z.string().startsWith('/laer/'),
+	url: z.string().startsWith('/laer/').optional(),
 });
 
 export const mentorResponseSchema = z.object({

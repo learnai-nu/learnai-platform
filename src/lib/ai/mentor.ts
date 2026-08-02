@@ -8,6 +8,16 @@ export interface LearningSource {
 	body: unknown;
 }
 
+interface OpenAIAnnotation {
+	type?: string;
+	filename?: string;
+}
+
+interface OpenAIContentPart {
+	text?: string;
+	annotations?: OpenAIAnnotation[];
+}
+
 export function sourceUrl(slug: string) {
 	return `/laer/${encodeURIComponent(slug)}`;
 }
@@ -27,7 +37,7 @@ export function buildMentorContext(sources: LearningSource[]) {
 	].join('\n')).join('\n\n');
 }
 
-export function buildMentorInstructions(profile: Partial<LearningProfileInput>) {
+export function buildMentorInstructions(profile: Partial<LearningProfileInput>, knowledgeBaseEnabled = false) {
 	const profileLines = [
 		profile.jobTitle && `Rolle: ${profile.jobTitle}`,
 		profile.industry && `Branche: ${profile.industry}`,
@@ -37,9 +47,15 @@ export function buildMentorInstructions(profile: Partial<LearningProfileInput>) 
 		profile.preferredAiTools?.length && `Værktøjer: ${profile.preferredAiTools.join(', ')}`,
 	].filter(Boolean).join('\n');
 
+	const grounding = knowledgeBaseEnabled
+		? `Brug kun fakta fra den vedlagte LearnAI-kontekst og dokumenter fundet via LearnAI Knowledge Base. Søg altid i Knowledge Basen før du svarer. Hvis kilderne ikke er tilstrækkelige, sig det tydeligt.
+Henvis til kilder fra den vedlagte kontekst med [1], [2] osv., og nævn dokumentkilder ved filnavn.`
+		: `Brug kun fakta fra den vedlagte LearnAI-kontekst. Hvis konteksten ikke er tilstrækkelig, sig det tydeligt.
+Henvis til kilder med [1], [2] osv.`;
+
 	return `Du er LearnAI Mentor for danske vidensmedarbejdere. Svar på dansk, konkret og venligt.
-Brug kun fakta fra den vedlagte LearnAI-kontekst. Hvis konteksten ikke er tilstrækkelig, sig det tydeligt.
-Henvis til kilder med [1], [2] osv. Opfind aldrig kilder, links, funktioner eller produktfakta.
+${grounding}
+Opfind aldrig kilder, links, funktioner eller produktfakta.
 Giv en kort anbefaling, 2-4 konkrete næste skridt og relevante kildehenvisninger.
 Fortæl ikke, at du har adgang til private data. Giv ikke juridisk, medicinsk eller finansiel ekspertrådgivning.
 
@@ -66,6 +82,28 @@ export function extractResponseText(payload: unknown) {
 		}
 	}
 	return parts.join('\n').trim() || null;
+}
+
+export function extractFileCitations(payload: unknown) {
+	if (!payload || typeof payload !== 'object') return [];
+	const output = (payload as Record<string, unknown>).output;
+	if (!Array.isArray(output)) return [];
+	const filenames = new Set<string>();
+	for (const item of output) {
+		if (!item || typeof item !== 'object') continue;
+		const content = (item as Record<string, unknown>).content;
+		if (!Array.isArray(content)) continue;
+		for (const rawPart of content) {
+			if (!rawPart || typeof rawPart !== 'object') continue;
+			const part = rawPart as OpenAIContentPart;
+			for (const annotation of part.annotations ?? []) {
+				if (annotation.type === 'file_citation' && annotation.filename?.trim()) {
+					filenames.add(annotation.filename.trim());
+				}
+			}
+		}
+	}
+	return [...filenames];
 }
 
 export async function safetyIdentifier(userId: string) {

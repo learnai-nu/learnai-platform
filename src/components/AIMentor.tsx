@@ -112,7 +112,13 @@ export default function AIMentor({ profileComplete }: Props) {
 							<div className="mentor-sources">
 								<h3>Kilder fra LearnAI</h3>
 								<ul>{result.sources.map((source, index) => (
-									<li key={source.url}><a href={source.url}><span>[{index + 1}] {source.type}</span><strong>{source.title}</strong></a></li>
+									<li key={`${source.type}:${source.url ?? source.title}`}>
+										{source.url ? (
+											<a href={source.url}><span>[{index + 1}] {source.type}</span><strong>{source.title}</strong></a>
+										) : (
+											<div className="mentor-source-card"><span>Dokumentkilde</span><strong>{source.title}</strong></div>
+										)}
+									</li>
 								))}</ul>
 							</div>
 						</>
