@@ -6,6 +6,7 @@ interface ImportMetaEnv {
 	readonly PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
 	readonly OPENAI_API_KEY?: string;
 	readonly OPENAI_MODEL?: string;
+	readonly OPENAI_VECTOR_STORE_ID?: string;
 }
 
 interface ImportMeta {

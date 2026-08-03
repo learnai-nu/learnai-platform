@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { learningProfileSchema, mentorRequestSchema, mentorResponseSchema, splitProfileList } from '../src/lib/ai/contracts';
-import { buildMentorContext, buildMentorInstructions, extractResponseText, sourceUrl } from '../src/lib/ai/mentor';
+import { buildMentorContext, buildMentorInstructions, extractFileCitations, extractResponseText, sourceUrl } from '../src/lib/ai/mentor';
 
 describe('AI Mentor contracts', () => {
 	it('accepts a bounded question and rejects oversized input', () => {
@@ -19,6 +19,11 @@ describe('AI Mentor contracts', () => {
 			sources: [{ title: 'Guide', type: 'guide', url: 'https://example.com' }],
 			remaining: 19,
 		}).success).toBe(false);
+		expect(mentorResponseSchema.safeParse({
+			answer: 'Start her.',
+			sources: [{ title: 'Rapport.pdf', type: 'videnskilde' }],
+			remaining: 19,
+		}).success).toBe(true);
 	});
 
 	it('normalizes unique comma- and newline-separated profile values', () => {
@@ -44,14 +49,25 @@ describe('AI Mentor grounding', () => {
 	});
 
 	it('requires source-grounded Danish answers', () => {
-		const instructions = buildMentorInstructions({ jobTitle: 'Leder', learningGoals: ['Automatisering'] });
+		const instructions = buildMentorInstructions({ jobTitle: 'Leder', learningGoals: ['Automatisering'] }, true);
 		expect(instructions).toContain('Brug kun fakta');
 		expect(instructions).toContain('Henvis til kilder');
+		expect(instructions).toContain('Knowledge Base');
 		expect(instructions).toContain('Rolle: Leder');
 	});
 
 	it('extracts text from raw Responses API output', () => {
 		expect(extractResponseText({ output: [{ content: [{ type: 'output_text', text: 'Svar' }] }] })).toBe('Svar');
 		expect(extractResponseText({ output: [] })).toBeNull();
+	});
+
+	it('extracts and deduplicates file citations from Responses API output', () => {
+		expect(extractFileCitations({
+			output: [{ content: [{ annotations: [
+				{ type: 'file_citation', filename: 'Rapport.pdf' },
+				{ type: 'file_citation', filename: 'Rapport.pdf' },
+				{ type: 'file_citation', filename: 'Guide.docx' },
+			] }] }],
+		})).toEqual(['Rapport.pdf', 'Guide.docx']);
 	});
 });

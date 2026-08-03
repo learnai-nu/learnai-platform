@@ -15,12 +15,15 @@ prompts samt Supabase Auth og RLS.
 - Svar dannes med OpenAI Responses API og `gpt-5.6-sol` som konfigurerbar
   standard. Modellen er valgt ud fra OpenAI's aktuelle modelvejledning og kan
   udskiftes via miljøvariablen uden en kodeændring.
-- Hver forespørgsel groundes i op til seks publicerede danske LearnAI-elementer.
-- Kilder vises som interne links, og modellen instrueres i at afvise svar, når
-  konteksten ikke rækker.
+- Hver forespørgsel groundes i op til fire publicerede danske LearnAI-elementer
+  og, når en vector store er konfigureret, relevante dokumenter fra LearnAI
+  Knowledge Base via OpenAI File Search.
+- Interne kilder vises som links, dokumentkilder vises med filnavn, og modellen
+  instrueres i at afvise svar, når konteksten ikke rækker.
 - `store: false` bruges, og LearnAI gemmer ikke spørgsmål eller svar.
 - Kun et dagligt forbrugstal gemmes. Kvoten er 20 spørgsmål pr. bruger pr. dag.
-- OpenAI-nøglen er server-side og må aldrig få `PUBLIC_`-prefix.
+- OpenAI-nøglen og vector store-id'et er server-side og må aldrig få
+  `PUBLIC_`-prefix.
 - Bruger-id sendes kun som en envejs SHA-256-baseret `safety_identifier`.
 
 ## Sikkerhedsgrænser
@@ -33,6 +36,6 @@ prompts samt Supabase Auth og RLS.
 
 ## Konsekvenser
 
-Piloten er enkel og privatlivsvenlig, men har ikke flerturnssamtaler, embeddings
-eller semantisk vektorsøgning. Kvaliteten skal måles på et dansk evalueringssæt,
-før funktionen udvides eller gøres til et betalt produkt.
+Piloten er enkel og privatlivsvenlig og har nu semantisk dokumentsøgning, men
+ikke flerturnssamtaler. Kvaliteten skal måles på et dansk evalueringssæt, før
+funktionen udvides eller gøres til et betalt produkt.

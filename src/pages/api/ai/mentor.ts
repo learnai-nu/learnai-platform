@@ -3,6 +3,7 @@ import { mentorRequestSchema } from '../../../lib/ai/contracts';
 import {
 	buildMentorContext,
 	buildMentorInstructions,
+	extractFileCitations,
 	extractResponseText,
 	safetyIdentifier,
 	sourceUrl,
@@ -52,6 +53,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	}
 
 	const apiKey = import.meta.env.OPENAI_API_KEY;
+	const vectorStoreId = import.meta.env.OPENAI_VECTOR_STORE_ID?.trim();
 	if (!apiKey) {
 		return json({ code: 'not_configured', message: 'AI Mentor er ikke aktiveret endnu.' }, 503);
 	}
@@ -69,7 +71,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 			.maybeSingle(),
 		supabase.rpc('search_published_learning_content', {
 			p_query: parsed.data.question,
-			p_limit: 6,
+			p_limit: 4,
 		}),
 	]);
 
@@ -91,7 +93,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 		}
 		sources = (fallback.data ?? []) as LearningSource[];
 	}
-	if (sources.length === 0) {
+	if (sources.length === 0 && !vectorStoreId) {
 		return json({ code: 'no_sources', message: 'Der er endnu ikke nok godkendt indhold til at svare.' }, 422);
 	}
 
@@ -108,6 +110,25 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 		preferredAiTools: rawProfile.preferred_ai_tools ?? [],
 	} : {};
 
+	const responseBody: Record<string, unknown> = {
+		model: import.meta.env.OPENAI_MODEL || 'gpt-5.6-sol',
+		store: false,
+		safety_identifier: await safetyIdentifier(userId),
+		instructions: buildMentorInstructions(profile, Boolean(vectorStoreId)),
+		input: `Brugerens spørgsmål:\n${parsed.data.question}\n\nGodkendt LearnAI-kontekst:\n${sources.length > 0 ? buildMentorContext(sources) : 'Ingen relevante interne indholdskilder fundet.'}`,
+		reasoning: { effort: 'low' },
+		text: { verbosity: 'low' },
+		max_output_tokens: 900,
+	};
+	if (vectorStoreId) {
+		responseBody.tools = [{
+			type: 'file_search',
+			vector_store_ids: [vectorStoreId],
+			max_num_results: 8,
+		}];
+		responseBody.include = ['file_search_call.results'];
+	}
+
 	let openAIResponse: Response;
 	try {
 		openAIResponse = await fetch('https://api.openai.com/v1/responses', {
@@ -116,16 +137,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 				Authorization: `Bearer ${apiKey}`,
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({
-				model: import.meta.env.OPENAI_MODEL || 'gpt-5.6-sol',
-				store: false,
-				safety_identifier: await safetyIdentifier(userId),
-				instructions: buildMentorInstructions(profile),
-				input: `Brugerens spørgsmål:\n${parsed.data.question}\n\nGodkendt LearnAI-kontekst:\n${buildMentorContext(sources)}`,
-				reasoning: { effort: 'low' },
-				text: { verbosity: 'low' },
-				max_output_tokens: 900,
-			}),
+			body: JSON.stringify(responseBody),
 			signal: AbortSignal.timeout(30_000),
 		});
 	} catch {
@@ -153,14 +165,22 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	const openAIPayload: unknown = await openAIResponse.json();
 	const answer = extractResponseText(openAIPayload);
 	if (!answer) return json({ code: 'empty_response', message: 'AI Mentor returnerede ikke et brugbart svar.' }, 503);
-
-	return json({
-		answer,
-		sources: sources.map((source) => ({
+	const documentSources = extractFileCitations(openAIPayload).map((filename) => ({
+		title: filename,
+		type: 'videnskilde',
+	}));
+	const responseSources = [
+		...sources.map((source) => ({
 			title: source.title,
 			type: source.type,
 			url: sourceUrl(source.slug),
 		})),
+		...documentSources,
+	].slice(0, 8);
+
+	return json({
+		answer,
+		sources: responseSources,
 		remaining,
 	});
 };

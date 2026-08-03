@@ -371,9 +371,9 @@ body.blue-orbit {
 .mentor-sources { margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--orbit-outline-variant); }
 .mentor-sources h3 { margin-bottom: .9rem; font-size: 1rem; letter-spacing: -.02em; }
 .mentor-sources ul { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
-.mentor-sources a { display: grid; gap: .18rem; padding: .8rem; border-radius: var(--orbit-shape-sm); background: var(--orbit-surface-low); }
+.mentor-sources a, .mentor-source-card { display: grid; gap: .18rem; padding: .8rem; border-radius: var(--orbit-shape-sm); background: var(--orbit-surface-low); }
 .mentor-sources a:hover { background: var(--orbit-primary-container); color: var(--orbit-on-primary-container); }
-.mentor-sources span { color: var(--orbit-primary); font-size: .68rem; font-weight: 820; letter-spacing: .05em; text-transform: uppercase; }
+.mentor-sources span, .mentor-source-card span { color: var(--orbit-primary); font-size: .68rem; font-weight: 820; letter-spacing: .05em; text-transform: uppercase; }
 .mentor-empty, .mentor-loading { display: grid; min-height: 520px; place-content: center; justify-items: center; text-align: center; }
 .mentor-empty p, .mentor-loading p { max-width: 490px; margin: .7rem 0 0; color: var(--orbit-on-surface-variant); }
 .mentor-orbit { display: grid; width: 8rem; height: 8rem; margin-bottom: 1.5rem; place-items: center; border: 1px solid color-mix(in srgb, var(--orbit-primary) 30%, transparent); border-radius: 50%; background: radial-gradient(circle, var(--orbit-primary-container), transparent 72%); }

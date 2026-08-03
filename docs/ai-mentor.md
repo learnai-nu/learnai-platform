@@ -8,10 +8,16 @@ LearnAI-indhold og linker tilbage til kilderne.
 ```text
 OPENAI_API_KEY=<server-only secret>
 OPENAI_MODEL=gpt-5.6-sol
+OPENAI_VECTOR_STORE_ID=<OpenAI vector store id>
 ```
 
 Sæt variablerne i Vercel for Preview og Production. Nøglen må aldrig ligge i
 Git, en `PUBLIC_`-variabel eller browserkode.
+
+Når `OPENAI_VECTOR_STORE_ID` er sat, søger AI Mentor også i LearnAI Knowledge
+Base via OpenAI File Search. Dokumentkilder vises med deres filnavn sammen med
+de interne LearnAI-kilder. Uden variablen fortsætter mentoren med kun at bruge
+publiceret indhold fra Supabase.
 
 ## Data
 
@@ -26,7 +32,9 @@ Spørgsmål og svar gemmes ikke af LearnAI. API-kald sendes med `store: false`.
 ## Verifikation
 
 1. Log ind og udfyld `/dashboard/profil`.
-2. Åbn `/mentor` og send et spørgsmål, der matcher en publiceret guide.
-3. Kontrollér at svaret viser interne LearnAI-kilder.
+2. Åbn `/mentor` og send et spørgsmål, der matcher en publiceret guide og et
+   dokument i vector store.
+3. Kontrollér at svaret viser både interne LearnAI-kilder og relevante
+   dokumentkilder med filnavn.
 4. Kontrollér at en anonym forespørgsel til endpointet afvises.
 5. Kør tests, lint, Astro check og Supabase security/performance advisors.
