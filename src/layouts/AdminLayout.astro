@@ -4,7 +4,7 @@ import SiteLayout from './SiteLayout.astro';
 interface Props {
 	title: string;
 	description: string;
-	active: 'dashboard' | 'content' | 'courses' | 'quizzes';
+	active: 'dashboard' | 'content' | 'courses' | 'quizzes' | 'knowledgeGraph';
 	email: string;
 	role: 'admin' | 'editor';
 }
@@ -15,6 +15,7 @@ const links = [
 	{ id: 'content', label: 'Indhold', href: '/admin/indhold' },
 	{ id: 'courses', label: 'Kurser', href: '/admin/kurser' },
 	{ id: 'quizzes', label: 'Quizzer', href: '/admin/quizzer' },
+	{ id: 'knowledgeGraph', label: 'Vidensgraf', href: '/admin/vidensgraf' },
 ] as const;
 ---
 
