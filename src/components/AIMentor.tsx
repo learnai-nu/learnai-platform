@@ -108,7 +108,10 @@ export default function AIMentor({ profileComplete }: Props) {
 								<div><p className="eyebrow">AI-genereret svar</p><h2>Mit forslag</h2></div>
 								<span>{result.remaining} spørgsmål tilbage i dag</span>
 							</div>
-							<div className="mentor-answer-copy">{result.answer}</div>
+							<div
+								className="mentor-answer-copy"
+								dangerouslySetInnerHTML={{ __html: result.answerHtml }}
+							/>
 							<div className="mentor-sources">
 								<h3>Kilder fra LearnAI</h3>
 								<ul>{result.sources.map((source, index) => (

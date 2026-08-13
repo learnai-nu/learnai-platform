@@ -367,7 +367,26 @@ body.blue-orbit {
 .mentor-answer { min-height: 590px; padding: clamp(1.25rem, 3vw, 2rem); }
 .mentor-answer-head { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
 .mentor-answer-head > span { padding: .45rem .65rem; border-radius: 999px; background: var(--orbit-surface-low); color: var(--orbit-on-surface-variant); font-size: .72rem; font-weight: 760; }
-.mentor-answer-copy { margin-top: 1.8rem; color: var(--orbit-on-surface); font-size: 1.02rem; line-height: 1.75; white-space: pre-wrap; }
+.mentor-answer-copy { display: grid; gap: 1rem; margin-top: 1.8rem; color: var(--orbit-on-surface); font-size: 1.02rem; line-height: 1.75; }
+.mentor-answer-copy > :first-child { margin-top: 0; }
+.mentor-answer-copy > :last-child { margin-bottom: 0; }
+.mentor-answer-copy p { margin: 0; }
+.mentor-answer-copy h1,
+.mentor-answer-copy h2,
+.mentor-answer-copy h3,
+.mentor-answer-copy h4 { margin: .65rem 0 0; line-height: 1.25; letter-spacing: -.025em; }
+.mentor-answer-copy h1,
+.mentor-answer-copy h2 { font-size: 1.35rem; }
+.mentor-answer-copy h3,
+.mentor-answer-copy h4 { font-size: 1.12rem; }
+.mentor-answer-copy ul,
+.mentor-answer-copy ol { display: grid; gap: .65rem; margin: 0; padding-left: 1.35rem; }
+.mentor-answer-copy li { padding-left: .2rem; }
+.mentor-answer-copy li::marker { color: var(--orbit-primary); font-weight: 800; }
+.mentor-answer-copy strong { font-weight: 780; }
+.mentor-answer-copy a { color: var(--orbit-primary); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.mentor-answer-copy blockquote { margin: 0; padding: .85rem 1rem; border-left: 3px solid var(--orbit-primary); background: var(--orbit-surface-low); }
+.mentor-answer-copy code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
 .mentor-sources { margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--orbit-outline-variant); }
 .mentor-sources h3 { margin-bottom: .9rem; font-size: 1rem; letter-spacing: -.02em; }
 .mentor-sources ul { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }

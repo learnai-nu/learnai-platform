@@ -11,6 +11,7 @@ import {
 } from '../../../lib/ai/mentor';
 import { createServerSupabaseClient } from '../../../lib/supabase/server';
 import { hasSameOrigin } from '../../../lib/admin/security';
+import { renderMarkdown } from '../../../lib/content/markdown';
 
 export const prerender = false;
 
@@ -180,6 +181,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
 	return json({
 		answer,
+		answerHtml: renderMarkdown(answer),
 		sources: responseSources,
 		remaining,
 	});
