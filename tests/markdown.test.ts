@@ -31,4 +31,18 @@ describe('sikker Markdown-rendering', () => {
 		expect(html).not.toContain('href="javascript:');
 		expect(html).not.toContain('onerror');
 	});
+
+	it('formaterer Mentor-svar med fremhævelse og punktopstilling', () => {
+		const html = renderMarkdown([
+			'**Kort anbefaling:** Brug AI som støtte.',
+			'',
+			'- **Bevar fagligt tilsyn:** Kontrollér altid svaret.',
+			'- **Beskyt oplysninger:** Del ikke persondata.',
+		].join('\n'));
+
+		expect(html).toContain('<p><strong>Kort anbefaling:</strong> Brug AI som støtte.</p>');
+		expect(html).toContain('<ul>');
+		expect(html).toContain('<li><strong>Bevar fagligt tilsyn:</strong> Kontrollér altid svaret.</li>');
+		expect(html).not.toContain('**');
+	});
 });

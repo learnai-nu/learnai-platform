@@ -11,16 +11,19 @@ describe('AI Mentor contracts', () => {
 	it('accepts only internal LearnAI source URLs', () => {
 		expect(mentorResponseSchema.safeParse({
 			answer: 'Start her.',
+			answerHtml: '<p>Start her.</p>',
 			sources: [{ title: 'Guide', type: 'guide', url: '/laer/guide' }],
 			remaining: 19,
 		}).success).toBe(true);
 		expect(mentorResponseSchema.safeParse({
 			answer: 'Start her.',
+			answerHtml: '<p>Start her.</p>',
 			sources: [{ title: 'Guide', type: 'guide', url: 'https://example.com' }],
 			remaining: 19,
 		}).success).toBe(false);
 		expect(mentorResponseSchema.safeParse({
 			answer: 'Start her.',
+			answerHtml: '<p>Start her.</p>',
 			sources: [{ title: 'Rapport.pdf', type: 'videnskilde' }],
 			remaining: 19,
 		}).success).toBe(true);

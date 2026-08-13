@@ -12,6 +12,7 @@ export const mentorSourceSchema = z.object({
 
 export const mentorResponseSchema = z.object({
 	answer: z.string().min(1),
+	answerHtml: z.string().min(1),
 	sources: z.array(mentorSourceSchema).max(8),
 	remaining: z.number().int().min(0).max(19),
 });
