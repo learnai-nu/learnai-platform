@@ -381,6 +381,8 @@ body.blue-orbit {
 .mentor-answer-copy h4 { font-size: 1.12rem; }
 .mentor-answer-copy ul,
 .mentor-answer-copy ol { display: grid; gap: .65rem; margin: 0; padding-left: 1.35rem; }
+.mentor-answer-copy ul { list-style: disc; }
+.mentor-answer-copy ol { list-style: decimal; }
 .mentor-answer-copy li { padding-left: .2rem; }
 .mentor-answer-copy li::marker { color: var(--orbit-primary); font-weight: 800; }
 .mentor-answer-copy strong { font-weight: 780; }
