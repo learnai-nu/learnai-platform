@@ -12,6 +12,8 @@ describe('AI work compass vertical slice', () => {
 		expect(component).toContain("type AssessmentLocale");
 		expect(component).not.toContain('localStorage');
 		expect(component).not.toContain('fetch(');
+		expect(component).toContain('12 questions');
+		expect(component).toContain('12 spørgsmål');
 	});
 
 	it('supports keyboard focus, progress semantics, and reduced motion', () => {
@@ -21,6 +23,15 @@ describe('AI work compass vertical slice', () => {
 		expect(component).toContain("lang={locale === 'da' ? 'da' : 'en'}");
 		expect(component).toContain('type="radio"');
 		expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
+	});
+
+	it('provides transparent results and a three-step learning route', () => {
+		expect(component).toContain('methodTitle');
+		expect(component).toContain('learningOrder');
+		expect(component).toContain('/kurser/ai-i-praksis-dit-foerste-kursus');
+		expect(component).toContain('/mentor');
+		expect(component).toContain('/laer');
+		expect(styles).toContain('.work-compass-learning-plan');
 	});
 
 	it('uses the LearnAI workbook tokens instead of workshop brand colors', () => {

@@ -9,77 +9,81 @@ import {
 const copy = {
 	da: {
 		label: 'Dit AI-arbejdskompas',
-		introTitle: 'Se hvor AI kan flytte dit arbejde næste gang',
-		introBody: 'Tre korte spørgsmål giver dig et øjebliksbillede af din forståelse, praksis og forankring. Svarene forlader ikke din browser.',
+		introTitle: 'Find dit næste gode AI-træk',
+		introBody: '12 konkrete spørgsmål viser, hvor du står i forståelse, praksis og forankring – og giver dig en læringsrute, du kan bruge med det samme.',
 		start: 'Start kompasset',
-		privacy: '3 spørgsmål · cirka 2 minutter · ingen lagring',
-		back: 'Tilbage',
-		next: 'Næste spørgsmål',
-		results: 'Se mit kompas',
-		question: 'Spørgsmål',
-		of: 'af',
-		choose: 'Vælg ét svar for at fortsætte.',
-		resultLabel: 'Dit øjebliksbillede',
-		resultTitle: 'Dit arbejdskompas peger mod',
-		strongest: 'Din stærkeste retning',
-		growth: 'Dit næste udviklingspunkt',
-		nextStep: 'Prøv dette som næste skridt',
-		restart: 'Tag kompasset igen',
-		method: 'Resultatet er en læringsvejviser – ikke en certificering eller personlighedstest.',
+		privacy: '12 spørgsmål · cirka 4 minutter · ingen lagring',
+		back: 'Tilbage', next: 'Næste spørgsmål', results: 'Se min læringsrute',
+		question: 'Spørgsmål', of: 'af', part: 'Del', choose: 'Vælg ét svar for at fortsætte.',
+		resultLabel: 'Dit personlige øjebliksbillede', resultTitle: 'Dit arbejdskompas peger mod',
+		strongest: 'Det har du bedst fat i', growth: 'Her får du mest ud af at begynde',
+		planTitle: 'Din læringsrute i tre trin', planBody: 'Begynd med dit største udviklingspunkt. Fortsæt derefter rundt i kompasset.',
+		restart: 'Tag kompasset igen', methodTitle: 'Sådan er resultatet beregnet',
+		method: 'Hver af de tre retninger bygger på fire svar. Hvert svar giver 0–3 point, som omregnes til en procent. Den samlede score er gennemsnittet af de tre retninger. Ved ens score vises den første retning som styrke og den sidste som udviklingspunkt, så du altid får to forskellige pejlemærker. Resultatet er en læringsvejviser – ikke en certificering eller personlighedstest.',
 		dimensions: { understanding: 'Forståelse', practice: 'Praksis', adoption: 'Forankring' },
 		stages: {
-			explorer: { title: 'Nysgerrig udforsker', body: 'Du er i gang med at finde de opgaver, hvor AI faktisk gør en forskel.' },
-			practitioner: { title: 'Praktisk medspiller', body: 'Du bruger AI aktivt og kan få mere ud af at gøre dine bedste arbejdsgange gentagelige.' },
-			orchestrator: { title: 'Bevidst orkestrator', body: 'Du arbejder systematisk med AI og har blik for både delegation, kvalitet og ansvar.' },
+			starter: { title: 'Klar til første skridt', body: 'Du har et godt udgangspunkt for at gøre AI konkret: én opgave, én sikker metode og ét lille forsøg ad gangen.' },
+			explorer: { title: 'Nysgerrig udforsker', body: 'Du har begyndt at finde de steder, hvor AI hjælper. Næste gevinst kommer fra tydeligere metode og mere bevidst kvalitet.' },
+			practitioner: { title: 'Praktisk medspiller', body: 'Du bruger AI aktivt. Nu kan du gøre dine bedste greb gentagelige og bygge dem ind i en stabil arbejdsrytme.' },
+			orchestrator: { title: 'Bevidst orkestrator', body: 'Du arbejder systematisk med AI og har blik for ansvar, kvalitet og læring. Dit næste niveau er at dele og forbedre metoden.' },
 		},
-		actions: {
-			understanding: 'Vælg én arbejdsopgave og skriv tre kolonner: hvad AI må gøre, hvad du skal kontrollere, og hvad kun et menneske må beslutte.',
-			practice: 'Tag en tilbagevendende opgave og beskriv den som: input → AI-arbejde → kvalitetstjek → færdigt resultat.',
-			adoption: 'Vælg ét fast tidspunkt i næste uge, hvor du bruger dit bedste AI-workflow og noterer, hvad der skal forbedres.',
+		strengths: {
+			understanding: 'Du ser tydeligt, hvad AI kan bidrage med, og hvor menneskelig vurdering fortsat er afgørende.',
+			practice: 'Du kan omsætte en opgave til et brugbart samarbejde med AI og kontrollere resultatet.',
+			adoption: 'Du er godt i gang med at gøre AI til en genbrugelig og lærende del af din arbejdsdag.',
+		},
+		growths: {
+			understanding: 'Skab et sikrere beslutningsgrundlag, før du vælger værktøj, data og rollefordeling.',
+			practice: 'Gør dine instruktioner, iterationer og kvalitetstjek mere konkrete og gentagelige.',
+			adoption: 'Flyt dine bedste enkeltforsøg ind i faste vaner, skabeloner og fælles læring.',
+		},
+		plans: {
+			understanding: { eyebrow: 'Afklar opgaven', title: 'Lav et AI-opgavekort', body: 'Vælg én arbejdsopgave. Notér hvad AI må gøre, hvad du skal kontrollere, og hvad kun et menneske må beslutte.', cta: 'Se LearnAI-guides', href: '/laer' },
+			practice: { eyebrow: 'Byg metoden', title: 'Gør én opgave gentagelig', body: 'Beskriv den som input → AI-arbejde → kvalitetstjek → færdigt resultat. Afprøv den to gange og ret skabelonen.', cta: 'Start gratiskurset', href: '/kurser/ai-i-praksis-dit-foerste-kursus' },
+			adoption: { eyebrow: 'Forankr vanen', title: 'Planlæg næste gentagelse', body: 'Vælg et fast tidspunkt i næste uge. Gem din metode, og notér bagefter én forbedring til næste gang.', cta: 'Spørg AI Mentor', href: '/mentor' },
 		},
 	},
 	en: {
 		label: 'Your AI Work Compass',
-		introTitle: 'See where AI can move your work next',
-		introBody: 'Three short questions give you a snapshot of your understanding, practice, and adoption. Your answers never leave the browser.',
+		introTitle: 'Find your next good AI move',
+		introBody: '12 concrete questions show where you stand in understanding, practice, and adoption—and give you a learning route you can use right away.',
 		start: 'Start the compass',
-		privacy: '3 questions · about 2 minutes · no storage',
-		back: 'Back',
-		next: 'Next question',
-		results: 'See my compass',
-		question: 'Question',
-		of: 'of',
-		choose: 'Choose one answer to continue.',
-		resultLabel: 'Your snapshot',
-		resultTitle: 'Your work compass points towards',
-		strongest: 'Your strongest direction',
-		growth: 'Your next growth area',
-		nextStep: 'Try this next',
-		restart: 'Take the compass again',
-		method: 'This result is a learning guide—not a certification or personality test.',
+		privacy: '12 questions · about 4 minutes · no storage',
+		back: 'Back', next: 'Next question', results: 'See my learning route',
+		question: 'Question', of: 'of', part: 'Part', choose: 'Choose one answer to continue.',
+		resultLabel: 'Your personal snapshot', resultTitle: 'Your work compass points towards',
+		strongest: 'Your strongest direction', growth: 'The best place to begin',
+		planTitle: 'Your three-step learning route', planBody: 'Begin with your largest growth area, then continue around the compass.',
+		restart: 'Take the compass again', methodTitle: 'How the result is calculated',
+		method: 'Each of the three directions is based on four answers. Every answer scores 0–3 points, converted to a percentage. Your overall score is the average of all three directions. For tied scores, the first direction is shown as the strength and the last as the growth area, so you always get two distinct signals. The result is a learning guide—not a certification or personality test.',
 		dimensions: { understanding: 'Understanding', practice: 'Practice', adoption: 'Adoption' },
 		stages: {
-			explorer: { title: 'Curious explorer', body: 'You are identifying the tasks where AI can make a real difference.' },
-			practitioner: { title: 'Practical collaborator', body: 'You use AI actively and can gain more by making your strongest workflows repeatable.' },
-			orchestrator: { title: 'Intentional orchestrator', body: 'You work systematically with AI and consider delegation, quality, and responsibility.' },
+			starter: { title: 'Ready for the first step', body: 'You have a sound starting point for making AI concrete: one task, one safe method, and one small experiment at a time.' },
+			explorer: { title: 'Curious explorer', body: 'You are finding the places where AI helps. Your next gain comes from a clearer method and more deliberate quality checks.' },
+			practitioner: { title: 'Practical collaborator', body: 'You use AI actively. Now make your strongest moves repeatable and build them into a stable work rhythm.' },
+			orchestrator: { title: 'Intentional orchestrator', body: 'You work systematically with AI and consider responsibility, quality, and learning. Your next level is sharing and improving the method.' },
 		},
-		actions: {
-			understanding: 'Choose one work task and write three columns: what AI may do, what you must check, and what only a person may decide.',
-			practice: 'Take one recurring task and describe it as: input → AI work → quality check → finished result.',
-			adoption: 'Choose one fixed time next week to use your best AI workflow and note what needs improving.',
+		strengths: {
+			understanding: 'You clearly see what AI can contribute and where human judgement remains essential.',
+			practice: 'You can turn a task into useful collaboration with AI and check the result.',
+			adoption: 'You are making AI a reusable and learning part of your workday.',
+		},
+		growths: {
+			understanding: 'Build a safer basis for deciding on tools, data, and the division of roles.',
+			practice: 'Make your instructions, iterations, and quality checks more concrete and repeatable.',
+			adoption: 'Move your best individual experiments into habits, templates, and shared learning.',
+		},
+		plans: {
+			understanding: { eyebrow: 'Clarify the task', title: 'Make an AI task card', body: 'Choose one work task. Note what AI may do, what you must check, and what only a person may decide.', cta: 'Explore LearnAI guides', href: '/laer' },
+			practice: { eyebrow: 'Build the method', title: 'Make one task repeatable', body: 'Describe it as input → AI work → quality check → finished result. Test it twice and improve the template.', cta: 'Start the free course', href: '/kurser/ai-i-praksis-dit-foerste-kursus' },
+			adoption: { eyebrow: 'Anchor the habit', title: 'Schedule the next repeat', body: 'Choose a fixed time next week. Save your method, then note one improvement for next time.', cta: 'Ask AI Mentor', href: '/mentor' },
 		},
 	},
 } as const;
 
 const dimensionOrder: AssessmentDimension[] = ['understanding', 'practice', 'adoption'];
 
-function CompassGraphic({
-	values,
-	labels,
-}: {
-	values: Record<AssessmentDimension, number>;
-	labels: Record<AssessmentDimension, string>;
-}) {
+function CompassGraphic({ values, labels }: { values: Record<AssessmentDimension, number>; labels: Record<AssessmentDimension, string> }) {
 	const center = 100;
 	const radius = 78;
 	const points = dimensionOrder.map((dimension, index) => {
@@ -92,14 +96,9 @@ function CompassGraphic({
 		<svg className="work-compass-graphic" viewBox="0 0 200 200" role="img" aria-label={dimensionOrder.map((dimension) => `${labels[dimension]}: ${values[dimension]}%`).join(', ')}>
 			<polygon className="work-compass-grid work-compass-grid-outer" points="100,22 167.55,139 32.45,139" />
 			<polygon className="work-compass-grid" points="100,61 133.78,119.5 66.22,119.5" />
-			<line x1="100" y1="100" x2="100" y2="22" />
-			<line x1="100" y1="100" x2="167.55" y2="139" />
-			<line x1="100" y1="100" x2="32.45" y2="139" />
+			<line x1="100" y1="100" x2="100" y2="22" /><line x1="100" y1="100" x2="167.55" y2="139" /><line x1="100" y1="100" x2="32.45" y2="139" />
 			<polygon className="work-compass-value" points={points} />
-			{points.split(' ').map((point, index) => {
-				const [cx, cy] = point.split(',');
-				return <circle key={dimensionOrder[index]} cx={cx} cy={cy} r="5" />;
-			})}
+			{points.split(' ').map((point, index) => { const [cx, cy] = point.split(','); return <circle key={dimensionOrder[index]} cx={cx} cy={cy} r="5" />; })}
 		</svg>
 	);
 }
@@ -122,28 +121,20 @@ export default function WorkCompass() {
 		}
 	}, [screen, currentQuestion]);
 
-	function start() {
-		setCurrentQuestion(0);
-		setScreen('questions');
-	}
-
+	function start() { setCurrentQuestion(0); setScreen('questions'); }
 	function continueAssessment() {
 		if (!selected) return;
-		if (currentQuestion === workCompassQuestions.length - 1) {
-			setScreen('result');
-			return;
-		}
+		if (currentQuestion === workCompassQuestions.length - 1) { setScreen('result'); return; }
 		setCurrentQuestion((value) => value + 1);
 	}
-
-	function restart() {
-		setAnswers({});
-		setCurrentQuestion(0);
-		setScreen('intro');
-	}
+	function restart() { setAnswers({}); setCurrentQuestion(0); setScreen('intro'); }
 
 	const result = screen === 'result' ? calculateWorkCompass(answers) : null;
 	const previewValues = Object.fromEntries(dimensionOrder.map((dimension) => [dimension, 18])) as Record<AssessmentDimension, number>;
+	const questionPart = question ? dimensionOrder.indexOf(question.dimension) + 1 : 1;
+	const learningOrder = result
+		? [result.growthDimension, ...dimensionOrder.filter((dimension) => dimension !== result.growthDimension)]
+		: dimensionOrder;
 
 	return (
 		<section ref={rootRef} className="work-compass" aria-labelledby="work-compass-title" lang={locale === 'da' ? 'da' : 'en'}>
@@ -158,44 +149,25 @@ export default function WorkCompass() {
 			{screen === 'intro' && (
 				<div className="work-compass-intro">
 					<div>
-						<p className="work-compass-kicker">{t.label}</p>
-						<h1>{t.introTitle}</h1>
-						<p className="work-compass-lead">{t.introBody}</p>
+						<p className="work-compass-kicker">{t.label}</p><h1>{t.introTitle}</h1><p className="work-compass-lead">{t.introBody}</p>
 						<button className="work-compass-primary" type="button" onClick={start}>{t.start}<span aria-hidden="true">→</span></button>
 						<p className="work-compass-privacy">{t.privacy}</p>
 					</div>
 					<div className="work-compass-signature" aria-hidden="true">
 						<CompassGraphic values={previewValues} labels={t.dimensions} />
-						<span className="compass-label compass-label-understanding">01</span>
-						<span className="compass-label compass-label-practice">02</span>
-						<span className="compass-label compass-label-adoption">03</span>
+						<span className="compass-label compass-label-understanding">01</span><span className="compass-label compass-label-practice">02</span><span className="compass-label compass-label-adoption">03</span>
 					</div>
 				</div>
 			)}
 
 			{screen === 'questions' && question && (
 				<div className="work-compass-question-shell">
-					<div className="work-compass-question-meta">
-						<span>{t.question} {currentQuestion + 1} {t.of} {workCompassQuestions.length}</span>
-						<span>{Math.round(((currentQuestion + 1) / workCompassQuestions.length) * 100)}%</span>
-					</div>
-					<div className="work-compass-progress" role="progressbar" aria-valuemin={1} aria-valuemax={workCompassQuestions.length} aria-valuenow={currentQuestion + 1}>
-						<span style={{ width: `${((currentQuestion + 1) / workCompassQuestions.length) * 100}%` }} />
-					</div>
+					<div className="work-compass-question-meta"><span>{t.part} {questionPart} / 3 · {t.dimensions[question.dimension]}</span><span>{t.question} {currentQuestion + 1} {t.of} {workCompassQuestions.length}</span></div>
+					<div className="work-compass-progress" role="progressbar" aria-valuemin={1} aria-valuemax={workCompassQuestions.length} aria-valuenow={currentQuestion + 1}><span style={{ width: `${((currentQuestion + 1) / workCompassQuestions.length) * 100}%` }} /></div>
 					<div className="work-compass-question-grid">
-						<div>
-							<p className="work-compass-kicker">{t.dimensions[question.dimension]}</p>
-							<h2 ref={headingRef} tabIndex={-1}>{question.prompt[locale]}</h2>
-							<p>{question.context[locale]}</p>
-						</div>
-						<fieldset className="work-compass-options">
-							<legend className="sr-only">{question.prompt[locale]}</legend>
-							{question.options.map((option) => (
-								<label key={option.id} className={selected === option.id ? 'is-selected' : ''}>
-									<input type="radio" name={question.id} value={option.id} checked={selected === option.id} onChange={() => setAnswers((current) => ({ ...current, [question.id]: option.id }))} />
-									<span>{option.label[locale]}</span>
-								</label>
-							))}
+						<div><p className="work-compass-kicker">{t.dimensions[question.dimension]}</p><h2 ref={headingRef} tabIndex={-1}>{question.prompt[locale]}</h2><p>{question.context[locale]}</p></div>
+						<fieldset className="work-compass-options"><legend className="sr-only">{question.prompt[locale]}</legend>
+							{question.options.map((option) => <label key={option.id} className={selected === option.id ? 'is-selected' : ''}><input type="radio" name={question.id} value={option.id} checked={selected === option.id} onChange={() => setAnswers((current) => ({ ...current, [question.id]: option.id }))} /><span>{option.label[locale]}</span></label>)}
 						</fieldset>
 					</div>
 					<div className="work-compass-navigation">
@@ -208,26 +180,19 @@ export default function WorkCompass() {
 
 			{screen === 'result' && result && (
 				<div className="work-compass-result">
-					<div className="work-compass-result-heading">
-						<p className="work-compass-kicker">{t.resultLabel}</p>
-						<h2 ref={headingRef} tabIndex={-1}>{t.resultTitle} <span>{t.stages[result.stage].title}</span></h2>
-						<p>{t.stages[result.stage].body}</p>
-					</div>
+					<div className="work-compass-result-heading"><p className="work-compass-kicker">{t.resultLabel}</p><h2 ref={headingRef} tabIndex={-1}>{t.resultTitle} <span>{t.stages[result.stage].title}</span></h2><p>{t.stages[result.stage].body}</p></div>
 					<div className="work-compass-result-grid">
-						<div className="work-compass-chart-card">
-							<CompassGraphic values={result.dimensions} labels={t.dimensions} />
-							<strong>{result.overall}<small>/100</small></strong>
-							<ul>
-								{dimensionOrder.map((dimension) => <li key={dimension}><span>{t.dimensions[dimension]}</span><b>{result.dimensions[dimension]}%</b></li>)}
-							</ul>
-						</div>
+						<div className="work-compass-chart-card"><CompassGraphic values={result.dimensions} labels={t.dimensions} /><strong>{result.overall}<small>/100</small></strong><ul>{dimensionOrder.map((dimension) => <li key={dimension}><span>{t.dimensions[dimension]}</span><b>{result.dimensions[dimension]}%</b></li>)}</ul></div>
 						<div className="work-compass-insights">
-							<article><span>{t.strongest}</span><h3>{t.dimensions[result.strongestDimension]}</h3></article>
-							<article><span>{t.growth}</span><h3>{t.dimensions[result.growthDimension]}</h3></article>
-							<article className="work-compass-next-action"><span>{t.nextStep}</span><p>{t.actions[result.growthDimension]}</p><a href="/kurser/ai-i-praksis-dit-foerste-kursus">LearnAI · {locale === 'da' ? 'Start gratis' : 'Start free'} <b aria-hidden="true">→</b></a></article>
+							<article><span>{t.strongest}</span><h3>{t.dimensions[result.strongestDimension]}</h3><p>{t.strengths[result.strongestDimension]}</p></article>
+							<article><span>{t.growth}</span><h3>{t.dimensions[result.growthDimension]}</h3><p>{t.growths[result.growthDimension]}</p></article>
 						</div>
 					</div>
-					<div className="work-compass-result-footer"><p>{t.method}</p><button type="button" className="work-compass-secondary" onClick={restart}>{t.restart}</button></div>
+					<section className="work-compass-learning-plan" aria-labelledby="learning-plan-title">
+						<div><p className="work-compass-kicker">LearnAI · næste skridt</p><h3 id="learning-plan-title">{t.planTitle}</h3><p>{t.planBody}</p></div>
+						<ol>{learningOrder.map((dimension, index) => { const plan = t.plans[dimension]; return <li key={dimension} className={index === 0 ? 'is-priority' : ''}><span className="work-compass-step">0{index + 1}</span><small>{plan.eyebrow}</small><h4>{plan.title}</h4><p>{plan.body}</p><a href={plan.href}>{plan.cta}<b aria-hidden="true">→</b></a></li>; })}</ol>
+					</section>
+					<div className="work-compass-result-footer"><details><summary>{t.methodTitle}</summary><p>{t.method}</p></details><button type="button" className="work-compass-secondary" onClick={restart}>{t.restart}</button></div>
 				</div>
 			)}
 		</section>
