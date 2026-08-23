@@ -26,7 +26,7 @@ const tokens = readFileSync(
 );
 const styles = readFileSync(new URL('../src/styles/blue-orbit.css', import.meta.url), 'utf8');
 
-describe('Blue Orbit homepage', () => {
+describe('LearnAI workbook homepage', () => {
 	it('uses the isolated component layout and core marketing components', () => {
 		expect(homepage).toContain('<BlueOrbitLayout');
 		expect(homepage).toContain('<HeroLearningPreview />');
@@ -66,9 +66,10 @@ describe('Blue Orbit homepage', () => {
 
 	it('moves visitors from a clear promise to three real actions', () => {
 		expect(hero).toContain('Første kursus tager under én time');
-		expect(hero).toContain('Brug AI bedre.');
-		expect(hero).toContain('signal-console');
-		expect(hero).toContain('orbit-signal-strip');
+		expect(hero).toContain('Få AI til at fungere');
+		expect(hero).toContain('workbook-prompt');
+		expect(hero).toContain('workbook-note');
+		expect(hero).not.toContain('signal-console');
 		expect(hero.match(/<a href=/g)).toHaveLength(3);
 	});
 
@@ -78,14 +79,15 @@ describe('Blue Orbit homepage', () => {
 		expect(learningModel).toContain('LØS');
 		expect(learningModel).toContain('SPØRG');
 		expect(featuredCourses).toContain('orbit-course-card-featured');
-		expect(featuredCourses).toContain('course-signal-map');
+		expect(featuredCourses).toContain('course-workbook-cover');
 		expect(featuredCourses).not.toContain('data-filter');
 		expect(featuredCourses).not.toContain('const courses');
 	});
 
 	it('defines semantic color tokens and responsive overflow protection', () => {
-		expect(tokens).toContain('--orbit-primary: #295cff');
-		expect(tokens).toContain('--orbit-decision: #f15a32');
+		expect(tokens).toContain('--orbit-primary: #315ef5');
+		expect(tokens).toContain('--orbit-decision: #f3d45b');
+		expect(styles).toContain('LearnAI workbook system');
 		expect(styles).toContain(':where(.blue-orbit) a { color: inherit;');
 		expect(styles).toContain('.orbit-button-filled { background: var(--orbit-primary); color: var(--orbit-on-primary);');
 		expect(styles).not.toContain('.blue-orbit a { color: inherit;');
