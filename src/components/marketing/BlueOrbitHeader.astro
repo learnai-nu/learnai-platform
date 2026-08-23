@@ -2,13 +2,18 @@
 import OrbitBrand from '../ui/OrbitBrand.astro';
 
 const navigation = [
-	{ href: '/laer', label: 'Lær AI' },
-	{ href: '/kurser', label: 'Kurser' },
-	{ href: '/mentor', label: 'AI Mentor' },
-	{ href: '/virksomheder', label: 'Virksomheder' },
+	{ href: '/kurser', label: 'Kurser', section: '/kurser' },
+	{ href: '/laer?type=prompt', label: 'Prompts', section: '/laer', type: 'prompt' },
+	{ href: '/laer', label: 'Viden', section: '/laer', type: 'all' },
+	{ href: '/mentor', label: 'AI Mentor', section: '/mentor' },
 ];
-const isActive = (href: string) =>
-	Astro.url.pathname === href || Astro.url.pathname.startsWith(`${href}/`);
+const isActive = (item: (typeof navigation)[number]) => {
+	const inSection = Astro.url.pathname === item.section || Astro.url.pathname.startsWith(`${item.section}/`);
+	if (!inSection) return false;
+	if (item.type === 'prompt') return Astro.url.searchParams.get('type') === 'prompt';
+	if (item.type === 'all') return Astro.url.searchParams.get('type') !== 'prompt';
+	return true;
+};
 ---
 
 <header class="orbit-header">
@@ -16,12 +21,12 @@ const isActive = (href: string) =>
 		<OrbitBrand />
 		<nav class="orbit-desktop-nav" aria-label="Primær navigation">
 			{navigation.map((item) => (
-				<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+				<a href={item.href} aria-current={isActive(item) ? 'page' : undefined}>{item.label}</a>
 			))}
 		</nav>
 		<div class="orbit-header-actions">
 			<a class="orbit-login-link" href="/login">Log ind</a>
-			<a class="orbit-header-cta" href="/kurser">Kom i gang</a>
+			<a class="orbit-header-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
 		</div>
 		<details class="orbit-mobile-nav">
 			<summary aria-label="Åbn menu">
@@ -29,10 +34,10 @@ const isActive = (href: string) =>
 			</summary>
 			<nav aria-label="Mobil navigation">
 				{navigation.map((item) => (
-					<a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+					<a href={item.href} aria-current={isActive(item) ? 'page' : undefined}>{item.label}</a>
 				))}
 				<a href="/login">Log ind</a>
-				<a class="orbit-mobile-cta" href="/kurser">Kom i gang</a>
+				<a class="orbit-mobile-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
 			</nav>
 		</details>
 	</div>

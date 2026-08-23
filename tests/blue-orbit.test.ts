@@ -37,10 +37,11 @@ describe('Blue Orbit homepage', () => {
 	it('keeps the public navigation connected to real platform routes', () => {
 		expect(header).toContain("href: '/laer'");
 		expect(header).toContain("href: '/kurser'");
-		expect(header).toContain("href: '/virksomheder'");
+		expect(header).toContain("href: '/laer?type=prompt'");
+		expect(header).toContain("href: '/mentor'");
 		expect(header).toContain('href="/login"');
-		expect(header).toContain('href="/kurser"');
-		expect(header).not.toContain("label: 'Prompts & værktøjer'");
+		expect(header).toContain('Start gratis');
+		expect(header).toContain("Astro.url.searchParams.get('type')");
 	});
 
 	it('preserves keyboard access while removing the premature theme control', () => {
@@ -56,31 +57,35 @@ describe('Blue Orbit homepage', () => {
 		expect(siteLayout).toContain("import BlueOrbitFooter from '../components/marketing/BlueOrbitFooter.astro'");
 		expect(siteLayout).toContain('body class="blue-orbit"');
 		expect(siteLayout).not.toContain('class="site-header"');
+		expect(siteLayout).toContain('property="og:title"');
+		expect(siteLayout).toContain('type="application/ld+json"');
 		expect(styles).toContain('Shared Blue Orbit treatment for the platform pages using SiteLayout.');
 		expect(styles).toContain('.blue-orbit .article-body pre code');
 		expect(styles).toContain('white-space: pre-wrap');
 	});
 
-	it('keeps the hero focused on one proof line and two dashboard modules', () => {
-		expect(hero).toContain('Første kursus på under én time');
-		expect(hero).toContain('orbit-goal-card');
-		expect(hero).toContain('orbit-continue-card');
-		expect(hero).not.toContain('orbit-signal-strip');
-		expect(hero).not.toContain('orbit-skill-grid');
-		expect(hero).not.toContain('orbit-ring-small');
+	it('moves visitors from a clear promise to three real actions', () => {
+		expect(hero).toContain('Første kursus tager under én time');
+		expect(hero).toContain('Brug AI bedre.');
+		expect(hero).toContain('signal-console');
+		expect(hero).toContain('orbit-signal-strip');
+		expect(hero.match(/<a href=/g)).toHaveLength(3);
 	});
 
-	it('uses three compact learning steps and one flagship course', () => {
-		expect(learningModel.match(/<article class="orbit-learning-card/g)).toHaveLength(3);
-		expect(learningModel).not.toContain('orbit-prompt-demo');
-		expect(learningModel).not.toContain('orbit-lesson-stack');
+	it('uses three need-based paths and one flagship course', () => {
+		expect(learningModel.match(/<a class="orbit-need-card/g)).toHaveLength(3);
+		expect(learningModel).toContain('LÆR');
+		expect(learningModel).toContain('LØS');
+		expect(learningModel).toContain('SPØRG');
 		expect(featuredCourses).toContain('orbit-course-card-featured');
+		expect(featuredCourses).toContain('course-signal-map');
 		expect(featuredCourses).not.toContain('data-filter');
 		expect(featuredCourses).not.toContain('const courses');
 	});
 
 	it('defines semantic color tokens and responsive overflow protection', () => {
-		expect(tokens).toContain('--orbit-primary: #0b45ff');
+		expect(tokens).toContain('--orbit-primary: #295cff');
+		expect(tokens).toContain('--orbit-decision: #f15a32');
 		expect(styles).toContain(':where(.blue-orbit) a { color: inherit;');
 		expect(styles).toContain('.orbit-button-filled { background: var(--orbit-primary); color: var(--orbit-on-primary);');
 		expect(styles).not.toContain('.blue-orbit a { color: inherit;');

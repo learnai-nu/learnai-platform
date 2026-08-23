@@ -3,39 +3,57 @@ import OrbitButton from '../ui/OrbitButton.astro';
 ---
 
 <section class="orbit-hero">
-	<div class="orbit-aurora orbit-aurora-one"></div>
 	<div class="orbit-hero-copy">
-		<p class="orbit-eyebrow"><span></span>Praktisk AI-læring · på dansk</p>
-		<h1>Bliv bedre til AI.<br /><span>Én praktisk sejr ad gangen.</span></h1>
+		<p class="orbit-eyebrow"><span></span>AI til det arbejde, du står med</p>
+		<h1>Brug AI bedre.<br /><span>Uden at følge med i alt.</span></h1>
 		<p class="orbit-hero-lead">
-			Korte læringsforløb, stærke prompts og konkret vejledning, der gør AI
-			til en reel kompetence i dit arbejdsliv.
+			LearnAI omsætter kunstig intelligens til korte læringsforløb,
+			gennemprøvede prompts og konkrete næste skridt på dansk.
 		</p>
 		<div class="orbit-hero-actions">
-			<OrbitButton href="/kurser" size="large" arrow>Find dit første kursus</OrbitButton>
-			<OrbitButton href="#saadan-virker-det" variant="text" size="large">Se hvordan det virker</OrbitButton>
+			<OrbitButton href="/kurser/ai-i-praksis-dit-foerste-kursus" size="large" arrow>Start gratis</OrbitButton>
+			<OrbitButton href="/laer?type=prompt" variant="text" size="large">Find en prompt</OrbitButton>
 		</div>
-		<p class="orbit-proof-line">Første kursus på under én time</p>
+		<p class="orbit-proof-line">Første kursus tager under én time</p>
 	</div>
 
-	<div class="orbit-hero-stage" aria-label="Eksempel på personligt læringsdashboard">
-		<div class="orbit-ring orbit-ring-large"></div>
-		<div class="orbit-product-window">
-			<div class="orbit-window-bar">
-				<strong><span class="orbit-mini-mark">L</span> Mit læringsrum</strong>
-				<span class="orbit-avatar">JS</span>
+	<div class="orbit-hero-stage" aria-label="Tre veje fra AI-viden til handling">
+		<div class="signal-console">
+			<div class="signal-console-head">
+				<span>Fra signal til handling</span>
+				<span class="signal-status"><i></i> Klar</span>
 			</div>
-			<div class="orbit-window-body">
-				<div class="orbit-goal-card">
-					<div><small>Ugens mål</small><strong>3 af 4 lektioner</strong></div>
-					<div class="orbit-progress-ring" aria-label="75 procent gennemført"><span>75%</span></div>
-				</div>
-				<div class="orbit-continue-card">
-					<span class="orbit-lesson-icon">◇</span>
-					<div><small>Fortsæt hvor du slap</small><strong>Skriv prompts, der virker</strong><span>Modul 2 · 8 minutter</span></div>
-					<span class="orbit-next-arrow" aria-hidden="true">›</span>
-				</div>
+			<div class="signal-route" aria-hidden="true">
+				<span class="signal-route-line"></span>
+				<span class="signal-node signal-node-one"></span>
+				<span class="signal-node signal-node-two"></span>
+				<span class="signal-node signal-node-three"></span>
+			</div>
+			<div class="signal-actions">
+				<a href="/kurser">
+					<small>01 · Lær</small>
+					<strong>Forstå det vigtigste</strong>
+					<span>Korte kurser på dansk <b>↗</b></span>
+				</a>
+				<a href="/laer?type=prompt">
+					<small>02 · Prøv</small>
+					<strong>Løs en konkret opgave</strong>
+					<span>Prompts klar til brug <b>↗</b></span>
+				</a>
+				<a href="/mentor">
+					<small>03 · Få sparring</small>
+					<strong>Spørg AI-mentoren</strong>
+					<span>Svar fra LearnAI’s viden <b>↗</b></span>
+				</a>
 			</div>
 		</div>
 	</div>
 </section>
+
+<div class="orbit-signal-strip" aria-label="LearnAI i tre trin">
+	<span>Viden, der er sorteret</span>
+	<i aria-hidden="true"></i>
+	<span>Forklaret på dansk</span>
+	<i aria-hidden="true"></i>
+	<span>Omsat til næste skridt</span>
+</div>

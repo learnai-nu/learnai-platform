@@ -18,20 +18,38 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const websiteSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: 'LearnAI.nu',
+	url: new URL('/', Astro.site ?? canonicalURL).toString(),
+	inLanguage: 'da-DK',
+	description,
+};
 ---
 
 <!doctype html>
-<html lang="da">
+<html lang="da-DK">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
-		<meta name="theme-color" content="#f7f8ff" />
+		<meta name="theme-color" content="#f2f4f0" />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={canonicalURL} />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="da_DK" />
+		<meta property="og:site_name" content="LearnAI.nu" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>{title}</title>
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 	</head>
 	<body class="blue-orbit">
 		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>
