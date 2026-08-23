@@ -16,16 +16,17 @@ const course = {
 <section class="orbit-section orbit-courses" id="udvalgte-kurser">
 	<div class="orbit-section-heading">
 		<div>
-			<p class="orbit-section-kicker">Udvalgt kursus</p>
-			<h2>Dit bedste sted<br />at begynde.</h2>
+			<p class="orbit-section-kicker">Praktisk denne uge</p>
+			<h2>Begynd med noget,<br />du kan bruge i dag.</h2>
 		</div>
 		<OrbitButton href="/kurser" variant="text" arrow>Se alle kurser</OrbitButton>
 	</div>
 	<article class="orbit-course-card orbit-course-card-featured">
 		<div class="orbit-course-art orbit-course-art-primary">
 			<span>{course.label}</span>
-			<div class="orbit-art-orbit"></div>
-			<div class="orbit-art-node"></div>
+			<div class="course-signal-map" aria-hidden="true">
+				<i></i><i></i><i></i><i></i>
+			</div>
 		</div>
 		<div class="orbit-course-body">
 			<p class="orbit-course-meta">{course.level} · {course.duration} · {course.price}</p>
