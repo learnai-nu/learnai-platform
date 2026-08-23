@@ -80,6 +80,13 @@
 .work-compass-learning-plan h4 { margin: 2.8rem 0 .8rem; font-size: 1.45rem; letter-spacing: -.03em; }
 .work-compass-learning-plan li p { margin: 0 0 1.4rem; color: var(--orbit-on-surface-variant); line-height: 1.55; }
 .work-compass-learning-plan a { display: inline-flex; align-items: center; gap: .8rem; margin-top: auto; color: var(--compass-blue); font-weight: 800; }
+.work-compass-takeaway { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem 3rem; align-items: center; margin-top: 1rem; padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--orbit-outline-variant); background: var(--orbit-surface-low); }
+.work-compass-takeaway .work-compass-kicker { margin-bottom: .7rem; }
+.work-compass-takeaway h3 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.6rem); letter-spacing: -.045em; }
+.work-compass-takeaway > div:first-child > p:last-child { max-width: 650px; margin: .65rem 0 0; color: var(--orbit-on-surface-variant); line-height: 1.55; }
+.work-compass-takeaway-actions { display: flex; gap: .7rem; align-items: center; }
+.work-compass-copy-status { grid-column: 1 / -1; min-height: 1.2em; margin: -.7rem 0 0; color: var(--orbit-on-surface-variant); font-size: .78rem; }
+.work-compass-copy-status.is-error { color: #9c2f2f; }
 .work-compass-result-footer { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--orbit-outline-variant); }
 .work-compass-result-footer details { max-width: 760px; color: var(--orbit-on-surface-variant); font-size: .78rem; }
 .work-compass-result-footer summary { color: var(--orbit-on-surface); font-weight: 760; cursor: pointer; }
@@ -93,6 +100,7 @@
 	.work-compass-question-grid { gap: 2rem; }
 	.work-compass-learning-plan ol { grid-template-columns: 1fr; }
 	.work-compass-learning-plan li { min-height: 250px; }
+	.work-compass-takeaway { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
 	.work-compass { width: calc(100% - 1.25rem); }
@@ -105,7 +113,18 @@
 	.work-compass-navigation > span { grid-column: 1 / -1; grid-row: 1; justify-self: start; }
 	.work-compass-navigation button { width: 100%; }
 	.work-compass-result-footer { align-items: stretch; flex-direction: column; }
+	.work-compass-takeaway-actions { align-items: stretch; flex-direction: column; }
+	.work-compass-takeaway-actions button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
 	.work-compass-primary, .work-compass-options label, .work-compass-progress span { transition: none; }
+}
+@media print {
+	.orbit-header, .orbit-footer, .work-compass-toolbar, .work-compass-takeaway, .work-compass-result-footer { display: none !important; }
+	.blue-orbit { background: white; }
+	.work-compass { width: 100%; min-height: auto; padding: 0; }
+	.work-compass-result { max-width: none; padding: 0; }
+	.work-compass-result-heading h2 { font-size: 3.5rem; }
+	.work-compass-learning-plan { break-before: page; }
+	.work-compass-learning-plan li, .work-compass-chart-card, .work-compass-insights article { break-inside: avoid; }
 }
