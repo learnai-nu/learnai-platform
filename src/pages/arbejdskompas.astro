@@ -1,0 +1,14 @@
+---
+import WorkCompass from '../components/WorkCompass';
+import BlueOrbitLayout from '../layouts/BlueOrbitLayout.astro';
+import '../styles/work-compass.css';
+
+export const prerender = true;
+---
+
+<BlueOrbitLayout
+	title="Dit AI-arbejdskompas | LearnAI.nu"
+	description="Få et kort, privat øjebliksbillede af din AI-forståelse, praksis og forankring – og et konkret næste skridt."
+>
+	<WorkCompass client:load />
+</BlueOrbitLayout>
