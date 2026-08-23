@@ -18,6 +18,8 @@ const copy = {
 		resultLabel: 'Dit personlige øjebliksbillede', resultTitle: 'Dit arbejdskompas peger mod',
 		strongest: 'Det har du bedst fat i', growth: 'Her får du mest ud af at begynde',
 		planTitle: 'Din læringsrute i tre trin', planBody: 'Begynd med dit største udviklingspunkt. Fortsæt derefter rundt i kompasset.',
+		takeawayTitle: 'Tag læringsruten med dig', takeawayBody: 'Kopiér en tekstversion til dine noter, eller brug browserens dialog til at gemme resultatet som PDF.',
+		copyPlan: 'Kopiér min plan', copied: 'Planen er kopieret', copyError: 'Planen kunne ikke kopieres. Markér teksten manuelt eller prøv igen.', printPlan: 'Gem som PDF / udskriv',
 		restart: 'Tag kompasset igen', methodTitle: 'Sådan er resultatet beregnet',
 		method: 'Hver af de tre retninger bygger på fire svar. Hvert svar giver 0–3 point, som omregnes til en procent. Den samlede score er gennemsnittet af de tre retninger. Ved ens score vises den første retning som styrke og den sidste som udviklingspunkt, så du altid får to forskellige pejlemærker. Resultatet er en læringsvejviser – ikke en certificering eller personlighedstest.',
 		dimensions: { understanding: 'Forståelse', practice: 'Praksis', adoption: 'Forankring' },
@@ -54,6 +56,8 @@ const copy = {
 		resultLabel: 'Your personal snapshot', resultTitle: 'Your work compass points towards',
 		strongest: 'Your strongest direction', growth: 'The best place to begin',
 		planTitle: 'Your three-step learning route', planBody: 'Begin with your largest growth area, then continue around the compass.',
+		takeawayTitle: 'Take your learning route with you', takeawayBody: 'Copy a text version to your notes, or use your browser’s dialog to save the result as a PDF.',
+		copyPlan: 'Copy my plan', copied: 'Plan copied', copyError: 'The plan could not be copied. Select the text manually or try again.', printPlan: 'Save as PDF / print',
 		restart: 'Take the compass again', methodTitle: 'How the result is calculated',
 		method: 'Each of the three directions is based on four answers. Every answer scores 0–3 points, converted to a percentage. Your overall score is the average of all three directions. For tied scores, the first direction is shown as the strength and the last as the growth area, so you always get two distinct signals. The result is a learning guide—not a certification or personality test.',
 		dimensions: { understanding: 'Understanding', practice: 'Practice', adoption: 'Adoption' },
@@ -108,6 +112,7 @@ export default function WorkCompass() {
 	const [screen, setScreen] = useState<'intro' | 'questions' | 'result'>('intro');
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [answers, setAnswers] = useState<Record<string, string>>({});
+	const [actionStatus, setActionStatus] = useState<'idle' | 'copied' | 'copy-error'>('idle');
 	const rootRef = useRef<HTMLElement>(null);
 	const headingRef = useRef<HTMLHeadingElement>(null);
 	const t = copy[locale];
@@ -127,7 +132,7 @@ export default function WorkCompass() {
 		if (currentQuestion === workCompassQuestions.length - 1) { setScreen('result'); return; }
 		setCurrentQuestion((value) => value + 1);
 	}
-	function restart() { setAnswers({}); setCurrentQuestion(0); setScreen('intro'); }
+	function restart() { setAnswers({}); setCurrentQuestion(0); setActionStatus('idle'); setScreen('intro'); }
 
 	const result = screen === 'result' ? calculateWorkCompass(answers) : null;
 	const previewValues = Object.fromEntries(dimensionOrder.map((dimension) => [dimension, 18])) as Record<AssessmentDimension, number>;
@@ -135,6 +140,36 @@ export default function WorkCompass() {
 	const learningOrder = result
 		? [result.growthDimension, ...dimensionOrder.filter((dimension) => dimension !== result.growthDimension)]
 		: dimensionOrder;
+
+	async function copyLearningPlan() {
+		if (!result) return;
+		const lines = [
+			t.label,
+			`${t.stages[result.stage].title} · ${result.overall}/100`,
+			'',
+			...dimensionOrder.map((dimension) => `${t.dimensions[dimension]}: ${result.dimensions[dimension]}%`),
+			'',
+			`${t.strongest}: ${t.dimensions[result.strongestDimension]}`,
+			t.strengths[result.strongestDimension],
+			'',
+			`${t.growth}: ${t.dimensions[result.growthDimension]}`,
+			t.growths[result.growthDimension],
+			'',
+			t.planTitle,
+			...learningOrder.flatMap((dimension, index) => {
+				const plan = t.plans[dimension];
+				return [`${index + 1}. ${plan.title}`, plan.body];
+			}),
+			'',
+			'LearnAI.nu/arbejdskompas',
+		];
+		try {
+			await navigator.clipboard.writeText(lines.join('\n'));
+			setActionStatus('copied');
+		} catch {
+			setActionStatus('copy-error');
+		}
+	}
 
 	return (
 		<section ref={rootRef} className="work-compass" aria-labelledby="work-compass-title" lang={locale === 'da' ? 'da' : 'en'}>
@@ -191,6 +226,14 @@ export default function WorkCompass() {
 					<section className="work-compass-learning-plan" aria-labelledby="learning-plan-title">
 						<div><p className="work-compass-kicker">LearnAI · næste skridt</p><h3 id="learning-plan-title">{t.planTitle}</h3><p>{t.planBody}</p></div>
 						<ol>{learningOrder.map((dimension, index) => { const plan = t.plans[dimension]; return <li key={dimension} className={index === 0 ? 'is-priority' : ''}><span className="work-compass-step">0{index + 1}</span><small>{plan.eyebrow}</small><h4>{plan.title}</h4><p>{plan.body}</p><a href={plan.href}>{plan.cta}<b aria-hidden="true">→</b></a></li>; })}</ol>
+					</section>
+					<section className="work-compass-takeaway" aria-labelledby="takeaway-title">
+						<div><p className="work-compass-kicker">LearnAI · dit resultat</p><h3 id="takeaway-title">{t.takeawayTitle}</h3><p>{t.takeawayBody}</p></div>
+						<div className="work-compass-takeaway-actions">
+							<button type="button" className="work-compass-primary" onClick={copyLearningPlan}>{t.copyPlan}<span aria-hidden="true">{actionStatus === 'copied' ? '✓' : '⧉'}</span></button>
+							<button type="button" className="work-compass-secondary" onClick={() => window.print()}>{t.printPlan}<span aria-hidden="true">↗</span></button>
+						</div>
+						<p className={`work-compass-copy-status${actionStatus === 'copy-error' ? ' is-error' : ''}`} role="status" aria-live="polite">{actionStatus === 'copy-error' ? t.copyError : actionStatus === 'copied' ? t.copied : ''}</p>
 					</section>
 					<div className="work-compass-result-footer"><details><summary>{t.methodTitle}</summary><p>{t.method}</p></details><button type="button" className="work-compass-secondary" onClick={restart}>{t.restart}</button></div>
 				</div>

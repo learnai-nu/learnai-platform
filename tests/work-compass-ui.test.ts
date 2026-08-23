@@ -34,6 +34,15 @@ describe('AI work compass vertical slice', () => {
 		expect(styles).toContain('.work-compass-learning-plan');
 	});
 
+	it('lets learners take the result with them without persistence or a network call', () => {
+		expect(component).toContain('navigator.clipboard.writeText');
+		expect(component).toContain('window.print()');
+		expect(component).toContain('aria-live="polite"');
+		expect(component).not.toContain('localStorage');
+		expect(component).not.toContain('fetch(');
+		expect(styles).toContain('@media print');
+	});
+
 	it('uses the LearnAI workbook tokens instead of workshop brand colors', () => {
 		expect(styles).toContain('--compass-blue: var(--orbit-primary)');
 		expect(styles).toContain('--compass-yellow: var(--orbit-decision)');
