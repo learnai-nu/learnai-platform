@@ -4,11 +4,11 @@ import OrbitButton from '../ui/OrbitButton.astro';
 
 <section class="orbit-hero">
 	<div class="orbit-hero-copy">
-		<p class="orbit-eyebrow"><span></span>AI til det arbejde, du står med</p>
-		<h1>Brug AI bedre.<br /><span>Uden at følge med i alt.</span></h1>
+		<p class="orbit-eyebrow"><span>&gt;</span> AI til dit arbejde</p>
+		<h1>Få AI til at fungere<br /><span>i dit arbejde.</span></h1>
 		<p class="orbit-hero-lead">
-			LearnAI omsætter kunstig intelligens til korte læringsforløb,
-			gennemprøvede prompts og konkrete næste skridt på dansk.
+			Korte kurser, brugbare prompts og konkret sparring på dansk.
+			Uden hype og unødvendig teknik.
 		</p>
 		<div class="orbit-hero-actions">
 			<OrbitButton href="/kurser/ai-i-praksis-dit-foerste-kursus" size="large" arrow>Start gratis</OrbitButton>
@@ -17,43 +17,22 @@ import OrbitButton from '../ui/OrbitButton.astro';
 		<p class="orbit-proof-line">Første kursus tager under én time</p>
 	</div>
 
-	<div class="orbit-hero-stage" aria-label="Tre veje fra AI-viden til handling">
-		<div class="signal-console">
-			<div class="signal-console-head">
-				<span>Fra signal til handling</span>
-				<span class="signal-status"><i></i> Klar</span>
-			</div>
-			<div class="signal-route" aria-hidden="true">
-				<span class="signal-route-line"></span>
-				<span class="signal-node signal-node-one"></span>
-				<span class="signal-node signal-node-two"></span>
-				<span class="signal-node signal-node-three"></span>
-			</div>
-			<div class="signal-actions">
-				<a href="/kurser">
-					<small>01 · Lær</small>
-					<strong>Forstå det vigtigste</strong>
-					<span>Korte kurser på dansk <b>↗</b></span>
-				</a>
-				<a href="/laer?type=prompt">
-					<small>02 · Prøv</small>
-					<strong>Løs en konkret opgave</strong>
-					<span>Prompts klar til brug <b>↗</b></span>
-				</a>
-				<a href="/mentor">
-					<small>03 · Få sparring</small>
-					<strong>Spørg AI-mentoren</strong>
-					<span>Svar fra LearnAI’s viden <b>↗</b></span>
-				</a>
+	<div class="orbit-hero-stage" aria-label="Eksempel på en konkret AI-opgave">
+		<div class="workbook-prompt">
+			<div class="workbook-label"><span>&gt;</span> Opgave</div>
+			<h2>Hvad vil du have AI til at hjælpe med?</h2>
+			<div class="workbook-input">Beskriv din opgave med én sætning … <span>↵</span></div>
+			<div class="workbook-suggestions">
+				<p>Prøv for eksempel</p>
+				<a href="/laer?type=prompt">Skriv et bedre udkast <b>↗</b></a>
+				<a href="/laer?type=prompt">Analysér et dokument <b>↗</b></a>
+				<a href="/mentor">Forbered et møde <b>↗</b></a>
 			</div>
 		</div>
 	</div>
 </section>
 
-<div class="orbit-signal-strip" aria-label="LearnAI i tre trin">
-	<span>Viden, der er sorteret</span>
-	<i aria-hidden="true"></i>
-	<span>Forklaret på dansk</span>
-	<i aria-hidden="true"></i>
-	<span>Omsat til næste skridt</span>
+<div class="workbook-note" aria-label="LearnAI's princip">
+	<span>&gt; PRINCIP</span>
+	<p>Start med opgaven. Brug kun den AI-viden, der bringer arbejdet videre.</p>
 </div>
