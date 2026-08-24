@@ -1,0 +1,21 @@
+---
+interface Props {
+	eyebrow?: string;
+	title: string;
+	copy: string;
+	href: string;
+	label: string;
+}
+
+const { eyebrow = 'Dit næste skridt', title, copy, href, label } = Astro.props;
+---
+
+<aside class="catalog-next-step" aria-labelledby="catalog-next-step-title">
+	<div class="catalog-next-step-mark" aria-hidden="true">→</div>
+	<div>
+		<p class="catalog-kicker">{eyebrow}</p>
+		<h2 id="catalog-next-step-title">{title}</h2>
+		<p>{copy}</p>
+	</div>
+	<a href={href}>{label}<span aria-hidden="true">→</span></a>
+</aside>

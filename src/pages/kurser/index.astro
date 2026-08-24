@@ -1,6 +1,10 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import CourseCatalogCard from '../../components/learning/CourseCatalogCard.astro';
+import LearningTrack from '../../components/learning/LearningTrack.astro';
+import NextStepPanel from '../../components/learning/NextStepPanel.astro';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/course-catalog.css';
 
 export const prerender = false;
 
@@ -21,35 +25,71 @@ function levelLabel(value: unknown) {
 ---
 
 <SiteLayout title="AI-kurser — LearnAI.nu" description="Praktiske danske AI-kurser med tydelige lektioner og øvelser.">
-	<section class="hero hero-compact">
-		<div class="shell section-intro">
-			<p class="eyebrow">Læringsforløb</p>
-			<h1>Lær AI ved at bruge det.</h1>
-			<p class="hero-copy">Korte, strukturerede kurser med konkrete eksempler fra det danske arbejdsliv.</p>
-		</div>
-	</section>
-	<section class="section section-tight">
-		<div class="shell">
-			{error ? (
-				<div class="notice notice-error" role="alert">Kurserne kunne ikke hentes lige nu. Prøv igen senere.</div>
-			) : courses?.length ? (
-				<div class="course-grid">
-					{courses.map((course) => (
-						<article class="course-card">
-							<div class="course-meta">
-								<span>{levelLabel(course.level)}</span>
-								<span>{course.estimated_minutes ?? '—'} min.</span>
-								<span>{Number(course.price_dkk) === 0 ? 'Gratis' : `${course.price_dkk} kr.`}</span>
-							</div>
-							<h2>{course.title}</h2>
-							<p>{course.description}</p>
-							<a class="button button-ghost" href={`/kurser/${course.slug}`}>Se kurset →</a>
-						</article>
-					))}
+	<div class="course-catalog">
+		<section class="catalog-hero">
+			<div class="catalog-rail">
+				<div class="catalog-hero-copy">
+					<p class="catalog-kicker">Kursusbibliotek / 01</p>
+					<h1>Lær AI ved<br />{' '}at bruge det.</h1>
+					<p>Korte, strukturerede forløb med konkrete opgaver fra det danske arbejdsliv. Du ved altid, hvad du lærer, hvor lang tid det tager, og hvad næste skridt er.</p>
+					<a class="catalog-primary-action" href="#alle-kurser">Find dit kursus <span aria-hidden="true">↓</span></a>
 				</div>
-			) : (
-				<div class="empty-state"><h2>Kurserne er på vej</h2><p>Kom snart tilbage.</p></div>
-			)}
+				<div class="catalog-track-panel">
+					<p class="catalog-panel-label">Sådan lærer du på LearnAI</p>
+					<LearningTrack />
+					<p class="catalog-track-note"><span aria-hidden="true">+</span> Hvert forløb ender i noget, du kan bruge i dit arbejde.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="catalog-courses" id="alle-kurser" aria-labelledby="catalog-heading">
+			<div class="catalog-rail">
+				<header class="catalog-section-heading">
+					<div>
+						<p class="catalog-kicker">Vælg dit næste skridt</p>
+						<h2 id="catalog-heading">Kurser, der bliver til praksis.</h2>
+					</div>
+					<p>Start med det, der ligner din hverdag mest. Niveau, tid og udbytte står på hvert kursus, så du kan vælge uden at gætte.</p>
+				</header>
+
+				{error ? (
+					<div class="catalog-notice" role="alert">
+						<strong>Kurserne kunne ikke hentes.</strong>
+						<span>Prøv igen om lidt. Dine oplysninger er ikke gået tabt.</span>
+					</div>
+				) : courses?.length ? (
+					<div class="catalog-course-grid">
+						{courses.map((course, index) => (
+							<CourseCatalogCard
+								index={index}
+								title={course.title}
+								slug={course.slug}
+								description={course.description}
+								level={levelLabel(course.level)}
+								duration={course.estimated_minutes}
+								price={Number(course.price_dkk)}
+								featured={Boolean(course.is_featured)}
+							/>
+						))}
+					</div>
+				) : (
+					<div class="catalog-empty-state">
+						<p class="catalog-kicker">Næste udgivelse</p>
+						<h3>De første forløb er på vej.</h3>
+						<p>Brug Arbejdskompasset imens, og find ud af hvor AI giver mest mening i dit arbejde.</p>
+						<a href="/arbejdskompas">Tag Arbejdskompasset →</a>
+					</div>
+				)}
+			</div>
+		</section>
+
+		<div class="catalog-rail catalog-next-step-wrap">
+			<NextStepPanel
+				title="I tvivl om, hvor du skal begynde?"
+				copy="Arbejdskompasset peger på den opgave og det læringsspor, der passer bedst til din arbejdsdag."
+				href="/arbejdskompas"
+				label="Find mit udgangspunkt"
+			/>
 		</div>
-	</section>
+	</div>
 </SiteLayout>

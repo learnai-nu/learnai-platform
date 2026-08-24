@@ -1,0 +1,24 @@
+---
+interface Props {
+	activeStep?: 1 | 2 | 3;
+}
+
+const { activeStep = 1 } = Astro.props;
+const steps = [
+	{ number: '01', label: 'Forstå', description: 'Få begreberne på plads' },
+	{ number: '02', label: 'Afprøv', description: 'Brug det på en opgave' },
+	{ number: '03', label: 'Forankr', description: 'Gør det til din praksis' },
+];
+---
+
+<ol class="learning-track" aria-label="LearnAI læringsspor">
+	{steps.map((step, index) => (
+		<li class:list={{ active: activeStep === index + 1, complete: activeStep > index + 1 }}>
+			<span class="learning-track-marker" aria-hidden="true">{step.number}</span>
+			<span>
+				<strong>{step.label}</strong>
+				<small>{step.description}</small>
+			</span>
+		</li>
+	))}
+</ol>
