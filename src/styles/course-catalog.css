@@ -2,6 +2,7 @@
 	--catalog-rail: min(1180px, calc(100% - 3rem));
 	background: var(--brand-paper);
 	color: var(--brand-ink);
+	font-family: var(--type-family-sans);
 }
 
 .catalog-rail {
@@ -182,7 +183,7 @@
 .catalog-section-heading h2 {
 	max-width: 400px;
 	margin: 0;
-	font-family: Inter, "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+	font-family: var(--type-family-sans);
 	font-size: 2.25rem;
 	font-weight: 600;
 	letter-spacing: 0;
@@ -194,7 +195,7 @@
 	max-width: 576px;
 	margin: 0;
 	color: var(--brand-muted);
-	font-family: Inter, "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+	font-family: var(--type-family-sans);
 	font-size: 1.125rem;
 	font-weight: 400;
 	line-height: 1.75rem;
@@ -239,9 +240,10 @@
 .catalog-course-card h3 {
 	max-width: 570px;
 	margin: clamp(2.2rem, 5vw, 4.25rem) 0 .9rem;
-	font-size: clamp(1.75rem, 3vw, 2.6rem);
-	letter-spacing: -.048em;
-	line-height: 1.04;
+	font-size: 1.875rem;
+	font-weight: 600;
+	letter-spacing: -.02em;
+	line-height: 2.25rem;
 }
 
 .catalog-course-description { max-width: 540px; margin: 0; color: var(--brand-muted); line-height: 1.6; }
@@ -267,7 +269,7 @@
 .catalog-notice, .catalog-empty-state { margin-bottom: 3rem; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--brand-ink); background: var(--brand-card); }
 .catalog-notice { display: grid; gap: .4rem; border-left: .45rem solid var(--brand-signal); }
 .catalog-notice span, .catalog-empty-state > p:not(.catalog-kicker) { color: var(--brand-muted); }
-.catalog-empty-state h3 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: -.05em; }
+.catalog-empty-state h3 { margin: 0; font-size: 1.875rem; font-weight: 600; letter-spacing: -.02em; line-height: 2.25rem; }
 .catalog-empty-state > p:not(.catalog-kicker) { max-width: 620px; margin: 1rem 0 1.5rem; }
 .catalog-empty-state a { color: var(--brand-action); font-weight: 760; }
 
@@ -275,7 +277,7 @@
 .catalog-next-step { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; padding: clamp(2rem, 5vw, 4rem); background: var(--brand-signal); }
 .catalog-next-step-mark { display: grid; place-items: center; width: clamp(4rem, 7vw, 6rem); aspect-ratio: 1; border: 1px solid var(--brand-ink); border-radius: 50%; font-size: clamp(1.8rem, 4vw, 3rem); }
 .catalog-next-step .catalog-kicker { margin-bottom: .8rem; color: var(--brand-ink); }
-.catalog-next-step h2 { max-width: 720px; margin: 0; font-size: clamp(2rem, 4vw, 3.7rem); letter-spacing: -.055em; line-height: .98; }
+.catalog-next-step h2 { max-width: 720px; margin: 0; font-size: 2.25rem; font-weight: 600; letter-spacing: 0; line-height: 2.5rem; }
 .catalog-next-step div > p:last-child { max-width: 650px; margin: 1rem 0 0; line-height: 1.6; }
 .catalog-next-step > a { display: flex; justify-content: space-between; gap: 2rem; min-width: 230px; padding: 1rem; border: 1px solid var(--brand-ink); background: var(--brand-card); font-weight: 760; transition: transform .2s var(--orbit-ease), box-shadow .2s var(--orbit-ease); }
 .catalog-next-step > a:hover { transform: translate(-3px, -3px); box-shadow: 4px 4px 0 var(--brand-ink); }
@@ -307,7 +309,8 @@
 	.catalog-course-topline { display: grid; }
 	.catalog-course-recommendation { justify-self: start; }
 	.catalog-course-meta span + span::before { margin-right: .6rem; }
-	.catalog-course-card h3 { margin-top: 2.4rem; font-size: 1.8rem; }
+	.catalog-course-card h3 { margin-top: 2.4rem; font-size: 1.5rem; line-height: 2rem; }
+	.catalog-empty-state h3, .catalog-next-step h2 { font-size: 1.5rem; line-height: 2rem; }
 	.catalog-next-step { grid-template-columns: 1fr; padding: 1.5rem; }
 	.catalog-next-step-mark { width: 4rem; }
 	.catalog-next-step > a { grid-column: auto; width: 100%; min-width: 0; }

@@ -45,6 +45,26 @@
 	--brand-card: var(--orbit-surface-bright);
 	--brand-muted: var(--orbit-on-surface-variant);
 	--brand-rule: var(--orbit-outline-variant);
+	--type-family-sans: "Inter Variable", Inter, "Inter Fallback", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--type-family-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+	--type-display-size: clamp(3.5rem, 6vw, 5.7rem);
+	--type-display-leading: .96;
+	--type-page-size: clamp(3rem, 5vw, 4.5rem);
+	--type-page-leading: 1;
+	--type-section-size: 2.25rem;
+	--type-section-leading: 2.5rem;
+	--type-subsection-size: 1.875rem;
+	--type-subsection-leading: 2.25rem;
+	--type-card-size: 1.5rem;
+	--type-card-leading: 2rem;
+	--type-body-lg-size: 1.125rem;
+	--type-body-lg-leading: 1.75rem;
+	--type-body-size: 1rem;
+	--type-body-leading: 1.5rem;
+	--type-small-size: .875rem;
+	--type-small-leading: 1.25rem;
+	--type-label-size: .75rem;
+	--type-label-leading: 1rem;
 }
 
 :root.orbit-deep-mode {
