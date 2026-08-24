@@ -169,26 +169,35 @@
 .catalog-courses .catalog-rail { padding: 0 clamp(1.5rem, 4vw, 3.5rem); border-top: 1px solid var(--brand-rule); border-bottom: 1px solid var(--brand-rule); }
 
 .catalog-section-heading {
-	display: grid;
-	grid-template-columns: minmax(0, 1.1fr) minmax(300px, .62fr);
-	gap: clamp(2rem, 7vw, 7rem);
-	align-items: end;
-	padding: clamp(2.5rem, 5vw, 4.5rem) 0;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 4rem 0;
 }
 
+.catalog-section-heading > div { flex: 0 1 400px; }
+.catalog-section-heading .catalog-kicker { margin-bottom: .625rem; }
+
 .catalog-section-heading h2 {
-	max-width: 760px;
+	max-width: 400px;
 	margin: 0;
-	font-size: clamp(2.6rem, 5vw, 4.8rem);
-	letter-spacing: -.06em;
-	line-height: .96;
+	font-family: Inter, "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+	font-size: 2.25rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 2.5rem;
 }
 
 .catalog-section-heading > p {
+	flex: 0 1 576px;
+	max-width: 576px;
 	margin: 0;
 	color: var(--brand-muted);
-	font-size: 1rem;
-	line-height: 1.65;
+	font-family: Inter, "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+	font-size: 1.125rem;
+	font-weight: 400;
+	line-height: 1.75rem;
 }
 
 .catalog-course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--brand-ink); }
@@ -274,7 +283,9 @@
 @media (max-width: 900px) {
 	.catalog-hero .catalog-rail { grid-template-columns: 1fr; }
 	.catalog-track-panel { border-top: 1px solid var(--brand-rule); border-left: 0; }
-	.catalog-section-heading { grid-template-columns: 1fr; align-items: start; }
+	.catalog-section-heading { align-items: start; flex-direction: column; gap: 1.5rem; }
+	.catalog-section-heading > div, .catalog-section-heading > p { flex-basis: auto; }
+	.catalog-section-heading h2 { max-width: 400px; font-size: 1.875rem; line-height: 2.25rem; }
 	.catalog-section-heading > p { max-width: 620px; }
 	.catalog-course-grid { grid-template-columns: 1fr; }
 	.catalog-course-card:nth-child(odd) { border-right: 0; }
@@ -290,7 +301,7 @@
 	.catalog-courses { padding-block: 4.5rem; }
 	.catalog-courses .catalog-rail { padding-inline: 1rem; }
 	.catalog-section-heading { padding-block: 2.5rem; }
-	.catalog-section-heading h2 { font-size: clamp(2.45rem, 12vw, 3.4rem); }
+	.catalog-section-heading h2 { font-size: 1.5rem; line-height: 2rem; }
 	.catalog-course-card { grid-template-columns: 2.75rem minmax(0, 1fr); min-height: 420px; }
 	.catalog-course-content { padding: 1.25rem 1rem; }
 	.catalog-course-topline { display: grid; }
