@@ -1,0 +1,45 @@
+---
+interface Props {
+	index: number;
+	title: string;
+	slug: string;
+	description: string | null;
+	level: string;
+	duration: number | null;
+	price: number;
+	featured?: boolean;
+}
+
+const { index, title, slug, description, level, duration, price, featured = false } = Astro.props;
+const courseNumber = String(index + 1).padStart(2, '0');
+const priceLabel = price === 0
+	? 'Gratis'
+	: new Intl.NumberFormat('da-DK', { style: 'currency', currency: 'DKK', maximumFractionDigits: 0 }).format(price);
+---
+
+<article class:list={['catalog-course-card', { 'catalog-course-card-featured': featured }]}>
+	<div class="catalog-course-index" aria-hidden="true">
+		<span>{courseNumber}</span>
+		<i></i>
+	</div>
+	<div class="catalog-course-content">
+		<div class="catalog-course-topline">
+			<p class="catalog-course-meta">
+				<span>{level}</span>
+				<span>{duration ? `${duration} min.` : 'Tid følger'}</span>
+				<span>{priceLabel}</span>
+			</p>
+			{featured && <span class="catalog-course-recommendation">Anbefalet start</span>}
+		</div>
+		<h3>{title}</h3>
+		<p class="catalog-course-description">{description || 'Et praktisk læringsforløb med konkrete øvelser og et tydeligt næste skridt.'}</p>
+		<div class="catalog-course-outcome">
+			<span>Dit udbytte</span>
+			<p>Forstå emnet, afprøv det i praksis og tag resultatet med videre.</p>
+		</div>
+		<a class="catalog-course-link" href={`/kurser/${slug}`} aria-label={`Se kurset ${title}`}>
+			<span>Se kurset</span>
+			<span aria-hidden="true">→</span>
+		</a>
+	</div>
+</article>

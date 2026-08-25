@@ -35,6 +35,36 @@
 	--orbit-ease: cubic-bezier(.2, 0, 0, 1);
 	--orbit-ease-emphasized: cubic-bezier(.2, 0, 0, 1.4);
 	--orbit-shell: min(1380px, calc(100% - 3rem));
+	--brand-action: var(--orbit-primary);
+	--brand-action-soft: var(--orbit-primary-container);
+	--brand-ink: var(--orbit-on-surface);
+	--brand-ink-deep: var(--orbit-deep);
+	--brand-signal: var(--orbit-signal);
+	--brand-success: var(--orbit-success);
+	--brand-paper: var(--orbit-surface);
+	--brand-card: var(--orbit-surface-bright);
+	--brand-muted: var(--orbit-on-surface-variant);
+	--brand-rule: var(--orbit-outline-variant);
+	--type-family-sans: "Inter Variable", Inter, "Inter Fallback", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--type-family-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+	--type-display-size: clamp(3.5rem, 6vw, 5.7rem);
+	--type-display-leading: .96;
+	--type-page-size: clamp(3rem, 5vw, 4.5rem);
+	--type-page-leading: 1;
+	--type-section-size: 2.25rem;
+	--type-section-leading: 2.5rem;
+	--type-subsection-size: 1.875rem;
+	--type-subsection-leading: 2.25rem;
+	--type-card-size: 1.5rem;
+	--type-card-leading: 2rem;
+	--type-body-lg-size: 1.125rem;
+	--type-body-lg-leading: 1.75rem;
+	--type-body-size: 1rem;
+	--type-body-leading: 1.5rem;
+	--type-small-size: .875rem;
+	--type-small-leading: 1.25rem;
+	--type-label-size: .75rem;
+	--type-label-leading: 1rem;
 }
 
 :root.orbit-deep-mode {

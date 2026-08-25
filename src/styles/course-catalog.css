@@ -1,0 +1,326 @@
+.course-catalog {
+	--catalog-rail: min(1180px, calc(100% - 3rem));
+	background: var(--brand-paper);
+	color: var(--brand-ink);
+	font-family: var(--type-family-sans);
+}
+
+.catalog-rail {
+	position: relative;
+	width: var(--catalog-rail);
+	margin-inline: auto;
+	border-inline: 1px solid var(--brand-rule);
+}
+
+.catalog-kicker,
+.catalog-panel-label,
+.catalog-course-meta,
+.catalog-course-index {
+	font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.catalog-kicker {
+	margin: 0 0 1.2rem;
+	color: var(--brand-action);
+	font-size: .72rem;
+	font-weight: 760;
+	letter-spacing: .095em;
+	text-transform: uppercase;
+}
+
+.catalog-hero {
+	border-bottom: 1px solid var(--brand-rule);
+	background:
+		linear-gradient(90deg, transparent calc(50% - .5px), color-mix(in srgb, var(--brand-rule) 65%, transparent) 50%, transparent calc(50% + .5px)),
+		linear-gradient(180deg, color-mix(in srgb, var(--brand-action-soft) 32%, transparent), transparent 72%);
+}
+
+.catalog-hero .catalog-rail {
+	display: grid;
+	grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+	min-height: 650px;
+}
+
+.catalog-hero-copy {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: clamp(4.5rem, 8vw, 7.5rem) clamp(2rem, 5vw, 5.25rem) clamp(4.5rem, 8vw, 7rem) clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.catalog-hero h1 {
+	max-width: 720px;
+	margin: 0;
+	font-size: clamp(3.4rem, 7vw, 6.2rem);
+	font-weight: 740;
+	letter-spacing: -.072em;
+	line-height: .91;
+}
+
+.catalog-hero-copy > p:not(.catalog-kicker) {
+	max-width: 610px;
+	margin: 1.8rem 0 0;
+	color: var(--brand-muted);
+	font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+	line-height: 1.65;
+}
+
+.catalog-primary-action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 2rem;
+	width: fit-content;
+	min-height: 3.25rem;
+	margin-top: 2.25rem;
+	padding: .75rem 1rem;
+	border-radius: var(--orbit-shape-sm);
+	background: var(--brand-action);
+	color: white;
+	font-weight: 760;
+	transition: transform .2s var(--orbit-ease), background .2s var(--orbit-ease);
+}
+
+.catalog-primary-action:hover { transform: translateY(-2px); background: var(--brand-ink-deep); }
+
+.catalog-track-panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3.5rem);
+	border-left: 1px solid var(--brand-rule);
+	background: color-mix(in srgb, var(--brand-card) 82%, transparent);
+}
+
+.catalog-panel-label {
+	margin: 0 0 2.2rem;
+	color: var(--brand-muted);
+	font-size: .68rem;
+	font-weight: 700;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+.learning-track {
+	position: relative;
+	display: grid;
+	gap: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.learning-track::before {
+	content: "";
+	position: absolute;
+	top: 1.5rem;
+	bottom: 1.5rem;
+	left: 1.45rem;
+	width: 1px;
+	background: var(--brand-rule);
+}
+
+.learning-track li {
+	position: relative;
+	display: grid;
+	grid-template-columns: 3rem 1fr;
+	gap: 1.15rem;
+	align-items: center;
+	min-height: 6.35rem;
+	border-top: 1px solid var(--brand-rule);
+}
+
+.learning-track li:last-child { border-bottom: 1px solid var(--brand-rule); }
+
+.learning-track-marker {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: 2.9rem;
+	height: 2.9rem;
+	border: 1px solid var(--brand-rule);
+	border-radius: 50%;
+	background: var(--brand-card);
+	color: var(--brand-muted);
+	font-family: "IBM Plex Mono", ui-monospace, monospace;
+	font-size: .7rem;
+	font-weight: 760;
+}
+
+.learning-track li.active .learning-track-marker { border-color: var(--brand-action); background: var(--brand-action); color: white; }
+.learning-track li.complete .learning-track-marker { border-color: var(--brand-success); background: var(--brand-success); color: white; }
+.learning-track strong, .learning-track small { display: block; }
+.learning-track strong { font-size: 1.2rem; letter-spacing: -.025em; }
+.learning-track small { margin-top: .25rem; color: var(--brand-muted); font-size: .83rem; }
+
+.catalog-track-note {
+	display: flex;
+	gap: .65rem;
+	margin: 2rem 0 0;
+	color: var(--brand-muted);
+	font-size: .82rem;
+	line-height: 1.55;
+}
+
+.catalog-track-note span { color: var(--brand-action); font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 800; }
+
+.catalog-courses { padding: clamp(5rem, 9vw, 8rem) 0; }
+
+.catalog-courses .catalog-rail { padding: 0 clamp(1.5rem, 4vw, 3.5rem); border-top: 1px solid var(--brand-rule); border-bottom: 1px solid var(--brand-rule); }
+
+.catalog-section-heading {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 4rem 0;
+}
+
+.catalog-section-heading > div { flex: 0 1 400px; }
+.catalog-section-heading .catalog-kicker { margin-bottom: .625rem; }
+
+.catalog-section-heading h2 {
+	max-width: 400px;
+	margin: 0;
+	font-family: var(--type-family-sans);
+	font-size: 2.25rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 2.5rem;
+}
+
+.catalog-section-heading > p {
+	flex: 0 1 576px;
+	max-width: 576px;
+	margin: 0;
+	color: var(--brand-muted);
+	font-family: var(--type-family-sans);
+	font-size: 1.125rem;
+	font-weight: 400;
+	line-height: 1.75rem;
+}
+
+.catalog-course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--brand-ink); }
+
+.catalog-course-card {
+	position: relative;
+	display: grid;
+	grid-template-columns: 3.65rem minmax(0, 1fr);
+	min-height: 430px;
+	border-bottom: 1px solid var(--brand-ink);
+	background: var(--brand-card);
+	transition: background .2s var(--orbit-ease);
+}
+
+.catalog-course-card:nth-child(odd) { border-right: 1px solid var(--brand-ink); }
+.catalog-course-card:hover, .catalog-course-card:focus-within { background: var(--brand-action-soft); }
+
+.catalog-course-index {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	gap: .8rem;
+	padding-top: 1.55rem;
+	border-right: 1px solid var(--brand-rule);
+	color: var(--brand-action);
+	font-size: .72rem;
+	font-weight: 760;
+}
+
+.catalog-course-index i { width: 1px; flex: 1; background: var(--brand-rule); }
+.catalog-course-index i::before { content: ""; display: block; width: .55rem; height: .55rem; margin-left: -.25rem; border-radius: 50%; background: var(--brand-action); }
+
+.catalog-course-content { display: flex; min-width: 0; flex-direction: column; padding: clamp(1.45rem, 3vw, 2.2rem); }
+.catalog-course-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.catalog-course-meta { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin: 0; color: var(--brand-muted); font-size: .65rem; font-weight: 680; letter-spacing: .055em; text-transform: uppercase; }
+.catalog-course-meta span + span::before { content: "/"; margin-right: 1rem; color: var(--brand-rule); }
+.catalog-course-recommendation { flex: 0 0 auto; padding: .35rem .55rem; border: 1px solid var(--brand-ink); background: var(--brand-signal); font-size: .67rem; font-weight: 760; }
+
+.catalog-course-card h3 {
+	max-width: 570px;
+	margin: clamp(2.2rem, 5vw, 4.25rem) 0 .9rem;
+	font-size: 1.875rem;
+	font-weight: 600;
+	letter-spacing: -.02em;
+	line-height: 2.25rem;
+}
+
+.catalog-course-description { max-width: 540px; margin: 0; color: var(--brand-muted); line-height: 1.6; }
+.catalog-course-outcome { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--brand-rule); }
+.catalog-course-outcome span { color: var(--brand-action); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .64rem; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
+.catalog-course-outcome p { margin: .45rem 0 0; font-size: .82rem; line-height: 1.5; }
+
+.catalog-course-link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	min-height: 3.3rem;
+	margin-top: auto;
+	padding-top: 1.2rem;
+	border-top: 1px solid var(--brand-ink);
+	font-weight: 760;
+}
+
+.catalog-course-link span:last-child { color: var(--brand-action); font-size: 1.4rem; transition: transform .2s var(--orbit-ease); }
+.catalog-course-link:hover span:last-child { transform: translateX(.3rem); }
+
+.catalog-notice, .catalog-empty-state { margin-bottom: 3rem; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--brand-ink); background: var(--brand-card); }
+.catalog-notice { display: grid; gap: .4rem; border-left: .45rem solid var(--brand-signal); }
+.catalog-notice span, .catalog-empty-state > p:not(.catalog-kicker) { color: var(--brand-muted); }
+.catalog-empty-state h3 { margin: 0; font-size: 1.875rem; font-weight: 600; letter-spacing: -.02em; line-height: 2.25rem; }
+.catalog-empty-state > p:not(.catalog-kicker) { max-width: 620px; margin: 1rem 0 1.5rem; }
+.catalog-empty-state a { color: var(--brand-action); font-weight: 760; }
+
+.catalog-next-step-wrap { margin-bottom: clamp(5rem, 9vw, 8rem); }
+.catalog-next-step { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; padding: clamp(2rem, 5vw, 4rem); background: var(--brand-signal); }
+.catalog-next-step-mark { display: grid; place-items: center; width: clamp(4rem, 7vw, 6rem); aspect-ratio: 1; border: 1px solid var(--brand-ink); border-radius: 50%; font-size: clamp(1.8rem, 4vw, 3rem); }
+.catalog-next-step .catalog-kicker { margin-bottom: .8rem; color: var(--brand-ink); }
+.catalog-next-step h2 { max-width: 720px; margin: 0; font-size: 2.25rem; font-weight: 600; letter-spacing: 0; line-height: 2.5rem; }
+.catalog-next-step div > p:last-child { max-width: 650px; margin: 1rem 0 0; line-height: 1.6; }
+.catalog-next-step > a { display: flex; justify-content: space-between; gap: 2rem; min-width: 230px; padding: 1rem; border: 1px solid var(--brand-ink); background: var(--brand-card); font-weight: 760; transition: transform .2s var(--orbit-ease), box-shadow .2s var(--orbit-ease); }
+.catalog-next-step > a:hover { transform: translate(-3px, -3px); box-shadow: 4px 4px 0 var(--brand-ink); }
+
+@media (max-width: 900px) {
+	.catalog-hero .catalog-rail { grid-template-columns: 1fr; }
+	.catalog-track-panel { border-top: 1px solid var(--brand-rule); border-left: 0; }
+	.catalog-section-heading { align-items: start; flex-direction: column; gap: 1.5rem; }
+	.catalog-section-heading > div, .catalog-section-heading > p { flex-basis: auto; }
+	.catalog-section-heading h2 { max-width: 400px; font-size: 1.875rem; line-height: 2.25rem; }
+	.catalog-section-heading > p { max-width: 620px; }
+	.catalog-course-grid { grid-template-columns: 1fr; }
+	.catalog-course-card:nth-child(odd) { border-right: 0; }
+	.catalog-next-step { grid-template-columns: auto 1fr; }
+	.catalog-next-step > a { grid-column: 2; justify-self: start; }
+}
+
+@media (max-width: 560px) {
+	.course-catalog { --catalog-rail: calc(100% - 1.25rem); }
+	.catalog-hero-copy { padding: 4rem 1.15rem; }
+	.catalog-hero h1 { font-size: clamp(3rem, 15vw, 4.3rem); }
+	.catalog-track-panel { padding: 2.5rem 1.15rem; }
+	.catalog-courses { padding-block: 4.5rem; }
+	.catalog-courses .catalog-rail { padding-inline: 1rem; }
+	.catalog-section-heading { padding-block: 2.5rem; }
+	.catalog-section-heading h2 { font-size: 1.5rem; line-height: 2rem; }
+	.catalog-course-card { grid-template-columns: 2.75rem minmax(0, 1fr); min-height: 420px; }
+	.catalog-course-content { padding: 1.25rem 1rem; }
+	.catalog-course-topline { display: grid; }
+	.catalog-course-recommendation { justify-self: start; }
+	.catalog-course-meta span + span::before { margin-right: .6rem; }
+	.catalog-course-card h3 { margin-top: 2.4rem; font-size: 1.5rem; line-height: 2rem; }
+	.catalog-empty-state h3, .catalog-next-step h2 { font-size: 1.5rem; line-height: 2rem; }
+	.catalog-next-step { grid-template-columns: 1fr; padding: 1.5rem; }
+	.catalog-next-step-mark { width: 4rem; }
+	.catalog-next-step > a { grid-column: auto; width: 100%; min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.catalog-primary-action,
+	.catalog-course-link span:last-child,
+	.catalog-next-step > a { transition: none; }
+	.catalog-primary-action:hover,
+	.catalog-next-step > a:hover { transform: none; }
+	.catalog-next-step > a:hover { box-shadow: none; }
+}

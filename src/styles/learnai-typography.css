@@ -1,0 +1,264 @@
+/* LearnAI type system — one hierarchy across marketing, learning, account and admin surfaces. */
+body.blue-orbit {
+	font-family: var(--type-family-sans);
+	font-size: var(--type-body-size);
+	line-height: var(--type-body-leading);
+}
+
+.blue-orbit button,
+.blue-orbit input,
+.blue-orbit select,
+.blue-orbit textarea { font-family: inherit; }
+
+.blue-orbit h1,
+.blue-orbit h2,
+.blue-orbit h3,
+.blue-orbit h4 {
+	font-family: var(--type-family-sans);
+	font-weight: 600;
+	text-wrap: balance;
+}
+
+.blue-orbit p,
+.blue-orbit li { text-wrap: pretty; }
+
+/* Navigation and actions */
+.blue-orbit .orbit-desktop-nav a {
+	font-size: var(--type-body-size);
+	font-weight: 500;
+	line-height: var(--type-body-leading);
+}
+
+.blue-orbit .orbit-login-link,
+.blue-orbit .orbit-header-cta,
+.blue-orbit .orbit-button,
+.blue-orbit .button {
+	font-size: var(--type-body-size);
+	font-weight: 600;
+	line-height: var(--type-body-leading);
+}
+
+/* Labels and metadata stay legible at a 12/16 minimum. */
+.blue-orbit .eyebrow,
+.blue-orbit .orbit-eyebrow,
+.blue-orbit .orbit-section-kicker,
+.blue-orbit .course-meta,
+.blue-orbit .orbit-course-meta,
+.blue-orbit .module-number,
+.blue-orbit .status-badge,
+.blue-orbit .workbook-label,
+.blue-orbit .work-compass-kicker,
+.blue-orbit .work-compass-question-meta,
+.blue-orbit .work-compass-insights article > span,
+.blue-orbit .work-compass-learning-plan small {
+	font-family: var(--type-family-mono);
+	font-size: var(--type-label-size);
+	font-weight: 650;
+	letter-spacing: .075em;
+	line-height: var(--type-label-leading);
+	text-transform: uppercase;
+}
+
+/* Hero and page-title tier. */
+.blue-orbit .orbit-hero h1,
+.blue-orbit .work-compass-intro h1 {
+	font-size: var(--type-display-size);
+	font-weight: 650;
+	letter-spacing: -.045em;
+	line-height: var(--type-display-leading);
+}
+
+.blue-orbit .section-intro h1,
+.blue-orbit .article-header h1,
+.blue-orbit .lesson-content h1,
+.blue-orbit .course-hero h1,
+.blue-orbit .auth-shell h1,
+.blue-orbit .dashboard-head h1 {
+	font-size: var(--type-page-size);
+	font-weight: 650;
+	letter-spacing: -.04em;
+	line-height: var(--type-page-leading);
+}
+
+.blue-orbit .admin-page-head h1 {
+	font-size: var(--type-section-size);
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: var(--type-section-leading);
+}
+
+.blue-orbit .hero-copy,
+.blue-orbit .orbit-hero-lead,
+.blue-orbit .lesson-lead,
+.blue-orbit .work-compass-lead,
+.blue-orbit .work-compass-result-heading > p:last-child {
+	font-size: var(--type-body-lg-size);
+	font-weight: 400;
+	line-height: var(--type-body-lg-leading);
+}
+
+/* Reference balance: 400px heading against 576px explanatory copy. */
+.blue-orbit .orbit-section-heading {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.blue-orbit .orbit-section-heading > div { flex: 0 1 400px; }
+.blue-orbit .orbit-section-heading .orbit-section-kicker { margin-bottom: .625rem; }
+
+.blue-orbit .orbit-section-heading h2,
+.blue-orbit .section > .shell > h2,
+.blue-orbit .empty-state > h2,
+.blue-orbit .empty-state > h3 {
+	max-width: 400px;
+	font-size: var(--type-section-size);
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: var(--type-section-leading);
+}
+
+.blue-orbit .orbit-section-heading > p,
+.blue-orbit .section-intro > p:last-child {
+	flex: 0 1 576px;
+	max-width: 576px;
+	font-size: var(--type-body-lg-size);
+	font-weight: 400;
+	line-height: var(--type-body-lg-leading);
+}
+
+/* Course, content and learning cards. */
+.blue-orbit .orbit-learning-card h3,
+.blue-orbit .orbit-course-body h3,
+.blue-orbit .course-card h2,
+.blue-orbit .course-card h3,
+.blue-orbit .article-card h2,
+.blue-orbit .module-card h2,
+.blue-orbit .level-two-card h2,
+.blue-orbit .admin-panel-head h2,
+.blue-orbit .quiz-heading h2,
+.blue-orbit .prompt-builder-head h2,
+.blue-orbit .mentor-composer h2,
+.blue-orbit .mentor-answer h2 {
+	font-size: var(--type-card-size);
+	font-weight: 600;
+	letter-spacing: -.02em;
+	line-height: var(--type-card-leading);
+}
+
+.blue-orbit .course-card p,
+.blue-orbit .article-card p,
+.blue-orbit .module-card > div > p,
+.blue-orbit .level-two-card p,
+.blue-orbit .quiz-heading > p:not(.eyebrow),
+.blue-orbit .prompt-builder-head p:last-child {
+	font-size: var(--type-body-size);
+	line-height: var(--type-body-leading);
+}
+
+/* Long-form learning and editorial content. */
+.blue-orbit .lesson-body,
+.blue-orbit .article-body,
+.blue-orbit .mentor-answer-copy {
+	font-size: var(--type-body-lg-size);
+	line-height: 1.875rem;
+}
+
+.blue-orbit .lesson-body > h2,
+.blue-orbit .article-body h2,
+.blue-orbit .lesson-cta h2 {
+	font-size: var(--type-subsection-size);
+	font-weight: 600;
+	letter-spacing: -.02em;
+	line-height: var(--type-subsection-leading);
+}
+
+.blue-orbit .article-body h3,
+.blue-orbit .mentor-answer-copy h2,
+.blue-orbit .mentor-answer-copy h3,
+.blue-orbit .mentor-answer-copy h4 {
+	font-size: var(--type-card-size);
+	font-weight: 600;
+	letter-spacing: -.015em;
+	line-height: var(--type-card-leading);
+}
+
+/* Work Compass uses the same hierarchy while keeping its hero prominent. */
+.blue-orbit .work-compass-question-grid h2,
+.blue-orbit .work-compass-learning-plan h3 {
+	font-size: var(--type-section-size);
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: var(--type-section-leading);
+}
+
+.blue-orbit .work-compass-result-heading h2 {
+	font-size: var(--type-page-size);
+	font-weight: 650;
+	letter-spacing: -.035em;
+	line-height: var(--type-page-leading);
+}
+
+.blue-orbit .work-compass-insights h3,
+.blue-orbit .work-compass-learning-plan h4,
+.blue-orbit .work-compass-takeaway h3 {
+	font-size: var(--type-card-size);
+	font-weight: 600;
+	letter-spacing: -.02em;
+	line-height: var(--type-card-leading);
+}
+
+/* Supporting UI. */
+.blue-orbit small,
+.blue-orbit .form-status,
+.blue-orbit .mentor-privacy,
+.blue-orbit .work-compass-privacy,
+.blue-orbit .work-compass-navigation > span,
+.blue-orbit .work-compass-result-footer details {
+	font-size: var(--type-small-size);
+	line-height: var(--type-small-leading);
+}
+
+.blue-orbit label,
+.blue-orbit input,
+.blue-orbit select,
+.blue-orbit textarea { font-size: var(--type-body-size); line-height: var(--type-body-leading); }
+
+.blue-orbit .orbit-footer-column,
+.blue-orbit .orbit-footer-brand p { font-size: var(--type-small-size); line-height: var(--type-small-leading); }
+
+@media (max-width: 900px) {
+	.blue-orbit .orbit-section-heading { flex-direction: column; gap: 1.5rem; }
+	.blue-orbit .orbit-section-heading > div,
+	.blue-orbit .orbit-section-heading > p { flex-basis: auto; }
+	.blue-orbit .orbit-section-heading h2,
+	.blue-orbit .section > .shell > h2,
+	.blue-orbit .work-compass-question-grid h2,
+	.blue-orbit .work-compass-learning-plan h3 { font-size: 1.875rem; line-height: 2.25rem; }
+}
+
+@media (max-width: 560px) {
+	:root {
+		--type-display-size: clamp(3rem, 14vw, 4.2rem);
+		--type-page-size: 2.25rem;
+		--type-page-leading: 2.5rem;
+	}
+
+	.blue-orbit .orbit-section-heading h2,
+	.blue-orbit .section > .shell > h2,
+	.blue-orbit .empty-state > h2,
+	.blue-orbit .empty-state > h3,
+	.blue-orbit .work-compass-question-grid h2,
+	.blue-orbit .work-compass-learning-plan h3 {
+		font-size: 1.5rem;
+		line-height: 2rem;
+	}
+
+	.blue-orbit .orbit-section-heading > p,
+	.blue-orbit .section-intro > p:last-child { font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-leading); }
+
+	.blue-orbit .article-body,
+	.blue-orbit .lesson-body,
+	.blue-orbit .mentor-answer-copy { font-size: 1.0625rem; line-height: 1.75rem; }
+}
