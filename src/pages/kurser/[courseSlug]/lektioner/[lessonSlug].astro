@@ -9,6 +9,7 @@ import {
 } from '../../../../lib/learning/progress';
 import type { QuizQuestionView, QuizView } from '../../../../lib/quiz/contracts';
 import { createServerSupabaseClient } from '../../../../lib/supabase/server';
+import '../../../../styles/course-experience.css';
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
@@ -79,6 +80,9 @@ const courseLessons: CourseLesson[] = sortedModules.flatMap((module) =>
 );
 const orderedLessons = sortCourseLessons(courseLessons);
 const currentIndex = orderedLessons.findIndex((item) => item.id === lesson.id);
+const previousSequentialLesson = currentIndex > 0 ? orderedLessons[currentIndex - 1] : null;
+const nextSequentialLesson = currentIndex >= 0 && currentIndex < orderedLessons.length - 1 ? orderedLessons[currentIndex + 1] : null;
+const currentModuleIndex = sortedModules.findIndex((module) => module.id === currentModule.id);
 const { data: claimsData } = await supabase.auth.getClaims();
 const userId = claimsData?.claims?.sub;
 let progressLoadError = false;
@@ -144,63 +148,98 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 ---
 
 <SiteLayout title={`${lesson.title} — ${course.title}`} description={lesson.description ?? `Lektion i ${course.title}.`}>
-	<section class="section lesson-page">
-		<div class="shell lesson-shell">
-			<aside class="lesson-sidebar">
-				<a class="text-link" href={`/kurser/${course.slug}`}>← Tilbage til kurset</a>
-				<p class="course-meta">{currentModule.title}</p>
-				<div class="course-progress-copy">
-					<span>Din progression</span>
-					<strong>{userId ? `${progressPercent}%` : '—'}</strong>
-				</div>
-				<div class="course-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={userId ? progressPercent : 0}>
-					<span style={`width: ${userId ? progressPercent : 0}%`}></span>
-				</div>
-			</aside>
-
-			<article class="lesson-content">
-				<p class="eyebrow">Lektion · {lesson.estimated_minutes ?? '—'} minutter</p>
-				<h1>{lesson.title}</h1>
-				{lesson.description && <p class="lesson-lead">{lesson.description}</p>}
-
-				{statusMessage && (
-					<p class:list={['notice', { 'notice-error': statusMessage.error }]} role={statusMessage.error ? 'alert' : 'status'}>
-						{statusMessage.text}
-					</p>
-				)}
-				{progressLoadError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Prøv at genindlæse siden.</p>}
-
-				<div class="lesson-body">
-					{blocks.length ? (
-						blocks.map((block) => {
-							if (block.type === 'heading' && block.text) return <h2>{block.text}</h2>;
-							if (block.type === 'checklist' && block.items?.length) {
-								return <ul class="content-checklist">{block.items.map((item) => <li>{item}</li>)}</ul>;
-							}
-							if (block.type === 'callout' && block.text) return <aside class="content-callout">{block.text}</aside>;
-							if (block.type === 'example' && block.text) return <pre class="content-example"><code>{block.text}</code></pre>;
-							if (block.type === 'cta' && block.title && block.text && block.href && block.label) {
-								return (
-									<aside class="lesson-cta">
-										<p class="eyebrow">Dit næste niveau</p>
-										<h2>{block.title}</h2>
-										<p>{block.text}</p>
-										<a class="button" href={block.href}>{block.label}</a>
-									</aside>
-								);
-							}
-							if (block.text) return <p>{block.text}</p>;
-							return null;
-						})
-					) : (
-						<div class="empty-state">
-							<h2>Lektionen er ved at blive gjort klar</h2>
-							<p>Der er endnu ikke tilføjet lektionsindhold.</p>
+	<div class="course-lesson-experience">
+		<div class="course-lesson-rail">
+			<div class="course-lesson-shell">
+				<aside class="course-lesson-sidebar">
+					<div class="course-lesson-sidebar-head">
+						<a href={`/kurser/${course.slug}`}>← Kursusoversigt</a>
+						<p>Modul {String(currentModuleIndex + 1).padStart(2, '0')}</p>
+						<strong>{currentModule.title}</strong>
+					</div>
+					<div class="course-lesson-sidebar-progress">
+						<div class="course-progress-copy">
+							<span>Din progression</span>
+							<strong>{userId ? `${progressPercent}%` : '—'}</strong>
 						</div>
+						<div class="course-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={userId ? progressPercent : 0}>
+							<span style={`width: ${userId ? progressPercent : 0}%`}></span>
+						</div>
+						<small>{userId ? `${completedLessonIds.size} af ${courseLessons.length} lektioner færdige` : 'Log ind for at gemme dine fremskridt'}</small>
+					</div>
+				</aside>
+
+				<article class="course-lesson-content">
+					<p class="course-lesson-position">Lektion {currentIndex + 1} / {orderedLessons.length} · {lesson.estimated_minutes ?? '—'} minutter</p>
+					<h1>{lesson.title}</h1>
+					{lesson.description && <p class="lesson-lead">{lesson.description}</p>}
+
+					{statusMessage && (
+						<p class:list={['notice', { 'notice-error': statusMessage.error }]} role={statusMessage.error ? 'alert' : 'status'}>
+							{statusMessage.text}
+						</p>
 					)}
+					{progressLoadError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Prøv at genindlæse siden.</p>}
+
+					<div class="lesson-body">
+						{blocks.length ? (
+							blocks.map((block) => {
+								if (block.type === 'heading' && block.text) return <h2>{block.text}</h2>;
+								if (block.type === 'checklist' && block.items?.length) {
+									return <ul class="content-checklist">{block.items.map((item) => <li>{item}</li>)}</ul>;
+								}
+								if (block.type === 'callout' && block.text) return <aside class="content-callout">{block.text}</aside>;
+								if (block.type === 'example' && block.text) {
+									return (
+										<div class="prompt-workbench" data-prompt-workbench>
+											<div class="prompt-workbench-head">
+												<p class="prompt-workbench-label">Prompt-værksted</p>
+												<button class="prompt-copy-button" type="button" data-copy-example>Kopiér prompt</button>
+											</div>
+											<pre class="content-example" data-copy-source><code>{block.text}</code></pre>
+											<p class="prompt-copy-status" data-copy-status aria-live="polite"></p>
+										</div>
+									);
+								}
+								if (block.type === 'cta' && block.title && block.text && block.href && block.label) {
+									return (
+										<aside class="lesson-cta">
+											<p class="eyebrow">Dit næste niveau</p>
+											<h2>{block.title}</h2>
+											<p>{block.text}</p>
+											<a class="button" href={block.href}>{block.label}</a>
+										</aside>
+									);
+								}
+								if (block.text) return <p>{block.text}</p>;
+								return null;
+							})
+						) : (
+							<div class="empty-state">
+								<h2>Lektionen er ved at blive gjort klar</h2>
+								<p>Der er endnu ikke tilføjet lektionsindhold.</p>
+							</div>
+						)}
 				</div>
 
-				<div class="lesson-actions">
+					<nav class="course-lesson-nav" aria-label="Navigér mellem lektioner">
+						{previousSequentialLesson ? (
+							<a href={`/kurser/${course.slug}/lektioner/${previousSequentialLesson.slug}`}>
+								<span>← Forrige lektion</span>
+								<strong>{currentIndex}. {sortedModules.flatMap((module) => module.lessons).find((item) => item.id === previousSequentialLesson.id)?.title}</strong>
+							</a>
+						) : <div class="course-lesson-nav-placeholder" aria-hidden="true"></div>}
+						{nextSequentialLesson ? (
+							<a href={`/kurser/${course.slug}/lektioner/${nextSequentialLesson.slug}`}>
+								<span>Næste lektion →</span>
+								<strong>{currentIndex + 2}. {sortedModules.flatMap((module) => module.lessons).find((item) => item.id === nextSequentialLesson.id)?.title}</strong>
+							</a>
+						) : (
+							<a href={`/kurser/${course.slug}`}><span>Kurset er gennemført</span><strong>Tilbage til kursusoversigten →</strong></a>
+						)}
+					</nav>
+
+					<div class="lesson-actions">
 					{userId ? (
 						isCompleted ? (
 							<>
@@ -229,17 +268,18 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 							<a class="button" href="/login">Log ind</a>
 						</div>
 					)}
-				</div>
+					</div>
 
-				{quizLoadError && (
+					{quizLoadError && (
 					<p class="notice notice-error quiz-load-error" role="alert">
 						Quizzen kunne ikke hentes. Genindlæs siden og prøv igen.
 					</p>
 				)}
-				{quiz && <QuizPlayer quiz={quiz} client:load />}
-			</article>
+					{quiz && <QuizPlayer quiz={quiz} client:load />}
+				</article>
+			</div>
 		</div>
-	</section>
+	</div>
 
 	<script>
 		for (const form of document.querySelectorAll<HTMLFormElement>('[data-progress-form]')) {
@@ -250,6 +290,27 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 				if (button) button.disabled = true;
 				if (label) label.textContent = 'Gemmer progression…';
 				if (status) status.textContent = 'Vent et øjeblik, mens vi gemmer.';
+			});
+		}
+
+		for (const workbench of document.querySelectorAll<HTMLElement>('[data-prompt-workbench]')) {
+			const button = workbench.querySelector<HTMLButtonElement>('[data-copy-example]');
+			const source = workbench.querySelector<HTMLElement>('[data-copy-source]');
+			const status = workbench.querySelector<HTMLElement>('[data-copy-status]');
+			button?.addEventListener('click', async () => {
+				const prompt = source?.textContent?.trim();
+				if (!prompt || !navigator.clipboard) {
+					if (status) status.textContent = 'Markér teksten og kopiér den manuelt.';
+					return;
+				}
+				try {
+					await navigator.clipboard.writeText(prompt);
+					button.textContent = 'Kopieret';
+					if (status) status.textContent = 'Prompten er kopieret og klar til dit AI-værktøj.';
+					window.setTimeout(() => { button.textContent = 'Kopiér prompt'; }, 2200);
+				} catch {
+					if (status) status.textContent = 'Markér teksten og kopiér den manuelt.';
+				}
 			});
 		}
 	</script>

@@ -6,6 +6,7 @@ import {
 	type CourseLesson,
 } from '../../lib/learning/progress';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/course-experience.css';
 
 export const prerender = false;
 Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
@@ -64,6 +65,26 @@ const progressPercent = calculateCourseProgress(courseLessons, completedLessonId
 const nextLesson = findNextIncompleteLesson(courseLessons, completedLessonIds);
 const firstLesson = courseLessons[0] ?? null;
 const continueLesson = nextLesson ?? firstLesson;
+const levelLabels = { beginner: 'Begynder', intermediate: 'Øvet', advanced: 'Avanceret' } as const;
+const levelLabel = typeof course.level === 'string' && course.level in levelLabels
+	? levelLabels[course.level as keyof typeof levelLabels]
+	: 'Alle niveauer';
+const isStarterCourse = course.slug === 'ai-i-praksis-dit-foerste-kursus';
+const outcomes = isStarterCourse
+	? [
+		'En AI-skabelon, du kan bruge på en rigtig arbejdsopgave.',
+		'Et enkelt håndværk til at forbedre svar uden lange superprompts.',
+		'Tre kontrolvaner, der beskytter data og troværdighed.',
+	]
+	: [
+		'En tydelig metode, du kan afprøve med det samme.',
+		'Konkrete øvelser, der forbinder viden med din arbejdsdag.',
+		'Et næste skridt, du kan tage med videre efter kurset.',
+	];
+const phaseLabels = ['Forstå', 'Afprøv', 'Forankr'];
+const roadmapTitle = isStarterCourse
+	? 'Fra første resultat til en sikker arbejdsvane.'
+	: 'Fra ny viden til noget, du kan bruge.';
 const statusMessages: Record<string, string> = {
 	'lesson-completed': 'Lektionen er gemt som færdig. Godt arbejde!',
 };
@@ -71,43 +92,83 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 ---
 
 <SiteLayout title={`${course.title} — LearnAI.nu`} description={course.description ?? 'Praktisk AI-kursus på dansk.'}>
-	<section class="hero hero-compact">
-		<div class="shell course-hero">
-			<div>
-				<p class="eyebrow">Kursus · {course.estimated_minutes ?? '—'} minutter</p>
-				<h1>{course.title}</h1>
-				<p class="hero-copy">{course.description}</p>
-			</div>
-			<div class="course-summary">
-				<strong>{Number(course.price_dkk) === 0 ? 'Gratis kursus' : `${course.price_dkk} kr.`}</strong>
-				<p>{sortedModules.length} moduler · {courseLessons.length} lektioner</p>
+	<div class="course-experience">
+		<section class="course-experience-hero">
+			<div class="course-experience-rail">
+				<div class="course-experience-copy">
+					<a class="course-breadcrumb" href="/kurser">Kurser <span aria-hidden="true">/</span> {isStarterCourse ? 'Din første AI-gevinst' : course.title}</a>
+					<p class="course-experience-kicker">Praktisk minikursus</p>
+					<h1>{course.title}</h1>
+					<p class="course-experience-lead">{course.description}</p>
+					<div class="course-experience-meta" aria-label="Kursusinformation">
+						<span>{levelLabel}</span>
+						<span>{course.estimated_minutes ?? '—'} min.</span>
+						<span>{Number(course.price_dkk) === 0 ? 'Gratis' : `${course.price_dkk} kr.`}</span>
+					</div>
+					<div class="course-outcome-list">
+						<p>Du går herfra med</p>
+						<ul>{outcomes.map((outcome) => <li>{outcome}</li>)}</ul>
+					</div>
+				</div>
 
-				{userId ? (
-					<>
-						<div class="course-progress-copy">
-							<span>Din progression</span>
-							<strong>{progressPercent}%</strong>
-						</div>
-						<div class="course-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressPercent}>
-							<span style={`width: ${progressPercent}%`}></span>
-						</div>
-						{continueLesson ? (
-							<a class="button" href={`/kurser/${course.slug}/lektioner/${continueLesson.slug}`}>
-								{progressPercent === 0 ? 'Start kurset' : progressPercent === 100 ? 'Se kurset igen' : 'Fortsæt kurset'}
-							</a>
+				<aside class="course-start-panel" aria-label="Start kurset">
+					<div class="course-start-mark" aria-hidden="true">
+						<span>01</span>
+						<strong>{isStarterCourse ? <>AI<br />i praksis</> : course.title}</strong>
+						<small>LearnAI workbook</small>
+					</div>
+					<div class="course-start-content">
+						<p class="course-start-label">Dit forløb</p>
+						<strong>{sortedModules.length} moduler · {courseLessons.length} lektioner</strong>
+
+						{userId ? (
+							<>
+								<div class="course-progress-copy">
+									<span>Din progression</span>
+									<strong>{progressPercent}%</strong>
+								</div>
+								<div class="course-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressPercent}>
+									<span style={`width: ${progressPercent}%`}></span>
+								</div>
+								{continueLesson ? (
+									<a class="course-start-action" href={`/kurser/${course.slug}/lektioner/${continueLesson.slug}`}>
+										<span>{progressPercent === 0 ? 'Start første lektion' : progressPercent === 100 ? 'Se kurset igen' : 'Fortsæt kurset'}</span>
+										<span aria-hidden="true">→</span>
+									</a>
+								) : <p class="muted-copy">Kurset har endnu ingen lektioner.</p>}
+							</>
 						) : (
-							<p class="muted-copy">Kurset har endnu ingen lektioner.</p>
+							<a class="course-start-action" href="/login">
+								<span>Log ind og start</span><span aria-hidden="true">→</span>
+							</a>
 						)}
-					</>
-				) : (
-					<a class="button" href="/login">Log ind for at starte</a>
-				)}
+						<small>Din progression gemmes automatisk mellem lektionerne.</small>
+					</div>
+				</aside>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<section class="section section-tight">
-		<div class="shell module-list">
+		<section class="course-roadmap" aria-labelledby="course-roadmap-heading">
+			<div class="course-experience-rail">
+				<header class="course-roadmap-heading">
+					<div>
+						<p class="course-experience-kicker">Dit læringsspor</p>
+						<h2 id="course-roadmap-heading">{roadmapTitle}</h2>
+					</div>
+					<p>Tag lektionerne i rækkefølge. Hvert trin giver dig noget konkret at afprøve, før du går videre.</p>
+				</header>
+
+				<div class="course-journey" aria-label="Kursets tre læringstrin">
+					{phaseLabels.map((phase, index) => (
+						<div class="course-journey-step">
+							<span>{String(index + 1).padStart(2, '0')}</span>
+							<strong>{phase}</strong>
+							<small>{index === 0 ? 'Se hvad AI kan' : index === 1 ? 'Byg din metode' : 'Brug den ansvarligt'}</small>
+						</div>
+					))}
+				</div>
+
+				<div class="course-module-list">
 			{statusMessage && <p class="notice" role="status">{statusMessage}</p>}
 			{progressError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Genindlæs siden og prøv igen.</p>}
 			{modulesError ? (
@@ -116,22 +177,28 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 					<p>Prøv at genindlæse siden om et øjeblik.</p>
 				</div>
 			) : sortedModules.length ? (
-				sortedModules.map((module, moduleIndex) => (
-					<article class="module-card">
-						<div class="module-number">{String(moduleIndex + 1).padStart(2, '0')}</div>
-						<div>
+				sortedModules.map((module, moduleIndex) => {
+					const moduleMinutes = module.lessons.reduce((sum, lesson) => sum + (lesson.estimated_minutes ?? 0), 0);
+					return (
+					<article class="course-module-card">
+						<div class="course-module-index">
+							<span>{String(moduleIndex + 1).padStart(2, '0')}</span>
+							<small>{phaseLabels[moduleIndex] ?? 'Fortsæt'}</small>
+						</div>
+						<div class="course-module-content">
+							<p class="course-module-meta">{module.lessons.length} lektioner · {moduleMinutes || '—'} min.</p>
 							<h2>{module.title}</h2>
 							{module.description && <p>{module.description}</p>}
 							{module.lessons.length ? (
 								<ol class="lesson-list">
-									{module.lessons.map((lesson) => {
+									{module.lessons.map((lesson, lessonIndex) => {
 										const completed = completedLessonIds.has(lesson.id);
 										const isNext = nextLesson?.id === lesson.id;
 										return (
 											<li class:list={{ completed, next: isNext }}>
 												<a href={`/kurser/${course.slug}/lektioner/${lesson.slug}`}>
 													<span class="lesson-title">
-														<span class="completion-mark" aria-hidden="true">{completed ? '✓' : '→'}</span>
+														<span class="completion-mark" aria-hidden="true">{completed ? '✓' : `${moduleIndex + 1}.${lessonIndex + 1}`}</span>
 														{lesson.title}
 													</span>
 													<small>
@@ -148,13 +215,16 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 							)}
 						</div>
 					</article>
-				))
+					);
+				})
 			) : (
 				<div class="empty-state">
 					<h2>Kurset er ved at blive gjort klar</h2>
 					<p>Der er endnu ingen moduler eller lektioner.</p>
 				</div>
 			)}
-		</div>
-	</section>
+				</div>
+			</div>
+		</section>
+	</div>
 </SiteLayout>
