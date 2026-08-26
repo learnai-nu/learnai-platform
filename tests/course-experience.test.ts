@@ -7,6 +7,8 @@ const lessonPage = readFileSync(
 	'utf8',
 );
 const styles = readFileSync(new URL('../src/styles/course-experience.css', import.meta.url), 'utf8');
+const challengeCoach = readFileSync(new URL('../src/components/ChallengeCoach.tsx', import.meta.url), 'utf8');
+const challengeApi = readFileSync(new URL('../src/pages/api/ai/challenge-coach.ts', import.meta.url), 'utf8');
 
 describe('AI i praksis course experience', () => {
 	it('turns the existing course data into a three-step practical learning route', () => {
@@ -40,5 +42,17 @@ describe('AI i praksis course experience', () => {
 		expect(styles).toContain('.prompt-workbench');
 		expect(styles).toContain('@media (max-width: 640px)');
 		expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
+	});
+
+	it('adds a private, three-question challenge dialogue to the first lesson', () => {
+		expect(lessonPage).toContain('ChallengeCoach');
+		expect(challengeCoach).toContain('Stil mig tre spørgsmål');
+		expect(challengeCoach).toContain('Spørgsmål {questionIndex + 1} af 3');
+		expect(challengeCoach).toContain('LearnAI gemmer ikke samtalen i din profil');
+		expect(challengeCoach).toContain('Teksten behandles hos OpenAI');
+		expect(challengeApi).toContain("store: false");
+		expect(challengeApi).toContain("if (!userId)");
+		expect(challengeApi).toContain("consume_ai_mentor_quota");
+		expect(styles).toContain('.challenge-coach-steps');
 	});
 });

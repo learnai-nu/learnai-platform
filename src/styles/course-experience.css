@@ -292,6 +292,144 @@
 .prompt-copy-status { min-height: 1.25rem; margin: 0; padding: .55rem 1rem 0; color: var(--brand-muted); font-size: var(--type-small-size); }
 .prompt-workbench .content-example { margin: 0; padding: 1rem 1rem 1.25rem; border-radius: 0; background: var(--brand-card); color: var(--brand-ink); font-family: var(--type-family-mono); font-size: .875rem; line-height: 1.55rem; }
 
+/* Guided challenge exercise */
+.challenge-coach {
+	margin: 2.5rem 0 .75rem;
+	border: 1px solid var(--brand-ink);
+	background: var(--brand-card);
+	box-shadow: 8px 8px 0 var(--brand-ink);
+}
+
+.challenge-coach-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1.25rem;
+	padding: 1.25rem;
+	border-bottom: 1px solid var(--brand-ink);
+	background: var(--brand-signal);
+}
+
+.challenge-coach-kicker {
+	margin: 0 0 .45rem;
+	font-family: var(--type-family-mono);
+	font-size: var(--type-label-size);
+	font-weight: 750;
+	letter-spacing: .07em;
+	text-transform: uppercase;
+}
+
+.challenge-coach-head h2,
+.challenge-coach-result-head h3 {
+	margin: 0;
+	font-size: clamp(1.45rem, 3vw, 2rem);
+	line-height: 1.12;
+}
+
+.challenge-coach-time {
+	flex: 0 0 auto;
+	padding: .35rem .55rem;
+	border: 1px solid var(--brand-ink);
+	background: var(--brand-card);
+	font-family: var(--type-family-mono);
+	font-size: var(--type-label-size);
+	font-weight: 700;
+}
+
+.challenge-coach-start,
+.challenge-coach-dialogue,
+.challenge-coach-result,
+.challenge-coach-login { padding: clamp(1.25rem, 4vw, 2rem); }
+
+.challenge-coach-start > label,
+.challenge-coach-dialogue form > label { display: block; margin-bottom: .55rem; font-weight: 750; }
+.challenge-coach-start > label { font-size: 1.2rem; }
+.challenge-coach-start > p:not(.challenge-coach-privacy, .notice) { margin: 0 0 1rem; color: var(--brand-muted); }
+
+.challenge-coach textarea {
+	width: 100%;
+	padding: .9rem 1rem;
+	border: 1px solid var(--brand-ink);
+	border-radius: 0;
+	background: var(--brand-paper);
+	color: var(--brand-ink);
+	font: inherit;
+	line-height: 1.55;
+	resize: vertical;
+}
+
+.challenge-coach textarea:focus-visible { outline: 3px solid var(--brand-action); outline-offset: 3px; }
+
+.challenge-coach-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.challenge-coach-actions > span { color: var(--brand-muted); font-family: var(--type-family-mono); font-size: var(--type-label-size); }
+
+.challenge-coach-privacy {
+	margin: 1.5rem 0 0;
+	padding: 1rem;
+	border-left: 4px solid var(--brand-action);
+	background: var(--brand-action-soft);
+	color: var(--brand-muted);
+	font-size: var(--type-small-size);
+	line-height: 1.5;
+}
+.challenge-coach-privacy strong { color: var(--brand-ink); }
+
+.challenge-coach-steps {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	margin: 0 0 2rem;
+	padding: 0;
+	list-style: none;
+}
+
+.challenge-coach-steps li { position: relative; display: flex; align-items: center; gap: .55rem; color: var(--brand-muted); }
+.challenge-coach-steps li:not(:last-child)::after { content: ''; position: absolute; z-index: 0; top: 50%; right: .5rem; left: 2.35rem; border-top: 1px solid var(--brand-rule); }
+.challenge-coach-steps span { position: relative; z-index: 1; display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border: 1px solid var(--brand-rule); border-radius: 50%; background: var(--brand-card); font-family: var(--type-family-mono); font-size: .72rem; font-weight: 750; }
+.challenge-coach-steps small { position: relative; z-index: 1; padding-right: .45rem; background: var(--brand-card); }
+.challenge-coach-steps .is-current { color: var(--brand-ink); font-weight: 700; }
+.challenge-coach-steps .is-current span { border-color: var(--brand-ink); background: var(--brand-signal); }
+.challenge-coach-steps .is-complete span { border-color: var(--brand-action); background: var(--brand-action); color: white; }
+
+.challenge-coach-dialogue form { padding: clamp(1rem, 3vw, 1.75rem); border: 1px solid var(--brand-ink); background: var(--brand-paper); }
+.challenge-coach-dialogue form h3 { max-width: 620px; margin: 0 0 1.5rem; font-size: clamp(1.35rem, 3vw, 1.8rem); line-height: 1.25; }
+.challenge-coach-dialogue form h3:focus { outline: none; }
+
+.challenge-coach-text-button {
+	padding: .25rem 0;
+	border: 0;
+	border-bottom: 1px solid currentColor;
+	background: transparent;
+	color: var(--brand-action);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+.challenge-coach-text-button:hover,
+.challenge-coach-text-button:focus-visible { color: var(--brand-ink); }
+
+.challenge-coach-loading { display: flex; min-height: 180px; align-items: center; justify-content: center; gap: .85rem; }
+.challenge-coach-loading span { width: 1.1rem; height: 1.1rem; border: 2px solid var(--brand-rule); border-top-color: var(--brand-action); border-radius: 50%; animation: challenge-spin .8s linear infinite; }
+@keyframes challenge-spin { to { transform: rotate(360deg); } }
+
+.challenge-coach-result-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--brand-rule); }
+.challenge-coach-answer { padding: 1.25rem 0; }
+.challenge-coach-answer h2 { margin: 1.75rem 0 .55rem; font-size: 1.25rem; line-height: 1.45; }
+.challenge-coach-answer h2:first-child { margin-top: 0; }
+.challenge-coach-answer p,
+.challenge-coach-answer li { line-height: 1.65; }
+.challenge-coach-reflection { margin-top: 1rem; padding: 1.25rem; border: 1px solid var(--brand-ink); background: var(--brand-signal); }
+.challenge-coach-reflection p { margin: .35rem 0 0; }
+
+.challenge-coach-login { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.challenge-coach-login p { margin: .35rem 0 0; color: var(--brand-muted); }
+
 .course-lesson-nav {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -350,6 +488,15 @@
 	.course-lesson-sidebar-head { border-right: 0; border-bottom: 1px solid var(--brand-ink); }
 	.course-lesson-content > h1 { font-size: 2.25rem; line-height: 2.5rem; }
 	.prompt-workbench { box-shadow: 4px 4px 0 var(--brand-ink); }
+	.challenge-coach { box-shadow: 4px 4px 0 var(--brand-ink); }
+	.challenge-coach-head,
+	.challenge-coach-actions,
+	.challenge-coach-result-head,
+	.challenge-coach-login { align-items: stretch; flex-direction: column; }
+	.challenge-coach-actions .button,
+	.challenge-coach-login .button { width: 100%; text-align: center; }
+	.challenge-coach-steps small { display: none; }
+	.challenge-coach-steps li:not(:last-child)::after { right: .35rem; left: 2rem; }
 	.course-lesson-nav { grid-template-columns: 1fr; }
 	.course-lesson-nav a + a { border-top: 1px solid var(--brand-ink); border-left: 0; text-align: left; }
 	.course-lesson-nav .course-lesson-nav-placeholder { display: none; }
@@ -357,4 +504,5 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.course-start-action { transition: none; }
+	.challenge-coach-loading span { animation: none; }
 }

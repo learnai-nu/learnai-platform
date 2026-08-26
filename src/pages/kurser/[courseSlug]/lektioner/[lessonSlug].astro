@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../../../../layouts/SiteLayout.astro';
+import ChallengeCoach from '../../../../components/ChallengeCoach';
 import QuizPlayer from '../../../../components/QuizPlayer';
 import {
 	calculateCourseProgress,
@@ -7,6 +8,13 @@ import {
 	sortCourseLessons,
 	type CourseLesson,
 } from '../../../../lib/learning/progress';
+import {
+	challengeCoachFallbackBlocks,
+	challengeCoachLessonDescription,
+	challengeCoachLessonTitle,
+	courseLessonTitle,
+	isChallengeCoachLesson,
+} from '../../../../lib/learning/course-overrides';
 import type { QuizQuestionView, QuizView } from '../../../../lib/quiz/contracts';
 import { createServerSupabaseClient } from '../../../../lib/supabase/server';
 import '../../../../styles/course-experience.css';
@@ -140,6 +148,11 @@ const nextLesson =
 	findNextIncompleteLesson(orderedLessons.slice(currentIndex + 1), completedLessonIds) ??
 	findNextIncompleteLesson(orderedLessons.slice(0, currentIndex), completedLessonIds);
 const blocks = parseBlocks(lesson.body);
+const isChallengeLesson = isChallengeCoachLesson(course.slug, lesson.slug);
+const usesLegacyMailThreadContent = isChallengeLesson && blocks.some((block) => block.text?.toLocaleLowerCase('da-DK').includes('mailtråd'));
+const renderedBlocks: LessonBlock[] = usesLegacyMailThreadContent ? challengeCoachFallbackBlocks : blocks;
+const displayedLessonTitle = isChallengeLesson ? challengeCoachLessonTitle : lesson.title;
+const displayedLessonDescription = isChallengeLesson ? challengeCoachLessonDescription : lesson.description;
 const statusMessages: Record<string, { text: string; error?: boolean }> = {
 	'save-error': { text: 'Progressionen kunne ikke gemmes. Prøv igen.', error: true },
 	'not-allowed': { text: 'Du har ikke adgang til at gemme progression for denne lektion.', error: true },
@@ -147,7 +160,7 @@ const statusMessages: Record<string, { text: string; error?: boolean }> = {
 const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? ''];
 ---
 
-<SiteLayout title={`${lesson.title} — ${course.title}`} description={lesson.description ?? `Lektion i ${course.title}.`}>
+<SiteLayout title={`${displayedLessonTitle} — ${course.title}`} description={displayedLessonDescription ?? `Lektion i ${course.title}.`}>
 	<div class="course-lesson-experience">
 		<div class="course-lesson-rail">
 			<div class="course-lesson-shell">
@@ -171,8 +184,8 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 
 				<article class="course-lesson-content">
 					<p class="course-lesson-position">Lektion {currentIndex + 1} / {orderedLessons.length} · {lesson.estimated_minutes ?? '—'} minutter</p>
-					<h1>{lesson.title}</h1>
-					{lesson.description && <p class="lesson-lead">{lesson.description}</p>}
+					<h1>{displayedLessonTitle}</h1>
+					{displayedLessonDescription && <p class="lesson-lead">{displayedLessonDescription}</p>}
 
 					{statusMessage && (
 						<p class:list={['notice', { 'notice-error': statusMessage.error }]} role={statusMessage.error ? 'alert' : 'status'}>
@@ -182,8 +195,8 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 					{progressLoadError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Prøv at genindlæse siden.</p>}
 
 					<div class="lesson-body">
-						{blocks.length ? (
-							blocks.map((block) => {
+						{renderedBlocks.length ? (
+							renderedBlocks.map((block) => {
 								if (block.type === 'heading' && block.text) return <h2>{block.text}</h2>;
 								if (block.type === 'checklist' && block.items?.length) {
 									return <ul class="content-checklist">{block.items.map((item) => <li>{item}</li>)}</ul>;
@@ -220,19 +233,20 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 								<p>Der er endnu ikke tilføjet lektionsindhold.</p>
 							</div>
 						)}
+						{isChallengeLesson && <ChallengeCoach authenticated={Boolean(userId)} client:load />}
 				</div>
 
 					<nav class="course-lesson-nav" aria-label="Navigér mellem lektioner">
 						{previousSequentialLesson ? (
 							<a href={`/kurser/${course.slug}/lektioner/${previousSequentialLesson.slug}`}>
 								<span>← Forrige lektion</span>
-								<strong>{currentIndex}. {sortedModules.flatMap((module) => module.lessons).find((item) => item.id === previousSequentialLesson.id)?.title}</strong>
+								<strong>{currentIndex}. {(() => { const item = sortedModules.flatMap((module) => module.lessons).find((candidate) => candidate.id === previousSequentialLesson.id); return item ? courseLessonTitle(course.slug, item.slug, item.title) : ''; })()}</strong>
 							</a>
 						) : <div class="course-lesson-nav-placeholder" aria-hidden="true"></div>}
 						{nextSequentialLesson ? (
 							<a href={`/kurser/${course.slug}/lektioner/${nextSequentialLesson.slug}`}>
 								<span>Næste lektion →</span>
-								<strong>{currentIndex + 2}. {sortedModules.flatMap((module) => module.lessons).find((item) => item.id === nextSequentialLesson.id)?.title}</strong>
+								<strong>{currentIndex + 2}. {(() => { const item = sortedModules.flatMap((module) => module.lessons).find((candidate) => candidate.id === nextSequentialLesson.id); return item ? courseLessonTitle(course.slug, item.slug, item.title) : ''; })()}</strong>
 							</a>
 						) : (
 							<a href={`/kurser/${course.slug}`}><span>Kurset er gennemført</span><strong>Tilbage til kursusoversigten →</strong></a>
