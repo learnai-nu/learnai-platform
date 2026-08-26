@@ -4,6 +4,7 @@ export const challengeCoachLessonSlug = 'hvad-er-generativ-ai';
 export const challengeCoachLessonTitle = 'Få sparring på en aktuel udfordring';
 export const challengeCoachLessonDescription =
 	'Beskriv noget, du står med lige nu. AI stiller tre opklarende spørgsmål, før du får et konkret forslag.';
+export const challengeCoachLessonMinutes = 12;
 
 export function isChallengeCoachLesson(courseSlug: string | undefined, lessonSlug: string | undefined) {
 	return courseSlug === challengeCoachCourseSlug && lessonSlug === challengeCoachLessonSlug;
@@ -11,6 +12,10 @@ export function isChallengeCoachLesson(courseSlug: string | undefined, lessonSlu
 
 export function courseLessonTitle(courseSlug: string, lessonSlug: string, fallback: string) {
 	return isChallengeCoachLesson(courseSlug, lessonSlug) ? challengeCoachLessonTitle : fallback;
+}
+
+export function courseLessonMinutes(courseSlug: string, lessonSlug: string, fallback: number | null) {
+	return isChallengeCoachLesson(courseSlug, lessonSlug) ? challengeCoachLessonMinutes : fallback;
 }
 
 export const challengeCoachFallbackBlocks = [

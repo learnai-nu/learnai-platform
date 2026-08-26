@@ -5,7 +5,7 @@ import {
 	findNextIncompleteLesson,
 	type CourseLesson,
 } from '../../lib/learning/progress';
-import { courseLessonTitle } from '../../lib/learning/course-overrides';
+import { courseLessonMinutes, courseLessonTitle } from '../../lib/learning/course-overrides';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 import '../../styles/course-experience.css';
 
@@ -179,7 +179,10 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 				</div>
 			) : sortedModules.length ? (
 				sortedModules.map((module, moduleIndex) => {
-					const moduleMinutes = module.lessons.reduce((sum, lesson) => sum + (lesson.estimated_minutes ?? 0), 0);
+					const moduleMinutes = module.lessons.reduce(
+						(sum, lesson) => sum + (courseLessonMinutes(course.slug, lesson.slug, lesson.estimated_minutes) ?? 0),
+						0,
+					);
 					return (
 					<article class="course-module-card">
 						<div class="course-module-index">
@@ -203,7 +206,7 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 														{courseLessonTitle(course.slug, lesson.slug, lesson.title)}
 													</span>
 													<small>
-														{lesson.estimated_minutes ?? '—'} min.
+														{courseLessonMinutes(course.slug, lesson.slug, lesson.estimated_minutes) ?? '—'} min.
 														{completed ? ' · Færdig' : isNext && userId ? ' · Næste' : lesson.is_preview ? ' · Preview' : ''}
 													</small>
 												</a>

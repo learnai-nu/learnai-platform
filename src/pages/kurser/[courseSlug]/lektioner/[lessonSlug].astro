@@ -12,6 +12,7 @@ import {
 	challengeCoachFallbackBlocks,
 	challengeCoachLessonDescription,
 	challengeCoachLessonTitle,
+	courseLessonMinutes,
 	courseLessonTitle,
 	isChallengeCoachLesson,
 } from '../../../../lib/learning/course-overrides';
@@ -183,7 +184,7 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 				</aside>
 
 				<article class="course-lesson-content">
-					<p class="course-lesson-position">Lektion {currentIndex + 1} / {orderedLessons.length} · {lesson.estimated_minutes ?? '—'} minutter</p>
+					<p class="course-lesson-position">Lektion {currentIndex + 1} / {orderedLessons.length} · {courseLessonMinutes(course.slug, lesson.slug, lesson.estimated_minutes) ?? '—'} minutter</p>
 					<h1>{displayedLessonTitle}</h1>
 					{displayedLessonDescription && <p class="lesson-lead">{displayedLessonDescription}</p>}
 
