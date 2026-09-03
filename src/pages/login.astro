@@ -25,7 +25,7 @@ const messages: Record<string, string> = {
 const message = messages[Astro.url.searchParams.get('status') ?? ''];
 ---
 
-<SiteLayout title="Log ind — LearnAI.nu" description="Log ind eller opret din LearnAI-profil.">
+<SiteLayout title="Log ind — LearnAI.nu" description="Log ind eller opret din LearnAI-profil." noindex>
 	<section class="section auth-section">
 		<div class="shell auth-shell">
 			<div class="section-intro">

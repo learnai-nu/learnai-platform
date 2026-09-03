@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
@@ -18,9 +19,23 @@ const typeLabels = {
 	prompt: 'Prompt',
 	tool: 'Værktøj',
 } as const;
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	(items ?? []).map((item) => ({ name: item.title, url: `/laer/${item.slug}` })),
+);
 ---
 
-<SiteLayout title="Lær AI — LearnAI.nu" description="Praktiske danske guides til at forstå og anvende AI.">
+<SiteLayout
+	title="Lær AI — LearnAI.nu"
+	description="Praktiske danske guides til at forstå og anvende AI."
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Lær AI', url: '/laer' },
+	]}
+	mainEntity={itemList}
+>
 	<section class="hero hero-compact">
 		<div class="shell section-intro">
 			<p class="eyebrow">Vidensportal</p>

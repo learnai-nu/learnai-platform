@@ -1,14 +1,32 @@
 ---
 import WorkCompass from '../components/WorkCompass';
 import BlueOrbitLayout from '../layouts/BlueOrbitLayout.astro';
+import { createCanonicalUrl, type SchemaNode } from '../lib/seo/schema';
 import '../styles/work-compass.css';
 
 export const prerender = true;
+
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const workCompassSchema: SchemaNode = {
+	'@type': 'LearningResource',
+	'@id': `${canonicalUrl.toString()}#learning-resource`,
+	name: 'Dit AI-arbejdskompas',
+	description: 'En privat selvevaluering med 12 spørgsmål om AI-forståelse, praksis og forankring.',
+	url: canonicalUrl.toString(),
+	inLanguage: ['da-DK', 'en'],
+	learningResourceType: 'self-assessment',
+	timeRequired: 'PT4M',
+};
 ---
 
 <BlueOrbitLayout
 	title="Dit AI-arbejdskompas | LearnAI.nu"
 	description="Få et kort, privat øjebliksbillede af din AI-forståelse, praksis og forankring – og et konkret næste skridt."
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'AI-arbejdskompas', url: '/arbejdskompas' },
+	]}
+	mainEntity={workCompassSchema}
 >
 	<WorkCompass client:load />
 </BlueOrbitLayout>

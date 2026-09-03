@@ -44,9 +44,26 @@ export function getStaticPaths() {
 }
 
 const { title, description, kicker } = Astro.props;
+const pageTypes = {
+	vaerktoejer: 'CollectionPage',
+	nyheder: 'CollectionPage',
+	virksomheder: 'WebPage',
+	om: 'AboutPage',
+	privatliv: 'WebPage',
+	kontakt: 'ContactPage',
+} as const;
+const pageType = pageTypes[Astro.params.slug as keyof typeof pageTypes] ?? 'WebPage';
 ---
 
-<SiteLayout title={`${title} — LearnAI.nu`} description={description}>
+<SiteLayout
+	title={`${title} — LearnAI.nu`}
+	description={description}
+	{pageType}
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: title, url: Astro.url.pathname },
+	]}
+>
 	<section class="hero">
 		<div class="shell section-intro">
 			<p class="eyebrow">{kicker}</p>

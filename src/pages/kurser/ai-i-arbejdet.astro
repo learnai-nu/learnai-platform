@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import { createCanonicalUrl, createCourseSchema } from '../../lib/seo/schema';
 
 const status = Astro.url.searchParams.get('status');
 const statusMessages: Record<string, { text: string; error?: boolean }> = {
@@ -8,11 +9,25 @@ const statusMessages: Record<string, { text: string; error?: boolean }> = {
 	'save-error': { text: 'Tilmeldingen kunne ikke gemmes lige nu. Prøv igen om lidt.', error: true },
 };
 const statusMessage = statusMessages[status ?? ''];
+const courseTitle = 'AI som dit daglige værktøj – 4 ugers praktisk forløb';
+const courseDescription = "Kom på ventelisten til LearnAI's fireugers forløb, og lær at spare 2–5 timer om ugen med AI på dine egne arbejdsopgaver.";
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const courseSchema = createCourseSchema({
+	canonicalUrl,
+	name: courseTitle,
+	description: courseDescription,
+});
 ---
 
 <SiteLayout
-	title="AI som dit daglige værktøj – 4 ugers praktisk forløb"
-	description="Kom på ventelisten til LearnAI's fireugers forløb, og lær at spare 2–5 timer om ugen med AI på dine egne arbejdsopgaver."
+	title={courseTitle}
+	description={courseDescription}
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Kurser', url: '/kurser' },
+		{ name: 'AI som dit daglige værktøj', url: Astro.url.pathname },
+	]}
+	mainEntity={courseSchema}
 >
 	<section class="hero hero-compact level-two-hero">
 		<div class="shell course-hero">

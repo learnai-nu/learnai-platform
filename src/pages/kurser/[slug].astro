@@ -7,6 +7,7 @@ import {
 } from '../../lib/learning/progress';
 import { courseLessonMinutes, courseLessonTitle } from '../../lib/learning/course-overrides';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
+import { createCanonicalUrl, createCourseSchema } from '../../lib/seo/schema';
 import '../../styles/course-experience.css';
 
 export const prerender = false;
@@ -99,9 +100,27 @@ const statusMessages: Record<string, string> = {
 	'lesson-completed': 'Lektionen er gemt som færdig. Godt arbejde!',
 };
 const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? ''];
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const courseSchema = createCourseSchema({
+	canonicalUrl,
+	name: course.title,
+	description: course.description ?? 'Praktisk AI-kursus på dansk.',
+	durationMinutes: course.estimated_minutes,
+	priceDkk: Number(course.price_dkk),
+	level: levelLabel,
+});
 ---
 
-<SiteLayout title={`${course.title} — LearnAI.nu`} description={course.description ?? 'Praktisk AI-kursus på dansk.'}>
+<SiteLayout
+	title={`${course.title} — LearnAI.nu`}
+	description={course.description ?? 'Praktisk AI-kursus på dansk.'}
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Kurser', url: '/kurser' },
+		{ name: course.title, url: Astro.url.pathname },
+	]}
+	mainEntity={courseSchema}
+>
 	<div class="course-experience">
 		<section class="course-experience-hero">
 			<div class="course-experience-rail">

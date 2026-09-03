@@ -17,6 +17,7 @@ import {
 	isChallengeCoachLesson,
 } from '../../../../lib/learning/course-overrides';
 import type { QuizQuestionView, QuizView } from '../../../../lib/quiz/contracts';
+import { createCanonicalUrl, createLearningResourceSchema } from '../../../../lib/seo/schema';
 import { createServerSupabaseClient } from '../../../../lib/supabase/server';
 import '../../../../styles/course-experience.css';
 
@@ -159,9 +160,30 @@ const statusMessages: Record<string, { text: string; error?: boolean }> = {
 	'not-allowed': { text: 'Du har ikke adgang til at gemme progression for denne lektion.', error: true },
 };
 const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? ''];
+const siteUrl = Astro.site ? new URL(Astro.site) : Astro.url;
+const canonicalUrl = createCanonicalUrl(Astro.url, siteUrl);
+const courseUrl = createCanonicalUrl(new URL(`/kurser/${course.slug}`, siteUrl), siteUrl);
+const lessonSchema = createLearningResourceSchema({
+	canonicalUrl,
+	name: displayedLessonTitle,
+	description: displayedLessonDescription ?? `Lektion i ${course.title}.`,
+	courseUrl,
+	courseName: course.title,
+	durationMinutes: courseLessonMinutes(course.slug, lesson.slug, lesson.estimated_minutes),
+});
 ---
 
-<SiteLayout title={`${displayedLessonTitle} — ${course.title}`} description={displayedLessonDescription ?? `Lektion i ${course.title}.`}>
+<SiteLayout
+	title={`${displayedLessonTitle} — ${course.title}`}
+	description={displayedLessonDescription ?? `Lektion i ${course.title}.`}
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Kurser', url: '/kurser' },
+		{ name: course.title, url: `/kurser/${course.slug}` },
+		{ name: displayedLessonTitle, url: Astro.url.pathname },
+	]}
+	mainEntity={lessonSchema}
+>
 	<div class="course-lesson-experience">
 		<div class="course-lesson-rail">
 			<div class="course-lesson-shell">
