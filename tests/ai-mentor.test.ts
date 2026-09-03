@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { learningProfileSchema, mentorRequestSchema, mentorResponseSchema, splitProfileList } from '../src/lib/ai/contracts';
+import {
+	challengeCoachRequestSchema,
+	challengeQuestionsResponseSchema,
+	learningProfileSchema,
+	mentorRequestSchema,
+	mentorResponseSchema,
+	splitProfileList,
+} from '../src/lib/ai/contracts';
+import { parseQuestionList } from '../src/pages/api/ai/challenge-coach';
 import { buildMentorContext, buildMentorInstructions, extractFileCitations, extractResponseText, sourceUrl } from '../src/lib/ai/mentor';
 
 describe('AI Mentor contracts', () => {
@@ -38,6 +46,29 @@ describe('AI Mentor contracts', () => {
 			displayName: 'Jesper', jobTitle: 'Leder', company: 'LearnAI', industry: 'Uddannelse',
 			experienceLevel: 'intermediate', learningGoals: ['Prompting'], interests: [], preferredAiTools: ['ChatGPT'],
 		}).success).toBe(true);
+	});
+});
+
+describe('guided challenge coach', () => {
+	it('requires a bounded challenge and exactly three completed clarifications', () => {
+		expect(challengeCoachRequestSchema.safeParse({ step: 'questions', challenge: 'Jeg skal prioritere mellem flere vigtige opgaver.' }).success).toBe(true);
+		expect(challengeCoachRequestSchema.safeParse({ step: 'questions', challenge: 'For kort' }).success).toBe(false);
+		expect(challengeCoachRequestSchema.safeParse({
+			step: 'advice',
+			challenge: 'Jeg skal prioritere mellem flere vigtige opgaver.',
+			clarifications: [
+				{ question: 'Hvad vil du opnå?', answer: 'En klar prioritering.' },
+				{ question: 'Hvad haster?', answer: 'To leverancer.' },
+				{ question: 'Hvad kan vente?', answer: 'Den interne opdatering.' },
+			],
+		}).success).toBe(true);
+	});
+
+	it('accepts only a valid three-question provider response', () => {
+		const questions = parseQuestionList('{"questions":["Hvad vil du opnå?","Hvad begrænser dig?","Hvad kan vente?"]}');
+		expect(questions).toHaveLength(3);
+		expect(parseQuestionList('{"questions":["Kun ét?"]}')).toBeNull();
+		expect(challengeQuestionsResponseSchema.safeParse({ questions, remaining: 18 }).success).toBe(true);
 	});
 });
 

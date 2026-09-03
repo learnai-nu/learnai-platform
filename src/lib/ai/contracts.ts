@@ -4,6 +4,35 @@ export const mentorRequestSchema = z.object({
 	question: z.string().trim().min(3).max(1200),
 });
 
+const challengeSchema = z.string().trim().min(20).max(2000);
+const clarificationSchema = z.object({
+	question: z.string().trim().min(3).max(500),
+	answer: z.string().trim().min(1).max(1200),
+});
+
+export const challengeCoachRequestSchema = z.discriminatedUnion('step', [
+	z.object({ step: z.literal('questions'), challenge: challengeSchema }),
+	z.object({
+		step: z.literal('advice'),
+		challenge: challengeSchema,
+		clarifications: z.array(clarificationSchema).length(3),
+	}),
+]);
+
+export const challengeQuestionsResponseSchema = z.object({
+	questions: z.array(z.string().trim().min(3).max(500)).length(3),
+	remaining: z.number().int().min(0),
+});
+
+export const challengeAdviceResponseSchema = z.object({
+	answer: z.string().min(1),
+	answerHtml: z.string().min(1),
+	remaining: z.number().int().min(0),
+});
+
+export type ChallengeQuestionsResponse = z.infer<typeof challengeQuestionsResponseSchema>;
+export type ChallengeAdviceResponse = z.infer<typeof challengeAdviceResponseSchema>;
+
 export const mentorSourceSchema = z.object({
 	title: z.string(),
 	type: z.string(),
