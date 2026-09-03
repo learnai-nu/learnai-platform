@@ -64,13 +64,12 @@ export default function ChallengeCoach({ authenticated }: Props) {
 		}
 	}
 
-	async function answerQuestion(event: React.SyntheticEvent<HTMLFormElement>) {
-		event.preventDefault();
-		const answer = currentAnswer.trim();
+	async function submitAnswer(answer: string) {
 		if (!answer || !currentQuestion) {
 			setError('Skriv et kort svar, eller vælg “Det ved jeg ikke endnu”.');
 			return;
 		}
+		const previousClarifications = clarifications;
 		const nextClarifications = [...clarifications, { question: currentQuestion, answer }];
 		setClarifications(nextClarifications);
 		setCurrentAnswer('');
@@ -90,10 +89,18 @@ export default function ChallengeCoach({ authenticated }: Props) {
 			if (!parsed.success) throw new Error('AI-sparringen returnerede ikke et brugbart svar.');
 			setResult(parsed.data);
 		} catch (caught) {
-			setError(caught instanceof Error ? caught.message : 'AI-sparringen kunne ikke svare lige nu.');
+			setClarifications(previousClarifications);
+			setCurrentAnswer(answer);
+			const message = caught instanceof Error ? caught.message : 'AI-sparringen kunne ikke svare lige nu.';
+			setError(`${message} Dit svar er bevaret – prøv igen.`);
 		} finally {
 			setLoading(false);
 		}
+	}
+
+	async function answerQuestion(event: React.SyntheticEvent<HTMLFormElement>) {
+		event.preventDefault();
+		await submitAnswer(currentAnswer.trim());
 	}
 
 	function reset() {
@@ -112,7 +119,7 @@ export default function ChallengeCoach({ authenticated }: Props) {
 					<p className="challenge-coach-kicker">Din øvelse</p>
 					<h2 id="challenge-coach-title">Fra udfordring til næste skridt</h2>
 				</div>
-				<span className="challenge-coach-time">Ca. 8 min.</span>
+				<span className="challenge-coach-time">Ca. 12 min.</span>
 			</header>
 
 			{!authenticated ? (
@@ -150,7 +157,7 @@ export default function ChallengeCoach({ authenticated }: Props) {
 							<label htmlFor="challenge-answer">Dit svar</label>
 							<textarea id="challenge-answer" rows={5} maxLength={1200} value={currentAnswer} onChange={(event) => setCurrentAnswer(event.target.value)} />
 							<div className="challenge-coach-actions">
-								<button type="button" className="challenge-coach-text-button" onClick={() => setCurrentAnswer('Det ved jeg ikke endnu.')}>Det ved jeg ikke endnu</button>
+								<button type="button" className="challenge-coach-text-button" onClick={() => void submitAnswer('Det ved jeg ikke endnu.')}>Det ved jeg ikke endnu</button>
 								<button className="button" type="submit">{questionIndex === 2 ? 'Få min sparring' : 'Næste spørgsmål →'}</button>
 							</div>
 						</form>

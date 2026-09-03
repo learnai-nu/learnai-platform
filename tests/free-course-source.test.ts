@@ -5,6 +5,14 @@ const migration = readFileSync(
 	new URL('../supabase/migrations/20260731231349_align_free_course_with_rettelsespakke_v2.sql', import.meta.url),
 	'utf8',
 );
+const challengeMigration = readFileSync(
+	new URL('../supabase/migrations/20260826090000_replace_mail_thread_with_challenge_coach.sql', import.meta.url),
+	'utf8',
+);
+const challengeContractMigration = readFileSync(
+	new URL('../supabase/migrations/20260903090000_align_challenge_coach_course_contract.sql', import.meta.url),
+	'utf8',
+);
 const landingPage = readFileSync(new URL('../src/pages/kurser/ai-i-arbejdet.astro', import.meta.url), 'utf8');
 
 describe('Rettelsespakke v2 course alignment', () => {
@@ -34,5 +42,14 @@ describe('Rettelsespakke v2 course alignment', () => {
 		expect(landingPage).toContain('2–5 timer om ugen');
 		expect(landingPage).toContain('tre bonuslektioner og to live-workshops');
 		expect(landingPage).not.toContain('Niveau 2');
+	});
+
+	it('replaces the original mail-thread exercise with the canonical challenge coach lesson', () => {
+		expect(challengeMigration).toContain("title = 'Få sparring på en aktuel udfordring'");
+		expect(challengeMigration).toContain('estimated_minutes = 12');
+		expect(challengeMigration).not.toContain('Quick win: Få styr på en lang mailtråd');
+		expect(challengeContractMigration).toContain('estimated_minutes = 62');
+		expect(challengeContractMigration).toContain("l.slug = 'hvad-er-generativ-ai'");
+		expect(challengeContractMigration).toContain("c.slug = 'ai-i-praksis-dit-foerste-kursus'");
 	});
 });

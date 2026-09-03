@@ -12,7 +12,9 @@ const challengeApi = readFileSync(new URL('../src/pages/api/ai/challenge-coach.t
 
 describe('AI i praksis course experience', () => {
 	it('turns the existing course data into a three-step practical learning route', () => {
-		expect(coursePage).toContain("const phaseLabels = ['Forstå', 'Afprøv', 'Forankr']");
+		expect(coursePage).toContain("{ label: 'Forstå', description: 'Se hvad AI kan' }");
+		expect(coursePage).toContain('const journeySteps = sortedModules.map');
+		expect(coursePage).toContain('aria-label="Kursets læringstrin"');
 		expect(coursePage).toContain('Du går herfra med');
 		expect(coursePage).toContain('course-module-list');
 		expect(coursePage).toContain('module.lessons.reduce');
@@ -50,9 +52,13 @@ describe('AI i praksis course experience', () => {
 		expect(challengeCoach).toContain('Spørgsmål {questionIndex + 1} af 3');
 		expect(challengeCoach).toContain('LearnAI gemmer ikke samtalen i din profil');
 		expect(challengeCoach).toContain('Teksten behandles hos OpenAI');
+		expect(challengeCoach).toContain('setClarifications(previousClarifications)');
+		expect(challengeCoach).toContain('Dit svar er bevaret – prøv igen.');
+		expect(challengeCoach).toContain("void submitAnswer('Det ved jeg ikke endnu.')");
 		expect(challengeApi).toContain("store: false");
 		expect(challengeApi).toContain("if (!userId)");
 		expect(challengeApi).toContain("consume_ai_mentor_quota");
 		expect(styles).toContain('.challenge-coach-steps');
+		expect(styles).toContain('repeat(auto-fit, minmax(min(100%, 14rem), 1fr))');
 	});
 });

@@ -200,7 +200,7 @@
 
 .course-journey {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
 	border: 1px solid var(--brand-ink);
 	border-bottom: 0;
 }

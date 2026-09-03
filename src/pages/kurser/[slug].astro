@@ -82,7 +82,16 @@ const outcomes = isStarterCourse
 		'Konkrete øvelser, der forbinder viden med din arbejdsdag.',
 		'Et næste skridt, du kan tage med videre efter kurset.',
 	];
-const phaseLabels = ['Forstå', 'Afprøv', 'Forankr'];
+const starterPhaseSteps = [
+	{ label: 'Forstå', description: 'Se hvad AI kan' },
+	{ label: 'Afprøv', description: 'Byg din metode' },
+	{ label: 'Forankr', description: 'Brug den ansvarligt' },
+];
+const journeySteps = sortedModules.map((module, index) => {
+	const starterStep = starterPhaseSteps[index];
+	if (isStarterCourse && starterStep) return starterStep;
+	return { label: `Trin ${index + 1}`, description: module.title };
+});
 const roadmapTitle = isStarterCourse
 	? 'Fra første resultat til en sikker arbejdsvane.'
 	: 'Fra ny viden til noget, du kan bruge.';
@@ -159,12 +168,12 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 					<p>Tag lektionerne i rækkefølge. Hvert trin giver dig noget konkret at afprøve, før du går videre.</p>
 				</header>
 
-				<div class="course-journey" aria-label="Kursets tre læringstrin">
-					{phaseLabels.map((phase, index) => (
+				<div class="course-journey" aria-label="Kursets læringstrin">
+					{journeySteps.map((step, index) => (
 						<div class="course-journey-step">
 							<span>{String(index + 1).padStart(2, '0')}</span>
-							<strong>{phase}</strong>
-							<small>{index === 0 ? 'Se hvad AI kan' : index === 1 ? 'Byg din metode' : 'Brug den ansvarligt'}</small>
+							<strong>{step.label}</strong>
+							<small>{step.description}</small>
 						</div>
 					))}
 				</div>
@@ -187,7 +196,7 @@ const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? '']
 					<article class="course-module-card">
 						<div class="course-module-index">
 							<span>{String(moduleIndex + 1).padStart(2, '0')}</span>
-							<small>{phaseLabels[moduleIndex] ?? 'Fortsæt'}</small>
+							<small>{journeySteps[moduleIndex]?.label ?? `Trin ${moduleIndex + 1}`}</small>
 						</div>
 						<div class="course-module-content">
 							<p class="course-module-meta">{module.lessons.length} lektioner · {moduleMinutes || '—'} min.</p>
