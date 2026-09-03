@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const homepage = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../src/layouts/BlueOrbitLayout.astro', import.meta.url), 'utf8');
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
+const jsonLd = readFileSync(new URL('../src/components/seo/JsonLd.astro', import.meta.url), 'utf8');
 const header = readFileSync(
 	new URL('../src/components/marketing/BlueOrbitHeader.astro', import.meta.url),
 	'utf8',
@@ -58,7 +59,8 @@ describe('LearnAI workbook homepage', () => {
 		expect(siteLayout).toContain('body class="blue-orbit"');
 		expect(siteLayout).not.toContain('class="site-header"');
 		expect(siteLayout).toContain('property="og:title"');
-		expect(siteLayout).toContain('type="application/ld+json"');
+		expect(siteLayout).toContain('<JsonLd data={structuredData} />');
+		expect(jsonLd).toContain('type="application/ld+json"');
 		expect(styles).toContain('Shared Blue Orbit treatment for the platform pages using SiteLayout.');
 		expect(styles).toContain('.blue-orbit .article-body pre code');
 		expect(styles).toContain('white-space: pre-wrap');

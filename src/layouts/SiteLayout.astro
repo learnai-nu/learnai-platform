@@ -6,28 +6,46 @@ import '../styles/blue-orbit.css';
 import '../styles/learnai-typography.css';
 import BlueOrbitFooter from '../components/marketing/BlueOrbitFooter.astro';
 import BlueOrbitHeader from '../components/marketing/BlueOrbitHeader.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
+import {
+	buildSitePageGraph,
+	createCanonicalUrl,
+	type BreadcrumbItem,
+	type PageSchemaType,
+	type SchemaNode,
+} from '../lib/seo/schema';
 
 interface Props {
 	title: string;
 	description: string;
 	noindex?: boolean;
+	pageType?: PageSchemaType;
+	breadcrumbs?: BreadcrumbItem[];
+	mainEntity?: SchemaNode;
+	additionalSchema?: SchemaNode[];
 }
 
 const {
 	title,
 	description,
 	noindex = false,
+	pageType = 'WebPage',
+	breadcrumbs = [],
+	mainEntity,
+	additionalSchema = [],
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
-const websiteSchema = {
-	'@context': 'https://schema.org',
-	'@type': 'WebSite',
-	name: 'LearnAI.nu',
-	url: new URL('/', Astro.site ?? canonicalURL).toString(),
-	inLanguage: 'da-DK',
+const canonicalURL = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const structuredData = noindex ? null : buildSitePageGraph({
+	siteUrl: new URL('/', Astro.site ?? canonicalURL),
+	canonicalUrl: canonicalURL,
+	title,
 	description,
-};
+	pageType,
+	breadcrumbs,
+	mainEntity,
+	additionalNodes: additionalSchema,
+});
 ---
 
 <!doctype html>
@@ -51,7 +69,7 @@ const websiteSchema = {
 		<meta name="twitter:description" content={description} />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>{title}</title>
-		<script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+		{structuredData && <JsonLd data={structuredData} />}
 	</head>
 	<body class="blue-orbit">
 		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>

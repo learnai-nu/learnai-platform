@@ -1,14 +1,18 @@
 ---
 import SiteLayout from './SiteLayout.astro';
+import type { BreadcrumbItem, PageSchemaType, SchemaNode } from '../lib/seo/schema';
 
 interface Props {
 	title: string;
 	description: string;
+	pageType?: PageSchemaType;
+	breadcrumbs?: BreadcrumbItem[];
+	mainEntity?: SchemaNode;
 }
 
-const { title, description } = Astro.props;
+const { title, description, pageType, breadcrumbs, mainEntity } = Astro.props;
 ---
 
-<SiteLayout {title} {description}>
+<SiteLayout {title} {description} {pageType} {breadcrumbs} {mainEntity}>
 	<slot />
 </SiteLayout>

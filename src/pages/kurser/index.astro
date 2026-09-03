@@ -4,6 +4,7 @@ import CourseCatalogCard from '../../components/learning/CourseCatalogCard.astro
 import LearningTrack from '../../components/learning/LearningTrack.astro';
 import NextStepPanel from '../../components/learning/NextStepPanel.astro';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
+import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
 import '../../styles/course-catalog.css';
 
 export const prerender = false;
@@ -22,9 +23,23 @@ function levelLabel(value: unknown) {
 		? levelLabels[value as keyof typeof levelLabels]
 		: 'Alle niveauer';
 }
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	(courses ?? []).map((course) => ({ name: course.title, url: `/kurser/${course.slug}` })),
+);
 ---
 
-<SiteLayout title="AI-kurser — LearnAI.nu" description="Praktiske danske AI-kurser med tydelige lektioner og øvelser.">
+<SiteLayout
+	title="AI-kurser — LearnAI.nu"
+	description="Praktiske danske AI-kurser med tydelige lektioner og øvelser."
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Kurser', url: '/kurser' },
+	]}
+	mainEntity={itemList}
+>
 	<div class="course-catalog">
 		<section class="catalog-hero">
 			<div class="catalog-rail">

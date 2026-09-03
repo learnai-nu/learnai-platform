@@ -3,6 +3,7 @@ import ContentBody from '../../components/ContentBody.astro';
 import PromptBuilder from '../../components/PromptBuilder';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { parsePromptDefinition } from '../../lib/prompts/contracts';
+import { createArticleSchema, createCanonicalUrl, type SchemaNode } from '../../lib/seo/schema';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
@@ -27,11 +28,29 @@ const typeLabels = {
 	prompt: 'Prompt',
 	tool: 'Værktøj',
 } as const;
+const pageDescription = item.seo_description ?? item.excerpt ?? 'Praktisk AI-læring på dansk.';
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const articleSchema: SchemaNode | undefined = ['article', 'guide', 'news'].includes(item.type)
+	? createArticleSchema({
+		canonicalUrl,
+		type: item.type === 'news' ? 'NewsArticle' : 'Article',
+		headline: item.title,
+		description: pageDescription,
+		datePublished: item.published_at,
+		dateModified: item.updated_at,
+	})
+	: undefined;
 ---
 
 <SiteLayout
 	title={`${item.seo_title ?? item.title} — LearnAI.nu`}
-	description={item.seo_description ?? item.excerpt ?? 'Praktisk AI-læring på dansk.'}
+	description={pageDescription}
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Lær AI', url: '/laer' },
+		{ name: item.title, url: Astro.url.pathname },
+	]}
+	mainEntity={articleSchema}
 >
 	<article class="article-page">
 		<header class="shell article-header">

@@ -22,7 +22,7 @@ const { data: profile, error } = await supabase
 const status = Astro.url.searchParams.get('status');
 ---
 
-<SiteLayout title="Din læringsprofil — LearnAI.nu" description="Tilpas dine personlige læringsanbefalinger.">
+<SiteLayout title="Din læringsprofil — LearnAI.nu" description="Tilpas dine personlige læringsanbefalinger." noindex>
 	<section class="hero hero-compact">
 		<div class="shell section-intro">
 			<a class="admin-back" href="/dashboard">← Dashboard</a>
