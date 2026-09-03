@@ -1,0 +1,232 @@
+---
+import '@fontsource-variable/inter';
+import '../../styles/blue-orbit-tokens.css';
+import '../../styles/course-landing-draft.css';
+
+export const prerender = true;
+
+const lessons = [
+  { title: 'Quick win: Få styr på en lang mailtråd', minutes: 10, description: 'Start med en konkret opgave: få overblik over en mailtråd, og gør næste skridt tydeligt.' },
+  { title: 'Sådan “tænker” en sprogmodel', minutes: 8, description: 'Forstå, hvad en sprogmodel gør, og hvorfor et overbevisende svar stadig kan være forkert.' },
+  { title: 'De fire byggesten i en brugbar prompt', minutes: 12, description: 'Byg din prompt med rolle, kontekst, opgave og format, så AI får en tydelig bestilling.' },
+  { title: 'Fra første udkast til noget, du vil bruge', minutes: 10, description: 'Arbejd videre med det første svar. Præcisér din bestilling, og tilpas udkastet til din opgave.' },
+  { title: 'Datasikkerhed, GDPR og sund fornuft', minutes: 9, description: 'Tag stilling til, hvilke oplysninger du deler, og brug et værktøj, din arbejdsplads har godkendt.' },
+  { title: 'De tre kontrolvaner – og dit næste skridt', minutes: 11, description: 'Saml det, du har lært, kontrollér AI’s svar, og prøv den afsluttende quiz.' },
+];
+const questions = [
+  { question: 'Er kurset noget for mig, hvis jeg er helt ny?', answer: 'Ja. Kurset er til dig, der er ny i AI, eller som har prøvet det uden at få en fast metode til dit arbejde. Vi starter med en konkret opgave og bygger videre derfra.' },
+  { question: 'Hvilket AI-værktøj skal jeg bruge?', answer: 'Øvelserne kan afprøves i ChatGPT, Claude eller Copilot. Brug et værktøj, din arbejdsplads har godkendt. Her i designudkastet bruger øvelsen et forberedt eksempel og kræver ingen AI-konto.' },
+  { question: 'Hvad koster kurset?', answer: 'Minikurset er gratis. Det fulde forløb “AI som dit daglige værktøj” er et separat tilbud. Der er ingen betaling eller tilmelding i dette lokale udkast.' },
+  { question: 'Hvor lang tid skal jeg sætte af?', answer: 'Ca. 60 minutter fordelt på 6 lektioner. Du kan bruge mere tid på øvelserne og tage én lektion ad gangen.' },
+  { question: 'Hvordan foregår undervisningen?', answer: 'Du arbejder med korte tekster, eksempler og øvelser på dansk. Sidste lektion indeholder en quiz.' },
+  { question: 'Kan jeg bruge en opgave fra mit arbejde?', answer: 'Start med et fiktivt eksempel, eller fjern oplysninger, du ikke må dele. Brug et værktøj, din arbejdsplads har godkendt. Kurset indeholder en lektion om datasikkerhed og ansvarlig brug.' },
+];
+const samplePrompt = 'Opsummér den fiktive mailtråd nedenfor. Lav tre punkter: 1) Hvad er besluttet? 2) Hvem gør hvad? 3) Hvad mangler afklaring? Brug kun oplysninger fra mailtråden. Skriv “ikke oplyst”, hvis noget mangler.\n\nMaja: Lad os holde intro-mødet torsdag kl. 10. Jeg sender en dagsorden onsdag.\nJonas: Det passer mig. Jeg booker et mødelokale.\nMaja: Fint. Kan nogen tage noter?';
+---
+
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="Lokalt designudkast til LearnAI’s gratis minikursus AI i praksis. Seks praktiske lektioner på dansk." />
+    <meta name="theme-color" content="#f7f8f5" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>AI i praksis · Gratis minikursus | LearnAI — designudkast</title>
+  </head>
+  <body class="course-draft" id="top">
+    <a class="draft-skip" href="#indhold">Gå til indhold</a>
+    <div class="draft-banner"><span class="draft-dot"></span> Lokalt designudkast <span class="draft-banner-detail">· Prøv siden uden at oprette en profil</span></div>
+    <header class="draft-header">
+      <div class="draft-shell draft-header-inner">
+        <a class="draft-brand" href="#top" aria-label="LearnAI.nu — toppen af udkastet">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="3"></rect><path d="m10 15 7 7-7 7M21 29h13"></path></svg>
+          <span>LearnAI<span>.nu</span></span>
+        </a>
+        <nav class="draft-nav" aria-label="Kursusnavigation"><a href="#udbytte">Det lærer du</a><a href="#program">Kursusindhold</a><a href="#sporgsmal">Spørgsmål</a></nav>
+        <details class="draft-mobile-nav">
+          <summary>Menu <span aria-hidden="true">+</span></summary>
+          <nav aria-label="Mobil kursusnavigation">
+            <a href="#udbytte">Det lærer du <span aria-hidden="true">↗</span></a>
+            <a href="#program">Kursusindhold <span aria-hidden="true">↗</span></a>
+            <a href="#sporgsmal">Spørgsmål <span aria-hidden="true">↗</span></a>
+            <button type="button" class="draft-button" data-open-exercise>Prøv første øvelse <span aria-hidden="true">↗</span></button>
+          </nav>
+        </details>
+        <button type="button" class="draft-button draft-button-small" data-open-exercise>Prøv en øvelse <span aria-hidden="true">↗</span></button>
+      </div>
+    </header>
+
+    <main id="indhold">
+      <section class="draft-hero draft-shell" aria-labelledby="hero-title">
+        <div class="draft-hero-copy">
+          <p class="draft-eyebrow"><span class="draft-course-badge">Gratis minikursus</span> AI i praksis</p>
+          <h1 id="hero-title">Lær AI med en opgave fra din <span>hverdag.</span></h1>
+          <p class="draft-lead">Få overblik over en mailtråd. Byg en prompt, du kan genbruge. Og lær at vurdere det svar, du får.</p>
+          <p class="draft-audience">Til dig, der vil i gang med AI på arbejdet.</p>
+          <div class="draft-hero-actions"><button type="button" class="draft-button" data-open-exercise>Prøv første øvelse <span aria-hidden="true">↗</span></button><a class="draft-text-link" href="#program">Se de 6 lektioner <span aria-hidden="true">↓</span></a></div>
+          <p class="draft-demo-note">Lokal demo · Ingen tilmelding · Intet sendes til AI</p>
+          <div class="draft-hero-meta"><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16V12M9 16V8M15 16V3"></path></svg>Begynder</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle><path d="M10 5v5l3 2"></path></svg>Ca. 60 minutter</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h6v12H3zM11 4h6v12h-6"></path></svg>6 lektioner</span></div>
+        </div>
+
+        <div class="draft-workbench" aria-label="Fiktivt eksempel: Fra mailtråd til overblik">
+          <div class="draft-workbench-label"><span>ET KIG IND I LEKTION 01</span><span aria-hidden="true">↙</span></div>
+          <div class="draft-example-sheet">
+            <div class="draft-preview-switch" role="group" aria-label="Vis mailtråden eller overblikket">
+              <button type="button" data-preview="mail" aria-pressed="false" aria-controls="preview-mail"><span>01</span> Mailtråden</button>
+              <button type="button" data-preview="result" aria-pressed="true" aria-controls="preview-result"><span>02</span> Overblikket</button>
+            </div>
+            <section id="preview-mail" class="draft-preview-panel" data-preview-panel="mail" aria-labelledby="mail-title" hidden>
+              <p class="draft-sheet-label">TRE BESKEDER. HVAD ER AFTALT?</p>
+              <h2 id="mail-title">Re: Intro-møde</h2>
+              <div class="draft-mail-line"><span class="draft-avatar" aria-hidden="true">M</span><p><strong>Maja</strong>Lad os mødes torsdag kl. 10. Jeg sender en dagsorden onsdag.</p></div>
+              <div class="draft-mail-line"><span class="draft-avatar draft-avatar-blue" aria-hidden="true">J</span><p><strong>Jonas</strong>Det passer mig. Jeg booker et mødelokale.</p></div>
+              <div class="draft-mail-line"><span class="draft-avatar" aria-hidden="true">M</span><p><strong>Maja</strong>Fint. Kan nogen tage noter?</p></div>
+            </section>
+            <section id="preview-result" class="draft-preview-panel" data-preview-panel="result" aria-labelledby="result-title">
+              <p class="draft-sheet-label">ET FORBEREDT EKSEMPEL PÅ ET SVAR</p>
+              <h2 id="result-title">Nu er næste skridt tydeligt.</h2>
+              <div class="draft-result-row"><span class="draft-check" aria-hidden="true">✓</span><p><strong>Besluttet</strong>Intro-møde torsdag kl. 10.</p></div>
+              <div class="draft-result-row"><span class="draft-check" aria-hidden="true">✓</span><p><strong>Fordelt</strong>Maja sender dagsorden. Jonas booker lokale.</p></div>
+              <div class="draft-result-row draft-result-unresolved"><span class="draft-question" aria-hidden="true">?</span><p><strong>Mangler afklaring</strong>Hvem tager noter?</p></div>
+            </section>
+            <div class="draft-sheet-footer"><span class="draft-sheet-pencil" aria-hidden="true">↳</span><p><strong>AI laver udkastet.</strong> Du tjekker svaret.</p></div>
+          </div>
+          <p class="draft-example-caption">Fiktiv mailtråd · Skift visning og se forskellen</p>
+        </div>
+      </section>
+
+      <div class="draft-principle draft-shell"><span class="draft-eyebrow">&gt; LEARNAI’S PRINCIP</span><p>Start med opgaven. Lær det, der bringer dit arbejde videre.</p><span class="draft-principle-mark" aria-hidden="true">↘</span></div>
+
+      <section class="draft-outcomes draft-shell draft-section" id="udbytte" aria-labelledby="outcome-title">
+        <div class="draft-section-heading"><div><p class="draft-eyebrow">01 / Det tager du med</p><h2 id="outcome-title">En metode, du kan<br />bruge igen i morgen.</h2></div><p>Du behøver ikke kende alle AI-værktøjer.<br />Begynd med én opgave og en metode, du kan gentage.</p></div>
+        <div class="draft-outcome-grid">
+          <article><div class="draft-outcome-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="6" y="5" width="28" height="30" rx="1"></rect><path d="M12 13h16M12 20h16M12 27h8"></path></svg><span>01</span></div><h3>Skab overblik<br />i en mailtråd</h3><p>Find beslutninger, opgaver og ubesvarede spørgsmål i en tekst, der ellers kræver flere gennemlæsninger.</p></article>
+          <article><div class="draft-outcome-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M5 7h30v26H5zM5 16h30M16 16v17M25 16v17"></path></svg><span>02</span></div><h3>Byg en skabelon,<br />du kan genbruge</h3><p>Lær de fire byggesten i en brugbar prompt, og tilpas dem til den opgave, du sidder med.</p></article>
+          <article><div class="draft-outcome-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 4 33 9v11c0 8-13 16-13 16S7 28 7 20V9zM13 19l5 5 10-11"></path></svg><span>03</span></div><h3>Kontrollér<br />data og svar</h3><p>Tag stilling til, hvad du deler, og kontrollér svaret, før du bruger det i dit arbejde.</p></article>
+        </div>
+      </section>
+
+      <section class="draft-program" id="program" aria-labelledby="program-title">
+        <div class="draft-shell draft-program-grid">
+          <div class="draft-program-intro">
+            <p class="draft-eyebrow">02 / Kursusindhold</p>
+            <h2 id="program-title" tabindex="-1">Seks små skridt.<br /><span>En god start.</span></h2>
+            <p class="draft-program-description">Fra din første konkrete øvelse til vaner, der hjælper dig med at bruge AI med omtanke.</p>
+            <div class="draft-course-summary"><span>6 lektioner</span><span>Ca. 60 min.</span><span>Gratis</span></div>
+            <ol class="draft-module-path" aria-label="Kursets tre moduler">
+              <li><span>01–02</span><strong>Få dit første resultat</strong></li>
+              <li><span>03–04</span><strong>Byg en skabelon, du kan genbruge</strong></li>
+              <li><span>05–06</span><strong>Brug AI sikkert og troværdigt</strong></li>
+            </ol>
+          </div>
+          <div class="draft-lesson-list">
+            {lessons.map((lesson, index) => <details class="draft-lesson" open={index === 0}><summary><span class="draft-lesson-number">{String(index + 1).padStart(2, '0')}</span><span class="draft-lesson-title">{lesson.title}<span class="draft-lesson-time-mobile">{lesson.minutes} min.</span></span><span class="draft-lesson-time">{lesson.minutes} min.</span><span class="draft-details-plus" aria-hidden="true">+</span></summary><div class="draft-lesson-body"><p>{lesson.description}</p>{index === 0 && <button type="button" class="draft-lesson-cta" data-open-exercise>Prøv øvelsen i demoen <span aria-hidden="true">↗</span></button>}</div></details>)}
+            <p class="draft-program-footnote">Tekst, eksempler og øvelser · Afsluttende quiz</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="draft-start draft-section draft-shell" aria-labelledby="start-title">
+        <div class="draft-section-heading"><div><p class="draft-eyebrow">03 / Sådan kommer du i gang</p><h2 id="start-title">Fra nysgerrig<br />til første øvelse.</h2></div><p>Her kan du prøve en kort øvelse med det samme. Nedenfor ses forslaget til adgang i det fulde kursusflow.</p></div>
+        <div class="draft-start-grid"><article><span>01 <span aria-hidden="true">↗</span></span><h3>Opret en gratis profil</h3><p>Brug din e-mail og en adgangskode.</p></article><article><span>02 <span aria-hidden="true">↗</span></span><h3>Bekræft din e-mail</h3><p>Følg linket i din indbakke.</p></article><article><span>03 <span aria-hidden="true">✓</span></span><h3>Start første lektion</h3><p>Begynd med at skabe overblik i en mailtråd.</p></article></div>
+        <p class="draft-flow-note"><span class="draft-dot"></span> Foreslået adgangsforløb · Dette udkast opretter ingen profil og sender ingen e-mail.</p>
+      </section>
+
+      <section class="draft-faq draft-shell draft-section" id="sporgsmal" aria-labelledby="faq-title"><div><p class="draft-eyebrow">04 / Før du går i gang</p><h2 id="faq-title">Godt at vide.</h2><p>Et lille kursus skal være<br />nemt at komme i gang med.</p></div><div class="draft-faq-list">{questions.map((item) => <details><summary>{item.question}<span class="draft-details-plus" aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div></section>
+
+      <section class="draft-final"><div class="draft-shell draft-final-inner"><div><p class="draft-eyebrow">Din første AI-gevinst begynder her</p><h2>Prøv én opgave.<br />Se, hvad du lærer.</h2></div><div><button type="button" class="draft-button draft-button-dark" data-open-exercise>Prøv første øvelse <span aria-hidden="true">↗</span></button><p>Lokal demo · Intet login nødvendigt</p></div><span class="draft-final-decoration" aria-hidden="true">↗</span></div></section>
+    </main>
+
+    <footer class="draft-footer draft-shell"><div class="draft-footer-top"><a class="draft-brand" href="#top"><svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="3"></rect><path d="m10 15 7 7-7 7M21 29h13"></path></svg><span>LearnAI<span>.nu</span></span></a><p>Praktisk AI. På dansk. Til dit arbejde.</p><a class="draft-text-link" href="#top">Til toppen <span aria-hidden="true">↑</span></a></div><details class="draft-source-note"><summary>Om dette designudkast og kursusoplysningerne <span aria-hidden="true">+</span></summary><p>Dette er et lokalt, ikke offentliggjort designforslag. Kursustitel, gratis adgang, niveau og de seks lektioner er baseret på projektets kursusmateriale. Den seneste kursusopdatering angiver 60 minutter; den eksisterende forside angiver 55 minutter. Udkastet bruger ca. 60 minutter, som også svarer til lektionernes samlede tid.</p><p>De korte lektionsbeskrivelser er redaktionelle sammenfatninger. Mailtråden og svaret er fiktive eksempler. Adgangsforløbet er et designforslag og er ikke tilsluttet tilmelding.</p></details></footer>
+
+    <dialog class="draft-exercise" aria-labelledby="exercise-title">
+      <div class="draft-dialog-top"><span class="draft-eyebrow">AI i praksis / Lokal demo</span><button type="button" class="draft-close" data-close-exercise aria-label="Luk øvelsen">×</button></div>
+      <div class="draft-dialog-content">
+        <p class="draft-exercise-kicker">Kort smagsprøve på lektion 1 <span>Fiktiv mailtråd</span></p>
+        <h2 id="exercise-title" tabindex="-1">Gør næste skridt tydeligt.</h2><p class="draft-dialog-intro">Prøv at skelne mellem det, der er besluttet, og det, der stadig mangler et svar.</p>
+        <ol class="draft-exercise-progress" aria-label="Øvelsens trin"><li data-progress="0" aria-current="step"><span>1</span> Læs</li><li data-progress="1"><span>2</span> Bestil</li><li data-progress="2"><span>3</span> Kontrollér</li></ol>
+        <section data-exercise-step="0" aria-label="Trin 1: Læs mailtråden"><div class="draft-demo-mail"><div><strong>Emne: Intro-møde</strong><span>Fiktivt eksempel</span></div><p><strong>Maja</strong> Lad os holde intro-mødet torsdag kl. 10. Jeg sender en dagsorden onsdag.</p><p><strong>Jonas</strong> Det passer mig. Jeg booker et mødelokale.</p><p><strong>Maja</strong> Fint. Kan nogen tage noter?</p></div><p class="draft-exercise-tip"><strong>Din opgave:</strong> Find beslutningen, fordel opgaverne, og læg mærke til det ubesvarede spørgsmål.</p><button type="button" class="draft-button" data-next-step="1">Se en brugbar prompt <span aria-hidden="true">→</span></button></section>
+        <section data-exercise-step="1" aria-label="Trin 2: Se prompten" hidden><label class="draft-prompt-label" for="exercise-prompt">En tydelig bestilling til AI</label><p class="draft-field-help" id="prompt-help">Du kan redigere og kopiere prompten. Brug fiktiv tekst i et AI-værktøj, din arbejdsplads har godkendt.</p><textarea id="exercise-prompt" rows="9" aria-describedby="prompt-help">{samplePrompt}</textarea><div class="draft-copy-row"><button type="button" class="draft-copy-button" data-copy-prompt>Kopiér prompt <span aria-hidden="true">↗</span></button><span role="status" data-copy-status></span></div><p class="draft-exercise-tip">Demoen sender ikke prompten til AI. Det næste trin viser et forberedt svar, som ikke ændres af dine rettelser.</p><div class="draft-step-actions"><button type="button" class="draft-back-button" data-next-step="0">← Tilbage</button><button type="button" class="draft-button" data-next-step="2">Se et eksempel på et svar <span aria-hidden="true">→</span></button></div></section>
+        <section data-exercise-step="2" aria-label="Trin 3: Kontrollér svaret" hidden><p class="draft-prepared-label">Forberedt eksempel · Svaret ændres ikke af din prompt</p><div class="draft-answer-example"><p><strong>Besluttet</strong> Intro-møde torsdag kl. 10.</p><p><strong>Opgaver</strong> Maja sender dagsorden onsdag. Jonas booker et lokale.</p><p><strong>Mangler afklaring</strong> Det er ikke oplyst, hvem der tager noter.</p></div><fieldset class="draft-check-question"><legend>Hvilken opgave mangler stadig en ansvarlig?</legend><label><input type="radio" name="control" value="agenda" /> Sende dagsordenen</label><label><input type="radio" name="control" value="room" /> Booke et mødelokale</label><label><input type="radio" name="control" value="notes" /> Tage noter til mødet</label></fieldset><p class="draft-answer-feedback" role="status" data-answer-feedback></p><div class="draft-step-actions"><button type="button" class="draft-back-button" data-next-step="1">← Til prompten</button><button type="button" class="draft-button" data-check-answer>Tjek mit svar <span aria-hidden="true">✓</span></button></div><button type="button" class="draft-finish-link" data-finish-exercise hidden>Afslut demo og se alle 6 lektioner →</button></section>
+        <p class="draft-dialog-bottom">Dine rettelser bliver kun i denne åbne side. Ingen profil oprettes.</p>
+      </div>
+    </dialog>
+
+    <script>
+      const previewButtons = document.querySelectorAll<HTMLButtonElement>('[data-preview]');
+      const previewPanels = document.querySelectorAll<HTMLElement>('[data-preview-panel]');
+      previewButtons.forEach((button) => button.addEventListener('click', () => {
+        previewButtons.forEach((choice) => choice.setAttribute('aria-pressed', String(choice === button)));
+        previewPanels.forEach((panel) => { panel.hidden = panel.dataset.previewPanel !== button.dataset.preview; });
+      }));
+      const mobileMenu = document.querySelector<HTMLDetailsElement>('.draft-mobile-nav');
+      mobileMenu?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => link.addEventListener('click', (event) => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        const destination = document.querySelector<HTMLElement>(link.hash);
+        if (!destination) return;
+        event.preventDefault();
+        mobileMenu.open = false;
+        if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+        const target = destination.querySelector<HTMLElement>('h2') ?? destination;
+        target?.setAttribute('tabindex', '-1');
+        target?.focus({ preventScroll: true });
+        destination.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }));
+      mobileMenu?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') { mobileMenu.open = false; mobileMenu.querySelector('summary')?.focus(); }
+      });
+      const dialog = document.querySelector<HTMLDialogElement>('.draft-exercise');
+      const heading = document.querySelector<HTMLElement>('#exercise-title');
+      const steps = document.querySelectorAll<HTMLElement>('[data-exercise-step]');
+      const progress = document.querySelectorAll<HTMLElement>('[data-progress]');
+      const feedback = document.querySelector<HTMLElement>('[data-answer-feedback]');
+      const finish = document.querySelector<HTMLButtonElement>('[data-finish-exercise]');
+      let opener: HTMLElement | null = null;
+      let finishRequested = false;
+      function showStep(step: string) {
+        steps.forEach((item) => { item.hidden = item.dataset.exerciseStep !== step; });
+        progress.forEach((item) => { if (item.dataset.progress === step) item.setAttribute('aria-current', 'step'); else item.removeAttribute('aria-current'); });
+        heading?.focus({ preventScroll: true });
+        dialog?.scrollTo({ top: 0 });
+      }
+      document.querySelectorAll<HTMLButtonElement>('[data-open-exercise]').forEach((button) => button.addEventListener('click', () => {
+        opener = mobileMenu?.contains(button) ? mobileMenu.querySelector<HTMLElement>('summary') : button;
+        if (mobileMenu) mobileMenu.open = false;
+        showStep('0');
+        dialog?.showModal();
+        document.body.classList.add('draft-dialog-open');
+        heading?.focus({ preventScroll: true });
+      }));
+      document.querySelector('[data-close-exercise]')?.addEventListener('click', () => dialog?.close());
+      dialog?.addEventListener('close', () => {
+        document.body.classList.remove('draft-dialog-open');
+        if (finishRequested) {
+          finishRequested = false;
+          document.querySelector<HTMLElement>('#program-title')?.focus({ preventScroll: true });
+          document.querySelector('#program')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+        } else opener?.focus({ preventScroll: true });
+      });
+      dialog?.addEventListener('click', (event) => { if (event.target === dialog) { const bounds = dialog.getBoundingClientRect(); if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close(); } });
+      document.querySelectorAll<HTMLButtonElement>('[data-next-step]').forEach((button) => button.addEventListener('click', () => showStep(button.dataset.nextStep ?? '0')));
+      document.querySelector('[data-copy-prompt]')?.addEventListener('click', async () => {
+        const prompt = document.querySelector<HTMLTextAreaElement>('#exercise-prompt');
+        const status = document.querySelector<HTMLElement>('[data-copy-status]');
+        if (!prompt || !status) return;
+        try { await navigator.clipboard.writeText(prompt.value); status.textContent = 'Prompten er kopieret.'; }
+        catch { prompt.focus(); prompt.select(); status.textContent = 'Teksten er markeret. Brug Ctrl+C eller kopiér fra tekstmenuen.'; }
+      });
+      document.querySelector('[data-check-answer]')?.addEventListener('click', () => {
+        const selected = document.querySelector<HTMLInputElement>('input[name="control"]:checked');
+        if (!feedback || !finish) return;
+        if (!selected) { feedback.textContent = 'Vælg en opgave, og tjek dit svar.'; feedback.dataset.correct = 'false'; return; }
+        const correct = selected.value === 'notes';
+        feedback.dataset.correct = String(correct);
+        feedback.textContent = correct ? 'Præcis. Ingen har sagt ja til at tage noter. AI kan hjælpe med overblikket — du tjekker, at det stemmer med teksten.' : 'Se mailtråden igen: Maja sender dagsordenen, og Jonas booker lokalet. Hvilken opgave har ingen sagt ja til endnu?';
+        finish.hidden = !correct;
+      });
+      finish?.addEventListener('click', () => { finishRequested = true; dialog?.close(); });
+    </script>
+  </body>
+</html>

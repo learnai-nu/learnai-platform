@@ -1,0 +1,78 @@
+---
+import '@fontsource-variable/inter';
+export const prerender = true;
+---
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Kursuslandingpage · Designudkast | LearnAI</title>
+    <style>
+      :global(*) { box-sizing: border-box; }
+      :global(body) { margin: 0; font-family: 'Inter Variable', Inter, sans-serif; color: #17191c; background: #e6e8e3; }
+      :global(button), :global(a) { font: inherit; }
+      :global(:focus-visible) { outline: 3px solid #315ef5; outline-offset: 4px; }
+      header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 32px; background: #f7f8f5; border-bottom: 1px solid #c9cdc5; }
+      .eyebrow { margin: 0 0 6px; font: 11px/1.5 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: #60656d; }
+      h1 { font-size: 20px; letter-spacing: -.04em; margin: 0; }
+      .actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+      .switcher { display: flex; background: #e6e8e3; padding: 4px; border-radius: 8px; }
+      button { min-height: 44px; padding: 8px 15px; cursor: pointer; color: #60656d; border: 0; border-radius: 5px; background: transparent; }
+      button[aria-pressed="true"] { color: #17191c; background: white; box-shadow: 0 1px 3px #0001; }
+      a { color: #244ed6; text-underline-offset: 4px; font-size: 13px; }
+      .review-stage { padding: 24px; }
+      .viewport { margin: 0 auto; max-width: 100%; width: 100%; background: white; box-shadow: 0 8px 40px #17191c12; border: 1px solid #c9cdc5; border-radius: 8px; overflow: hidden; }
+      .viewport.mobile { width: 390px; border-radius: 20px; }
+      .frame-label { display: flex; justify-content: space-between; padding: 10px 16px; background: #f7f8f5; color: #60656d; font: 11px/1.5 ui-monospace, monospace; border-bottom: 1px solid #d2d5cf; }
+      iframe { display: block; width: 100%; height: 78vh; min-height: 540px; border: 0; background: #f7f8f5; }
+      .notes { max-width: 1100px; margin: 16px auto 48px; padding: 16px 24px; }
+      .notes > p { font-size: 14px; line-height: 1.6; color: #4e545d; max-width: 850px; }
+      .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 28px; }
+      h2 { font-size: 17px; margin: 0 0 9px; }
+      .choices p { font-size: 14px; line-height: 1.7; color: #4e545d; margin: 0; }
+      @media (max-width: 720px) { header { align-items: flex-start; flex-direction: column; padding: 20px; gap: 18px; } .actions { justify-content: space-between; width: 100%; gap: 12px; } .review-stage { padding: 12px; } .notes { padding: 16px 20px; } .choices { grid-template-columns: 1fr; gap: 24px; } iframe { height: 75vh; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div><p class="eyebrow">LearnAI / Designudkast 02</p><h1>AI i praksis — kursuslandingpage</h1></div>
+      <div class="actions">
+        <div class="switcher" role="group" aria-label="Vælg visning">
+          <button type="button" data-view="desktop" aria-pressed="true">Desktop</button>
+          <button type="button" data-view="mobile" aria-pressed="false">Mobil</button>
+        </div>
+        <a href="/udkast/ai-i-praksis" target="_blank" rel="noopener">Åbn siden i fuld bredde ↗</a>
+      </div>
+    </header>
+    <main>
+      <section class="review-stage" aria-label="Interaktivt designudkast">
+        <div class="viewport" id="viewport">
+          <div class="frame-label"><span>LEARNAI.NU</span><span id="size-label" aria-live="polite">Responsiv desktopvisning</span></div>
+          <iframe src="/udkast/ai-i-praksis" title="Interaktiv kursuslandingpage for AI i praksis"></iframe>
+        </div>
+      </section>
+      <section class="notes" aria-label="Designvalg og afgrænsning">
+        <p>Prøv sidens knapper, kursusprogram og spørgsmål. Skift til mobil ovenfor for at vurdere samme side i en smal visning. Dette er et lokalt udkast med en eksempeløvelse; det tilmelder ingen.</p>
+        <div class="choices">
+          <article><h2>01 / En tydeligere begyndelse</h2><p>Et kortere budskab og en mere kompakt top bringer kurset og næste handling frem. Større brødtekst giver ro til at læse.</p></article>
+          <article><h2>02 / Se opgaven fra begge sider</h2><p>Skift mellem mailtråden og overblikket i arbejdsbogen. Eksemplet er læsbart og interaktivt, med LearnAI’s blå og gule markeringer.</p></article>
+          <article><h2>03 / Find vej på mobilen</h2><p>Mobilmenuen giver adgang til indhold, spørgsmål og øvelsen. De tre moduler viser sammenhængen mellem kursets seks lektioner.</p></article>
+        </div>
+        <p><strong>Kildevalg:</strong> Udkastet tager udgangspunkt i det gratis begynderkursus. Det nyeste kursusmateriale angiver 60 minutter og seks lektioner; forsidens 55 minutter er ældre. Login og tilmelding er ikke tilsluttet.</p>
+      </section>
+    </main>
+    <script>
+      const viewport = document.querySelector('#viewport');
+      const label = document.querySelector('#size-label');
+      const choices = document.querySelectorAll<HTMLButtonElement>('[data-view]');
+      choices.forEach((button) => button.addEventListener('click', () => {
+        const mobile = button.dataset.view === 'mobile';
+        viewport?.classList.toggle('mobile', mobile);
+        choices.forEach((choice) => choice.setAttribute('aria-pressed', String(choice === button)));
+        if (label) label.textContent = mobile ? 'Mobil · op til 390 px' : 'Responsiv desktopvisning';
+      }));
+    </script>
+  </body>
+</html>
