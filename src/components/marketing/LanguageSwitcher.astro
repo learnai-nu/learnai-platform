@@ -1,0 +1,26 @@
+---
+interface Props {
+	locale: 'da' | 'en';
+	alternates: { locale: 'da' | 'en'; path: string }[];
+}
+
+const { locale, alternates } = Astro.props;
+const names = { da: 'Dansk', en: 'English' } as const;
+---
+
+{alternates.length > 1 && (
+	<details class="orbit-lang-menu">
+		<summary aria-label={locale === 'en' ? 'Choose language' : 'Vælg sprog'}>
+			<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>
+			<span>{locale.toUpperCase()}</span>
+			<svg class="orbit-account-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg>
+		</summary>
+		<div class="orbit-lang-panel">
+			{alternates.map((alternate) => (
+				<a href={alternate.path} lang={alternate.locale} aria-current={alternate.locale === locale ? 'true' : undefined}>
+					{names[alternate.locale]}
+				</a>
+			))}
+		</div>
+	</details>
+)}

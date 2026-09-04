@@ -1,5 +1,14 @@
 ---
 import OrbitBrand from '../ui/OrbitBrand.astro';
+import HeaderAccount from './HeaderAccount.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+	locale?: 'da' | 'en';
+	alternates?: { locale: 'da' | 'en'; path: string }[];
+}
+
+const { locale = 'da', alternates = [] } = Astro.props;
 
 type MenuItem = { label: string; description: string; href?: string; section?: string; type?: string };
 type MenuGroup = { label: string; intro: string; items: MenuItem[] };
@@ -85,19 +94,20 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 		<div class="orbit-header-actions">
 			<details class="orbit-search-menu">
 				<summary aria-label="Søg på LearnAI"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></summary>
-				<form action="/laer" method="get" role="search">
+				<form action="/search" method="get" role="search">
 					<label for="header-search">Søg på LearnAI</label>
 					<div><input id="header-search" type="search" name="q" placeholder="Fx prompts til møder" /><button type="submit">Søg</button></div>
 				</form>
 			</details>
-			<a class="orbit-login-link" href="/login">Log ind</a>
+			<LanguageSwitcher {locale} {alternates} />
+			<HeaderAccount />
 			<a class="orbit-header-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
 		</div>
 
 		<details class="orbit-mobile-nav">
 			<summary aria-label="Åbn menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>
 			<nav aria-label="Mobil navigation">
-				<form action="/laer" method="get" role="search" class="orbit-mobile-search">
+				<form action="/search" method="get" role="search" class="orbit-mobile-search">
 					<label for="mobile-search">Søg på LearnAI</label>
 					<div><input id="mobile-search" type="search" name="q" placeholder="Søg på LearnAI" /><button type="submit" aria-label="Søg"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button></div>
 				</form>
@@ -114,7 +124,17 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 					</details>
 				))}
 				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>Virksomheder</a>
-				<div class="orbit-mobile-meta"><span>Dansk</span><a href="/login">Log ind</a></div>
+				<div class="orbit-mobile-meta">
+					{alternates.length > 1
+						? alternates.map((alternate) => (
+							<a href={alternate.path} lang={alternate.locale} aria-current={alternate.locale === locale ? 'true' : undefined}>
+								{alternate.locale === 'en' ? 'English' : 'Dansk'}
+							</a>
+						))
+						: <span>Dansk</span>}
+					<a href="/login" data-account-anonymous>Log ind</a>
+					<a href="/dashboard" data-account-menu hidden><span data-account-name>Din profil</span></a>
+				</div>
 				<a class="orbit-mobile-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
 			</nav>
 		</details>
@@ -122,7 +142,9 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 </header>
 
 <script>
-	const desktopMenus = [...document.querySelectorAll<HTMLDetailsElement>('.orbit-nav-menu, .orbit-search-menu')];
+	import '../../scripts/header-account';
+
+	const desktopMenus = [...document.querySelectorAll<HTMLDetailsElement>('.orbit-nav-menu, .orbit-search-menu, .orbit-lang-menu, .orbit-account-menu')];
 	const mobileSections = [...document.querySelectorAll<HTMLDetailsElement>('.orbit-mobile-section')];
 	const mobileDetails = document.querySelector<HTMLDetailsElement>('.orbit-mobile-nav');
 	const mobileSummary = mobileDetails?.querySelector<HTMLElement>(':scope > summary');
