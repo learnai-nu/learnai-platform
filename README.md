@@ -49,6 +49,9 @@ Den redaktionelle vurdering og første publiceringskø findes i
 Den maskinlæsbare prioritering findes i
 [`config/editorial-priorities.json`](config/editorial-priorities.json).
 
+Headerens sprogvælger, søgning og profilindikator er beskrevet i
+[`docs/site-header.md`](docs/site-header.md).
+
 Katalogsiderne `/tools`, `/use-cases` og `/resources` er migreret fra det
 gamle Lovable-site til Supabase-tabellerne `tools`, `use_cases` og `resources`.
 Migration, RLS-model og genimport er beskrevet i

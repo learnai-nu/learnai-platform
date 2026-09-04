@@ -1,0 +1,22 @@
+---
+/**
+ * Anonymous by default; the client script reveals the account menu and fills in
+ * the name once it has confirmed a session.
+ */
+---
+
+<a class="orbit-login-link" href="/login" data-account-anonymous>Log ind</a>
+<details class="orbit-account-menu" data-account-menu hidden>
+	<summary>
+		<span class="orbit-account-avatar" aria-hidden="true">
+			<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"></circle><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"></path></svg>
+		</span>
+		<span data-account-name>Din profil</span>
+		<svg class="orbit-account-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg>
+	</summary>
+	<div class="orbit-account-panel">
+		<a href="/dashboard">Dashboard</a>
+		<a href="/dashboard/profil">Din læringsprofil</a>
+		<form method="post" action="/auth/sign-out"><button type="submit">Log ud</button></form>
+	</div>
+</details>

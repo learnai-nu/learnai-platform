@@ -87,7 +87,7 @@ const structuredData = noindex ? null : buildSitePageGraph({
 	</head>
 	<body class="blue-orbit">
 		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>
-		<BlueOrbitHeader />
+		<BlueOrbitHeader {locale} {alternates} />
 		<main id="main-content">
 			<slot />
 		</main>
