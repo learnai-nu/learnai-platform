@@ -2,17 +2,20 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import {
 	buildFacet,
+	fetchTools,
 	label,
 	searchIndex,
 	toolBadgeLabels,
 	toolCategoryLabels,
-	tools,
 } from '../lib/catalog';
 import { createCanonicalUrl, createItemListSchema } from '../lib/seo/schema';
+import { createServerSupabaseClient } from '../lib/supabase/server';
 import '../styles/catalog.css';
 
-export const prerender = true;
+export const prerender = false;
 
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { tools, error } = await fetchTools(supabase);
 const categories = buildFacet(tools, (tool) => tool.categories, toolCategoryLabels);
 const badges = buildFacet(tools, (tool) => tool.badges, toolBadgeLabels);
 const sorted = [...tools].sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name, 'da'));
@@ -42,6 +45,12 @@ const itemList = createItemListSchema(
 			</div>
 		</section>
 
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">Værktøjskataloget kunne ikke hentes lige nu. Prøv igen om lidt.</p>
+			</div>
+		) : (
+		<Fragment>
 		<section class="catalog-controls" aria-label="Filtrér værktøjer">
 			<div class="catalog-shell">
 				<label class="orbit-eyebrow" for="tool-search">Søg</label>
@@ -125,8 +134,10 @@ const itemList = createItemListSchema(
 					</article>
 				))}
 			</div>
-			<p class="catalog-empty" data-catalog-empty hidden>Ingen værktøjer matcher din søgning. Prøv en anden kategori eller et andet søgeord.</p>
+			<p class="catalog-empty" data-catalog-empty hidden={sorted.length > 0}>Ingen værktøjer matcher din søgning. Prøv en anden kategori eller et andet søgeord.</p>
 		</div>
+		</Fragment>
+		)}
 	</div>
 </SiteLayout>
 

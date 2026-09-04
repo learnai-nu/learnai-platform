@@ -1,11 +1,14 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { buildFacet, resourceTypeLabels, resources, searchIndex } from '../lib/catalog';
+import { buildFacet, fetchResources, resourceTypeLabels, searchIndex } from '../lib/catalog';
 import { createCanonicalUrl, createItemListSchema } from '../lib/seo/schema';
+import { createServerSupabaseClient } from '../lib/supabase/server';
 import '../styles/catalog.css';
 
-export const prerender = true;
+export const prerender = false;
 
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { resources, error } = await fetchResources(supabase);
 const types = buildFacet(resources, (resource) => resource.type, resourceTypeLabels);
 const groups = types.map((type) => ({
 	...type,
@@ -37,6 +40,12 @@ const itemList = createItemListSchema(
 			</div>
 		</section>
 
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">Ressourcerne kunne ikke hentes lige nu. Prøv igen om lidt.</p>
+			</div>
+		) : (
+		<Fragment>
 		<section class="catalog-controls" aria-label="Filtrér ressourcer">
 			<div class="catalog-shell">
 				<label class="orbit-eyebrow" for="resource-search">Søg</label>
@@ -94,8 +103,10 @@ const itemList = createItemListSchema(
 					</div>
 				</section>
 			))}
-			<p class="catalog-empty" data-catalog-empty hidden>Ingen ressourcer matcher din søgning. Prøv et andet format eller søgeord.</p>
+			<p class="catalog-empty" data-catalog-empty hidden={resources.length > 0}>Ingen ressourcer matcher din søgning. Prøv et andet format eller søgeord.</p>
 		</div>
+		</Fragment>
+		)}
 	</div>
 </SiteLayout>
 

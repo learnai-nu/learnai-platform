@@ -4,16 +4,19 @@ import {
 	buildFacet,
 	complexityLabels,
 	departmentLabels,
+	fetchUseCases,
 	label,
 	searchIndex,
 	strategicValueLabels,
-	useCases,
 } from '../lib/catalog';
 import { createCanonicalUrl, createItemListSchema } from '../lib/seo/schema';
+import { createServerSupabaseClient } from '../lib/supabase/server';
 import '../styles/catalog.css';
 
-export const prerender = true;
+export const prerender = false;
 
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { useCases, error } = await fetchUseCases(supabase);
 const departments = buildFacet(useCases, (item) => item.department, departmentLabels);
 const complexities = buildFacet(useCases, (item) => item.complexity, complexityLabels);
 const values = buildFacet(useCases, (item) => item.strategicValue, strategicValueLabels);
@@ -26,7 +29,7 @@ const itemList = createItemListSchema(
 
 <SiteLayout
 	title="AI use cases — LearnAI.nu"
-	description="31 konkrete AI-anvendelser fra dansk arbejdsliv: hvilket problem de løser, hvordan løsningen ser ud, og hvad du får ud af den."
+	description="Konkrete AI-anvendelser fra dansk arbejdsliv: hvilket problem de løser, hvordan løsningen ser ud, og hvad du får ud af den."
 	pageType="CollectionPage"
 	breadcrumbs={[
 		{ name: 'Forside', url: '/' },
@@ -38,11 +41,17 @@ const itemList = createItemListSchema(
 		<section class="catalog-head">
 			<div class="catalog-shell">
 				<p class="catalog-eyebrow">Anvendelser</p>
-				<h1>AI i praksis — {useCases.length} konkrete use cases.</h1>
+				<h1>AI i praksis — konkrete use cases.</h1>
 				<p>Hver use case beskriver et reelt problem, den AI-løsning der virker, og den forretningsværdi den skaber. Filtrér efter afdeling, kompleksitet eller den værdi, du er ude efter.</p>
 			</div>
 		</section>
 
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">Use cases kunne ikke hentes lige nu. Prøv igen om lidt.</p>
+			</div>
+		) : (
+		<Fragment>
 		<section class="catalog-controls" aria-label="Filtrér use cases">
 			<div class="catalog-shell">
 				<label class="orbit-eyebrow" for="use-case-search">Søg</label>
@@ -129,8 +138,10 @@ const itemList = createItemListSchema(
 					</article>
 				))}
 			</div>
-			<p class="catalog-empty" data-catalog-empty hidden>Ingen use cases matcher din søgning. Prøv et bredere filter eller et andet søgeord.</p>
+			<p class="catalog-empty" data-catalog-empty hidden={useCases.length > 0}>Ingen use cases matcher din søgning. Prøv et bredere filter eller et andet søgeord.</p>
 		</div>
+		</Fragment>
+		)}
 	</div>
 </SiteLayout>
 

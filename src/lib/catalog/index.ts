@@ -1,6 +1,4 @@
-import resourcesData from '../../data/resources.json';
-import toolsData from '../../data/tools.json';
-import useCasesData from '../../data/use-cases.json';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface Tool {
 	slug: string;
@@ -38,7 +36,6 @@ export interface Resource {
 	description: string;
 	rating: number | null;
 	topics: string[];
-	language: string;
 }
 
 export const toolCategoryLabels: Record<string, string> = {
@@ -91,9 +88,101 @@ export function label(map: Record<string, string>, value: string) {
 	return map[value] ?? value;
 }
 
-export const tools = toolsData as Tool[];
-export const useCases = useCasesData as UseCase[];
-export const resources = resourcesData as Resource[];
+type Row = Record<string, unknown>;
+
+function strings(value: unknown): string[] {
+	return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : [];
+}
+
+function text(value: unknown): string {
+	return typeof value === 'string' ? value : '';
+}
+
+function optional(value: unknown): string | null {
+	return typeof value === 'string' && value.length > 0 ? value : null;
+}
+
+/** Postgres numerics arrive as strings through PostgREST. */
+function numeric(value: unknown): number | null {
+	const parsed = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : NaN;
+	return Number.isFinite(parsed) ? parsed : null;
+}
+
+/**
+ * The three catalogues are read with the visitor's own Supabase session, so RLS
+ * decides what is returned. Anonymous visitors see published Danish rows only.
+ */
+async function readCatalog(supabase: SupabaseClient, table: string, columns: string) {
+	const { data, error } = await supabase
+		.from(table)
+		.select(columns)
+		.eq('locale', 'da')
+		.eq('published', true)
+		.order('sort_order', { ascending: true });
+	return { rows: (data ?? []) as unknown as Row[], error };
+}
+
+export async function fetchTools(supabase: SupabaseClient) {
+	const { rows, error } = await readCatalog(
+		supabase,
+		'tools',
+		'slug,name,tagline,description,icon_url,categories,badges,key_features,pricing_display,external_url,featured',
+	);
+	const tools: Tool[] = rows.map((row) => ({
+		slug: text(row.slug),
+		name: text(row.name),
+		tagline: text(row.tagline),
+		description: text(row.description),
+		iconUrl: optional(row.icon_url),
+		categories: strings(row.categories),
+		badges: strings(row.badges),
+		keyFeatures: strings(row.key_features),
+		pricing: optional(row.pricing_display),
+		url: optional(row.external_url),
+		featured: row.featured === true,
+	}));
+	return { tools, error };
+}
+
+export async function fetchUseCases(supabase: SupabaseClient) {
+	const { rows, error } = await readCatalog(
+		supabase,
+		'use_cases',
+		'slug,title,reference,department,complexity,strategic_value,problem_statement,solution,business_benefits,recommended_tools,featured',
+	);
+	const useCases: UseCase[] = rows.map((row) => ({
+		slug: text(row.slug),
+		title: text(row.title),
+		reference: optional(row.reference),
+		department: text(row.department),
+		complexity: text(row.complexity),
+		strategicValue: text(row.strategic_value),
+		problem: text(row.problem_statement),
+		solution: text(row.solution),
+		benefits: strings(row.business_benefits),
+		recommendedTools: strings(row.recommended_tools),
+		featured: row.featured === true,
+	}));
+	return { useCases, error };
+}
+
+export async function fetchResources(supabase: SupabaseClient) {
+	const { rows, error } = await readCatalog(
+		supabase,
+		'resources',
+		'slug,title,type,url,description,rating,topics',
+	);
+	const resources: Resource[] = rows.map((row) => ({
+		slug: text(row.slug),
+		title: text(row.title),
+		type: text(row.type),
+		url: text(row.url),
+		description: text(row.description),
+		rating: numeric(row.rating),
+		topics: strings(row.topics),
+	}));
+	return { resources, error };
+}
 
 export interface FacetOption {
 	value: string;
