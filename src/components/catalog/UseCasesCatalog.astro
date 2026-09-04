@@ -1,0 +1,198 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { buildFacet, fetchUseCases, label, labels, searchIndex, type Locale } from '../../lib/catalog';
+import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/catalog.css';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { useCases, error } = await fetchUseCases(supabase, locale);
+
+const departmentLabels = labels(locale, 'department');
+const complexityLabels = labels(locale, 'complexity');
+const valueLabels = labels(locale, 'strategicValue');
+const departments = buildFacet(useCases, (item) => item.department, departmentLabels);
+const complexities = buildFacet(useCases, (item) => item.complexity, complexityLabels);
+const values = buildFacet(useCases, (item) => item.strategicValue, valueLabels);
+
+const copy = locale === 'en'
+	? {
+		title: 'AI use cases — LearnAI.nu',
+		description: 'Concrete AI use cases from working life: the problem they solve, what the solution looks like, and what you get out of it.',
+		breadcrumb: 'Use cases',
+		eyebrow: 'Applications',
+		heading: 'AI in practice — concrete use cases.',
+		lead: 'Each use case describes a real problem, the AI solution that works, and the business value it creates. Filter by department, complexity or the value you are after.',
+		search: 'Search',
+		searchPlaceholder: 'Search for a task, problem or tool',
+		department: 'Department',
+		complexity: 'Complexity',
+		value: 'Value',
+		all: 'All',
+		noun: 'use cases',
+		benefits: 'See the business value',
+		tools: 'Tools',
+		seeTools: 'See the tools',
+		empty: 'No use cases match your search. Try a broader filter or another search term.',
+		failed: 'Use cases could not be loaded right now. Please try again shortly.',
+		filterLabel: 'Filter use cases',
+	}
+	: {
+		title: 'AI use cases — LearnAI.nu',
+		description: 'Konkrete AI-anvendelser fra dansk arbejdsliv: hvilket problem de løser, hvordan løsningen ser ud, og hvad du får ud af den.',
+		breadcrumb: 'Use cases',
+		eyebrow: 'Anvendelser',
+		heading: 'AI i praksis — konkrete use cases.',
+		lead: 'Hver use case beskriver et reelt problem, den AI-løsning der virker, og den forretningsværdi den skaber. Filtrér efter afdeling, kompleksitet eller den værdi, du er ude efter.',
+		search: 'Søg',
+		searchPlaceholder: 'Søg efter opgave, problem eller værktøj',
+		department: 'Afdeling',
+		complexity: 'Kompleksitet',
+		value: 'Værdi',
+		all: 'Alle',
+		noun: 'use cases',
+		benefits: 'Se forretningsværdien',
+		tools: 'Værktøjer',
+		seeTools: 'Se værktøjerne',
+		empty: 'Ingen use cases matcher din søgning. Prøv et bredere filter eller et andet søgeord.',
+		failed: 'Use cases kunne ikke hentes lige nu. Prøv igen om lidt.',
+		filterLabel: 'Filtrér use cases',
+	};
+
+const path = locale === 'en' ? '/en/use-cases' : '/use-cases';
+const toolsPath = locale === 'en' ? '/en/tools' : '/tools';
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	useCases.map((item) => ({ name: item.title, url: `${path}#${item.slug}` })),
+);
+---
+
+<SiteLayout
+	title={copy.title}
+	description={copy.description}
+	{locale}
+	alternates={[{ locale: 'da', path: '/use-cases' }, { locale: 'en', path: '/en/use-cases' }]}
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: locale === 'en' ? 'Home' : 'Forside', url: locale === 'en' ? '/en' : '/' },
+		{ name: copy.breadcrumb, url: path },
+	]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page" data-catalog>
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">{copy.eyebrow}</p>
+				<h1>{copy.heading}</h1>
+				<p>{copy.lead}</p>
+			</div>
+		</section>
+
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">{copy.failed}</p>
+			</div>
+		) : (
+		<Fragment>
+		<section class="catalog-controls" aria-label={copy.filterLabel}>
+			<div class="catalog-shell">
+				<label class="orbit-eyebrow" for="use-case-search">{copy.search}</label>
+				<input
+					id="use-case-search"
+					class="catalog-search"
+					type="search"
+					placeholder={copy.searchPlaceholder}
+					data-catalog-search
+				/>
+				<div class="catalog-facets">
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="use-case-department-label">{copy.department}</p>
+						<div role="group" aria-labelledby="use-case-department-label">
+							<button class="catalog-chip" type="button" data-facet="department" data-value="" aria-pressed="true">{copy.all}</button>
+							{departments.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="department" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="use-case-complexity-label">{copy.complexity}</p>
+						<div role="group" aria-labelledby="use-case-complexity-label">
+							<button class="catalog-chip" type="button" data-facet="complexity" data-value="" aria-pressed="true">{copy.all}</button>
+							{complexities.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="complexity" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="use-case-value-label">{copy.value}</p>
+						<div role="group" aria-labelledby="use-case-value-label">
+							<button class="catalog-chip" type="button" data-facet="value" data-value="" aria-pressed="true">{copy.all}</button>
+							{values.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="value" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+				<p class="catalog-count" data-catalog-count data-noun={copy.noun}>{useCases.length} {copy.noun}</p>
+			</div>
+		</section>
+
+		<div class="catalog-shell">
+			<div class="catalog-grid">
+				{useCases.map((item) => (
+					<article
+						class:list={['catalog-card', item.featured && 'catalog-card-featured']}
+						id={item.slug}
+						data-catalog-item
+						data-facet-department={item.department}
+						data-facet-complexity={item.complexity}
+						data-facet-value={item.strategicValue}
+						data-search={searchIndex(item.title, item.problem, item.solution, item.benefits, item.recommendedTools, label(departmentLabels, item.department))}
+					>
+						<h2>{item.title}</h2>
+						<ul class="catalog-tags">
+							<li class="catalog-tag catalog-tag-accent">{label(departmentLabels, item.department)}</li>
+							<li class="catalog-tag">{label(complexityLabels, item.complexity)}</li>
+							<li class="catalog-tag">{label(valueLabels, item.strategicValue)}</li>
+						</ul>
+						<p class="catalog-card-lead">{item.problem}</p>
+						<p>{item.solution}</p>
+						{item.benefits.length > 0 && (
+							<details class="catalog-detail">
+								<summary>{copy.benefits}</summary>
+								<ul class="catalog-list">
+									{item.benefits.map((benefit) => <li>{benefit}</li>)}
+								</ul>
+							</details>
+						)}
+						{item.recommendedTools.length > 0 && (
+							<div class="catalog-card-footer">
+								<p class="catalog-price">{copy.tools}: {item.recommendedTools.join(', ')}</p>
+								<a class="catalog-link" href={toolsPath}>{copy.seeTools} <span aria-hidden="true">→</span></a>
+							</div>
+						)}
+					</article>
+				))}
+			</div>
+			<p class="catalog-empty" data-catalog-empty hidden={useCases.length > 0}>{copy.empty}</p>
+		</div>
+		</Fragment>
+		)}
+	</div>
+</SiteLayout>
+
+<script>
+	import '../../scripts/catalog-filter';
+</script>

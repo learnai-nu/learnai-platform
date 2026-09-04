@@ -26,6 +26,7 @@ interface UseCaseRow {
 	recommended_tools: string[] | null;
 	featured: boolean;
 	published: boolean;
+	locale: string;
 	sort_order: number;
 }
 
@@ -35,7 +36,7 @@ let item: UseCaseRow | null = null;
 if (!isNew) {
 	const result = await context.supabase
 		.from('use_cases')
-		.select('id,slug,title,reference,department,complexity,strategic_value,problem_statement,solution,business_benefits,recommended_tools,featured,published,sort_order')
+		.select('id,slug,title,reference,department,complexity,strategic_value,problem_statement,solution,business_benefits,recommended_tools,featured,published,locale,sort_order')
 		.eq('id', Astro.params.id)
 		.maybeSingle();
 	if (result.error || !result.data) return new Response('Use casen blev ikke fundet.', { status: 404 });
@@ -82,6 +83,14 @@ const options = (labels: Record<string, string>, current: unknown) =>
 			<label>
 				Sortering
 				<input name="sortOrder" type="number" min="0" max="10000" value={item?.sort_order ?? 0} />
+			</label>
+			<label>
+				Sprog
+				<select name="locale">
+					<option value="da" selected={item?.locale !== 'en'}>Dansk</option>
+					<option value="en" selected={item?.locale === 'en'}>Engelsk</option>
+				</select>
+				<small>Sproget bestemmer, om rækken vises på de danske eller engelske sider.</small>
 			</label>
 			<label>
 				Afdeling

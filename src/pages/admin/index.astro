@@ -22,6 +22,7 @@ const [
 	toolResult,
 	useCaseResult,
 	resourceResult,
+	eventResult,
 	recentContentResult,
 ] = await Promise.all([
 	context.supabase.from('content_items').select('id', { count: 'exact', head: true }),
@@ -31,6 +32,7 @@ const [
 	context.supabase.from('tools').select('id', { count: 'exact', head: true }),
 	context.supabase.from('use_cases').select('id', { count: 'exact', head: true }),
 	context.supabase.from('resources').select('id', { count: 'exact', head: true }),
+	context.supabase.from('events').select('id', { count: 'exact', head: true }),
 	context.supabase
 		.from('content_items')
 		.select('id,title,status,updated_at')
@@ -46,6 +48,7 @@ const stats = [
 	{ label: 'Værktøjer', value: toolResult.count ?? 0, href: '/admin/vaerktoejer' },
 	{ label: 'Use cases', value: useCaseResult.count ?? 0, href: '/admin/use-cases' },
 	{ label: 'Ressourcer', value: resourceResult.count ?? 0, href: '/admin/ressourcer' },
+	{ label: 'Events', value: eventResult.count ?? 0, href: '/admin/events' },
 ];
 const hasLoadError = [
 	contentResult.error,
@@ -55,6 +58,7 @@ const hasLoadError = [
 	toolResult.error,
 	useCaseResult.error,
 	resourceResult.error,
+	eventResult.error,
 	recentContentResult.error,
 ].some(Boolean);
 ---

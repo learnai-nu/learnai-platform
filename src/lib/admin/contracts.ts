@@ -97,9 +97,11 @@ const webUrl = z.url().max(500).refine((value) => /^https?:\/\//i.test(value), {
 const optionalUrl = z.union([webUrl, z.literal('')]).optional().default('');
 const publishFlag = z.enum(['true', 'false']).default('false');
 const catalogSortOrder = integerField(0, 10_000);
+const catalogLocale = z.enum(['da', 'en']).default('da');
 
 export const toolFormSchema = z.object({
 	id: optionalUuid,
+	locale: catalogLocale,
 	slug: slugSchema,
 	name: z.string().trim().min(2).max(200),
 	tagline: optionalText(300),
@@ -117,6 +119,7 @@ export const toolFormSchema = z.object({
 
 export const useCaseFormSchema = z.object({
 	id: optionalUuid,
+	locale: catalogLocale,
 	slug: slugSchema,
 	title: z.string().trim().min(2).max(200),
 	reference: optionalText(50),
@@ -134,6 +137,7 @@ export const useCaseFormSchema = z.object({
 
 export const resourceFormSchema = z.object({
 	id: optionalUuid,
+	locale: catalogLocale,
 	slug: slugSchema,
 	title: z.string().trim().min(2).max(200),
 	type: z.enum(['podcast', 'youtube', 'bog', 'kursus', 'nyhedsbrev', 'rapport']),
@@ -141,6 +145,25 @@ export const resourceFormSchema = z.object({
 	description: optionalText(4_000),
 	rating: z.union([z.coerce.number().min(0).max(5), z.literal('')]).optional().default(''),
 	topics: lineList(1_000),
+	contentLanguage: catalogLocale,
+	published: publishFlag,
+	sortOrder: catalogSortOrder,
+});
+
+export const eventFormSchema = z.object({
+	id: optionalUuid,
+	locale: catalogLocale,
+	slug: slugSchema,
+	title: z.string().trim().min(2).max(200),
+	description: optionalText(4_000),
+	eventDate: z.iso.date(),
+	timeStart: optionalText(20),
+	timeEnd: optionalText(20),
+	locationType: z.enum(['fysisk', 'online', 'hybrid']),
+	locationName: optionalText(200),
+	registrationUrl: optionalUrl,
+	organizer: optionalText(200),
+	price: optionalText(100),
 	published: publishFlag,
 	sortOrder: catalogSortOrder,
 });

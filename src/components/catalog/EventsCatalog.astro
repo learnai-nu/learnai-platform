@@ -1,0 +1,152 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { fetchEvents, label, labels, splitEvents, type CatalogEvent, type Locale } from '../../lib/catalog';
+import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/catalog.css';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { events, error } = await fetchEvents(supabase, locale);
+const { upcoming, past } = splitEvents(events);
+
+const locationLabels = labels(locale, 'eventLocation');
+const dateFormat = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'da-DK', {
+	day: 'numeric',
+	month: 'long',
+	year: 'numeric',
+});
+
+const copy = locale === 'en'
+	? {
+		title: 'AI events — LearnAI.nu',
+		description: 'Conferences, meetups and events about AI worth putting in the calendar.',
+		breadcrumb: 'Events',
+		eyebrow: 'Calendar',
+		heading: 'AI events worth your time.',
+		lead: 'Conferences and meetups where you meet people who work with AI in practice — not just talk about it.',
+		upcoming: 'Upcoming',
+		past: 'Past events',
+		register: 'Registration and tickets',
+		noneUpcoming: 'No upcoming events right now. Check back soon.',
+		failed: 'Events could not be loaded right now. Please try again shortly.',
+	}
+	: {
+		title: 'AI-events — LearnAI.nu',
+		description: 'Konferencer, meetups og arrangementer om AI, der er værd at sætte i kalenderen.',
+		breadcrumb: 'Events',
+		eyebrow: 'Kalender',
+		heading: 'AI-events, der er tiden værd.',
+		lead: 'Konferencer og meetups, hvor du møder dem, der arbejder med AI i praksis — ikke bare taler om det.',
+		upcoming: 'Kommende',
+		past: 'Tidligere events',
+		register: 'Tilmelding og billetter',
+		noneUpcoming: 'Ingen kommende events lige nu. Kig forbi igen snart.',
+		failed: 'Events kunne ikke hentes lige nu. Prøv igen om lidt.',
+	};
+
+const path = locale === 'en' ? '/en/events' : '/events';
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	upcoming.map((event) => ({ name: event.title, url: event.registrationUrl ?? `${path}#${event.slug}` })),
+);
+
+function timeRange(event: CatalogEvent) {
+	if (!event.timeStart) return null;
+	return event.timeEnd ? `${event.timeStart}–${event.timeEnd}` : event.timeStart;
+}
+---
+
+<SiteLayout
+	title={copy.title}
+	description={copy.description}
+	{locale}
+	alternates={[{ locale: 'da', path: '/events' }, { locale: 'en', path: '/en/events' }]}
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: locale === 'en' ? 'Home' : 'Forside', url: locale === 'en' ? '/en' : '/' },
+		{ name: copy.breadcrumb, url: path },
+	]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page">
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">{copy.eyebrow}</p>
+				<h1>{copy.heading}</h1>
+				<p>{copy.lead}</p>
+			</div>
+		</section>
+
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">{copy.failed}</p>
+			</div>
+		) : (
+		<div class="catalog-shell">
+			<section class="catalog-group" aria-labelledby="events-upcoming">
+				<h2 class="catalog-section-title" id="events-upcoming">{copy.upcoming}</h2>
+				{upcoming.length > 0 ? (
+					<div class="catalog-grid">
+						{upcoming.map((event) => (
+							<article class="catalog-card catalog-card-featured" id={event.slug}>
+								<p class="catalog-eyebrow">
+									<time datetime={event.date}>{dateFormat.format(new Date(event.date))}</time>
+									{timeRange(event) && <span> · {timeRange(event)}</span>}
+								</p>
+								<h3>{event.title}</h3>
+								<ul class="catalog-tags">
+									<li class="catalog-tag catalog-tag-accent">{label(locationLabels, event.locationType)}</li>
+									{event.locationName && <li class="catalog-tag">{event.locationName}</li>}
+								</ul>
+								<p>{event.description}</p>
+								<div class="catalog-card-footer">
+									{event.organizer && <p class="catalog-price">{event.organizer}</p>}
+									{event.registrationUrl && (
+										<a class="catalog-link" href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
+											{copy.register} <span aria-hidden="true">→</span>
+										</a>
+									)}
+								</div>
+							</article>
+						))}
+					</div>
+				) : (
+					<p class="catalog-empty">{copy.noneUpcoming}</p>
+				)}
+			</section>
+
+			{past.length > 0 && (
+				<section class="catalog-group" aria-labelledby="events-past">
+					<h2 class="catalog-section-title" id="events-past">{copy.past}</h2>
+					<div class="catalog-grid">
+						{past.map((event) => (
+							<article class="catalog-card" id={event.slug}>
+								<p class="catalog-eyebrow">
+									<time datetime={event.date}>{dateFormat.format(new Date(event.date))}</time>
+								</p>
+								<h3>{event.title}</h3>
+								<ul class="catalog-tags">
+									<li class="catalog-tag">{label(locationLabels, event.locationType)}</li>
+									{event.locationName && <li class="catalog-tag">{event.locationName}</li>}
+								</ul>
+								<p>{event.description}</p>
+								{event.organizer && (
+									<div class="catalog-card-footer">
+										<p class="catalog-price">{event.organizer}</p>
+									</div>
+								)}
+							</article>
+						))}
+					</div>
+				</section>
+			)}
+		</div>
+		)}
+	</div>
+</SiteLayout>

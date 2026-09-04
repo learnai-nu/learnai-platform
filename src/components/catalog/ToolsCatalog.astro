@@ -1,0 +1,187 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { buildFacet, fetchTools, label, labels, searchIndex, type Locale } from '../../lib/catalog';
+import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/catalog.css';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { tools, error } = await fetchTools(supabase, locale);
+
+const categoryLabels = labels(locale, 'toolCategory');
+const badgeLabels = labels(locale, 'toolBadge');
+const categories = buildFacet(tools, (tool) => tool.categories, categoryLabels);
+const badges = buildFacet(tools, (tool) => tool.badges, badgeLabels);
+const sorted = [...tools].sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name, locale));
+
+const copy = locale === 'en'
+	? {
+		title: 'AI tools — LearnAI.nu',
+		description: 'A curated catalogue of the AI tools we actually use: what they do, what they cost, and when they make sense.',
+		breadcrumb: 'Tools',
+		eyebrow: 'Tool catalogue',
+		heading: 'AI tools, tested and selected.',
+		lead: 'A curated index of the tools we actually use — from everyday work to the more specialised tasks. Filter by task and find the tool for your next step.',
+		search: 'Search',
+		searchPlaceholder: 'Search for a tool, task or feature',
+		category: 'Category',
+		badge: 'Label',
+		all: 'All',
+		noun: 'tools',
+		empty: 'No tools match your search. Try another category or search term.',
+		failed: 'The tool catalogue could not be loaded right now. Please try again shortly.',
+		visit: 'Visit',
+		filterLabel: 'Filter tools',
+	}
+	: {
+		title: 'AI-værktøjer — LearnAI.nu',
+		description: 'Kurateret katalog over de AI-værktøjer, vi selv bruger: hvad de kan, hvad de koster, og hvornår de giver mening.',
+		breadcrumb: 'Værktøjer',
+		eyebrow: 'Værktøjskatalog',
+		heading: 'AI-værktøjer, testet og udvalgt.',
+		lead: 'En kurateret oversigt over de værktøjer, vi rent faktisk bruger — fra det daglige arbejde til de mere specialiserede opgaver. Filtrér efter opgave, og find det værktøj, der passer til dit næste skridt.',
+		search: 'Søg',
+		searchPlaceholder: 'Søg efter værktøj, opgave eller funktion',
+		category: 'Kategori',
+		badge: 'Mærkat',
+		all: 'Alle',
+		noun: 'værktøjer',
+		empty: 'Ingen værktøjer matcher din søgning. Prøv en anden kategori eller et andet søgeord.',
+		failed: 'Værktøjskataloget kunne ikke hentes lige nu. Prøv igen om lidt.',
+		visit: 'Besøg',
+		filterLabel: 'Filtrér værktøjer',
+	};
+
+const path = locale === 'en' ? '/en/tools' : '/tools';
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	sorted.map((tool) => ({ name: tool.name, url: tool.url ?? `${path}#${tool.slug}` })),
+);
+---
+
+<SiteLayout
+	title={copy.title}
+	description={copy.description}
+	{locale}
+	alternates={[{ locale: 'da', path: '/tools' }, { locale: 'en', path: '/en/tools' }]}
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: locale === 'en' ? 'Home' : 'Forside', url: locale === 'en' ? '/en' : '/' },
+		{ name: copy.breadcrumb, url: path },
+	]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page" data-catalog>
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">{copy.eyebrow}</p>
+				<h1>{copy.heading}</h1>
+				<p>{copy.lead}</p>
+			</div>
+		</section>
+
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">{copy.failed}</p>
+			</div>
+		) : (
+		<Fragment>
+		<section class="catalog-controls" aria-label={copy.filterLabel}>
+			<div class="catalog-shell">
+				<label class="orbit-eyebrow" for="tool-search">{copy.search}</label>
+				<input
+					id="tool-search"
+					class="catalog-search"
+					type="search"
+					placeholder={copy.searchPlaceholder}
+					data-catalog-search
+				/>
+				<div class="catalog-facets">
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="tool-category-label">{copy.category}</p>
+						<div role="group" aria-labelledby="tool-category-label">
+							<button class="catalog-chip" type="button" data-facet="category" data-value="" aria-pressed="true">{copy.all}</button>
+							{categories.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="category" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="tool-badge-label">{copy.badge}</p>
+						<div role="group" aria-labelledby="tool-badge-label">
+							<button class="catalog-chip" type="button" data-facet="badge" data-value="" aria-pressed="true">{copy.all}</button>
+							{badges.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="badge" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+				<p class="catalog-count" data-catalog-count data-noun={copy.noun}>{sorted.length} {copy.noun}</p>
+			</div>
+		</section>
+
+		<div class="catalog-shell">
+			<div class="catalog-grid">
+				{sorted.map((tool) => (
+					<article
+						class:list={['catalog-card', tool.featured && 'catalog-card-featured']}
+						id={tool.slug}
+						data-catalog-item
+						data-facet-category={tool.categories.join(' ')}
+						data-facet-badge={tool.badges.join(' ')}
+						data-search={searchIndex(tool.name, tool.tagline, tool.description, tool.keyFeatures, tool.categories.map((value) => label(categoryLabels, value)))}
+					>
+						<div class="catalog-card-head">
+							{tool.iconUrl && <img class="catalog-card-icon" src={tool.iconUrl} alt="" loading="lazy" decoding="async" width="36" height="36" />}
+							<h2>{tool.name}</h2>
+						</div>
+						{tool.badges.length > 0 && (
+							<ul class="catalog-tags">
+								{tool.badges.map((badge) => (
+									<li class="catalog-tag catalog-tag-accent">{label(badgeLabels, badge)}</li>
+								))}
+							</ul>
+						)}
+						<p class="catalog-card-lead">{tool.tagline}</p>
+						<p>{tool.description}</p>
+						{tool.keyFeatures.length > 0 && (
+							<ul class="catalog-list">
+								{tool.keyFeatures.map((feature) => <li>{feature}</li>)}
+							</ul>
+						)}
+						<ul class="catalog-tags">
+							{tool.categories.map((category) => (
+								<li class="catalog-tag">{label(categoryLabels, category)}</li>
+							))}
+						</ul>
+						<div class="catalog-card-footer">
+							{tool.pricing && <p class="catalog-price">{tool.pricing}</p>}
+							{tool.url && (
+								<a class="catalog-link" href={tool.url} target="_blank" rel="noopener noreferrer">
+									{copy.visit} {tool.name} <span aria-hidden="true">→</span>
+								</a>
+							)}
+						</div>
+					</article>
+				))}
+			</div>
+			<p class="catalog-empty" data-catalog-empty hidden={sorted.length > 0}>{copy.empty}</p>
+		</div>
+		</Fragment>
+		)}
+	</div>
+</SiteLayout>
+
+<script>
+	import '../../scripts/catalog-filter';
+</script>

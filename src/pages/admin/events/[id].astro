@@ -1,6 +1,6 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
-import { resourceTypeLabels } from '../../../lib/catalog';
+import { eventLocationLabels } from '../../../lib/catalog';
 import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
 
 export const prerender = false;
@@ -12,59 +12,63 @@ if (!context.claims) {
 }
 if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
 
-interface ResourceRow {
+interface EventRow {
 	id: string;
 	slug: string;
 	title: string;
-	type: string;
-	url: string;
 	description: string | null;
-	rating: number | null;
-	topics: string[] | null;
-	content_language: string;
+	event_date: string;
+	time_start: string | null;
+	time_end: string | null;
+	location_type: string;
+	location_name: string | null;
+	registration_url: string | null;
+	organizer: string | null;
+	price: string | null;
 	published: boolean;
 	locale: string;
 	sort_order: number;
 }
 
 const isNew = Astro.params.id === 'ny';
-let item: ResourceRow | null = null;
+let item: EventRow | null = null;
 
 if (!isNew) {
 	const result = await context.supabase
-		.from('resources')
-		.select('id,slug,title,type,url,description,rating,topics,content_language,published,locale,sort_order')
+		.from('events')
+		.select('id,slug,title,description,event_date,time_start,time_end,location_type,location_name,registration_url,organizer,price,published,locale,sort_order')
 		.eq('id', Astro.params.id)
 		.maybeSingle();
-	if (result.error || !result.data) return new Response('Ressourcen blev ikke fundet.', { status: 404 });
+	if (result.error || !result.data) return new Response('Eventet blev ikke fundet.', { status: 404 });
 	item = result.data;
 }
 
 const status = Astro.url.searchParams.get('status');
-const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : '');
+/** The date input needs a plain YYYY-MM-DD value, not the stored timestamp. */
+const dateValue = item ? new Date(item.event_date).toISOString().slice(0, 10) : '';
 ---
 
 <AdminLayout
-	title={isNew ? 'Ny ressource' : item?.title ?? 'Redigér ressource'}
-	description="Redigér en ressource i kataloget."
-	active="resources"
+	title={isNew ? 'Nyt event' : item?.title ?? 'Redigér event'}
+	description="Redigér et event i kalenderen."
+	active="events"
 	email={adminEmail(context.claims)}
 	role={context.role}
 >
 	<header class="admin-page-head">
 		<div>
-			<a class="admin-back" href="/admin/ressourcer">← Ressourcer</a>
-			<h1>{isNew ? 'Opret ressource' : 'Redigér ressource'}</h1>
-			<p>Nye ressourcer oprettes som kladde og bliver først synlige, når de publiceres.</p>
+			<a class="admin-back" href="/admin/events">← Events</a>
+			<h1>{isNew ? 'Opret event' : 'Redigér event'}</h1>
+			<p>Nye events oprettes som kladde og bliver først synlige, når de publiceres.</p>
 		</div>
-		{item?.published && <a class="button button-ghost" href={`/resources#${item.slug}`}>Se på sitet</a>}
+		{item?.published && <a class="button button-ghost" href={`${item.locale === 'en' ? '/en/events' : '/events'}#${item.slug}`}>Se på sitet</a>}
 	</header>
 
-	{status === 'created' && <p class="notice" role="status">Ressourcen er oprettet som kladde.</p>}
-	{status === 'error' && <p class="notice notice-error" role="alert">Ressourcen kunne ikke gemmes. Kontrollér felterne og sluggen.</p>}
+	{status === 'created' && <p class="notice" role="status">Eventet er oprettet som kladde.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Eventet kunne ikke gemmes. Kontrollér felterne og sluggen.</p>}
 
 	<form class="admin-form" method="post" action="/api/admin/catalog/save">
-		<input type="hidden" name="catalog" value="resource" />
+		<input type="hidden" name="catalog" value="event" />
 		<input type="hidden" name="id" value={item?.id ?? ''} />
 		<div class="admin-form-grid">
 			<label class="field-wide">
@@ -88,38 +92,44 @@ const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : 
 				<small>Sproget bestemmer, om rækken vises på de danske eller engelske sider.</small>
 			</label>
 			<label>
-				Format
-				<select name="type">
-					{Object.entries(resourceTypeLabels).map(([value, text]) => (
-						<option value={value} selected={item?.type === value}>{text}</option>
+				Dato
+				<input name="eventDate" type="date" required value={dateValue} />
+			</label>
+			<label>
+				Starttidspunkt
+				<input name="timeStart" maxlength="20" placeholder="18:00" value={item?.time_start ?? ''} />
+			</label>
+			<label>
+				Sluttidspunkt
+				<input name="timeEnd" maxlength="20" placeholder="23:00" value={item?.time_end ?? ''} />
+			</label>
+			<label>
+				Form
+				<select name="locationType">
+					{Object.entries(eventLocationLabels).map(([value, text]) => (
+						<option value={value} selected={item?.location_type === value}>{text}</option>
 					))}
 				</select>
 			</label>
-			<label class="field-wide">
-				Link
-				<input name="url" type="url" required maxlength="500" value={item?.url ?? ''} />
+			<label>
+				Sted
+				<input name="locationName" maxlength="200" value={item?.location_name ?? ''} />
 			</label>
 			<label class="field-wide">
 				Beskrivelse
 				<textarea name="description" rows="5" maxlength="4000">{item?.description ?? ''}</textarea>
 			</label>
-			<label class="field-wide">
-				Emner
-				<textarea name="topics" rows="3" maxlength="1000">{lines(item?.topics)}</textarea>
-				<small>Ét emne pr. linje.</small>
+			<label>
+				Tilmeldingslink
+				<input name="registrationUrl" type="url" maxlength="500" value={item?.registration_url ?? ''} />
 			</label>
 			<label>
-				Ressourcens sprog
-				<select name="contentLanguage">
-					<option value="da" selected={item?.content_language !== 'en'}>Dansk</option>
-					<option value="en" selected={item?.content_language === 'en'}>Engelsk</option>
-				</select>
-				<small>Bruges til at mærke fx en dansk podcast på den engelske side.</small>
+				Arrangør
+				<input name="organizer" maxlength="200" value={item?.organizer ?? ''} />
 			</label>
 			<label>
-				Vurdering
-				<input name="rating" type="number" min="0" max="5" step="0.1" value={item?.rating ?? ''} />
-				<small>0–5. Lad feltet stå tomt for ingen vurdering.</small>
+				Pris
+				<input name="price" maxlength="100" value={item?.price ?? ''} />
 			</label>
 			<label>
 				Status
@@ -131,7 +141,7 @@ const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : 
 		</div>
 		<div class="admin-form-actions">
 			<button class="button" type="submit">{isNew ? 'Opret som kladde' : 'Gem ændringer'}</button>
-			<a class="button button-ghost" href="/admin/ressourcer">Annullér</a>
+			<a class="button button-ghost" href="/admin/events">Annullér</a>
 		</div>
 	</form>
 </AdminLayout>

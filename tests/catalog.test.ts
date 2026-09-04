@@ -2,12 +2,16 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
+	eventFormSchema,
 	resourceFormSchema,
 	toolFormSchema,
 	useCaseFormSchema,
 } from '../src/lib/admin/contracts';
 import {
 	buildFacet,
+	fetchEvents,
+	labels,
+	splitEvents,
 	complexityLabels,
 	departmentLabels,
 	fetchResources,
@@ -23,9 +27,18 @@ const migration = readFileSync(
 	new URL('../supabase/migrations/20260904090000_catalog_from_lovable.sql', import.meta.url),
 	'utf8',
 );
-const toolsPage = readFileSync(new URL('../src/pages/tools.astro', import.meta.url), 'utf8');
-const useCasesPage = readFileSync(new URL('../src/pages/use-cases.astro', import.meta.url), 'utf8');
-const resourcesPage = readFileSync(new URL('../src/pages/resources.astro', import.meta.url), 'utf8');
+const englishMigration = readFileSync(
+	new URL('../supabase/migrations/20260904120000_catalog_english_and_events.sql', import.meta.url),
+	'utf8',
+);
+const toolsPage = readFileSync(new URL('../src/components/catalog/ToolsCatalog.astro', import.meta.url), 'utf8');
+const useCasesPage = readFileSync(new URL('../src/components/catalog/UseCasesCatalog.astro', import.meta.url), 'utf8');
+const resourcesPage = readFileSync(new URL('../src/components/catalog/ResourcesCatalog.astro', import.meta.url), 'utf8');
+const eventsPage = readFileSync(new URL('../src/components/catalog/EventsCatalog.astro', import.meta.url), 'utf8');
+const localePages = ['tools', 'use-cases', 'resources', 'events'].flatMap((name) => [
+	readFileSync(new URL(`../src/pages/${name}.astro`, import.meta.url), 'utf8'),
+	readFileSync(new URL(`../src/pages/en/${name}.astro`, import.meta.url), 'utf8'),
+]);
 const filterScript = readFileSync(new URL('../src/scripts/catalog-filter.ts', import.meta.url), 'utf8');
 const saveRoute = readFileSync(new URL('../src/pages/api/admin/catalog/save.ts', import.meta.url), 'utf8');
 const adminPages = ['vaerktoejer', 'use-cases', 'ressourcer'].flatMap((section) => [
@@ -226,16 +239,29 @@ describe('catalog helpers', () => {
 
 describe('catalog pages', () => {
 	it('renders server-side so redaktionelle ændringer slår igennem med det samme', () => {
-		for (const page of [toolsPage, useCasesPage, resourcesPage]) {
-			expect(page).toContain('export const prerender = false;');
+		for (const page of [toolsPage, useCasesPage, resourcesPage, eventsPage]) {
 			expect(page).toContain('createServerSupabaseClient(Astro.request, Astro.cookies)');
 			expect(page).toContain('createItemListSchema');
+		}
+		for (const page of [toolsPage, useCasesPage, resourcesPage]) {
 			expect(page).toContain('data-catalog-search');
+		}
+		for (const page of localePages) {
+			expect(page).toContain('export const prerender = false;');
 		}
 	});
 
+	it('serves both languages from the same component with hreflang alternates', () => {
+		for (const page of [toolsPage, useCasesPage, resourcesPage, eventsPage]) {
+			expect(page).toContain("locale === 'en'");
+			expect(page).toMatch(/alternates=\{\[\{ locale: 'da'/);
+		}
+		expect(localePages.filter((page) => page.includes('locale="en"'))).toHaveLength(4);
+		expect(localePages.filter((page) => page.includes('locale="da"'))).toHaveLength(4);
+	});
+
 	it('shows a fejlbesked when Supabase is unavailable', () => {
-		for (const page of [toolsPage, useCasesPage, resourcesPage]) {
+		for (const page of [toolsPage, useCasesPage, resourcesPage, eventsPage]) {
 			expect(page).toContain('{error ? (');
 			expect(page).toContain('role="alert"');
 		}
@@ -249,7 +275,7 @@ describe('catalog pages', () => {
 	});
 
 	it('opens external links safely', () => {
-		for (const page of [toolsPage, resourcesPage]) {
+		for (const page of [toolsPage, resourcesPage, eventsPage]) {
 			expect(page).toContain('rel="noopener noreferrer"');
 		}
 	});
@@ -321,6 +347,97 @@ describe('katalog-admin', () => {
 			expect(page).toContain("Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0')");
 			expect(page).toContain('getAdminContext(Astro.request, Astro.cookies)');
 			expect(page).toContain('if (!context.role) return new Response');
+		}
+	});
+});
+
+describe('engelsk katalog og events', () => {
+	it('seeds both languages and the events table', () => {
+		const seeded = (table: string) => {
+			const block = englishMigration.split(`insert into public.${table} `)[1] ?? '';
+			const rows = block.split('on conflict')[0]!.split('\n').filter((line) => line.startsWith('  ('));
+			// The locale is the second-to-last value on each row, right before sort_order.
+			const localeOf = (row: string) => row.match(/'(da|en)', \d+\),?$/)?.[1];
+			return {
+				da: rows.filter((row) => localeOf(row) === 'da').length,
+				en: rows.filter((row) => localeOf(row) === 'en').length,
+			};
+		};
+		expect(seeded('tools')).toEqual({ da: 23, en: 23 });
+		expect(seeded('use_cases')).toEqual({ da: 31, en: 31 });
+		expect(seeded('resources')).toEqual({ da: 22, en: 22 });
+		expect(seeded('events')).toEqual({ da: 8, en: 8 });
+	});
+
+	it('guards the events table the same way as the other catalogues', () => {
+		expect(englishMigration).toContain('create table if not exists public.events (');
+		expect(englishMigration).toContain('alter table public.events enable row level security;');
+		expect(englishMigration).toContain('create policy events_public_read on public.events');
+		expect(englishMigration).toContain('for select to anon, authenticated using (published)');
+		expect(englishMigration).toContain('create policy events_manager_write on public.events');
+		expect(englishMigration).toContain('private.is_content_manager()');
+		expect(englishMigration.match(/on conflict \(slug, locale\) do nothing;/g)).toHaveLength(4);
+	});
+
+	it('strips the Lovable "-en" slug suffix so the languages pair up', () => {
+		expect(englishMigration).toContain("('chatgpt', 'ChatGPT', 'The world's leading".replace("'s", "''s"));
+		expect(englishMigration).not.toMatch(/\('[a-z0-9-]+-en',/);
+	});
+
+	it('cleans English bullet prefixes too', () => {
+		expect(englishMigration).not.toContain('✅');
+		expect(englishMigration).not.toContain('🚀');
+		expect(englishMigration).not.toMatch(/'Benefit \d+:/);
+		expect(englishMigration).not.toMatch(/'\+ \d+ more features'/);
+	});
+
+	it('translates the enum labels without translating the stored values', () => {
+		expect(labels('da', 'department').hr).toBe('HR og ledelse');
+		expect(labels('en', 'department').hr).toBe('HR and leadership');
+		expect(labels('en', 'resourceType').bog).toBe('Book');
+		expect(labels('en', 'eventLocation').fysisk).toBe('In person');
+	});
+
+	it('asks Supabase for the requested language', async () => {
+		const { client, calls } = fakeSupabase([]);
+		await fetchEvents(client, 'en');
+		expect(calls.table).toBe('events');
+		expect(calls.locale).toBe('en');
+		expect(calls.published).toBe(true);
+		expect(calls.order).toEqual(['event_date', { ascending: true }]);
+	});
+
+	it('splits events into upcoming and past around today', () => {
+		const events = [
+			{ slug: 'gammel', date: '2026-01-10T00:00:00+00:00' },
+			{ slug: 'i-dag', date: '2026-09-04T00:00:00+00:00' },
+			{ slug: 'senere', date: '2026-11-01T00:00:00+00:00' },
+		] as Parameters<typeof splitEvents>[0];
+		const { upcoming, past } = splitEvents(events, new Date('2026-09-04T09:00:00Z'));
+		expect(upcoming.map((event) => event.slug)).toEqual(['i-dag', 'senere']);
+		expect(past.map((event) => event.slug)).toEqual(['gammel']);
+	});
+
+	it('validates the event form and requires a real date', () => {
+		const base = {
+			slug: 'ai-konference',
+			title: 'AI-konference',
+			eventDate: '2026-11-01',
+			locationType: 'fysisk',
+			sortOrder: '0',
+			locale: 'en',
+		};
+		expect(eventFormSchema.parse(base).locale).toBe('en');
+		expect(eventFormSchema.safeParse({ ...base, eventDate: 'i morgen' }).success).toBe(false);
+		expect(eventFormSchema.safeParse({ ...base, locationType: 'metaverse' }).success).toBe(false);
+		expect(eventFormSchema.safeParse({ ...base, registrationUrl: 'javascript:alert(1)' }).success).toBe(false);
+	});
+
+	it('lets editors pick the language on every catalogue form', () => {
+		expect(resourceFormSchema.parse({ slug: 'x-y', title: 'Xy', type: 'bog', url: 'https://example.com', sortOrder: '0' }).locale).toBe('da');
+		for (const section of ['vaerktoejer', 'use-cases', 'ressourcer', 'events']) {
+			const page = readFileSync(new URL(`../src/pages/admin/${section}/[id].astro`, import.meta.url), 'utf8');
+			expect(page).toContain('<select name="locale">');
 		}
 	});
 });
