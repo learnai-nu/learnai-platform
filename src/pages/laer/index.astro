@@ -6,11 +6,19 @@ import { createServerSupabaseClient } from '../../lib/supabase/server';
 export const prerender = false;
 
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
-const { data: items, error } = await supabase
+const selectedType = Astro.url.searchParams.get('type');
+const searchQuery = Astro.url.searchParams.get('q')?.trim().slice(0, 120) ?? '';
+const supportedTypes = ['article', 'guide', 'news', 'prompt', 'tool'];
+let contentQuery = supabase
 	.from('content_items')
 	.select('id,title,slug,type,excerpt,published_at,updated_at')
-	.eq('status', 'published')
-	.order('published_at', { ascending: false });
+	.eq('status', 'published');
+
+if (selectedType === 'knowledge') contentQuery = contentQuery.in('type', ['article', 'guide']);
+else if (selectedType && supportedTypes.includes(selectedType)) contentQuery = contentQuery.eq('type', selectedType);
+if (searchQuery) contentQuery = contentQuery.ilike('title', `%${searchQuery.replaceAll('%', '\\%').replaceAll('_', '\\_')}%`);
+
+const { data: items, error } = await contentQuery.order('published_at', { ascending: false });
 
 const typeLabels = {
 	article: 'Artikel',
@@ -39,8 +47,8 @@ const itemList = createItemListSchema(
 	<section class="hero hero-compact">
 		<div class="shell section-intro">
 			<p class="eyebrow">Vidensportal</p>
-			<h1>Lær AI i praksis.</h1>
-			<p class="hero-copy">Danske guider og artikler, der hjælper dig fra idé til konkret anvendelse.</p>
+			<h1>{searchQuery ? `Søgeresultater for “${searchQuery}”` : 'Lær AI i praksis.'}</h1>
+			<p class="hero-copy">{searchQuery ? `${items?.length ?? 0} resultater i LearnAI-biblioteket.` : 'Danske guider og artikler, der hjælper dig fra idé til konkret anvendelse.'}</p>
 		</div>
 	</section>
 	<section class="section section-tight">
