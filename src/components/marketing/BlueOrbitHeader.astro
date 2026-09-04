@@ -1,44 +1,120 @@
 ---
 import OrbitBrand from '../ui/OrbitBrand.astro';
 
-const navigation = [
-	{ href: '/kurser', label: 'Kurser', section: '/kurser' },
-	{ href: '/laer?type=prompt', label: 'Prompts', section: '/laer', type: 'prompt' },
-	{ href: '/laer', label: 'Viden', section: '/laer', type: 'all' },
-	{ href: '/tools', label: 'Værktøjer', section: '/tools' },
-	{ href: '/arbejdskompas', label: 'Arbejdskompas', section: '/arbejdskompas' },
-	{ href: '/mentor', label: 'AI Mentor', section: '/mentor' },
+type MenuItem = { label: string; description: string; href?: string; section?: string; type?: string };
+type MenuGroup = { label: string; intro: string; items: MenuItem[] };
+
+const menuGroups: MenuGroup[] = [
+	{
+		label: 'Lær AI',
+		intro: 'Viden, nyheder og fordybelse samlet efter det, du vil lære.',
+		items: [
+			{ label: 'Artikler & guides', description: 'Trin-for-trin og forklaringer', href: '/laer', section: '/laer', type: 'knowledge' },
+			{ label: 'Nyheder & indsigt', description: 'Det vigtigste fra AI-verdenen', href: '/laer?type=news', section: '/laer', type: 'news' },
+			{ label: 'Research', description: 'Undersøgelser og dokumentation' },
+			{ label: 'Events', description: 'Webinarer og arrangementer' },
+			{ label: 'Ressourcer', description: 'Podcasts, bøger og kanaler', href: '/resources', section: '/resources' },
+		],
+	},
+	{
+		label: 'Brug AI',
+		intro: 'Fra den første prompt til konkrete arbejdsgange og det rigtige værktøj.',
+		items: [
+			{ label: 'AI Mentor', description: 'Få hjælp til dit næste skridt', href: '/mentor', section: '/mentor' },
+			{ label: 'Prompts', description: 'Skabeloner, du kan bruge direkte', href: '/laer?type=prompt', section: '/laer', type: 'prompt' },
+			{ label: 'Værktøjer', description: 'Find AI-værktøjet til opgaven', href: '/tools', section: '/tools' },
+			{ label: 'Eksempler fra praksis', description: 'Se hvordan andre bruger AI', href: '/use-cases', section: '/use-cases' },
+		],
+	},
+	{
+		label: 'Kurser',
+		intro: 'Korte, praktiske forløb med progression og øvelser.',
+		items: [
+			{ label: 'Alle kurser', description: 'Se hele kursuskataloget', href: '/kurser', section: '/kurser', type: 'all-courses' },
+			{ label: 'Gratis AI-kursus', description: 'Kom godt i gang med AI', href: '/kurser/ai-i-praksis-dit-foerste-kursus', section: '/kurser/ai-i-praksis-dit-foerste-kursus' },
+			{ label: 'Mine kurser', description: 'Fortsæt, hvor du slap', href: '/dashboard', section: '/dashboard' },
+		],
+	},
 ];
-const isActive = (item: (typeof navigation)[number]) => {
+
+const currentType = Astro.url.searchParams.get('type');
+const isItemActive = (item: MenuItem) => {
+	if (!item.section) return false;
 	const inSection = Astro.url.pathname === item.section || Astro.url.pathname.startsWith(`${item.section}/`);
 	if (!inSection) return false;
-	if (item.type === 'prompt') return Astro.url.searchParams.get('type') === 'prompt';
-	if (item.type === 'all') return Astro.url.searchParams.get('type') !== 'prompt';
+	if (item.type === 'knowledge') return !currentType || currentType === 'knowledge';
+	if (item.type === 'prompt' || item.type === 'news') return currentType === item.type;
+	if (item.type === 'all-courses') return Astro.url.pathname === '/kurser';
 	return true;
 };
+const isGroupActive = (group: MenuGroup) => group.items.some(isItemActive);
+const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pathname.startsWith('/virksomheder/');
 ---
 
 <header class="orbit-header">
 	<div class="orbit-header-inner">
 		<OrbitBrand />
 		<nav class="orbit-desktop-nav" aria-label="Primær navigation">
-			{navigation.map((item) => (
-				<a href={item.href} aria-current={isActive(item) ? 'page' : undefined}>{item.label}</a>
+			{menuGroups.map((group) => (
+				<details class:list={['orbit-nav-menu', { 'is-active': isGroupActive(group) }]}>
+					<summary>{group.label}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg></summary>
+					<div class="orbit-mega-menu">
+						<div class="orbit-mega-intro">
+							<strong>{group.label === 'Brug AI' ? 'Brug AI i praksis' : group.label === 'Kurser' ? 'Lær med et forløb' : group.label}</strong>
+							<p>{group.intro}</p>
+						</div>
+						<div class="orbit-mega-links">
+							{group.items.map((item) => item.href ? (
+								<a href={item.href} aria-current={isItemActive(item) ? 'page' : undefined}>
+									<span class="orbit-menu-mark" aria-hidden="true"></span>
+									<span><strong>{item.label}</strong><small>{item.description}</small></span>
+								</a>
+							) : (
+								<span class="orbit-menu-upcoming" aria-disabled="true">
+									<span class="orbit-menu-mark" aria-hidden="true"></span>
+									<span><strong>{item.label}<em>Kommer snart</em></strong><small>{item.description}</small></span>
+								</span>
+							))}
+						</div>
+					</div>
+				</details>
 			))}
+			<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>Virksomheder</a>
 		</nav>
+
 		<div class="orbit-header-actions">
+			<details class="orbit-search-menu">
+				<summary aria-label="Søg på LearnAI"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></summary>
+				<form action="/laer" method="get" role="search">
+					<label for="header-search">Søg på LearnAI</label>
+					<div><input id="header-search" type="search" name="q" placeholder="Fx prompts til møder" /><button type="submit">Søg</button></div>
+				</form>
+			</details>
 			<a class="orbit-login-link" href="/login">Log ind</a>
 			<a class="orbit-header-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
 		</div>
+
 		<details class="orbit-mobile-nav">
-			<summary aria-label="Åbn menu">
-				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
-			</summary>
+			<summary aria-label="Åbn menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>
 			<nav aria-label="Mobil navigation">
-				{navigation.map((item) => (
-					<a href={item.href} aria-current={isActive(item) ? 'page' : undefined}>{item.label}</a>
+				<form action="/laer" method="get" role="search" class="orbit-mobile-search">
+					<label for="mobile-search">Søg på LearnAI</label>
+					<div><input id="mobile-search" type="search" name="q" placeholder="Søg på LearnAI" /><button type="submit" aria-label="Søg"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button></div>
+				</form>
+				{menuGroups.map((group) => (
+					<details class="orbit-mobile-section">
+						<summary>{group.label}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg></summary>
+						<div>
+							{group.items.map((item) => item.href ? (
+								<a href={item.href} aria-current={isItemActive(item) ? 'page' : undefined}>{item.label}</a>
+							) : (
+								<span aria-disabled="true">{item.label}<small>Kommer snart</small></span>
+							))}
+						</div>
+					</details>
 				))}
-				<a href="/login">Log ind</a>
+				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>Virksomheder</a>
+				<div class="orbit-mobile-meta"><span>Dansk</span><a href="/login">Log ind</a></div>
 				<a class="orbit-mobile-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
 			</nav>
 		</details>
@@ -46,15 +122,30 @@ const isActive = (item: (typeof navigation)[number]) => {
 </header>
 
 <script>
+	const desktopMenus = [...document.querySelectorAll<HTMLDetailsElement>('.orbit-nav-menu, .orbit-search-menu')];
+	const mobileSections = [...document.querySelectorAll<HTMLDetailsElement>('.orbit-mobile-section')];
 	const mobileDetails = document.querySelector<HTMLDetailsElement>('.orbit-mobile-nav');
-	const mobileSummary = mobileDetails?.querySelector<HTMLElement>('summary');
-	mobileDetails?.addEventListener('toggle', () => {
-		mobileSummary?.setAttribute('aria-label', mobileDetails.open ? 'Luk menu' : 'Åbn menu');
-	});
+	const mobileSummary = mobileDetails?.querySelector<HTMLElement>(':scope > summary');
+	const closeDetails = (details: HTMLDetailsElement, restoreFocus = false) => {
+		if (!details.open) return;
+		details.open = false;
+		if (restoreFocus) details.querySelector<HTMLElement>(':scope > summary')?.focus();
+	};
+	desktopMenus.forEach((menu) => menu.addEventListener('toggle', () => {
+		if (!menu.open) return;
+		desktopMenus.forEach((other) => { if (other !== menu) closeDetails(other); });
+		if (menu.classList.contains('orbit-search-menu')) requestAnimationFrame(() => menu.querySelector<HTMLInputElement>('input')?.focus());
+	}));
+	mobileSections.forEach((section) => section.addEventListener('toggle', () => {
+		if (section.open) mobileSections.forEach((other) => { if (other !== section) closeDetails(other); });
+	}));
+	mobileDetails?.addEventListener('toggle', () => mobileSummary?.setAttribute('aria-label', mobileDetails.open ? 'Luk menu' : 'Åbn menu'));
+	document.addEventListener('click', (event) => desktopMenus.forEach((menu) => { if (!menu.contains(event.target as Node)) closeDetails(menu); }));
 	document.addEventListener('keydown', (event) => {
-		if (event.key === 'Escape' && mobileDetails?.open) {
-			mobileDetails.open = false;
-			mobileSummary?.focus();
+		if (event.key === 'Escape') {
+			const openDesktopMenu = desktopMenus.find((menu) => menu.open);
+			if (openDesktopMenu) closeDetails(openDesktopMenu, true);
+			else if (mobileDetails?.open) closeDetails(mobileDetails, true);
 		}
 	});
-</script>
+	</script>
