@@ -15,5 +15,9 @@ export default defineConfig({
   },
 
   adapter: vercel(),
-  output: 'server'
+  output: 'server',
+
+  redirects: {
+    '/vaerktoejer': '/tools'
+  }
 });

@@ -1,0 +1,117 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { buildFacet, fetchResources, resourceTypeLabels, searchIndex } from '../lib/catalog';
+import { createCanonicalUrl, createItemListSchema } from '../lib/seo/schema';
+import { createServerSupabaseClient } from '../lib/supabase/server';
+import '../styles/catalog.css';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { resources, error } = await fetchResources(supabase);
+const types = buildFacet(resources, (resource) => resource.type, resourceTypeLabels);
+const groups = types.map((type) => ({
+	...type,
+	items: resources.filter((resource) => resource.type === type.value),
+}));
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	resources.map((resource) => ({ name: resource.title, url: resource.url ?? canonicalUrl.toString() })),
+);
+---
+
+<SiteLayout
+	title="AI-ressourcer — LearnAI.nu"
+	description="Danske og internationale podcasts, bøger og YouTube-kanaler om AI, som vi selv følger med i."
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Ressourcer', url: '/resources' },
+	]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page" data-catalog>
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">Ressourcer</p>
+				<h1>Podcasts, bøger og kanaler om AI.</h1>
+				<p>De kilder vi selv bruger til at holde os opdateret. Udvalgt med vægt på dansk indhold og på det, der kan bruges i praksis frem for hype.</p>
+			</div>
+		</section>
+
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">Ressourcerne kunne ikke hentes lige nu. Prøv igen om lidt.</p>
+			</div>
+		) : (
+		<Fragment>
+		<section class="catalog-controls" aria-label="Filtrér ressourcer">
+			<div class="catalog-shell">
+				<label class="orbit-eyebrow" for="resource-search">Søg</label>
+				<input
+					id="resource-search"
+					class="catalog-search"
+					type="search"
+					placeholder="Søg efter titel eller emne"
+					data-catalog-search
+				/>
+				<div class="catalog-facets">
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="resource-type-label">Format</p>
+						<div role="group" aria-labelledby="resource-type-label">
+							<button class="catalog-chip" type="button" data-facet="type" data-value="" aria-pressed="true">Alle</button>
+							{types.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="type" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+				<p class="catalog-count" data-catalog-count data-noun="ressourcer">{resources.length} ressourcer</p>
+			</div>
+		</section>
+
+		<div class="catalog-shell">
+			{groups.map((group) => (
+				<section class="catalog-group" data-catalog-group aria-labelledby={`gruppe-${group.value}`}>
+					<h2 class="catalog-section-title" id={`gruppe-${group.value}`}>{group.label}</h2>
+					<div class="catalog-grid">
+						{group.items.map((resource) => (
+							<article
+								class="catalog-card"
+								id={resource.slug}
+								data-catalog-item
+								data-facet-type={resource.type}
+								data-search={searchIndex(resource.title, resource.description, resource.topics, group.label)}
+							>
+								<h3>{resource.title}</h3>
+								<ul class="catalog-tags">
+									<li class="catalog-tag catalog-tag-accent">{group.label}</li>
+									{resource.topics.map((topic) => <li class="catalog-tag">{topic}</li>)}
+								</ul>
+								<p>{resource.description}</p>
+								<div class="catalog-card-footer">
+									{resource.rating !== null && <p class="catalog-price">Vurdering {resource.rating.toFixed(1)} / 5</p>}
+									{resource.url && (
+										<a class="catalog-link" href={resource.url} target="_blank" rel="noopener noreferrer">
+											Åbn ressourcen <span aria-hidden="true">→</span>
+										</a>
+									)}
+								</div>
+							</article>
+						))}
+					</div>
+				</section>
+			))}
+			<p class="catalog-empty" data-catalog-empty hidden={resources.length > 0}>Ingen ressourcer matcher din søgning. Prøv et andet format eller søgeord.</p>
+		</div>
+		</Fragment>
+		)}
+	</div>
+</SiteLayout>
+
+<script>
+	import '../scripts/catalog-filter';
+</script>

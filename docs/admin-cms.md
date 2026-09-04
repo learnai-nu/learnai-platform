@@ -6,7 +6,8 @@ Sprint 6 leverer et serverrenderet adminområde under `/admin` til:
 
 - redaktionelt indhold og publiceringsstatus;
 - kurser, moduler og lektioner;
-- quizindstillinger, spørgsmål, svarmuligheder og beskyttet facit.
+- quizindstillinger, spørgsmål, svarmuligheder og beskyttet facit;
+- katalogerne bag `/tools`, `/use-cases` og `/resources`.
 
 CMS'et anvender almindelige HTML-formularer og kræver ikke klient-JavaScript.
 
@@ -30,6 +31,17 @@ CMS'et anvender almindelige HTML-formularer og kræver ikke klient-JavaScript.
 De kalder private `SECURITY DEFINER`-funktioner, som selv kontrollerer
 `app_metadata.role`. Anonyme brugere har ingen `EXECUTE`-rettighed.
 Spørgsmål og facit gemmes atomisk.
+
+## Kataloger
+
+`/admin/vaerktoejer`, `/admin/use-cases` og `/admin/ressourcer` redigerer
+tabellerne `tools`, `use_cases` og `resources`. De deler ét gem-endpoint,
+`/api/admin/catalog/save`, som vælger tabel og valideringsskema ud fra et
+`catalog`-felt i formularen. Nye rækker oprettes altid som kladde
+(`published = false`), og `sort_order` bestemmer rækkefølgen på de offentlige
+sider. Kun `http(s)`-URL'er accepteres, både ved validering og igen når
+katalogerne læses ud til siderne, fordi værdierne ender i `href` og `src`.
+Se [`catalog-migration.md`](catalog-migration.md) for datamodellen.
 
 ## Redaktionelt tekstformat
 

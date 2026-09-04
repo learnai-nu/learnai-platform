@@ -1,0 +1,150 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { label, toolBadgeLabels, toolCategoryLabels } from '../../../lib/catalog';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+interface ToolRow {
+	id: string;
+	slug: string;
+	name: string;
+	tagline: string | null;
+	description: string | null;
+	icon_url: string | null;
+	categories: string[] | null;
+	badges: string[] | null;
+	key_features: string[] | null;
+	pricing_display: string | null;
+	external_url: string | null;
+	featured: boolean;
+	published: boolean;
+	sort_order: number;
+}
+
+const isNew = Astro.params.id === 'ny';
+let item: ToolRow | null = null;
+
+if (!isNew) {
+	const result = await context.supabase
+		.from('tools')
+		.select('id,slug,name,tagline,description,icon_url,categories,badges,key_features,pricing_display,external_url,featured,published,sort_order')
+		.eq('id', Astro.params.id)
+		.maybeSingle();
+	if (result.error || !result.data) return new Response('Værktøjet blev ikke fundet.', { status: 404 });
+	item = result.data;
+}
+
+const status = Astro.url.searchParams.get('status');
+const categories = Object.keys(toolCategoryLabels);
+const badges = Object.keys(toolBadgeLabels);
+const selected = (values: unknown, value: string) => Array.isArray(values) && values.includes(value);
+const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : '');
+---
+
+<AdminLayout
+	title={isNew ? 'Nyt værktøj' : item?.name ?? 'Redigér værktøj'}
+	description="Redigér et værktøj i kataloget."
+	active="tools"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href="/admin/vaerktoejer">← Værktøjer</a>
+			<h1>{isNew ? 'Opret værktøj' : 'Redigér værktøj'}</h1>
+			<p>Nye værktøjer oprettes som kladde og bliver først synlige, når de publiceres.</p>
+		</div>
+		{item?.published && <a class="button button-ghost" href={`/tools#${item.slug}`}>Se på sitet</a>}
+	</header>
+
+	{status === 'created' && <p class="notice" role="status">Værktøjet er oprettet som kladde.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Værktøjet kunne ikke gemmes. Kontrollér felterne og sluggen.</p>}
+
+	<form class="admin-form" method="post" action="/api/admin/catalog/save">
+		<input type="hidden" name="catalog" value="tool" />
+		<input type="hidden" name="id" value={item?.id ?? ''} />
+		<div class="admin-form-grid">
+			<label class="field-wide">
+				Navn
+				<input name="name" required maxlength="200" value={item?.name ?? ''} />
+			</label>
+			<label>
+				Slug
+				<input name="slug" required maxlength="160" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={item?.slug ?? ''} />
+			</label>
+			<label>
+				Sortering
+				<input name="sortOrder" type="number" min="0" max="10000" value={item?.sort_order ?? 0} />
+			</label>
+			<label class="field-wide">
+				Tagline
+				<input name="tagline" maxlength="300" value={item?.tagline ?? ''} />
+			</label>
+			<label class="field-wide">
+				Beskrivelse
+				<textarea name="description" rows="5" maxlength="4000">{item?.description ?? ''}</textarea>
+			</label>
+			<fieldset class="field-wide admin-choice-group">
+				<legend>Kategorier</legend>
+				{categories.map((category) => (
+					<label class="admin-choice">
+						<input type="checkbox" name="categories" value={category} checked={selected(item?.categories, category)} />
+						{label(toolCategoryLabels, category)}
+					</label>
+				))}
+			</fieldset>
+			<fieldset class="field-wide admin-choice-group">
+				<legend>Mærkater</legend>
+				{badges.map((badge) => (
+					<label class="admin-choice">
+						<input type="checkbox" name="badges" value={badge} checked={selected(item?.badges, badge)} />
+						{label(toolBadgeLabels, badge)}
+					</label>
+				))}
+			</fieldset>
+			<label class="field-wide">
+				Nøglefunktioner
+				<textarea name="keyFeatures" rows="5" maxlength="4000">{lines(item?.key_features)}</textarea>
+				<small>Én funktion pr. linje.</small>
+			</label>
+			<label>
+				Pris
+				<input name="pricingDisplay" maxlength="200" value={item?.pricing_display ?? ''} />
+			</label>
+			<label>
+				Link til værktøjet
+				<input name="externalUrl" type="url" maxlength="500" value={item?.external_url ?? ''} />
+			</label>
+			<label>
+				Ikon-URL
+				<input name="iconUrl" type="url" maxlength="500" value={item?.icon_url ?? ''} />
+			</label>
+			<label>
+				Fremhævet
+				<select name="featured">
+					<option value="false" selected={!item?.featured}>Nej</option>
+					<option value="true" selected={item?.featured === true}>Ja</option>
+				</select>
+			</label>
+			<label>
+				Status
+				<select name="published">
+					<option value="false" selected={!item?.published}>Kladde</option>
+					<option value="true" selected={item?.published === true}>Publiceret</option>
+				</select>
+			</label>
+		</div>
+		<div class="admin-form-actions">
+			<button class="button" type="submit">{isNew ? 'Opret som kladde' : 'Gem ændringer'}</button>
+			<a class="button button-ghost" href="/admin/vaerktoejer">Annullér</a>
+		</div>
+	</form>
+</AdminLayout>

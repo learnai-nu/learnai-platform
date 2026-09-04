@@ -77,6 +77,74 @@ export const quizQuestionFormSchema = z.object({
 	options: z.array(quizOptionInputSchema).max(6),
 });
 
+/** Katalogfelter, der redigeres som én værdi pr. linje i et tekstfelt. */
+const lineList = (max: number) =>
+	z
+		.string()
+		.max(max)
+		.default('')
+		.transform((value) =>
+			value
+				.split('\n')
+				.map((line) => line.trim())
+				.filter((line) => line.length > 0),
+		);
+
+/** Kun http(s). Værdien ender i href/src på de offentlige sider. */
+const webUrl = z.url().max(500).refine((value) => /^https?:\/\//i.test(value), {
+	message: 'URL skal starte med http:// eller https://',
+});
+const optionalUrl = z.union([webUrl, z.literal('')]).optional().default('');
+const publishFlag = z.enum(['true', 'false']).default('false');
+const catalogSortOrder = integerField(0, 10_000);
+
+export const toolFormSchema = z.object({
+	id: optionalUuid,
+	slug: slugSchema,
+	name: z.string().trim().min(2).max(200),
+	tagline: optionalText(300),
+	description: optionalText(4_000),
+	iconUrl: optionalUrl,
+	categories: z.array(z.enum(['text', 'coding', 'images', 'video', 'audio', 'research', 'automation', 'other'])).default([]),
+	badges: z.array(z.enum(['recommended', 'tried_tested', 'new', 'popular'])).default([]),
+	keyFeatures: lineList(4_000),
+	pricingDisplay: optionalText(200),
+	externalUrl: optionalUrl,
+	featured: publishFlag,
+	published: publishFlag,
+	sortOrder: catalogSortOrder,
+});
+
+export const useCaseFormSchema = z.object({
+	id: optionalUuid,
+	slug: slugSchema,
+	title: z.string().trim().min(2).max(200),
+	reference: optionalText(50),
+	department: z.enum(['hr', 'it', 'marketing', 'operations']),
+	complexity: z.enum(['low', 'medium', 'high']),
+	strategicValue: z.enum(['efficiency', 'quality', 'growth']),
+	problemStatement: z.string().trim().min(2).max(4_000),
+	solution: z.string().trim().min(2).max(4_000),
+	businessBenefits: lineList(4_000),
+	recommendedTools: lineList(1_000),
+	featured: publishFlag,
+	published: publishFlag,
+	sortOrder: catalogSortOrder,
+});
+
+export const resourceFormSchema = z.object({
+	id: optionalUuid,
+	slug: slugSchema,
+	title: z.string().trim().min(2).max(200),
+	type: z.enum(['podcast', 'youtube', 'bog', 'kursus', 'nyhedsbrev', 'rapport']),
+	url: webUrl,
+	description: optionalText(4_000),
+	rating: z.union([z.coerce.number().min(0).max(5), z.literal('')]).optional().default(''),
+	topics: lineList(1_000),
+	published: publishFlag,
+	sortOrder: catalogSortOrder,
+});
+
 const adminQuizOptionSchema = z.object({
 	id: z.uuid(),
 	option_text: z.string(),
