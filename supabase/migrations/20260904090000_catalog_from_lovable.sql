@@ -11,19 +11,19 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 do $$ begin
-  create type public.use_case_department as enum ('hr', 'it', 'marketing', 'operations');
+  create type public.catalog_use_case_department as enum ('hr', 'it', 'marketing', 'operations');
 exception when duplicate_object then null; end $$;
 
 do $$ begin
-  create type public.use_case_complexity as enum ('low', 'medium', 'high');
+  create type public.catalog_use_case_complexity as enum ('low', 'medium', 'high');
 exception when duplicate_object then null; end $$;
 
 do $$ begin
-  create type public.use_case_value as enum ('efficiency', 'quality', 'growth');
+  create type public.catalog_use_case_value as enum ('efficiency', 'quality', 'growth');
 exception when duplicate_object then null; end $$;
 
 do $$ begin
-  create type public.resource_type as enum ('podcast', 'youtube', 'bog', 'kursus', 'nyhedsbrev', 'rapport');
+  create type public.catalog_resource_type as enum ('podcast', 'youtube', 'bog', 'kursus', 'nyhedsbrev', 'rapport');
 exception when duplicate_object then null; end $$;
 
 create table if not exists public.tools (
@@ -52,9 +52,9 @@ create table if not exists public.use_cases (
   slug text not null,
   title text not null,
   reference text,
-  department public.use_case_department not null,
-  complexity public.use_case_complexity not null,
-  strategic_value public.use_case_value not null,
+  department public.catalog_use_case_department not null,
+  complexity public.catalog_use_case_complexity not null,
+  strategic_value public.catalog_use_case_value not null,
   problem_statement text not null,
   solution text not null,
   business_benefits text[] not null default '{}',
@@ -72,7 +72,7 @@ create table if not exists public.resources (
   id uuid primary key default gen_random_uuid(),
   slug text not null,
   title text not null,
-  type public.resource_type not null,
+  type public.catalog_resource_type not null,
   url text not null,
   description text not null default '',
   rating numeric(2, 1),
@@ -85,6 +85,46 @@ create table if not exists public.resources (
   unique (slug, locale),
   constraint resources_rating_range check (rating is null or (rating >= 0 and rating <= 5))
 );
+
+-- Et tidligere forsøg kunne nå at oprette tabellerne oven på en fremmed enum
+-- (fx et resource_type, der tilhører noget helt andet). Flyt i så fald
+-- kolonnerne over på katalogets egne typer. Blokken er en no-op, når typerne
+-- allerede er de rigtige.
+do $$
+declare
+  target record;
+  current_type text;
+begin
+  for target in
+    select *
+    from (values
+      ('tools', 'locale', 'catalog_locale'),
+      ('use_cases', 'locale', 'catalog_locale'),
+      ('resources', 'locale', 'catalog_locale'),
+      ('use_cases', 'department', 'catalog_use_case_department'),
+      ('use_cases', 'complexity', 'catalog_use_case_complexity'),
+      ('use_cases', 'strategic_value', 'catalog_use_case_value'),
+      ('resources', 'type', 'catalog_resource_type')
+    ) as t(table_name, column_name, target_type)
+  loop
+    select c.udt_name into current_type
+    from information_schema.columns c
+    where c.table_schema = 'public'
+      and c.table_name = target.table_name
+      and c.column_name = target.column_name;
+
+    if current_type is not null and current_type <> target.target_type then
+      execute format('alter table public.%I alter column %I drop default', target.table_name, target.column_name);
+      execute format(
+        'alter table public.%I alter column %I type public.%I using %I::text::public.%I',
+        target.table_name, target.column_name, target.target_type, target.column_name, target.target_type
+      );
+      if target.column_name = 'locale' then
+        execute format('alter table public.%I alter column %I set default ''da''', target.table_name, target.column_name);
+      end if;
+    end if;
+  end loop;
+end $$;
 
 create index if not exists tools_published_idx on public.tools (locale, published, sort_order);
 create index if not exists use_cases_published_idx on public.use_cases (locale, published, sort_order);

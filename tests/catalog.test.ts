@@ -71,6 +71,15 @@ describe('catalog migration', () => {
 		}
 	});
 
+	it('namespaces its enums so they cannot collide with other features', () => {
+		// public.resource_type already exists in production and belongs elsewhere.
+		for (const type of ['catalog_locale', 'catalog_use_case_department', 'catalog_use_case_complexity', 'catalog_use_case_value', 'catalog_resource_type']) {
+			expect(migration).toContain(`create type public.${type} as enum`);
+		}
+		expect(migration).not.toMatch(/public\.resource_type\b/);
+		expect(migration).not.toMatch(/public\.use_case_(department|complexity|value)\b/);
+	});
+
 	it('can be re-run on a partially migrated database', () => {
 		// Postgres has no "create type if not exists", so the enums are guarded instead.
 		expect(migration.match(/exception when duplicate_object then null; end \$\$;/g)).toHaveLength(5);

@@ -63,6 +63,11 @@ Alternativt kan SQL-filen indsættes direkte i Supabase Studio's SQL-editor.
 Migrationen forudsætter, at `private.is_content_manager()` findes — den blev
 oprettet i `20260728120600_admin_quiz_editor.sql`.
 
+Katalogets enums hedder `catalog_*`, fordi produktionsdatabasen allerede har
+et `public.resource_type` med helt andre værdier (`download`, `link`,
+`template`, `prompt`, `video`, `audio`), som tilhører en anden funktion. Et
+navnerum er den eneste måde at undgå at låne — eller ændre — en fremmed type.
+
 Hele migrationen kan køres igen oven på et miljø, hvor dele allerede findes:
 enums oprettes i en blok, der tier ved dubletter, tabeller og indekser bruger
 `if not exists`, triggere og politikker droppes før de genskabes, og rækkerne
