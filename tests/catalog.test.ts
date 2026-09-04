@@ -64,11 +64,24 @@ function fakeSupabase(rows: unknown[], error: unknown = null) {
 describe('catalog migration', () => {
 	it('creates the three catalogue tables with row level security', () => {
 		for (const table of ['tools', 'use_cases', 'resources']) {
-			expect(migration).toContain(`create table public.${table} (`);
+			expect(migration).toContain(`create table if not exists public.${table} (`);
 			expect(migration).toContain(`alter table public.${table} enable row level security;`);
 			expect(migration).toContain(`create policy ${table}_public_read on public.${table}`);
 			expect(migration).toContain(`create policy ${table}_manager_write on public.${table}`);
 		}
+	});
+
+	it('can be re-run on a partially migrated database', () => {
+		// Postgres has no "create type if not exists", so the enums are guarded instead.
+		expect(migration.match(/exception when duplicate_object then null; end \$\$;/g)).toHaveLength(5);
+		for (const table of ['tools', 'use_cases', 'resources']) {
+			expect(migration).toContain(`create index if not exists ${table}_published_idx`);
+			expect(migration).toContain(`drop trigger if exists ${table}_touch_updated_at on public.${table};`);
+			for (const policy of ['public_read', 'manager_read', 'manager_write']) {
+				expect(migration).toContain(`drop policy if exists ${table}_${policy} on public.${table};`);
+			}
+		}
+		expect(migration).not.toMatch(/^create type /m);
 	});
 
 	it('only lets anonymous visitors read published rows', () => {

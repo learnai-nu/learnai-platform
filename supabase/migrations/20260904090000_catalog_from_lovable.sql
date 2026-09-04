@@ -3,13 +3,30 @@
 -- primære grænse, offentlige læsere ser kun publicerede rækker, og kun
 -- redaktører og administratorer kan skrive.
 
-create type public.catalog_locale as enum ('da', 'en');
-create type public.use_case_department as enum ('hr', 'it', 'marketing', 'operations');
-create type public.use_case_complexity as enum ('low', 'medium', 'high');
-create type public.use_case_value as enum ('efficiency', 'quality', 'growth');
-create type public.resource_type as enum ('podcast', 'youtube', 'bog', 'kursus', 'nyhedsbrev', 'rapport');
+-- Migrationen er skrevet, så den kan køres igen oven på et miljø, hvor dele
+-- allerede er oprettet. Postgres har ingen "create type if not exists", så
+-- typerne oprettes i en blok, der tier ved dubletter.
+do $$ begin
+  create type public.catalog_locale as enum ('da', 'en');
+exception when duplicate_object then null; end $$;
 
-create table public.tools (
+do $$ begin
+  create type public.use_case_department as enum ('hr', 'it', 'marketing', 'operations');
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  create type public.use_case_complexity as enum ('low', 'medium', 'high');
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  create type public.use_case_value as enum ('efficiency', 'quality', 'growth');
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  create type public.resource_type as enum ('podcast', 'youtube', 'bog', 'kursus', 'nyhedsbrev', 'rapport');
+exception when duplicate_object then null; end $$;
+
+create table if not exists public.tools (
   id uuid primary key default gen_random_uuid(),
   slug text not null,
   name text not null,
@@ -30,7 +47,7 @@ create table public.tools (
   unique (slug, locale)
 );
 
-create table public.use_cases (
+create table if not exists public.use_cases (
   id uuid primary key default gen_random_uuid(),
   slug text not null,
   title text not null,
@@ -51,7 +68,7 @@ create table public.use_cases (
   unique (slug, locale)
 );
 
-create table public.resources (
+create table if not exists public.resources (
   id uuid primary key default gen_random_uuid(),
   slug text not null,
   title text not null,
@@ -69,9 +86,9 @@ create table public.resources (
   constraint resources_rating_range check (rating is null or (rating >= 0 and rating <= 5))
 );
 
-create index tools_published_idx on public.tools (locale, published, sort_order);
-create index use_cases_published_idx on public.use_cases (locale, published, sort_order);
-create index resources_published_idx on public.resources (locale, published, sort_order);
+create index if not exists tools_published_idx on public.tools (locale, published, sort_order);
+create index if not exists use_cases_published_idx on public.use_cases (locale, published, sort_order);
+create index if not exists resources_published_idx on public.resources (locale, published, sort_order);
 
 -- Fælles trigger, så updated_at ikke afhænger af klienten.
 create or replace function public.touch_updated_at()
@@ -86,10 +103,13 @@ begin
 end;
 $function$;
 
+drop trigger if exists tools_touch_updated_at on public.tools;
 create trigger tools_touch_updated_at before update on public.tools
   for each row execute function public.touch_updated_at();
+drop trigger if exists use_cases_touch_updated_at on public.use_cases;
 create trigger use_cases_touch_updated_at before update on public.use_cases
   for each row execute function public.touch_updated_at();
+drop trigger if exists resources_touch_updated_at on public.resources;
 create trigger resources_touch_updated_at before update on public.resources
   for each row execute function public.touch_updated_at();
 
@@ -99,28 +119,37 @@ alter table public.resources enable row level security;
 
 -- Læsning: publiceret katalogindhold er offentligt. Alt andet kræver en
 -- redaktør- eller administratorrolle i JWT'ens app_metadata.
+drop policy if exists tools_public_read on public.tools;
 create policy tools_public_read on public.tools
   for select to anon, authenticated using (published);
+drop policy if exists use_cases_public_read on public.use_cases;
 create policy use_cases_public_read on public.use_cases
   for select to anon, authenticated using (published);
+drop policy if exists resources_public_read on public.resources;
 create policy resources_public_read on public.resources
   for select to anon, authenticated using (published);
 
+drop policy if exists tools_manager_read on public.tools;
 create policy tools_manager_read on public.tools
   for select to authenticated using (private.is_content_manager());
+drop policy if exists use_cases_manager_read on public.use_cases;
 create policy use_cases_manager_read on public.use_cases
   for select to authenticated using (private.is_content_manager());
+drop policy if exists resources_manager_read on public.resources;
 create policy resources_manager_read on public.resources
   for select to authenticated using (private.is_content_manager());
 
+drop policy if exists tools_manager_write on public.tools;
 create policy tools_manager_write on public.tools
   for all to authenticated
   using (private.is_content_manager())
   with check (private.is_content_manager());
+drop policy if exists use_cases_manager_write on public.use_cases;
 create policy use_cases_manager_write on public.use_cases
   for all to authenticated
   using (private.is_content_manager())
   with check (private.is_content_manager());
+drop policy if exists resources_manager_write on public.resources;
 create policy resources_manager_write on public.resources
   for all to authenticated
   using (private.is_content_manager())

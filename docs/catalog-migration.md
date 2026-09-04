@@ -63,6 +63,11 @@ Alternativt kan SQL-filen indsættes direkte i Supabase Studio's SQL-editor.
 Migrationen forudsætter, at `private.is_content_manager()` findes — den blev
 oprettet i `20260728120600_admin_quiz_editor.sql`.
 
+Hele migrationen kan køres igen oven på et miljø, hvor dele allerede findes:
+enums oprettes i en blok, der tier ved dubletter, tabeller og indekser bruger
+`if not exists`, triggere og politikker droppes før de genskabes, og rækkerne
+indsættes med `on conflict do nothing`.
+
 ## Ny import fra en eksport
 
 Eksportér tabellerne som JSON-arrays og generér nye insert-statements:
