@@ -1,0 +1,168 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { buildFacet, fetchResources, label, labels, searchIndex, type Locale } from '../../lib/catalog';
+import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/catalog.css';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { resources, error } = await fetchResources(supabase, locale);
+
+const typeLabels = labels(locale, 'resourceType');
+const languageLabels = labels(locale, 'contentLanguage');
+const types = buildFacet(resources, (resource) => resource.type, typeLabels);
+const groups = types.map((type) => ({
+	...type,
+	items: resources.filter((resource) => resource.type === type.value),
+}));
+
+const copy = locale === 'en'
+	? {
+		title: 'AI resources — LearnAI.nu',
+		description: 'Podcasts, books and YouTube channels about AI that we follow ourselves.',
+		breadcrumb: 'Resources',
+		eyebrow: 'Resources',
+		heading: 'Podcasts, books and channels about AI.',
+		lead: 'The sources we use to stay current. Selected for what can be put to use in practice rather than hype.',
+		search: 'Search',
+		searchPlaceholder: 'Search by title or topic',
+		format: 'Format',
+		all: 'All',
+		noun: 'resources',
+		rating: 'Rated',
+		open: 'Open the resource',
+		empty: 'No resources match your search. Try another format or search term.',
+		failed: 'Resources could not be loaded right now. Please try again shortly.',
+		filterLabel: 'Filter resources',
+	}
+	: {
+		title: 'AI-ressourcer — LearnAI.nu',
+		description: 'Danske og internationale podcasts, bøger og YouTube-kanaler om AI, som vi selv følger med i.',
+		breadcrumb: 'Ressourcer',
+		eyebrow: 'Ressourcer',
+		heading: 'Podcasts, bøger og kanaler om AI.',
+		lead: 'De kilder vi selv bruger til at holde os opdateret. Udvalgt med vægt på dansk indhold og på det, der kan bruges i praksis frem for hype.',
+		search: 'Søg',
+		searchPlaceholder: 'Søg efter titel eller emne',
+		format: 'Format',
+		all: 'Alle',
+		noun: 'ressourcer',
+		rating: 'Vurdering',
+		open: 'Åbn ressourcen',
+		empty: 'Ingen ressourcer matcher din søgning. Prøv et andet format eller søgeord.',
+		failed: 'Ressourcerne kunne ikke hentes lige nu. Prøv igen om lidt.',
+		filterLabel: 'Filtrér ressourcer',
+	};
+
+const path = locale === 'en' ? '/en/resources' : '/resources';
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	resources.map((resource) => ({ name: resource.title, url: resource.url ?? canonicalUrl.toString() })),
+);
+---
+
+<SiteLayout
+	title={copy.title}
+	description={copy.description}
+	{locale}
+	alternates={[{ locale: 'da', path: '/resources' }, { locale: 'en', path: '/en/resources' }]}
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: locale === 'en' ? 'Home' : 'Forside', url: locale === 'en' ? '/en' : '/' },
+		{ name: copy.breadcrumb, url: path },
+	]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page" data-catalog>
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">{copy.eyebrow}</p>
+				<h1>{copy.heading}</h1>
+				<p>{copy.lead}</p>
+			</div>
+		</section>
+
+		{error ? (
+			<div class="catalog-shell">
+				<p class="catalog-empty" role="alert">{copy.failed}</p>
+			</div>
+		) : (
+		<Fragment>
+		<section class="catalog-controls" aria-label={copy.filterLabel}>
+			<div class="catalog-shell">
+				<label class="orbit-eyebrow" for="resource-search">{copy.search}</label>
+				<input
+					id="resource-search"
+					class="catalog-search"
+					type="search"
+					placeholder={copy.searchPlaceholder}
+					data-catalog-search
+				/>
+				<div class="catalog-facets">
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="resource-type-label">{copy.format}</p>
+						<div role="group" aria-labelledby="resource-type-label">
+							<button class="catalog-chip" type="button" data-facet="type" data-value="" aria-pressed="true">{copy.all}</button>
+							{types.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="type" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+				<p class="catalog-count" data-catalog-count data-noun={copy.noun}>{resources.length} {copy.noun}</p>
+			</div>
+		</section>
+
+		<div class="catalog-shell">
+			{groups.map((group) => (
+				<section class="catalog-group" data-catalog-group aria-labelledby={`gruppe-${group.value}`}>
+					<h2 class="catalog-section-title" id={`gruppe-${group.value}`}>{group.label}</h2>
+					<div class="catalog-grid">
+						{group.items.map((resource) => (
+							<article
+								class="catalog-card"
+								id={resource.slug}
+								data-catalog-item
+								data-facet-type={resource.type}
+								data-search={searchIndex(resource.title, resource.description, resource.topics, group.label)}
+							>
+								<h3>{resource.title}</h3>
+								<ul class="catalog-tags">
+									<li class="catalog-tag catalog-tag-accent">{group.label}</li>
+									{resource.contentLanguage !== locale && (
+										<li class="catalog-tag">{label(languageLabels, resource.contentLanguage)}</li>
+									)}
+									{resource.topics.map((topic) => <li class="catalog-tag">{topic}</li>)}
+								</ul>
+								<p>{resource.description}</p>
+								<div class="catalog-card-footer">
+									{resource.rating !== null && <p class="catalog-price">{copy.rating} {resource.rating.toFixed(1)} / 5</p>}
+									{resource.url && (
+										<a class="catalog-link" href={resource.url} target="_blank" rel="noopener noreferrer">
+											{copy.open} <span aria-hidden="true">→</span>
+										</a>
+									)}
+								</div>
+							</article>
+						))}
+					</div>
+				</section>
+			))}
+			<p class="catalog-empty" data-catalog-empty hidden={resources.length > 0}>{copy.empty}</p>
+		</div>
+		</Fragment>
+		)}
+	</div>
+</SiteLayout>
+
+<script>
+	import '../../scripts/catalog-filter';
+</script>

@@ -14,7 +14,7 @@ if (!context.role) return new Response('Du har ikke adgang til administrationen.
 
 const { data: items, error } = await context.supabase
 	.from('resources')
-	.select('id,slug,title,type,published,sort_order')
+	.select('id,slug,title,type,published,locale,sort_order')
 	.order('sort_order', { ascending: true });
 
 const status = Astro.url.searchParams.get('status');
@@ -52,7 +52,7 @@ const statusMessages: Record<string, string> = {
 					<a href={`/admin/ressourcer/${item.id}`}>
 						<span>
 							<strong>{item.title}</strong>
-							<small>#{item.sort_order} · {label(resourceTypeLabels, item.type)} · /{item.slug}</small>
+							<small>{item.locale === 'en' ? 'EN' : 'DA'} · #{item.sort_order} · {label(resourceTypeLabels, item.type)} · /{item.slug}</small>
 						</span>
 						<span class={`status-badge status-${item.published ? 'published' : 'draft'}`}>
 							{item.published ? 'Publiceret' : 'Kladde'}

@@ -18,6 +18,10 @@ import {
 interface Props {
 	title: string;
 	description: string;
+	/** Page language. Defaults to Danish; the English catalogues pass 'en'. */
+	locale?: 'da' | 'en';
+	/** Translations of this page, rendered as hreflang alternates. */
+	alternates?: { locale: 'da' | 'en'; path: string }[];
 	noindex?: boolean;
 	pageType?: PageSchemaType;
 	breadcrumbs?: BreadcrumbItem[];
@@ -28,6 +32,8 @@ interface Props {
 const {
 	title,
 	description,
+	locale = 'da',
+	alternates = [],
 	noindex = false,
 	pageType = 'WebPage',
 	breadcrumbs = [],
@@ -36,6 +42,11 @@ const {
 } = Astro.props;
 
 const canonicalURL = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const siteOrigin = Astro.site ? new URL(Astro.site) : new URL('/', canonicalURL);
+const hreflangs = alternates.map((alternate) => ({
+	hreflang: alternate.locale === 'en' ? 'en' : 'da-DK',
+	href: new URL(alternate.path, siteOrigin).toString(),
+}));
 const structuredData = noindex ? null : buildSitePageGraph({
 	siteUrl: new URL('/', Astro.site ?? canonicalURL),
 	canonicalUrl: canonicalURL,
@@ -49,7 +60,7 @@ const structuredData = noindex ? null : buildSitePageGraph({
 ---
 
 <!doctype html>
-<html lang="da-DK">
+<html lang={locale === 'en' ? 'en' : 'da-DK'}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -58,8 +69,11 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		<meta name="theme-color" content="#f2f4f0" />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={canonicalURL} />
+		{hreflangs.map((alternate) => (
+			<link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
+		))}
 		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="da_DK" />
+		<meta property="og:locale" content={locale === 'en' ? 'en' : 'da_DK'} />
 		<meta property="og:site_name" content="LearnAI.nu" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />

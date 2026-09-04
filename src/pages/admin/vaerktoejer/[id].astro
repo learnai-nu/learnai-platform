@@ -26,6 +26,7 @@ interface ToolRow {
 	external_url: string | null;
 	featured: boolean;
 	published: boolean;
+	locale: string;
 	sort_order: number;
 }
 
@@ -35,7 +36,7 @@ let item: ToolRow | null = null;
 if (!isNew) {
 	const result = await context.supabase
 		.from('tools')
-		.select('id,slug,name,tagline,description,icon_url,categories,badges,key_features,pricing_display,external_url,featured,published,sort_order')
+		.select('id,slug,name,tagline,description,icon_url,categories,badges,key_features,pricing_display,external_url,featured,published,locale,sort_order')
 		.eq('id', Astro.params.id)
 		.maybeSingle();
 	if (result.error || !result.data) return new Response('Værktøjet blev ikke fundet.', { status: 404 });
@@ -83,6 +84,14 @@ const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : 
 			<label>
 				Sortering
 				<input name="sortOrder" type="number" min="0" max="10000" value={item?.sort_order ?? 0} />
+			</label>
+			<label>
+				Sprog
+				<select name="locale">
+					<option value="da" selected={item?.locale !== 'en'}>Dansk</option>
+					<option value="en" selected={item?.locale === 'en'}>Engelsk</option>
+				</select>
+				<small>Sproget bestemmer, om rækken vises på de danske eller engelske sider.</small>
 			</label>
 			<label class="field-wide">
 				Tagline

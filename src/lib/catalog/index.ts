@@ -1,5 +1,13 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+export type Locale = 'da' | 'en';
+
+export const locales: Locale[] = ['da', 'en'];
+
+export function isLocale(value: unknown): value is Locale {
+	return value === 'da' || value === 'en';
+}
+
 export interface Tool {
 	slug: string;
 	name: string;
@@ -36,6 +44,22 @@ export interface Resource {
 	description: string;
 	rating: number | null;
 	topics: string[];
+	/** The language of the resource itself, which can differ from the page it appears on. */
+	contentLanguage: Locale;
+}
+
+export interface CatalogEvent {
+	slug: string;
+	title: string;
+	description: string;
+	date: string;
+	timeStart: string | null;
+	timeEnd: string | null;
+	locationType: string;
+	locationName: string | null;
+	registrationUrl: string | null;
+	organizer: string | null;
+	price: string | null;
 }
 
 export const toolCategoryLabels: Record<string, string> = {
@@ -84,6 +108,81 @@ export const resourceTypeLabels: Record<string, string> = {
 	rapport: 'Rapport',
 };
 
+const englishLabels = {
+	toolCategory: {
+		text: 'Text and writing',
+		coding: 'Coding',
+		images: 'Images',
+		video: 'Video',
+		audio: 'Audio and voice',
+		research: 'Research',
+		automation: 'Automation',
+		other: 'Other',
+	},
+	toolBadge: {
+		recommended: 'Recommended',
+		tried_tested: 'Tried and tested',
+		new: 'New',
+		popular: 'Popular',
+	},
+	department: {
+		hr: 'HR and leadership',
+		it: 'IT and development',
+		marketing: 'Marketing and sales',
+		operations: 'Operations and admin',
+	},
+	complexity: {
+		low: 'Easy to start',
+		medium: 'Medium',
+		high: 'Needs groundwork',
+	},
+	strategicValue: {
+		efficiency: 'Efficiency',
+		quality: 'Quality',
+		growth: 'Growth',
+	},
+	resourceType: {
+		podcast: 'Podcast',
+		youtube: 'YouTube channel',
+		bog: 'Book',
+		kursus: 'Course',
+		nyhedsbrev: 'Newsletter',
+		rapport: 'Report',
+	},
+	eventLocation: {
+		fysisk: 'In person',
+		online: 'Online',
+		hybrid: 'Hybrid',
+	},
+	contentLanguage: { da: 'Danish', en: 'English' },
+} satisfies Record<string, Record<string, string>>;
+
+export const eventLocationLabels: Record<string, string> = {
+	fysisk: 'Fysisk',
+	online: 'Online',
+	hybrid: 'Hybrid',
+};
+
+export const contentLanguageLabels: Record<string, string> = { da: 'Dansk', en: 'Engelsk' };
+
+const danishLabels = {
+	toolCategory: toolCategoryLabels,
+	toolBadge: toolBadgeLabels,
+	department: departmentLabels,
+	complexity: complexityLabels,
+	strategicValue: strategicValueLabels,
+	resourceType: resourceTypeLabels,
+	eventLocation: eventLocationLabels,
+	contentLanguage: contentLanguageLabels,
+};
+
+export type LabelSet = keyof typeof danishLabels;
+
+/** The enum values are stored language-neutral; only their labels are translated. */
+export function labels(locale: Locale, set: LabelSet): Record<string, string> {
+	return locale === 'en' ? englishLabels[set] : danishLabels[set];
+}
+
 export function label(map: Record<string, string>, value: string) {
 	return map[value] ?? value;
 }
@@ -115,24 +214,31 @@ function numeric(value: unknown): number | null {
 }
 
 /**
- * The three catalogues are read with the visitor's own Supabase session, so RLS
- * decides what is returned. Anonymous visitors see published Danish rows only.
+ * The catalogues are read with the visitor's own Supabase session, so RLS
+ * decides what is returned. Anonymous visitors see published rows only.
  */
-async function readCatalog(supabase: SupabaseClient, table: string, columns: string) {
+async function readCatalog(
+	supabase: SupabaseClient,
+	table: string,
+	columns: string,
+	locale: Locale,
+	orderBy = 'sort_order',
+) {
 	const { data, error } = await supabase
 		.from(table)
 		.select(columns)
-		.eq('locale', 'da')
+		.eq('locale', locale)
 		.eq('published', true)
-		.order('sort_order', { ascending: true });
+		.order(orderBy, { ascending: true });
 	return { rows: (data ?? []) as unknown as Row[], error };
 }
 
-export async function fetchTools(supabase: SupabaseClient) {
+export async function fetchTools(supabase: SupabaseClient, locale: Locale = 'da') {
 	const { rows, error } = await readCatalog(
 		supabase,
 		'tools',
 		'slug,name,tagline,description,icon_url,categories,badges,key_features,pricing_display,external_url,featured',
+		locale,
 	);
 	const tools: Tool[] = rows.map((row) => ({
 		slug: text(row.slug),
@@ -150,11 +256,12 @@ export async function fetchTools(supabase: SupabaseClient) {
 	return { tools, error };
 }
 
-export async function fetchUseCases(supabase: SupabaseClient) {
+export async function fetchUseCases(supabase: SupabaseClient, locale: Locale = 'da') {
 	const { rows, error } = await readCatalog(
 		supabase,
 		'use_cases',
 		'slug,title,reference,department,complexity,strategic_value,problem_statement,solution,business_benefits,recommended_tools,featured',
+		locale,
 	);
 	const useCases: UseCase[] = rows.map((row) => ({
 		slug: text(row.slug),
@@ -172,11 +279,12 @@ export async function fetchUseCases(supabase: SupabaseClient) {
 	return { useCases, error };
 }
 
-export async function fetchResources(supabase: SupabaseClient) {
+export async function fetchResources(supabase: SupabaseClient, locale: Locale = 'da') {
 	const { rows, error } = await readCatalog(
 		supabase,
 		'resources',
-		'slug,title,type,url,description,rating,topics',
+		'slug,title,type,url,description,rating,topics,content_language',
+		locale,
 	);
 	const resources: Resource[] = rows.map((row) => ({
 		slug: text(row.slug),
@@ -186,8 +294,43 @@ export async function fetchResources(supabase: SupabaseClient) {
 		description: text(row.description),
 		rating: numeric(row.rating),
 		topics: strings(row.topics),
+		contentLanguage: row.content_language === 'en' ? 'en' : 'da',
 	}));
 	return { resources, error };
+}
+
+export async function fetchEvents(supabase: SupabaseClient, locale: Locale = 'da') {
+	const { rows, error } = await readCatalog(
+		supabase,
+		'events',
+		'slug,title,description,event_date,time_start,time_end,location_type,location_name,registration_url,organizer,price',
+		locale,
+		'event_date',
+	);
+	const events: CatalogEvent[] = rows.map((row) => ({
+		slug: text(row.slug),
+		title: text(row.title),
+		description: text(row.description),
+		date: text(row.event_date),
+		timeStart: optional(row.time_start),
+		timeEnd: optional(row.time_end),
+		locationType: text(row.location_type),
+		locationName: optional(row.location_name),
+		registrationUrl: webUrl(row.registration_url),
+		organizer: optional(row.organizer),
+		price: optional(row.price),
+	}));
+	return { events, error };
+}
+
+/** Events are split so a visitor sees what is coming before what has been. */
+export function splitEvents(events: CatalogEvent[], now = new Date()) {
+	const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+	const upcoming = events.filter((event) => new Date(event.date).getTime() >= startOfToday);
+	const past = events
+		.filter((event) => new Date(event.date).getTime() < startOfToday)
+		.reverse();
+	return { upcoming, past };
 }
 
 export interface FacetOption {

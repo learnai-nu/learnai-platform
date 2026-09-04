@@ -1,6 +1,6 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
-import { label, toolCategoryLabels } from '../../../lib/catalog';
+import { eventLocationLabels, label } from '../../../lib/catalog';
 import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
 
 export const prerender = false;
@@ -13,48 +13,50 @@ if (!context.claims) {
 if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
 
 const { data: items, error } = await context.supabase
-	.from('tools')
-	.select('id,slug,name,categories,published,featured,locale,sort_order')
-	.order('sort_order', { ascending: true });
+	.from('events')
+	.select('id,slug,title,event_date,location_type,location_name,published,locale')
+	.order('event_date', { ascending: false });
 
 const status = Astro.url.searchParams.get('status');
 const statusMessages: Record<string, string> = {
-	created: 'Værktøjet er oprettet som kladde.',
+	created: 'Eventet er oprettet som kladde.',
 	saved: 'Ændringerne er gemt.',
 };
+const dateFormat = new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'short', year: 'numeric' });
 ---
 
 <AdminLayout
-	title="Værktøjer"
-	description="Administrér værktøjskataloget på /tools."
-	active="tools"
+	title="Events"
+	description="Administrér events på /events."
+	active="events"
 	email={adminEmail(context.claims)}
 	role={context.role}
 >
 	<header class="admin-page-head">
 		<div>
 			<p class="eyebrow">Katalog</p>
-			<h1>AI-værktøjer</h1>
-			<p>Indholdet bag <a class="text-link" href="/tools">/tools</a>. Rækkefølgen styres af sorteringsnummeret.</p>
+			<h1>Events</h1>
+			<p>Indholdet bag <a class="text-link" href="/events">/events</a>. Datoen bestemmer, om et event står under kommende eller tidligere.</p>
 		</div>
-		<a class="button" href="/admin/vaerktoejer/ny">Opret værktøj</a>
+		<a class="button" href="/admin/events/ny">Opret event</a>
 	</header>
 
 	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
-	{status === 'error' && <p class="notice notice-error" role="alert">Værktøjet kunne ikke gemmes. Kontrollér felterne.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Eventet kunne ikke gemmes. Kontrollér felterne.</p>}
 
 	<section class="admin-panel">
 		{error ? (
-			<p class="notice notice-error" role="alert">Værktøjslisten kunne ikke hentes.</p>
+			<p class="notice notice-error" role="alert">Listen kunne ikke hentes.</p>
 		) : items?.length ? (
 			<div class="admin-list">
 				{items.map((item) => (
-					<a href={`/admin/vaerktoejer/${item.id}`}>
+					<a href={`/admin/events/${item.id}`}>
 						<span>
-							<strong>{item.name}{item.featured ? ' ★' : ''}</strong>
+							<strong>{item.title}</strong>
 							<small>
-								{item.locale === 'en' ? 'EN' : 'DA'} · #{item.sort_order} · /{item.slug}
-								{item.categories?.length ? ` · ${item.categories.map((category: string) => label(toolCategoryLabels, category)).join(', ')}` : ''}
+								{item.locale === 'en' ? 'EN' : 'DA'} · {dateFormat.format(new Date(item.event_date))}
+								· {label(eventLocationLabels, item.location_type)}
+								{item.location_name ? ` · ${item.location_name}` : ''}
 							</small>
 						</span>
 						<span class={`status-badge status-${item.published ? 'published' : 'draft'}`}>
@@ -65,8 +67,8 @@ const statusMessages: Record<string, string> = {
 			</div>
 		) : (
 			<div class="admin-empty">
-				<h2>Kataloget er tomt</h2>
-				<p>Opret det første værktøj, eller kør katalogmigrationen.</p>
+				<h2>Ingen events endnu</h2>
+				<p>Opret det første event, eller kør katalogmigrationen.</p>
 			</div>
 		)}
 	</section>
