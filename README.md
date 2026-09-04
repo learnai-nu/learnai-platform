@@ -49,5 +49,9 @@ Den redaktionelle vurdering og første publiceringskø findes i
 Den maskinlæsbare prioritering findes i
 [`config/editorial-priorities.json`](config/editorial-priorities.json).
 
+Katalogsiderne `/tools`, `/use-cases` og `/resources` er migreret fra det
+gamle Lovable-site og beskrevet i
+[`docs/catalog-migration.md`](docs/catalog-migration.md).
+
 Promptbibliotekets kontrakt, privacy-model og redaktionelle arbejdsgang er
 beskrevet i [`docs/prompt-library.md`](docs/prompt-library.md).

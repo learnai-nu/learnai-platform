@@ -1,0 +1,139 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import {
+	buildFacet,
+	complexityLabels,
+	departmentLabels,
+	label,
+	searchIndex,
+	strategicValueLabels,
+	useCases,
+} from '../lib/catalog';
+import { createCanonicalUrl, createItemListSchema } from '../lib/seo/schema';
+import '../styles/catalog.css';
+
+export const prerender = true;
+
+const departments = buildFacet(useCases, (item) => item.department, departmentLabels);
+const complexities = buildFacet(useCases, (item) => item.complexity, complexityLabels);
+const values = buildFacet(useCases, (item) => item.strategicValue, strategicValueLabels);
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	useCases.map((item) => ({ name: item.title, url: `/use-cases#${item.slug}` })),
+);
+---
+
+<SiteLayout
+	title="AI use cases — LearnAI.nu"
+	description="31 konkrete AI-anvendelser fra dansk arbejdsliv: hvilket problem de løser, hvordan løsningen ser ud, og hvad du får ud af den."
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Use cases', url: '/use-cases' },
+	]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page" data-catalog>
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">Anvendelser</p>
+				<h1>AI i praksis — {useCases.length} konkrete use cases.</h1>
+				<p>Hver use case beskriver et reelt problem, den AI-løsning der virker, og den forretningsværdi den skaber. Filtrér efter afdeling, kompleksitet eller den værdi, du er ude efter.</p>
+			</div>
+		</section>
+
+		<section class="catalog-controls" aria-label="Filtrér use cases">
+			<div class="catalog-shell">
+				<label class="orbit-eyebrow" for="use-case-search">Søg</label>
+				<input
+					id="use-case-search"
+					class="catalog-search"
+					type="search"
+					placeholder="Søg efter opgave, problem eller værktøj"
+					data-catalog-search
+				/>
+				<div class="catalog-facets">
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="use-case-department-label">Afdeling</p>
+						<div role="group" aria-labelledby="use-case-department-label">
+							<button class="catalog-chip" type="button" data-facet="department" data-value="" aria-pressed="true">Alle</button>
+							{departments.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="department" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="use-case-complexity-label">Kompleksitet</p>
+						<div role="group" aria-labelledby="use-case-complexity-label">
+							<button class="catalog-chip" type="button" data-facet="complexity" data-value="" aria-pressed="true">Alle</button>
+							{complexities.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="complexity" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+					<div class="catalog-facet-row">
+						<p class="catalog-facet-label" id="use-case-value-label">Værdi</p>
+						<div role="group" aria-labelledby="use-case-value-label">
+							<button class="catalog-chip" type="button" data-facet="value" data-value="" aria-pressed="true">Alle</button>
+							{values.map((option) => (
+								<button class="catalog-chip" type="button" data-facet="value" data-value={option.value} aria-pressed="false">
+									{option.label}<span class="catalog-chip-count">{option.count}</span>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+				<p class="catalog-count" data-catalog-count data-noun="use cases">{useCases.length} use cases</p>
+			</div>
+		</section>
+
+		<div class="catalog-shell">
+			<div class="catalog-grid">
+				{useCases.map((item) => (
+					<article
+						class:list={['catalog-card', item.featured && 'catalog-card-featured']}
+						id={item.slug}
+						data-catalog-item
+						data-facet-department={item.department}
+						data-facet-complexity={item.complexity}
+						data-facet-value={item.strategicValue}
+						data-search={searchIndex(item.title, item.problem, item.solution, item.benefits, item.recommendedTools, label(departmentLabels, item.department))}
+					>
+						<h2>{item.title}</h2>
+						<ul class="catalog-tags">
+							<li class="catalog-tag catalog-tag-accent">{label(departmentLabels, item.department)}</li>
+							<li class="catalog-tag">{label(complexityLabels, item.complexity)}</li>
+							<li class="catalog-tag">{label(strategicValueLabels, item.strategicValue)}</li>
+						</ul>
+						<p class="catalog-card-lead">{item.problem}</p>
+						<p>{item.solution}</p>
+						{item.benefits.length > 0 && (
+							<details class="catalog-detail">
+								<summary>Se forretningsværdien</summary>
+								<ul class="catalog-list">
+									{item.benefits.map((benefit) => <li>{benefit}</li>)}
+								</ul>
+							</details>
+						)}
+						{item.recommendedTools.length > 0 && (
+							<div class="catalog-card-footer">
+								<p class="catalog-price">Værktøjer: {item.recommendedTools.join(', ')}</p>
+								<a class="catalog-link" href="/tools">Se værktøjerne <span aria-hidden="true">→</span></a>
+							</div>
+						)}
+					</article>
+				))}
+			</div>
+			<p class="catalog-empty" data-catalog-empty hidden>Ingen use cases matcher din søgning. Prøv et bredere filter eller et andet søgeord.</p>
+		</div>
+	</div>
+</SiteLayout>
+
+<script>
+	import '../scripts/catalog-filter';
+</script>

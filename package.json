@@ -14,6 +14,7 @@
     "check": "astro check",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
+    "catalog:prepare": "node scripts/prepare-catalog.mjs",
     "content:prepare": "node scripts/prepare-content-import.mjs",
     "editorial:prepare": "node scripts/prepare-editorial-wave.mjs"
   },

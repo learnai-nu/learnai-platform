@@ -1,0 +1,498 @@
+[
+	{
+		"slug": "adobe-firefly",
+		"name": "Adobe Firefly",
+		"tagline": "Enterprise-sikker AI integreret i Creative Cloud",
+		"description": "Firefly er skabt til erhvervsbrug med fokus på ophavsretlig sikkerhed. Den er integreret direkte i Photoshop, hvilket gør det muligt at redigere billeder lynhurtigt med 'Generative Fill'.",
+		"iconUrl": "https://www.adobe.com/favicon.ico",
+		"categories": [
+			"images",
+			"video"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Generative Fill: Tilføj eller fjern objekter med tekst",
+			"Commercial Safety: Trænet på licenseret Adobe-data"
+		],
+		"pricing": "Inkluderet i Creative Cloud eller Gratis (begrænset)",
+		"url": "https://firefly.adobe.com/",
+		"featured": false
+	},
+	{
+		"slug": "bolt-new",
+		"name": "Bolt.new",
+		"tagline": "Instant webudvikling direkte i browseren",
+		"description": "Bolt.new lader dig bygge, køre og deploye fulde webapplikationer direkte fra din browser via prompts. Det fjerner behovet for lokal opsætning og accelererer udviklingscyklussen markant.",
+		"iconUrl": "https://bolt.new/favicon.ico",
+		"categories": [
+			"coding",
+			"automation"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"In-browser IDE: Kør koden uden at installere noget",
+			"StackBlitz Integration: Professionelt udviklingsmiljø"
+		],
+		"pricing": "Freemium",
+		"url": "https://bolt.new/",
+		"featured": false
+	},
+	{
+		"slug": "chatgpt",
+		"name": "ChatGPT",
+		"tagline": "Verdens førende AI-assistent til erhverv og produktivitet.",
+		"description": "ChatGPT er guldstandarden inden for generativ AI, der leverer massiv ROI gennem automatisering af vidensarbejde. Værktøjet fungerer som en alsidig forretningspartner, der kan analysere komplekse datasæt, generere professionelt indhold og bygge specialiserede AI-agenter (GPTs), hvilket sparer gennemsnitligt 40-60 minutter pr. medarbejder dagligt.",
+		"iconUrl": "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
+		"categories": [
+			"text",
+			"coding",
+			"images",
+			"automation"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Avanceret Ræsonnering: Løser komplekse logiske opgaver med GPT-5 teknologi",
+			"Custom GPTs: Byg egne agenter til specifikke arbejdsgange uden kode"
+		],
+		"pricing": "Fra $20/md (Plus) eller $25/bruger (Business)",
+		"url": "https://chatgpt.com/",
+		"featured": true
+	},
+	{
+		"slug": "claude-anthropic",
+		"name": "Claude (Anthropic)",
+		"tagline": "Avanceret AI med fokus på sikkerhed og nuanceret sprog",
+		"description": "Claude er kendt for sin menneskelignende skrivestil og store kontekstvindue. For virksomheder leverer den høj ROI gennem præcis dokumentanalyse, kodning og kompleks opgaveløsning med færre hallucinationer end konkurrenterne.",
+		"iconUrl": "https://claude.ai/favicon.ico",
+		"categories": [
+			"text",
+			"coding",
+			"research"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Artifacts: Interaktivt vindue til realtids-eksekvering af kode og design",
+			"200k Kontekstvindue: Håndtering af hele tekniske manualer eller bøger",
+			"Overlegen sprogforståelse og nuanceret ræsonnering"
+		],
+		"pricing": "Gratis eller $20/md (Pro)",
+		"url": "https://claude.ai/",
+		"featured": false
+	},
+	{
+		"slug": "claude-design",
+		"name": "Claude Design",
+		"tagline": "Fra idé til færdigt UI-design via samtale med Claude",
+		"description": "Claude Design er Anthropics nye design-værktøj, der lader dig generere komplette brugergrænseflader, prototyper og design-systemer gennem naturlig samtale med Claude. Skift mellem chat og canvas, integrér eget designsystem og eksportér til kode eller Figma. Læs vores fulde guide her: /articles/claude-design-guide",
+		"iconUrl": "https://claude.ai/favicon.ico",
+		"categories": [
+			"other",
+			"coding"
+		],
+		"badges": [
+			"recommended",
+			"new"
+		],
+		"keyFeatures": [
+			"Chat- og canvas-tilstand til iterativt UI-design",
+			"Integration med eget designsystem og brand-tokens",
+			"Eksport til kode (HTML/CSS/React) eller Figma",
+			"Indbygget i Claude Pro, Max, Team og Enterprise",
+			"Multi-skærms prototyper og flows i én samtale"
+		],
+		"pricing": "Inkluderet i Claude Pro (fra $20/md)",
+		"url": "https://claude.ai/design",
+		"featured": false
+	},
+	{
+		"slug": "elevenlabs",
+		"name": "ElevenLabs",
+		"tagline": "Verdens mest realistiske AI-stemmer",
+		"description": "ElevenLabs leverer tæt på perfekte stemmer til lydbøger, videoer og spil. Deres teknologi til stemmekloning er uovertruffen og skaber stor værdi i global indholdsproduktion.",
+		"iconUrl": "https://elevenlabs.io/favicon.ico",
+		"categories": [
+			"audio",
+			"video",
+			"automation"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Voice Cloning: Klon din egen stemme på minutter",
+			"Speech-to-Speech: Skift stemme men bevar følelsen"
+		],
+		"pricing": "Gratis eller $5/md (Starter)",
+		"url": "https://elevenlabs.io/",
+		"featured": true
+	},
+	{
+		"slug": "freepik-ai",
+		"name": "Freepik AI",
+		"tagline": "Fra lagerbilleder til AI-genereret grafik",
+		"description": "Freepik har udvidet deres enorme database med AI-værktøjer. Det gør det muligt for marketingteams at generere og tilpasse grafik i én sammenhængende arbejdsgang.",
+		"iconUrl": "https://www.freepik.com/favicon.ico",
+		"categories": [
+			"images"
+		],
+		"badges": [],
+		"keyFeatures": [
+			"AI Image Generator: Skab billeder direkte i platformen",
+			"Real-time Sketch: Gør simple streger til færdig kunst"
+		],
+		"pricing": "Gratis eller Premium abonnement",
+		"url": "https://www.freepik.com/",
+		"featured": false
+	},
+	{
+		"slug": "gamma",
+		"name": "Gamma",
+		"tagline": "Generer professionelle præsentationer på sekunder",
+		"description": "Gamma fjerner 'den hvide side'-syndromet ved at transformere tekst eller prompts til færdige præsentationer og hjemmesider. ROI findes i den massive tidsbesparelse på layout og formatering.",
+		"iconUrl": "https://gamma.app/favicon.ico",
+		"categories": [
+			"images",
+			"text"
+		],
+		"badges": [],
+		"keyFeatures": [
+			"One-click Restyling: Skift hele præsentationens look øjeblikkeligt",
+			"AI-Powered Outlines: Genererer struktur og indhold automatisk"
+		],
+		"pricing": "Gratis (Freemium) eller $8/md",
+		"url": "https://gamma.app/",
+		"featured": false
+	},
+	{
+		"slug": "google-ai-studio",
+		"name": "Google AI Studio",
+		"tagline": "Udviklerens sandkasse til Gemini-modeller",
+		"description": "AI Studio er det ultimative værktøj til at teste og bygge med Googles nyeste modeller. Det giver adgang til de største kontekstvinduer på markedet, ideelt til analyse af enorme datamængder.",
+		"iconUrl": "https://aistudio.google.com/favicon.ico",
+		"categories": [
+			"coding",
+			"text",
+			"automation"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"2M Context Window: Analysér gigantiske datasæt eller timevis af video",
+			"API Key Management: Nem overgang fra prototype til produktion"
+		],
+		"pricing": "Gratis (inden for kvoter)",
+		"url": "https://aistudio.google.com/",
+		"featured": false
+	},
+	{
+		"slug": "google-gemini",
+		"name": "Google Gemini",
+		"tagline": "Multimodal intelligens integreret i Google Workspace",
+		"description": "Gemini er Googles mest kapable AI, der excellerer i multimodalitet. Den skaber værdi ved at forbinde direkte til Google Workspace (Docs, Gmail, Drive), hvilket automatiserer workflows på tværs af virksomhedens eksisterende værktøjer.",
+		"iconUrl": "https://www.gstatic.com/lamda/images/favicon_v1_150160d13988652c776.png",
+		"categories": [
+			"text",
+			"automation",
+			"images"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Native Multimodalitet: Forstår tekst, billeder, video og lyd i én prompt",
+			"Google Workspace Integration: Hent data direkte fra Gmail og Drive",
+			"Ekstremt hurtig responstid"
+		],
+		"pricing": "Gratis eller 160 kr/md (Advanced)",
+		"url": "https://gemini.google.com/app",
+		"featured": true
+	},
+	{
+		"slug": "google-stitch",
+		"name": "Google Stitch",
+		"tagline": "Fra vision til færdigt UI-design på sekunder",
+		"description": "Google Stitch er et banebrydende AI-drevet designværktøj, der transformerer naturligt sprog eller simple skitser til high-fidelity UI-designs og produktionsklar frontend-kode. For virksomheder betyder det en markant reduktion i 'time-to-market' for MVPs og digitale produkter, da broen mellem idé, design og kode automatiseres gennem Googles Gemini-modeller.",
+		"iconUrl": "https://stitch.withgoogle.com/static/favicon.png",
+		"categories": [
+			"other",
+			"coding"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Vibe Design: Generer komplekse brugerflader via simple tekstbeskrivelser",
+			"Code Export: Eksportér direkte til ren HTML, CSS eller Tailwind-kode",
+			"Figma Integration: Sømløs overførsel af AI-genererede lag til Figma"
+		],
+		"pricing": "Gratis (via Google Labs)",
+		"url": "https://stitch.withgoogle.com/",
+		"featured": true
+	},
+	{
+		"slug": "grok-xai",
+		"name": "Grok (xAI)",
+		"tagline": "Realtids-indsigt med direkte adgang til X-platformen",
+		"description": "Grok differentierer sig ved at have adgang til realtidsstrømme fra X. For erhvervslivet er det et kraftfuldt værktøj til trend-analyse, brand-monitorering og nyhedsovervågning, før de rammer traditionelle medier.",
+		"iconUrl": "https://abs.twimg.com/favicons/twitter.2.ico",
+		"categories": [
+			"text",
+			"research"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Real-time Knowledge: Adgang til live data fra X (tidligere Twitter)",
+			"Unfiltered Mode: Giver mere direkte og mindre censurerede svar",
+			"Hurtig responstid og aktuelle begivenheder"
+		],
+		"pricing": "Kræver X Premium/Premium+",
+		"url": "https://x.com/i/grok",
+		"featured": false
+	},
+	{
+		"slug": "heygen",
+		"name": "HeyGen",
+		"tagline": "AI-videoer med realistiske avatarer",
+		"description": "HeyGen er førende inden for AI-avatarer. Det gør det muligt at producere træningsvideoer og personaliserede salgshilsner i stor skala uden brug af kamera eller skuespillere.",
+		"iconUrl": "https://www.heygen.com/favicon.ico",
+		"categories": [
+			"video",
+			"audio"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Video Translation: Oversæt video og synkronisér læber",
+			"Custom Avatars: Lav en digital kopi af dig selv"
+		],
+		"pricing": "Fra $24/md",
+		"url": "https://www.heygen.com/",
+		"featured": false
+	},
+	{
+		"slug": "ideogram",
+		"name": "Ideogram",
+		"tagline": "Ekspert i præcis tekst i AI-billeder",
+		"description": "Ideogram løser det klassiske AI-problem med ulæselig tekst i billeder. Perfekt til logo-design, plakater og SoMe-grafik, hvor typografi skal stå knivskarpt.",
+		"iconUrl": "https://ideogram.ai/favicon.ico",
+		"categories": [
+			"images"
+		],
+		"badges": [],
+		"keyFeatures": [
+			"Typography Engine: Perfekt stavet tekst i billeder",
+			"Magic Prompt: Hjælper med at udbygge dine korte prompts"
+		],
+		"pricing": "Gratis eller $8/md",
+		"url": "https://ideogram.ai/",
+		"featured": false
+	},
+	{
+		"slug": "lovable",
+		"name": "Lovable",
+		"tagline": "Gør prompts til fuldt funktionelle web-apps",
+		"description": "Lovable (tidligere GPT Engineer) gør det muligt for ikke-teknikere at bygge komplekse web-apps. Det reducerer udviklingsomkostninger drastisk og forkorter 'time-to-market' for prototyper.",
+		"iconUrl": "https://lovable.dev/favicon.ico",
+		"categories": [
+			"coding",
+			"automation"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Full-stack Development: Håndterer både frontend og backend",
+			"GitHub Integration: Synkroniserer kode direkte til dit repository"
+		],
+		"pricing": "Gratis start eller $20/md",
+		"url": "https://lovable.dev/",
+		"featured": true
+	},
+	{
+		"slug": "microsoft-copilot",
+		"name": "Microsoft Copilot",
+		"tagline": "Din AI-makker til Microsoft 365 og erhvervslivet",
+		"description": "Copilot transformerer kontorarbejde ved at bygge bro mellem GPT-4 og Microsoft 365. Forretningsværdien ligger i lynhurtig opsummering af Teams-møder, udkast til PowerPoints og dataanalyse i Excel.",
+		"iconUrl": "https://copilot.microsoft.com/favicon.ico",
+		"categories": [
+			"text",
+			"automation"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Microsoft 365 Integration: Fungerer inde i Word, Excel og PowerPoint",
+			"Enterprise Data Protection: Sikrer at virksomhedsdata ikke træner modellen",
+			"Teams mødeopsummering og handlingspunkter"
+		],
+		"pricing": "Gratis (Web) eller licensbaseret (M365)",
+		"url": "https://copilot.microsoft.com/",
+		"featured": false
+	},
+	{
+		"slug": "midjourney",
+		"name": "Midjourney",
+		"tagline": "Markedets mest kunstneriske AI-billedgenerator",
+		"description": "Midjourney leverer den højeste æstetiske kvalitet i AI-genererede billeder. For marketingbureauer og designere betyder det adgang til unikke visuelle aktiver uden dyre fotoshoots.",
+		"iconUrl": "https://www.midjourney.com/favicon.ico",
+		"categories": [
+			"images",
+			"video"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"V6.1 Model: Fotorealistiske og kunstneriske outputs",
+			"Web Editor: Redigér billeder direkte i browseren"
+		],
+		"pricing": "Fra $10/md",
+		"url": "https://www.midjourney.com/",
+		"featured": false
+	},
+	{
+		"slug": "notebooklm",
+		"name": "NotebookLM",
+		"tagline": "Din personlige AI-forsker baseret på dine data",
+		"description": "NotebookLM bruger dine egne dokumenter som kildegrundlag. Det er uundværligt til at forstå komplekse projekter og kan endda generere en AI-podcast (Audio Overview) baseret på dine noter.",
+		"iconUrl": "https://www.gstatic.com/notebooklm/favicon.ico",
+		"categories": [
+			"text",
+			"research",
+			"audio"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Source-Grounded: Svarer kun baseret på dine kilder",
+			"Audio Overview: Transformer noter til en dialog-podcast"
+		],
+		"pricing": "Gratis",
+		"url": "https://notebooklm.google.com/",
+		"featured": true
+	},
+	{
+		"slug": "perplexity-ai",
+		"name": "Perplexity AI",
+		"tagline": "Fremtidens søgemaskine med kildehenvisninger",
+		"description": "Perplexity sparer virksomheder for timevis af research ved at levere direkte svar med præcise kildehenvisninger. Det sikrer høj troværdighed i beslutningsgrundlag og markedsanalyse.",
+		"iconUrl": "https://www.perplexity.ai/favicon.ico",
+		"categories": [
+			"text",
+			"research"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Real-time Search: Gennemsøger internettet for de nyeste data",
+			"Citations: Direkte links til alle anvendte kilder for faktatjek"
+		],
+		"pricing": "Gratis eller $20/md (Pro)",
+		"url": "https://www.perplexity.ai/",
+		"featured": false
+	},
+	{
+		"slug": "sora-openai",
+		"name": "Sora (OpenAI)",
+		"tagline": "Tekst-til-video der sprænger rammerne",
+		"description": "Sora er OpenAIs kommende videoværktøj, der kan generere op til 60 sekunders kompleks video. Selvom det stadig er i 'early access', lover det at revolutionere film- og reklamebranchen.",
+		"iconUrl": "https://openai.com/favicon.ico",
+		"categories": [
+			"video"
+		],
+		"badges": [
+			"new"
+		],
+		"keyFeatures": [
+			"High Fidelity: Komplekse scener med præcis fysik",
+			"Long Duration: Op til 1 minuts video fra én prompt"
+		],
+		"pricing": "Endnu ikke offentliggjort",
+		"url": "https://openai.com/sora/",
+		"featured": false
+	},
+	{
+		"slug": "suno-ai",
+		"name": "Suno AI",
+		"tagline": "Skab komplette sange med vokal på sekunder",
+		"description": "Suno demokratiserer musikproduktion. For virksomheder er det ideelt til at skabe jingles, baggrundsmusik eller sjove personaliserede sange til interne events uden licensproblemer.",
+		"iconUrl": "https://suno.com/favicon.ico",
+		"categories": [
+			"audio"
+		],
+		"badges": [
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"Full Song Generation: Tekst, melodi og vokal i ét",
+			"Style Prompting: Vælg præcis genre og stemning"
+		],
+		"pricing": "Gratis eller $10/md (Pro)",
+		"url": "https://suno.com/",
+		"featured": false
+	},
+	{
+		"slug": "synthesia",
+		"name": "Synthesia",
+		"tagline": "Nr. 1 platform til Enterprise AI-video",
+		"description": "Synthesia er guldstandarden for corporate video. Det sparer virksomheder for millioner i videoproduktion ved at lade dem skabe professionelle træningsvideoer blot ved at skrive tekst.",
+		"iconUrl": "https://www.synthesia.io/favicon.ico",
+		"categories": [
+			"video",
+			"automation"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"140+ Avatarer: Bred diversitet til global brug",
+			"AI Video Assistant: Skaber scripts og layouts automatisk"
+		],
+		"pricing": "Fra $22/md",
+		"url": "https://www.synthesia.io/",
+		"featured": true
+	},
+	{
+		"slug": "udio",
+		"name": "Udio",
+		"tagline": "Professionel musikkvalitet via AI",
+		"description": "Udio er kendt for sin ekstremt høje lydkvalitet og musikalske forståelse. Det er værktøjet for dem, der har brug for seriøs komposition og realistisk lydproduktion.",
+		"iconUrl": "https://www.udio.com/favicon.ico",
+		"categories": [
+			"audio"
+		],
+		"badges": [
+			"recommended",
+			"tried_tested"
+		],
+		"keyFeatures": [
+			"High-Fidelity Audio: Studio-kvalitet lyd",
+			"Extend Tracks: Udbyg dine sange bid for bid"
+		],
+		"pricing": "Freemium",
+		"url": "https://www.udio.com/",
+		"featured": false
+	}
+]

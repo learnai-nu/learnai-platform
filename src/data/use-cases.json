@@ -1,0 +1,656 @@
+[
+	{
+		"slug": "ai-mus-samtaler",
+		"title": "AI-assisteret MUS-samtale og opfølgning",
+		"reference": "UC-101",
+		"department": "hr",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Ledere bruger ofte MUS-samtaler på at tage noter i stedet for at lytte aktivt. Referater bliver uensartede, og opfølgning på udviklingsmål falder mellem to stole.",
+		"solution": "Brug AI til at transskribere samtalen i realtid via Microsoft Teams, og lad derefter en AI-assistent strukturere referatet efter faste fokusområder. Efter alle samtaler kan AI identificere fælles temaer på tværs af teamet og generere en samlet opfølgningskalender.",
+		"benefits": [
+			"Mere nærvær og aktiv lytning i samtalen",
+			"Ensartede og strukturerede referater på 5 minutter",
+			"Tværgående analyse af udviklingsmål og temaer",
+			"Automatisk opfølgningskalender med deadlines",
+			"Bedre medarbejderoplevelse og højere trivsel"
+		],
+		"recommendedTools": [
+			"Microsoft Teams",
+			"ChatGPT",
+			"Claude",
+			"Copilot"
+		],
+		"featured": true
+	},
+	{
+		"slug": "accelereret-softwareudvikling",
+		"title": "Accelereret softwareudvikling og kodegenerering",
+		"reference": "#5",
+		"department": "it",
+		"complexity": "high",
+		"strategicValue": "efficiency",
+		"problem": "Udviklingsteams er ofte flaskehalse pga. manuelle, repetitive kodeopgaver og mangel på ressourcer.",
+		"solution": "Gen AI assisterer professionelle udviklere med at skrive, optimere og teste kode lynhurtigt, hvilket reducerer udviklingstiden for nye features dramatisk.",
+		"benefits": [
+			"Markant kortere 'Time-to-Market' for nye softwareprodukter.",
+			"Frigørelse af seniorudviklere til arkitektur og komplekse problemer.",
+			"Reduktion af manuelle fejl i rutinepræget kodning."
+		],
+		"recommendedTools": [
+			"GitHub Copilot",
+			"Cursor",
+			"ChatGPT (GPT-4o)"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-empatisk-stoette-trivsel",
+		"title": "AI som empatisk støtte: Fremtidens trivsel og mental sundhed",
+		"reference": "#1",
+		"department": "hr",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Mange medarbejdere oplever ensomhed, mental træthed eller mangel på en fortrolig samtalepartner i en travl hverdag, hvilket kan føre til nedsat trivsel og højere sygefravær.",
+		"solution": "Generativ AI fungerer som en virtuel ledsager, der tilbyder emotionel støtte, lytter uden fordomme og genererer empatiske svar for at hjælpe medarbejdere med at håndtere hverdagens udfordringer og mentale barrierer.",
+		"benefits": [
+			"Reducerer barrieren for mental støtte ved at tilbyde en anonym og altid tilgængelig samtalepartner.",
+			"Forbedrer medarbejdertrivsel gennem daglig refleksion, humør-analyse og støtte til personlige gennembrud.",
+			"Frigør menneskelige ressourcer ved at lade AI håndtere lavpraktisk emotionel støtte og daglig strukturering af mentale opgaver."
+		],
+		"recommendedTools": [
+			"ChatGPT",
+			"Pi (Inflection AI)",
+			"Woebot"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-katalysator-kreativitet",
+		"title": "AI som katalysator for grænsebrydende kreativitet",
+		"reference": "#9",
+		"department": "marketing",
+		"complexity": "medium",
+		"strategicValue": "growth",
+		"problem": "Virksomheder begrænses ofte af traditionelle produktionsmetoder og budgetter til visuelt indhold.",
+		"solution": "Ved at bruge generative modeller til billeder, video og lyd kan virksomheder producere 'high-end' kreativt indhold, der før var umuligt at skabe in-house.",
+		"benefits": [
+			"Skalering af indholdsproduktion uden massive produktionsomkostninger.",
+			"Unik visuel differentiering i et mættet marked.",
+			"Mulighed for lynhurtigt at teste mange forskellige visuelle udtryk."
+		],
+		"recommendedTools": [
+			"Midjourney",
+			"Adobe Firefly",
+			"Runway"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-sundhedsraadgivning-symptomcheck",
+		"title": "AI Sundhedsrådgivning & Symptomcheck",
+		"reference": "#26",
+		"department": "hr",
+		"complexity": "high",
+		"strategicValue": "efficiency",
+		"problem": "Mange medarbejdere bruger tid i arbejdstiden på sundhedsspørgsmål, der kunne afklares hurtigt med korrekt information.",
+		"solution": "Avanceret AI analyserer symptomer og medicinske data for at give præcis, personlig vejledning og triagering.",
+		"benefits": [
+			"Hurtigere afklaring af sundhedsspørgsmål, hvilket minimerer unødigt fravær.",
+			"Forbedret sundhedsprofil for medarbejdere gennem forebyggende råd.",
+			"Optimeret brug af virksomhedens sundhedsforsikring gennem korrekt triagering."
+		],
+		"recommendedTools": [
+			"Ada Health",
+			"Babylon AI",
+			"Glass Health"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-assisteret-rapportskrivning-uddannelse",
+		"title": "AI-assisteret Rapportskrivning og Uddannelse",
+		"reference": "#23",
+		"department": "hr",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Udarbejdelse af træningsmateriale og faglige rapporter er tidskrævende og resulterer ofte i tørt, uoverskueligt indhold.",
+		"solution": "Gen AI assisterer med at strukturere komplekse emner, lave outlines og udkast til velresearchede rapporter og kursusmateriale.",
+		"benefits": [
+			"Hurtigere produktion af interne rapporter og uddannelsesdokumentation.",
+			"Forbedret kvalitet og struktur i skriftlig formidling på tværs af organisationen.",
+			"Effektiv hjælp til medarbejdere under efteruddannelse."
+		],
+		"recommendedTools": [
+			"ChatGPT",
+			"Claude",
+			"Jasper"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-assisteret-troubleshooting",
+		"title": "AI-assisteret Troubleshooting",
+		"reference": "#16",
+		"department": "it",
+		"complexity": "medium",
+		"strategicValue": "efficiency",
+		"problem": "Nedetid på maskiner eller systemer koster dyrt, og teknikerbesøg er langsomme og bekostelige.",
+		"solution": "AI analyserer fejlkoder, billeder af defekt hardware og historiske data for at give øjeblikkelige reparationsvejledninger.",
+		"benefits": [
+			"Markant reduktion i Mean Time to Repair (MTTR).",
+			"Besparelser på eksterne konsulenter og mekanikere ved gør-det-selv løsninger.",
+			"Demokratisering af teknisk viden – alle kan udføre basal fejlfinding."
+		],
+		"recommendedTools": [
+			"ChatGPT Vision",
+			"Claude 3.5 Sonnet",
+			"Fixit AI"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-baseret-mental-support-trivsel",
+		"title": "AI-baseret Mental Support og Trivsel",
+		"reference": "#25",
+		"department": "hr",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Medarbejdernes mentale sundhed er under pres, og adgang til øjeblikkelig sparring eller støtte er ofte begrænset.",
+		"solution": "AI-modeller fungerer som empatiske lyttepartnere eller virtuelle coaches, der tilbyder vejledning og mestringsstrategier i realtid.",
+		"benefits": [
+			"Øget medarbejdertrivsel gennem let tilgængelig lavtærskel-støtte.",
+			"Reduktion i sygefravær relateret til stress gennem tidlig indsats.",
+			"Skaber et trygt rum for medarbejdere til at lufte tanker anonymt."
+		],
+		"recommendedTools": [
+			"Woebot",
+			"Wysa",
+			"ChatGPT"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-drevet-interviewforberedelse",
+		"title": "AI-drevet Interviewforberedelse",
+		"reference": "#11",
+		"department": "hr",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Kandidater og medarbejdere føler sig ofte uforberedte og stressede før vigtige samtaler, hvilket fører til underpræstation.",
+		"solution": "Gen AI simulerer realistiske interview-scenarier og giver øjeblikkelig feedback på svar, kropssprog og toneleje.",
+		"benefits": [
+			"Øget selvtillid hos medarbejdere før interne og eksterne præsentationer.",
+			"Højere kvalitet i kandidat-screening gennem bedre forberedte interviewere.",
+			"Reduktion af stressrelaterede fejl under vigtige forretningskald."
+		],
+		"recommendedTools": [
+			"ChatGPT Voice Mode",
+			"Claude",
+			"Interviewer.ai"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-drevet-projektplanlaegning",
+		"title": "AI-drevet Projektplanlægning",
+		"reference": "#20",
+		"department": "operations",
+		"complexity": "low",
+		"strategicValue": "efficiency",
+		"problem": "Projekter fejler ofte på grund af urealistiske tidsplaner og manglende overblik over delopgaver.",
+		"solution": "Gen AI opstiller strukturerede planer, milepæle og opgavelister baseret på overordnede mål.",
+		"benefits": [
+			"Hurtigere overgang fra idé til eksekverbar plan.",
+			"Bedre identifikation af potentielle flaskehalse i projektforløbet.",
+			"Øget gennemsigtighed og struktur i team-samarbejde."
+		],
+		"recommendedTools": [
+			"Asana Intelligence",
+			"ChatGPT",
+			"Monday.com AI"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-genereret-underholdning-aktiviteter",
+		"title": "AI-genereret Underholdning og Aktiviteter",
+		"reference": "#21",
+		"department": "marketing",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Virksomheder kæmper med at skabe engagerende og unikt indhold til familie-events eller kundesegmenter med børn.",
+		"solution": "Gen AI skaber personlige historier, interaktive spil og kreative opgaver, der er skræddersyet til specifikke aldersgrupper og temaer.",
+		"benefits": [
+			"Øget kundeloyalitet gennem unikke, personaliserede oplevelser for børnefamilier.",
+			"Markant tidsbesparelse i planlægning af firma-events og workshops.",
+			"Mulighed for lynhurtigt at skalere kreative koncepter til forskellige platforme."
+		],
+		"recommendedTools": [
+			"ChatGPT",
+			"Midjourney",
+			"StoryBird AI"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ai-understoettet-trivsel",
+		"title": "AI-understøttet trivsel og sundhedsfremme",
+		"reference": "#10",
+		"department": "hr",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Medarbejdernes sundhed og trivsel er afgørende for produktiviteten, men personlig rådgivning er dyrt og svært at skalere.",
+		"solution": "Gen AI tilbyder personaliserede sundhedsplaner, kostvejledning og wellness-tips baseret på den enkelte medarbejders livsstil og mål.",
+		"benefits": [
+			"Reduceret sygefravær gennem fokus på forebyggende sundhed.",
+			"Øget medarbejderenergi og fokus i løbet af arbejdsdagen.",
+			"En stærk værditilføjelse til virksomhedens personalegoder (Employer Branding)."
+		],
+		"recommendedTools": [
+			"MyFitnessPal (AI)",
+			"ChatGPT",
+			"Oura (AI insights)"
+		],
+		"featured": false
+	},
+	{
+		"slug": "automatiseret-generering-juridiske-dokumenter",
+		"title": "Automatiseret Generering af Juridiske Dokumenter",
+		"reference": "#28",
+		"department": "operations",
+		"complexity": "high",
+		"strategicValue": "efficiency",
+		"problem": "Udarbejdelse af standardkontrakter og juridiske dokumenter tager lang tid og er dyrt i advokatomkostninger.",
+		"solution": "Gen AI genererer skræddersyede juridiske udkast baseret på specifikke input, hvilket sikrer konsistens og korrekt formatering.",
+		"benefits": [
+			"Markant besparelse på juridiske omkostninger ved standardiserede opgaver.",
+			"Hurtigere ekspeditionstid for kontrakter og aftaler.",
+			"Reduktion i menneskelige fejl gennem brug af præcise skabeloner."
+		],
+		"recommendedTools": [
+			"Harvey AI",
+			"Ironclad",
+			"Spellbook"
+		],
+		"featured": false
+	},
+	{
+		"slug": "automatiseret-generering-billeder",
+		"title": "Automatiseret Generering af Relevante Billeder",
+		"reference": "#12",
+		"department": "marketing",
+		"complexity": "medium",
+		"strategicValue": "efficiency",
+		"problem": "Virksomheder bruger for mange ressourcer på stock-billeder eller dyre grafiske processer til blogs og sociale medier.",
+		"solution": "Gen AI skaber unikke, brand-specifikke billeder lynhurtigt baseret på tekstbeskrivelser.",
+		"benefits": [
+			"Drastisk reduktion i omkostninger til stock-fotos og eksterne grafikere.",
+			"Hurtigere time-to-market for visuelt indhold til kampagner.",
+			"Unik visuel identitet uden risiko for at bruge de samme billeder som konkurrenter."
+		],
+		"recommendedTools": [
+			"Midjourney",
+			"DALL-E 3",
+			"Canva Magic Design"
+		],
+		"featured": false
+	},
+	{
+		"slug": "boost-selvtillid-beslutningskraft",
+		"title": "Boost Selvtillid og Beslutningskraft",
+		"reference": "#18",
+		"department": "operations",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Usikkerhed hos medarbejdere fører til tøven og manglende initiativ i vigtige projekter.",
+		"solution": "AI fungerer som en sparringspartner, der bekræfter beslutninger, giver positiv feedback og perspektiverer udfordringer.",
+		"benefits": [
+			"Hurtigere beslutningsprocesser ved at have en AI backup.",
+			"Større risikovillighed og innovation hos medarbejdere.",
+			"Forbedret psykologisk tryghed gennem objektiv feedback og støtte."
+		],
+		"recommendedTools": [
+			"ChatGPT",
+			"Pi",
+			"Claude"
+		],
+		"featured": false
+	},
+	{
+		"slug": "corporate-llm-intern-copilot",
+		"title": "Corporate LLM & Intern Copilot",
+		"reference": "#22",
+		"department": "it",
+		"complexity": "high",
+		"strategicValue": "efficiency",
+		"problem": "Medarbejdere drukner i interne data og bruger for meget tid på at søge efter svar i ustrukturerede dokumenter.",
+		"solution": "Implementering af en lukket virksomheds-LLM, der fungerer som en intelligent assistent på tværs af dokumenter, support og dataanalyse.",
+		"benefits": [
+			"Radikal forbedring af medarbejdernes produktivitet ved hurtig adgang til intern viden.",
+			"Sikker håndtering af følsomme data inden for virksomhedens eget setup.",
+			"Automatisering af rutineprægede supportopgaver og dokumentgenerering."
+		],
+		"recommendedTools": [
+			"Azure OpenAI",
+			"Microsoft Copilot",
+			"Custom LLM stack"
+		],
+		"featured": false
+	},
+	{
+		"slug": "eksponentiel-idegenerering",
+		"title": "Eksponentiel idégenerering og konceptualisering",
+		"reference": "#6",
+		"department": "marketing",
+		"complexity": "low",
+		"strategicValue": "growth",
+		"problem": "Kreativ stilstand i marketing og produktudvikling hæmmer innovation og konkurrenceevne.",
+		"solution": "Gen AI fungerer som en uendelig kilde til kreative idéer, der kan kombinere datamønstre og trends til nye koncepter på sekunder.",
+		"benefits": [
+			"10x flere idéer på kortere tid i brainstorming-sessioner.",
+			"Hurtigere identifikation af vindende kampagnekoncepter.",
+			"Billig eksperimentering med 'wildcard' idéer uden risiko."
+		],
+		"recommendedTools": [
+			"Claude.ai",
+			"Miro Assist",
+			"Midjourney"
+		],
+		"featured": false
+	},
+	{
+		"slug": "engagement-kreativt-indhold",
+		"title": "Engagement gennem kreativt og underholdende indhold",
+		"reference": "#7",
+		"department": "marketing",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Statisk og kedeligt indhold overses af kunderne, hvilket fører til lav brand-bevidsthed og engagement.",
+		"solution": "Gen AI bruges til at skabe sjovt, humoristisk og viralt potentiale gennem memes, skæve scenarier og kreativ leg med brandet.",
+		"benefits": [
+			"Højere engagement på sociale medier gennem relevant humor.",
+			"Humanisering af brandet ved at vise personlighed og kreativitet.",
+			"Lavere omkostninger til produktion af 'lightweight' underholdningsindhold."
+		],
+		"recommendedTools": [
+			"Midjourney",
+			"Suno",
+			"ChatGPT"
+		],
+		"featured": false
+	},
+	{
+		"slug": "formaalsdrevet-karriereudvikling",
+		"title": "Formålsdrevet karriereudvikling og selvrefleksion",
+		"reference": "#3",
+		"department": "hr",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Manglende retning og formål i arbejdet er en af de største årsager til medarbejderflugt og lavt engagement.",
+		"solution": "Ved hjælp af Gen AI kan medarbejdere gennemgå guidede refleksionsforløb, der matcher deres personlige værdier med virksomhedens mission og karrieremuligheder.",
+		"benefits": [
+			"Højere medarbejderfastholdelse gennem øget arbejdsglæde og mening.",
+			"Bedre udnyttelse af medarbejdernes skjulte talenter og passioner.",
+			"Styrket virksomhedskultur baseret på fælles værdier."
+		],
+		"recommendedTools": [
+			"Claude.ai",
+			"ChatGPT",
+			"Mindgrasp"
+		],
+		"featured": false
+	},
+	{
+		"slug": "hyper-personaliseret-laering",
+		"title": "Hyper-personaliseret læring og kompetenceløft",
+		"reference": "#4",
+		"department": "hr",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "Standardiserede kurser rammer ofte ved siden af medarbejderens reelle behov, hvilket spilder tid og ressourcer.",
+		"solution": "Gen AI skaber interaktivt læringsindhold, der tilpasser sig den enkeltes stil, tempo og eksisterende viden, hvilket gør træningen langt mere effektiv.",
+		"benefits": [
+			"Markant hurtigere opkvalificering af medarbejdere (upskilling).",
+			"Reduceret tidsforbrug på irrelevant træningsmateriale.",
+			"Instant feedback-loop, der sikrer korrekt indlæring fra start."
+		],
+		"recommendedTools": [
+			"Learnai.nu Custom Tutor",
+			"Kajabi",
+			"ChatGPT Team"
+		],
+		"featured": false
+	},
+	{
+		"slug": "hyper-specifik-vidensoegning",
+		"title": "Hyper-specifik Vidensøgning",
+		"reference": "#13",
+		"department": "operations",
+		"complexity": "low",
+		"strategicValue": "efficiency",
+		"problem": "Medarbejdere spilder tid på at lede efter specifik information i massive datasæt eller gennem upræcise Google-søgninger.",
+		"solution": "AI-modeller syntetiserer information fra flere kilder og leverer direkte svar på komplekse, tekniske spørgsmål.",
+		"benefits": [
+			"Markant tidsbesparelse ved research af tekniske komponenter eller regulativer.",
+			"Evnen til at identificere objekter eller dele via billedgenkendelse i felten.",
+			"Hurtigere beslutningstagning baseret på præcis informationssyntese."
+		],
+		"recommendedTools": [
+			"Perplexity AI",
+			"ChatGPT Search",
+			"Glean"
+		],
+		"featured": false
+	},
+	{
+		"slug": "intelligent-beskyttelse-mod-trolling",
+		"title": "Intelligent Beskyttelse mod Trolling",
+		"reference": "#30",
+		"department": "marketing",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Online communities og sociale medier kan hurtigt blive oversvømmet af negativitet og trolling, hvilket skader brandet.",
+		"solution": "AI detekterer skadelige kommentarer i realtid og foreslår moderationsstrategier eller konstruktive modsvar.",
+		"benefits": [
+			"Beskyttelse af brandets omdømme gennem sundere online miljøer.",
+			"Besparelser på manuel moderation og community management.",
+			"Bedre kundeoplevelse i virksomhedens digitale kanaler."
+		],
+		"recommendedTools": [
+			"OpenAI Moderation API",
+			"CleanSpeak",
+			"Perspective API"
+		],
+		"featured": false
+	},
+	{
+		"slug": "intelligent-rejseplanlaegning-erhverv",
+		"title": "Intelligent Rejseplanlægning for Erhverv",
+		"reference": "#24",
+		"department": "operations",
+		"complexity": "low",
+		"strategicValue": "efficiency",
+		"problem": "Planlægning af komplekse forretningsrejser med flere stop, møder og logistik er en administrativ byrde.",
+		"solution": "AI optimerer rejseplaner baseret på præferencer, tidsskemaer og budget, og leverer en fuldstændig optimeret ruteplan.",
+		"benefits": [
+			"Drastisk reduktion i tidsforbrug på rejseadministration.",
+			"Bedre optimering af tid mellem møder, hvilket øger effektiviteten på farten.",
+			"Reducerede rejseomkostninger gennem AI-identificerede prisoptimeringer."
+		],
+		"recommendedTools": [
+			"ChatGPT with Travel Plugins",
+			"Roam Around",
+			"Tripnotes"
+		],
+		"featured": false
+	},
+	{
+		"slug": "intelligent-strukturering-arbejdsdag",
+		"title": "Intelligent strukturering af arbejdsdag og prioriteter",
+		"reference": "#2",
+		"department": "operations",
+		"complexity": "low",
+		"strategicValue": "efficiency",
+		"problem": "Mange medarbejdere lider under 'information overload' og har svært ved at prioritere opgaver, hvilket fører til stress og nedsat produktivitet.",
+		"solution": "Gen AI fungerer som en personlig driftsassistent, der analyserer opgavelister, deadlines og mål for at skabe en optimeret tidsplan og strukturere det fysiske og digitale arbejdsmiljø.",
+		"benefits": [
+			"Øget output gennem bedre tidsstyring og eliminering af tidsrøvere.",
+			"Reduceret stressniveau hos medarbejdere grundet klarere overblik.",
+			"Bedre alignment mellem daglige opgaver og overordnede strategiske mål."
+		],
+		"recommendedTools": [
+			"ChatGPT",
+			"Notion AI",
+			"Reclaim.ai"
+		],
+		"featured": false
+	},
+	{
+		"slug": "konfliktloesning-maegling-ai",
+		"title": "Konfliktløsning og Mægling med AI",
+		"reference": "#27",
+		"department": "hr",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Personlige konflikter på arbejdspladsen kan eskalere og skade arbejdsmiljøet, hvis de ikke håndteres objektivt.",
+		"solution": "AI analyserer kommunikationsmønstre og tilbyder neutrale perspektiver samt mæglingsteknikker til at løse uoverensstemmelser.",
+		"benefits": [
+			"Hurtigere løsning af interne tvister før de bliver til alvorlige HR-sager.",
+			"Fremmer en sundere feedback-kultur gennem objektive analyser.",
+			"Reduktion i stress og frustration hos de involverede parter."
+		],
+		"recommendedTools": [
+			"ChatGPT",
+			"Claude",
+			"Cresta"
+		],
+		"featured": false
+	},
+	{
+		"slug": "optimering-kodebase-refactoring",
+		"title": "Optimering af eksisterende kodebase (Refactoring)",
+		"reference": "#8",
+		"department": "it",
+		"complexity": "high",
+		"strategicValue": "quality",
+		"problem": "Gammel kode (legacy code) og teknisk gæld gør systemer langsomme, usikre og svære at vedligeholde.",
+		"solution": "Gen AI analyserer eksisterende kode for at finde fejl, optimere ydeevnen og foreslå moderne alternativer, hvilket forbedrer systemstabiliteten.",
+		"benefits": [
+			"Reduktion af teknisk gæld og vedligeholdelsesomkostninger.",
+			"Højere systemsikkerhed gennem automatisk fejlfinding.",
+			"Forbedret performance og hastighed i kritiske forretningssystemer."
+		],
+		"recommendedTools": [
+			"GitHub Copilot",
+			"Cursor",
+			"SonarQube (AI features)"
+		],
+		"featured": false
+	},
+	{
+		"slug": "personlig-laering-coaching",
+		"title": "Personlig Læring og Coaching",
+		"reference": "#17",
+		"department": "hr",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Traditionel efteruddannelse er ofte one-size-fits-all og ineffektiv til at lukke specifikke kompetencegab.",
+		"solution": "AI fungerer som en personlig tutor, der tilpasser undervisningsmateriale og sværhedsgrad til den enkelte medarbejder.",
+		"benefits": [
+			"Hurtigere kompetenceudvikling gennem adaptiv læring.",
+			"24/7 adgang til en tålmodig tutor, der aldrig mister overblikket.",
+			"Øget fastholdelse af viden gennem interaktive quizzer og feedback."
+		],
+		"recommendedTools": [
+			"Khanmigo",
+			"ChatGPT Personal Tutor",
+			"Coursera Coach"
+		],
+		"featured": false
+	},
+	{
+		"slug": "ressourceoptimering-kokkerer-med-hvad-du-har",
+		"title": "Ressourceoptimering: Kokkerér med hvad du har",
+		"reference": "#15",
+		"department": "operations",
+		"complexity": "low",
+		"strategicValue": "efficiency",
+		"problem": "Spild af eksisterende ressourcer eller lagerbeholdning på grund af manglende overblik over anvendelsesmuligheder.",
+		"solution": "AI foreslår kreative løsninger eller opskrifter baseret udelukkende på de tilgængelige input og ingredienser.",
+		"benefits": [
+			"Reduktion af madspild i kantiner og restaurationsbranchen.",
+			"Optimeret brug af eksisterende lagerbeholdning før nyindkøb.",
+			"Kreativ problemløsning i logistik ved at maksimere brug af tilgængelige midler."
+		],
+		"recommendedTools": [
+			"ChatGPT Vision",
+			"Chef GPT",
+			"Custom GPTs"
+		],
+		"featured": false
+	},
+	{
+		"slug": "simple-forklaringer-kompleks-dokumentation",
+		"title": "Simple Forklaringer af Kompleks Dokumentation",
+		"reference": "#14",
+		"department": "operations",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Tekniske manualer og API-dokumentation er ofte uforståelige for ikke-eksperter, hvilket skaber flaskehalse.",
+		"solution": "Gen AI nedbryder kompleks viden til letfordøjelige forklaringer (ELI5) skræddersyet til modtagerens niveau.",
+		"benefits": [
+			"Frigør tid for specialister ved at lade AI besvare basale tekniske spørgsmål.",
+			"Forbedret kundeservice gennem hurtigere forståelse af komplekse sager.",
+			"Hurtigere onboarding af nye medarbejdere i komplekse systemer."
+		],
+		"recommendedTools": [
+			"ChatPDF",
+			"NotebookLM",
+			"ChatGPT"
+		],
+		"featured": false
+	},
+	{
+		"slug": "strategisk-sparring-dybe-dialoger",
+		"title": "Strategisk Sparring og Dybe Dialoger",
+		"reference": "#29",
+		"department": "hr",
+		"complexity": "medium",
+		"strategicValue": "quality",
+		"problem": "Ledere og specialister mangler ofte en fortrolig partner til at udforske komplekse tanker og strategiske dilemmaer.",
+		"solution": "AI faciliterer reflekterende dialoger ved at stille udfordrende spørgsmål og give nye indsigter i en tryg ramme.",
+		"benefits": [
+			"Styrket lederskab gennem dybere refleksion og selverkendelse.",
+			"Innovative løsninger på komplekse forretningsmæssige udfordringer.",
+			"Øget mental klarhed for nøglemedarbejdere."
+		],
+		"recommendedTools": [
+			"Pi",
+			"ChatGPT Plus",
+			"Claude"
+		],
+		"featured": false
+	},
+	{
+		"slug": "strategisk-tone-of-voice-justering",
+		"title": "Strategisk Tone-of-Voice Justering",
+		"reference": "#19",
+		"department": "marketing",
+		"complexity": "low",
+		"strategicValue": "quality",
+		"problem": "E-mails og kommunikation kan ofte misforstås som konfrontatoriske eller uklare, hvilket skader relationer.",
+		"solution": "AI analyserer og omskriver tekster for at ramme den præcise ønskede tone (professionel, venlig, empatisk).",
+		"benefits": [
+			"Færre konflikter i intern og ekstern korrespondance.",
+			"Sikrer at virksomhedens brand voice overholdes af alle.",
+			"Mere effektiv kommunikation til kulturelt forskelligartede modtagere."
+		],
+		"recommendedTools": [
+			"Grammarly Business",
+			"Jasper",
+			"ChatGPT"
+		],
+		"featured": false
+	}
+]
