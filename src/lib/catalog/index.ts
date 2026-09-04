@@ -32,7 +32,7 @@ export interface Resource {
 	slug: string;
 	title: string;
 	type: string;
-	url: string;
+	url: string | null;
 	description: string;
 	rating: number | null;
 	topics: string[];
@@ -102,6 +102,12 @@ function optional(value: unknown): string | null {
 	return typeof value === 'string' && value.length > 0 ? value : null;
 }
 
+/** Only http(s) URLs reach an href or src attribute, whoever wrote the row. */
+function webUrl(value: unknown): string | null {
+	const url = optional(value);
+	return url && /^https?:\/\//i.test(url) ? url : null;
+}
+
 /** Postgres numerics arrive as strings through PostgREST. */
 function numeric(value: unknown): number | null {
 	const parsed = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : NaN;
@@ -133,12 +139,12 @@ export async function fetchTools(supabase: SupabaseClient) {
 		name: text(row.name),
 		tagline: text(row.tagline),
 		description: text(row.description),
-		iconUrl: optional(row.icon_url),
+		iconUrl: webUrl(row.icon_url),
 		categories: strings(row.categories),
 		badges: strings(row.badges),
 		keyFeatures: strings(row.key_features),
 		pricing: optional(row.pricing_display),
-		url: optional(row.external_url),
+		url: webUrl(row.external_url),
 		featured: row.featured === true,
 	}));
 	return { tools, error };
@@ -176,7 +182,7 @@ export async function fetchResources(supabase: SupabaseClient) {
 		slug: text(row.slug),
 		title: text(row.title),
 		type: text(row.type),
-		url: text(row.url),
+		url: webUrl(row.url),
 		description: text(row.description),
 		rating: numeric(row.rating),
 		topics: strings(row.topics),

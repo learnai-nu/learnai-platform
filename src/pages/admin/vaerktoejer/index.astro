@@ -1,0 +1,73 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { label, toolCategoryLabels } from '../../../lib/catalog';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const { data: items, error } = await context.supabase
+	.from('tools')
+	.select('id,slug,name,categories,published,featured,sort_order')
+	.order('sort_order', { ascending: true });
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Værktøjet er oprettet som kladde.',
+	saved: 'Ændringerne er gemt.',
+};
+---
+
+<AdminLayout
+	title="Værktøjer"
+	description="Administrér værktøjskataloget på /tools."
+	active="tools"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Katalog</p>
+			<h1>AI-værktøjer</h1>
+			<p>Indholdet bag <a class="text-link" href="/tools">/tools</a>. Rækkefølgen styres af sorteringsnummeret.</p>
+		</div>
+		<a class="button" href="/admin/vaerktoejer/ny">Opret værktøj</a>
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Værktøjet kunne ikke gemmes. Kontrollér felterne.</p>}
+
+	<section class="admin-panel">
+		{error ? (
+			<p class="notice notice-error" role="alert">Værktøjslisten kunne ikke hentes.</p>
+		) : items?.length ? (
+			<div class="admin-list">
+				{items.map((item) => (
+					<a href={`/admin/vaerktoejer/${item.id}`}>
+						<span>
+							<strong>{item.name}{item.featured ? ' ★' : ''}</strong>
+							<small>
+								#{item.sort_order} · /{item.slug}
+								{item.categories?.length ? ` · ${item.categories.map((category: string) => label(toolCategoryLabels, category)).join(', ')}` : ''}
+							</small>
+						</span>
+						<span class={`status-badge status-${item.published ? 'published' : 'draft'}`}>
+							{item.published ? 'Publiceret' : 'Kladde'}
+						</span>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="admin-empty">
+				<h2>Kataloget er tomt</h2>
+				<p>Opret det første værktøj, eller kør katalogmigrationen.</p>
+			</div>
+		)}
+	</section>
+</AdminLayout>

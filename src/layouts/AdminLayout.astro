@@ -4,7 +4,7 @@ import SiteLayout from './SiteLayout.astro';
 interface Props {
 	title: string;
 	description: string;
-	active: 'dashboard' | 'content' | 'courses' | 'quizzes';
+	active: 'dashboard' | 'content' | 'courses' | 'quizzes' | 'tools' | 'use-cases' | 'resources';
 	email: string;
 	role: 'admin' | 'editor';
 }
@@ -15,6 +15,9 @@ const links = [
 	{ id: 'content', label: 'Indhold', href: '/admin/indhold' },
 	{ id: 'courses', label: 'Kurser', href: '/admin/kurser' },
 	{ id: 'quizzes', label: 'Quizzer', href: '/admin/quizzer' },
+	{ id: 'tools', label: 'Værktøjer', href: '/admin/vaerktoejer' },
+	{ id: 'use-cases', label: 'Use cases', href: '/admin/use-cases' },
+	{ id: 'resources', label: 'Ressourcer', href: '/admin/ressourcer' },
 ] as const;
 ---
 

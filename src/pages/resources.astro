@@ -17,7 +17,7 @@ const groups = types.map((type) => ({
 const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
 const itemList = createItemListSchema(
 	canonicalUrl,
-	resources.map((resource) => ({ name: resource.title, url: resource.url })),
+	resources.map((resource) => ({ name: resource.title, url: resource.url ?? canonicalUrl.toString() })),
 );
 ---
 
@@ -94,9 +94,11 @@ const itemList = createItemListSchema(
 								<p>{resource.description}</p>
 								<div class="catalog-card-footer">
 									{resource.rating !== null && <p class="catalog-price">Vurdering {resource.rating.toFixed(1)} / 5</p>}
-									<a class="catalog-link" href={resource.url} target="_blank" rel="noopener noreferrer">
-										Åbn ressourcen <span aria-hidden="true">→</span>
-									</a>
+									{resource.url && (
+										<a class="catalog-link" href={resource.url} target="_blank" rel="noopener noreferrer">
+											Åbn ressourcen <span aria-hidden="true">→</span>
+										</a>
+									)}
 								</div>
 							</article>
 						))}

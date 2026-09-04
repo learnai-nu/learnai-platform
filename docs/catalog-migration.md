@@ -76,13 +76,22 @@ publiceret dansk indhold, renser importerede punktlister for dekorative emoji
 (`✅`, `🚀`), `Gevinst N:`-nummerering og `+ N flere funktioner`-stubbe, og
 skriver idempotente inserts. Læs output igennem, og læg det i en ny migration.
 
-## Åbne punkter
+## Redigering i CMS'et
 
-- CMS'et under `/admin` administrerer endnu ikke de tre kataloger. Tabellerne
-  er klar til det: skrivepolitikkerne kræver netop redaktør- eller
-  admin-rollen, som resten af CMS'et bygger på.
-- Kolonnen `sort_order` styrer rækkefølgen og gør det muligt at kuratere
-  katalogerne uden kodeændringer.
+Katalogerne administreres under `/admin/vaerktoejer`, `/admin/use-cases` og
+`/admin/ressourcer` med samme mønster som resten af CMS'et: sider kræver en
+session og rollen `admin` eller `editor`, gemmer via ét POST-endpoint
+(`/api/admin/catalog/save`) med same-origin-tjek, og skriver med redaktørens
+egen session, så RLS er den reelle grænse.
+
+- Nye rækker oprettes altid som kladde og bliver først synlige på sitet, når
+  de publiceres.
+- `sort_order` styrer rækkefølgen på de offentlige sider.
+- Felter med flere værdier (nøglefunktioner, gevinster, emner) redigeres som
+  én værdi pr. linje. Kategorier og mærkater er afkrydsningsfelter, så de
+  matcher labels i `src/lib/catalog`.
+- Kun `http(s)`-URL'er accepteres, både i formularvalideringen og igen når
+  data læses ud til siderne — værdierne ender i `href` og `src`.
 
 ## Gamle links
 

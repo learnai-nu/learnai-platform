@@ -1,0 +1,153 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { complexityLabels, departmentLabels, strategicValueLabels } from '../../../lib/catalog';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+interface UseCaseRow {
+	id: string;
+	slug: string;
+	title: string;
+	reference: string | null;
+	department: string;
+	complexity: string;
+	strategic_value: string;
+	problem_statement: string;
+	solution: string;
+	business_benefits: string[] | null;
+	recommended_tools: string[] | null;
+	featured: boolean;
+	published: boolean;
+	sort_order: number;
+}
+
+const isNew = Astro.params.id === 'ny';
+let item: UseCaseRow | null = null;
+
+if (!isNew) {
+	const result = await context.supabase
+		.from('use_cases')
+		.select('id,slug,title,reference,department,complexity,strategic_value,problem_statement,solution,business_benefits,recommended_tools,featured,published,sort_order')
+		.eq('id', Astro.params.id)
+		.maybeSingle();
+	if (result.error || !result.data) return new Response('Use casen blev ikke fundet.', { status: 404 });
+	item = result.data;
+}
+
+const status = Astro.url.searchParams.get('status');
+const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : '');
+const options = (labels: Record<string, string>, current: unknown) =>
+	Object.entries(labels).map(([value, text]) => ({ value, text, selected: current === value }));
+---
+
+<AdminLayout
+	title={isNew ? 'Ny use case' : item?.title ?? 'Redigér use case'}
+	description="Redigér en use case i kataloget."
+	active="use-cases"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href="/admin/use-cases">← Use cases</a>
+			<h1>{isNew ? 'Opret use case' : 'Redigér use case'}</h1>
+			<p>Nye use cases oprettes som kladde og bliver først synlige, når de publiceres.</p>
+		</div>
+		{item?.published && <a class="button button-ghost" href={`/use-cases#${item.slug}`}>Se på sitet</a>}
+	</header>
+
+	{status === 'created' && <p class="notice" role="status">Use casen er oprettet som kladde.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Use casen kunne ikke gemmes. Kontrollér felterne og sluggen.</p>}
+
+	<form class="admin-form" method="post" action="/api/admin/catalog/save">
+		<input type="hidden" name="catalog" value="use-case" />
+		<input type="hidden" name="id" value={item?.id ?? ''} />
+		<div class="admin-form-grid">
+			<label class="field-wide">
+				Titel
+				<input name="title" required maxlength="200" value={item?.title ?? ''} />
+			</label>
+			<label>
+				Slug
+				<input name="slug" required maxlength="160" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={item?.slug ?? ''} />
+			</label>
+			<label>
+				Sortering
+				<input name="sortOrder" type="number" min="0" max="10000" value={item?.sort_order ?? 0} />
+			</label>
+			<label>
+				Afdeling
+				<select name="department">
+					{options(departmentLabels, item?.department).map((option) => (
+						<option value={option.value} selected={option.selected}>{option.text}</option>
+					))}
+				</select>
+			</label>
+			<label>
+				Kompleksitet
+				<select name="complexity">
+					{options(complexityLabels, item?.complexity).map((option) => (
+						<option value={option.value} selected={option.selected}>{option.text}</option>
+					))}
+				</select>
+			</label>
+			<label>
+				Værdi
+				<select name="strategicValue">
+					{options(strategicValueLabels, item?.strategic_value).map((option) => (
+						<option value={option.value} selected={option.selected}>{option.text}</option>
+					))}
+				</select>
+			</label>
+			<label>
+				Reference
+				<input name="reference" maxlength="50" value={item?.reference ?? ''} />
+				<small>Valgfri kilde- eller nummerering, fx #12.</small>
+			</label>
+			<label class="field-wide">
+				Problem
+				<textarea name="problemStatement" rows="4" maxlength="4000" required>{item?.problem_statement ?? ''}</textarea>
+			</label>
+			<label class="field-wide">
+				Løsning
+				<textarea name="solution" rows="4" maxlength="4000" required>{item?.solution ?? ''}</textarea>
+			</label>
+			<label class="field-wide">
+				Forretningsværdi
+				<textarea name="businessBenefits" rows="5" maxlength="4000">{lines(item?.business_benefits)}</textarea>
+				<small>Én gevinst pr. linje.</small>
+			</label>
+			<label class="field-wide">
+				Anbefalede værktøjer
+				<textarea name="recommendedTools" rows="3" maxlength="1000">{lines(item?.recommended_tools)}</textarea>
+				<small>Ét værktøj pr. linje.</small>
+			</label>
+			<label>
+				Fremhævet
+				<select name="featured">
+					<option value="false" selected={!item?.featured}>Nej</option>
+					<option value="true" selected={item?.featured === true}>Ja</option>
+				</select>
+			</label>
+			<label>
+				Status
+				<select name="published">
+					<option value="false" selected={!item?.published}>Kladde</option>
+					<option value="true" selected={item?.published === true}>Publiceret</option>
+				</select>
+			</label>
+		</div>
+		<div class="admin-form-actions">
+			<button class="button" type="submit">{isNew ? 'Opret som kladde' : 'Gem ændringer'}</button>
+			<a class="button button-ghost" href="/admin/use-cases">Annullér</a>
+		</div>
+	</form>
+</AdminLayout>

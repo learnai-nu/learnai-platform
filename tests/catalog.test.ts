@@ -2,6 +2,11 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
+	resourceFormSchema,
+	toolFormSchema,
+	useCaseFormSchema,
+} from '../src/lib/admin/contracts';
+import {
 	buildFacet,
 	complexityLabels,
 	departmentLabels,
@@ -22,6 +27,11 @@ const toolsPage = readFileSync(new URL('../src/pages/tools.astro', import.meta.u
 const useCasesPage = readFileSync(new URL('../src/pages/use-cases.astro', import.meta.url), 'utf8');
 const resourcesPage = readFileSync(new URL('../src/pages/resources.astro', import.meta.url), 'utf8');
 const filterScript = readFileSync(new URL('../src/scripts/catalog-filter.ts', import.meta.url), 'utf8');
+const saveRoute = readFileSync(new URL('../src/pages/api/admin/catalog/save.ts', import.meta.url), 'utf8');
+const adminPages = ['vaerktoejer', 'use-cases', 'ressourcer'].flatMap((section) => [
+	readFileSync(new URL(`../src/pages/admin/${section}/index.astro`, import.meta.url), 'utf8'),
+	readFileSync(new URL(`../src/pages/admin/${section}/[id].astro`, import.meta.url), 'utf8'),
+]);
 
 /** Minimal stand-in for the PostgREST query builder the catalogue helpers use. */
 function fakeSupabase(rows: unknown[], error: unknown = null) {
@@ -151,6 +161,15 @@ describe('catalog queries', () => {
 		expect(resources[1]!.topics).toEqual([]);
 	});
 
+	it('drops urls that are not http(s), whoever wrote the row', async () => {
+		const { client } = fakeSupabase([
+			{ slug: 'ondt', name: 'Ondt', categories: [], badges: [], key_features: [], external_url: 'javascript:alert(1)', icon_url: 'data:text/html,<script>', featured: false },
+		]);
+		const { tools } = await fetchTools(client);
+		expect(tools[0]!.url).toBeNull();
+		expect(tools[0]!.iconUrl).toBeNull();
+	});
+
 	it('returns the Supabase error instead of throwing', async () => {
 		const { client } = fakeSupabase([], { message: 'nedetid' });
 		const { tools, error } = await fetchTools(client);
@@ -210,6 +229,76 @@ describe('catalog pages', () => {
 	it('opens external links safely', () => {
 		for (const page of [toolsPage, resourcesPage]) {
 			expect(page).toContain('rel="noopener noreferrer"');
+		}
+	});
+});
+
+describe('katalog-admin', () => {
+	const tool = {
+		slug: 'nyt-vaerktoej',
+		name: 'Nyt værktøj',
+		description: 'Beskrivelse',
+		categories: ['text'],
+		badges: [],
+		keyFeatures: ' Første funktion \n\n Anden funktion \n',
+		externalUrl: 'https://example.com',
+		published: 'true',
+		sortOrder: '3',
+	};
+
+	it('splits line-separated fields into arrays and drops blank lines', () => {
+		const parsed = toolFormSchema.parse(tool);
+		expect(parsed.keyFeatures).toEqual(['Første funktion', 'Anden funktion']);
+		expect(parsed.sortOrder).toBe(3);
+		expect(parsed.published).toBe('true');
+	});
+
+	it('defaults optional tool fields instead of failing', () => {
+		const parsed = toolFormSchema.parse({ slug: 'x-y', name: 'Xy', sortOrder: '0' });
+		expect(parsed).toMatchObject({ categories: [], badges: [], keyFeatures: [], featured: 'false', iconUrl: '' });
+	});
+
+	it('rejects slugs and urls that would break the public pages', () => {
+		expect(toolFormSchema.safeParse({ ...tool, slug: 'Ugyldig Slug' }).success).toBe(false);
+		expect(toolFormSchema.safeParse({ ...tool, externalUrl: 'javascript:alert(1)' }).success).toBe(false);
+	});
+
+	it('validates the enum columns on use cases', () => {
+		const base = {
+			slug: 'ai-support',
+			title: 'AI i support',
+			department: 'operations',
+			complexity: 'low',
+			strategicValue: 'efficiency',
+			problemStatement: 'Problem',
+			solution: 'Løsning',
+			sortOrder: '0',
+		};
+		expect(useCaseFormSchema.safeParse(base).success).toBe(true);
+		expect(useCaseFormSchema.safeParse({ ...base, department: 'finance' }).success).toBe(false);
+		expect(useCaseFormSchema.safeParse({ ...base, complexity: 'ekstrem' }).success).toBe(false);
+	});
+
+	it('keeps an empty rating empty and bounds the scale', () => {
+		const base = { slug: 'prompt', title: 'Prompt', type: 'podcast', url: 'https://example.com', sortOrder: '0' };
+		expect(resourceFormSchema.parse(base).rating).toBe('');
+		expect(resourceFormSchema.parse({ ...base, rating: '4.7' }).rating).toBe(4.7);
+		expect(resourceFormSchema.safeParse({ ...base, rating: '9' }).success).toBe(false);
+		expect(resourceFormSchema.safeParse({ ...base, type: 'tiktok' }).success).toBe(false);
+	});
+
+	it('guards the save endpoint on origin and role, and creates drafts', () => {
+		expect(saveRoute).toContain('hasSameOrigin(request)');
+		expect(saveRoute).toContain('if (!context.role) return new Response(\'Ingen adgang.\', { status: 403 });');
+		expect(saveRoute).toContain('.insert({ ...row, published: false })');
+	});
+
+	it('requires a session and a role on every admin page', () => {
+		for (const page of adminPages) {
+			expect(page).toContain('export const prerender = false;');
+			expect(page).toContain("Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0')");
+			expect(page).toContain('getAdminContext(Astro.request, Astro.cookies)');
+			expect(page).toContain('if (!context.role) return new Response');
 		}
 	});
 });

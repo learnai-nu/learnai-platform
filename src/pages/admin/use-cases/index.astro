@@ -1,0 +1,70 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { departmentLabels, label } from '../../../lib/catalog';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const { data: items, error } = await context.supabase
+	.from('use_cases')
+	.select('id,slug,title,department,published,featured,sort_order')
+	.order('sort_order', { ascending: true });
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	created: 'Use casen er oprettet som kladde.',
+	saved: 'Ændringerne er gemt.',
+};
+---
+
+<AdminLayout
+	title="Use cases"
+	description="Administrér use cases på /use-cases."
+	active="use-cases"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Katalog</p>
+			<h1>Use cases</h1>
+			<p>Indholdet bag <a class="text-link" href="/use-cases">/use-cases</a>. Rækkefølgen styres af sorteringsnummeret.</p>
+		</div>
+		<a class="button" href="/admin/use-cases/ny">Opret use case</a>
+	</header>
+
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Use casen kunne ikke gemmes. Kontrollér felterne.</p>}
+
+	<section class="admin-panel">
+		{error ? (
+			<p class="notice notice-error" role="alert">Listen kunne ikke hentes.</p>
+		) : items?.length ? (
+			<div class="admin-list">
+				{items.map((item) => (
+					<a href={`/admin/use-cases/${item.id}`}>
+						<span>
+							<strong>{item.title}{item.featured ? ' ★' : ''}</strong>
+							<small>#{item.sort_order} · {label(departmentLabels, item.department)} · /{item.slug}</small>
+						</span>
+						<span class={`status-badge status-${item.published ? 'published' : 'draft'}`}>
+							{item.published ? 'Publiceret' : 'Kladde'}
+						</span>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="admin-empty">
+				<h2>Ingen use cases endnu</h2>
+				<p>Opret den første use case, eller kør katalogmigrationen.</p>
+			</div>
+		)}
+	</section>
+</AdminLayout>

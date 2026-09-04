@@ -1,0 +1,119 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { resourceTypeLabels } from '../../../lib/catalog';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+interface ResourceRow {
+	id: string;
+	slug: string;
+	title: string;
+	type: string;
+	url: string;
+	description: string | null;
+	rating: number | null;
+	topics: string[] | null;
+	published: boolean;
+	sort_order: number;
+}
+
+const isNew = Astro.params.id === 'ny';
+let item: ResourceRow | null = null;
+
+if (!isNew) {
+	const result = await context.supabase
+		.from('resources')
+		.select('id,slug,title,type,url,description,rating,topics,published,sort_order')
+		.eq('id', Astro.params.id)
+		.maybeSingle();
+	if (result.error || !result.data) return new Response('Ressourcen blev ikke fundet.', { status: 404 });
+	item = result.data;
+}
+
+const status = Astro.url.searchParams.get('status');
+const lines = (values: unknown) => (Array.isArray(values) ? values.join('\n') : '');
+---
+
+<AdminLayout
+	title={isNew ? 'Ny ressource' : item?.title ?? 'Redigér ressource'}
+	description="Redigér en ressource i kataloget."
+	active="resources"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<a class="admin-back" href="/admin/ressourcer">← Ressourcer</a>
+			<h1>{isNew ? 'Opret ressource' : 'Redigér ressource'}</h1>
+			<p>Nye ressourcer oprettes som kladde og bliver først synlige, når de publiceres.</p>
+		</div>
+		{item?.published && <a class="button button-ghost" href={`/resources#${item.slug}`}>Se på sitet</a>}
+	</header>
+
+	{status === 'created' && <p class="notice" role="status">Ressourcen er oprettet som kladde.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Ressourcen kunne ikke gemmes. Kontrollér felterne og sluggen.</p>}
+
+	<form class="admin-form" method="post" action="/api/admin/catalog/save">
+		<input type="hidden" name="catalog" value="resource" />
+		<input type="hidden" name="id" value={item?.id ?? ''} />
+		<div class="admin-form-grid">
+			<label class="field-wide">
+				Titel
+				<input name="title" required maxlength="200" value={item?.title ?? ''} />
+			</label>
+			<label>
+				Slug
+				<input name="slug" required maxlength="160" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={item?.slug ?? ''} />
+			</label>
+			<label>
+				Sortering
+				<input name="sortOrder" type="number" min="0" max="10000" value={item?.sort_order ?? 0} />
+			</label>
+			<label>
+				Format
+				<select name="type">
+					{Object.entries(resourceTypeLabels).map(([value, text]) => (
+						<option value={value} selected={item?.type === value}>{text}</option>
+					))}
+				</select>
+			</label>
+			<label class="field-wide">
+				Link
+				<input name="url" type="url" required maxlength="500" value={item?.url ?? ''} />
+			</label>
+			<label class="field-wide">
+				Beskrivelse
+				<textarea name="description" rows="5" maxlength="4000">{item?.description ?? ''}</textarea>
+			</label>
+			<label class="field-wide">
+				Emner
+				<textarea name="topics" rows="3" maxlength="1000">{lines(item?.topics)}</textarea>
+				<small>Ét emne pr. linje.</small>
+			</label>
+			<label>
+				Vurdering
+				<input name="rating" type="number" min="0" max="5" step="0.1" value={item?.rating ?? ''} />
+				<small>0–5. Lad feltet stå tomt for ingen vurdering.</small>
+			</label>
+			<label>
+				Status
+				<select name="published">
+					<option value="false" selected={!item?.published}>Kladde</option>
+					<option value="true" selected={item?.published === true}>Publiceret</option>
+				</select>
+			</label>
+		</div>
+		<div class="admin-form-actions">
+			<button class="button" type="submit">{isNew ? 'Opret som kladde' : 'Gem ændringer'}</button>
+			<a class="button button-ghost" href="/admin/ressourcer">Annullér</a>
+		</div>
+	</form>
+</AdminLayout>
