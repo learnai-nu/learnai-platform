@@ -90,6 +90,11 @@ const courseSchema = createCourseSchema({
 	name: course?.title ?? title,
 	description: course?.description ?? description,
 });
+const authorSchema = {
+	'@type': 'Person',
+	name: 'Jesper Schneider',
+	url: 'https://jesperschneider.dk/',
+};
 const faqSchema = {
 	'@type': 'FAQPage',
 	mainEntity: questions.map((item) => ({
@@ -109,7 +114,7 @@ const faqSchema = {
 		{ name: 'Kurser', url: '/kurser' },
 		{ name: 'AI i praksis', url: '/kurser/ai-i-praksis' },
 	]}
-	additionalSchema={[courseSchema, faqSchema]}
+	additionalSchema={[courseSchema, authorSchema, faqSchema]}
 >
 	<div class="course-landing">
 		<section class="landing-hero landing-shell" aria-labelledby="hero-title">
@@ -128,6 +133,7 @@ const faqSchema = {
 					<span><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle><path d="M10 5v5l3 2"></path></svg>Ca. {totalMinutes || 60} minutter</span>
 					<span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h6v12H3zM11 4h6v12h-6"></path></svg>{lessons.length || 6} lektioner</span>
 				</div>
+				<p class="landing-author">Kurset er lavet af <strong>Jesper Schneider</strong>. <a href="https://jesperschneider.dk/" target="_blank" rel="noopener noreferrer">Læs mere om mig <span aria-hidden="true">↗</span></a></p>
 			</div>
 
 			<div class="landing-workbench" aria-label="Fiktivt eksempel: Fra mailtråd til overblik">

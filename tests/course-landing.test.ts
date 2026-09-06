@@ -97,7 +97,14 @@ describe('landingsside for det gratis kursus', () => {
 
 	it('sætter kursusfakta før handlingen på mobil', () => {
 		expect(styles).toContain('.landing-hero-copy > .landing-hero-meta { order: 5; }');
-		expect(styles).toContain('.landing-hero-copy > .landing-hero-actions { order: 6; }');
+		expect(styles).toContain('.landing-hero-copy > .landing-hero-actions { order: 7; }');
+	});
+
+	it('navngiver afsenderen, så siden ikke står anonym', () => {
+		expect(page).toContain('Kurset er lavet af <strong>Jesper Schneider</strong>');
+		expect(page).toContain('href="https://jesperschneider.dk/"');
+		expect(page).toContain("'@type': 'Person'");
+		expect(page).toContain('additionalSchema={[courseSchema, authorSchema, faqSchema]}');
 	});
 
 	it('retter forsidens varighed, så den matcher kursusindholdet', () => {
