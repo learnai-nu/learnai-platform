@@ -63,6 +63,43 @@ describe('landingsside for det gratis kursus', () => {
 		expect(page).toContain('data-close-exercise');
 	});
 
+	it('gør "Start kurset" til en synlig handling ved siden af øvelsen', () => {
+		expect(page).toContain('class="landing-button landing-button-secondary"');
+		expect(page).not.toContain('class="landing-text-link" href={coursePath}');
+		expect(styles).toContain('.landing-button-secondary');
+	});
+
+	it('lader begge svar i øvelsen føre videre til kurset', () => {
+		// Den, der gætter forkert, har mest at hente i lektionen.
+		expect(script).toContain('finish.hidden = false;');
+		expect(script).not.toContain('finish.hidden = !correct');
+		expect(script).toContain('Det er præcis det, lektionen træner');
+		expect(page).toContain('data-finish-label');
+	});
+
+	it('beskriver udbyttet frem for tilmeldingens trin', () => {
+		expect(page).toContain('Prøv øvelsen med det samme');
+		expect(page).toContain('Fortsæt hvor du slap');
+		expect(page).not.toContain('Bekræft din e-mail');
+		expect(page).not.toContain('Opret en gratis profil');
+	});
+
+	it('nummererer ikke fanerne, når standardvisningen er den anden', () => {
+		expect(page).toContain('aria-controls="preview-mail">Mailtråden<');
+		expect(page).toContain('aria-controls="preview-result">Overblikket<');
+		expect(page).not.toMatch(/<span>0[12]<\/span> (Mailtråden|Overblikket)/);
+	});
+
+	it('lover det samme i slutafsnittets overskrift som i dens knap', () => {
+		expect(page).toContain('Begynd med lektion 1.');
+		expect(page).not.toContain('Prøv én opgave.<br />Se, hvad du lærer.');
+	});
+
+	it('sætter kursusfakta før handlingen på mobil', () => {
+		expect(styles).toContain('.landing-hero-copy > .landing-hero-meta { order: 5; }');
+		expect(styles).toContain('.landing-hero-copy > .landing-hero-actions { order: 6; }');
+	});
+
 	it('retter forsidens varighed, så den matcher kursusindholdet', () => {
 		expect(featured).toContain("duration: '60 min.'");
 		expect(featured).not.toContain("duration: '55 min.'");

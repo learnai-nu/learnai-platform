@@ -42,6 +42,32 @@ den knap, der åbnede den.
 Uden JavaScript kan siden læses i sin helhed; kun øvelsen og skiftet mellem
 mailtråd og overblik er utilgængelige.
 
+## Konverteringsvalg
+
+Nogle af sidens valg er truffet efter en UX-gennemgang og er værd at kende,
+før de bliver lavet om:
+
+- **To synlige handlinger i heroen.** "Prøv første øvelse" er primær, fordi
+  barrieren for et gratis kursus er indsats, ikke pris. "Start kurset" er
+  sekundær, men en rigtig knap — som tekstlink var den for svær at få øje på.
+- **Øvelsen fører videre uanset svar.** Den, der svarer forkert på
+  kontrolspørgsmålet, har lige demonstreret, at metoden er ny for hende. Hun
+  er den bedst kvalificerede læser og skal ikke stå i en blindgyde. Teksten
+  på linket ændrer sig, ikke om det vises.
+- **Afsnit 03 beskriver udbytte, ikke tilmelding.** Det beskrev før trinnene
+  "opret profil → bekræft e-mail → start", altså friktion præsenteret som
+  feature, umiddelbart efter et løfte om at kunne gå i gang med det samme.
+- **Fanerne over eksemplet er unummererede.** De hed "01 Mailtråden" og
+  "02 Overblikket", men siden åbner på overblikket. Numre lover en
+  rækkefølge, som standardvisningen brød.
+- **På mobil står niveau, tid og omfang før knapperne**, så de kan læses inden
+  beslutningen.
+
+Siden har bevidst ingen social proof: hverken tal, udtalelser eller logoer.
+Det følger udkastets princip om ikke at fremsætte udokumenterede påstande.
+Konverteringsmæssigt er det et hul, og den billigste ærlige udfyldning er en
+afsender — hvem der har lavet kurset.
+
 ## Stil
 
 `src/styles/course-landing.css` er scoped til `.course-landing`, så den

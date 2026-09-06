@@ -120,7 +120,7 @@ const faqSchema = {
 				<p class="landing-audience">Til dig, der vil i gang med AI på arbejdet.</p>
 				<div class="landing-hero-actions">
 					<button type="button" class="landing-button" data-open-exercise>Prøv første øvelse <span aria-hidden="true">↗</span></button>
-					<a class="landing-text-link" href={coursePath}>Start kurset <span aria-hidden="true">→</span></a>
+					<a class="landing-button landing-button-secondary" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath}>Start kurset <span aria-hidden="true">→</span></a>
 				</div>
 				<p class="landing-demo-note">Øvelsen tager to minutter · Ingen tilmelding · Intet sendes til AI</p>
 				<div class="landing-hero-meta">
@@ -134,8 +134,8 @@ const faqSchema = {
 				<div class="landing-workbench-label"><span>ET KIG IND I LEKTION 01</span><span aria-hidden="true">↙</span></div>
 				<div class="landing-example-sheet">
 					<div class="landing-preview-switch" role="group" aria-label="Vis mailtråden eller overblikket">
-						<button type="button" data-preview="mail" aria-pressed="false" aria-controls="preview-mail"><span>01</span> Mailtråden</button>
-						<button type="button" data-preview="result" aria-pressed="true" aria-controls="preview-result"><span>02</span> Overblikket</button>
+						<button type="button" data-preview="mail" aria-pressed="false" aria-controls="preview-mail">Mailtråden</button>
+						<button type="button" data-preview="result" aria-pressed="true" aria-controls="preview-result">Overblikket</button>
 					</div>
 					<section id="preview-mail" class="landing-preview-panel" data-preview-panel="mail" aria-labelledby="mail-title" hidden>
 						<p class="landing-sheet-label">TRE BESKEDER. HVAD ER AFTALT?</p>
@@ -206,11 +206,11 @@ const faqSchema = {
 		</section>
 
 		<section class="landing-start landing-section landing-shell" aria-labelledby="start-title">
-			<div class="landing-section-heading"><div><p class="landing-eyebrow">03 / Sådan kommer du i gang</p><h2 id="start-title">Fra nysgerrig<br />til første øvelse.</h2></div><p>Prøv den korte øvelse her på siden med det samme. Vil du tage hele kurset, gemmes din progression på din profil.</p></div>
+			<div class="landing-section-heading"><div><p class="landing-eyebrow">03 / Sådan kommer du i gang</p><h2 id="start-title">Begynd nu.<br />Fortsæt når du vil.</h2></div><p>Du kan prøve den korte øvelse her på siden uden at oprette noget. Tager du hele kurset, følger din progression med.</p></div>
 			<div class="landing-start-grid">
-				<article><span>01 <span aria-hidden="true">↗</span></span><h3>Opret en gratis profil</h3><p>Brug din e-mail og en adgangskode.</p></article>
-				<article><span>02 <span aria-hidden="true">↗</span></span><h3>Bekræft din e-mail</h3><p>Følg linket i din indbakke.</p></article>
-				<article><span>03 <span aria-hidden="true">✓</span></span><h3>Start første lektion</h3><p>Begynd med at skabe overblik i en mailtråd.</p></article>
+				<article><span>01 <span aria-hidden="true">↗</span></span><h3>Prøv øvelsen med det samme</h3><p>To minutter, ingen profil, intet sendes til AI.</p></article>
+				<article><span>02 <span aria-hidden="true">↗</span></span><h3>Tag lektionerne i dit tempo</h3><p>Én ad gangen, eller det hele på en times tid.</p></article>
+				<article><span>03 <span aria-hidden="true">✓</span></span><h3>Fortsæt hvor du slap</h3><p>Din progression gemmes automatisk mellem lektionerne.</p></article>
 			</div>
 			<div class="landing-start-actions">
 				<a class="landing-button" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath}>Start kurset <span aria-hidden="true">→</span></a>
@@ -227,7 +227,7 @@ const faqSchema = {
 
 		<section class="landing-final">
 			<div class="landing-shell landing-final-inner">
-				<div><p class="landing-eyebrow">Din første AI-gevinst begynder her</p><h2>Prøv én opgave.<br />Se, hvad du lærer.</h2></div>
+				<div><p class="landing-eyebrow">Din første AI-gevinst begynder her</p><h2>Begynd med lektion 1.<br />{firstLesson?.minutes ? `Den tager ${firstLesson.minutes} minutter.` : 'Den tager ti minutter.'}</h2></div>
 				<div><a class="landing-button landing-button-dark" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath}>Start kurset <span aria-hidden="true">↗</span></a><p>Gratis · Din progression gemmes</p></div>
 				<span class="landing-final-decoration" aria-hidden="true">↗</span>
 			</div>
@@ -242,7 +242,7 @@ const faqSchema = {
 				<ol class="landing-exercise-progress" aria-label="Øvelsens trin"><li data-progress="0" aria-current="step"><span>1</span> Læs</li><li data-progress="1"><span>2</span> Bestil</li><li data-progress="2"><span>3</span> Kontrollér</li></ol>
 				<section data-exercise-step="0" aria-label="Trin 1: Læs mailtråden"><div class="landing-demo-mail"><div><strong>Emne: Intro-møde</strong><span>Fiktivt eksempel</span></div><p><strong>Maja</strong> Lad os holde intro-mødet torsdag kl. 10. Jeg sender en dagsorden onsdag.</p><p><strong>Jonas</strong> Det passer mig. Jeg booker et mødelokale.</p><p><strong>Maja</strong> Fint. Kan nogen tage noter?</p></div><p class="landing-exercise-tip"><strong>Din opgave:</strong> Find beslutningen, fordel opgaverne, og læg mærke til det ubesvarede spørgsmål.</p><button type="button" class="landing-button" data-next-step="1">Se en brugbar prompt <span aria-hidden="true">→</span></button></section>
 				<section data-exercise-step="1" aria-label="Trin 2: Se prompten" hidden><label class="landing-prompt-label" for="exercise-prompt">En tydelig bestilling til AI</label><p class="landing-field-help" id="prompt-help">Du kan redigere og kopiere prompten. Brug fiktiv tekst i et AI-værktøj, din arbejdsplads har godkendt.</p><textarea id="exercise-prompt" rows="9" aria-describedby="prompt-help">{samplePrompt}</textarea><div class="landing-copy-row"><button type="button" class="landing-copy-button" data-copy-prompt>Kopiér prompt <span aria-hidden="true">↗</span></button><span role="status" data-copy-status></span></div><p class="landing-exercise-tip">Øvelsen sender ikke prompten til AI. Det næste trin viser et forberedt svar, som ikke ændres af dine rettelser.</p><div class="landing-step-actions"><button type="button" class="landing-back-button" data-next-step="0">← Tilbage</button><button type="button" class="landing-button" data-next-step="2">Se et eksempel på et svar <span aria-hidden="true">→</span></button></div></section>
-				<section data-exercise-step="2" aria-label="Trin 3: Kontrollér svaret" hidden><p class="landing-prepared-label">Forberedt eksempel · Svaret ændres ikke af din prompt</p><div class="landing-answer-example"><p><strong>Besluttet</strong> Intro-møde torsdag kl. 10.</p><p><strong>Opgaver</strong> Maja sender dagsorden onsdag. Jonas booker et lokale.</p><p><strong>Mangler afklaring</strong> Det er ikke oplyst, hvem der tager noter.</p></div><fieldset class="landing-check-question"><legend>Hvilken opgave mangler stadig en ansvarlig?</legend><label><input type="radio" name="control" value="agenda" /> Sende dagsordenen</label><label><input type="radio" name="control" value="room" /> Booke et mødelokale</label><label><input type="radio" name="control" value="notes" /> Tage noter til mødet</label></fieldset><p class="landing-answer-feedback" role="status" data-answer-feedback></p><div class="landing-step-actions"><button type="button" class="landing-back-button" data-next-step="1">← Til prompten</button><button type="button" class="landing-button" data-check-answer>Tjek mit svar <span aria-hidden="true">✓</span></button></div><a class="landing-finish-link" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath} data-finish-exercise hidden>Tag hele lektionen på kurset →</a></section>
+				<section data-exercise-step="2" aria-label="Trin 3: Kontrollér svaret" hidden><p class="landing-prepared-label">Forberedt eksempel · Svaret ændres ikke af din prompt</p><div class="landing-answer-example"><p><strong>Besluttet</strong> Intro-møde torsdag kl. 10.</p><p><strong>Opgaver</strong> Maja sender dagsorden onsdag. Jonas booker et lokale.</p><p><strong>Mangler afklaring</strong> Det er ikke oplyst, hvem der tager noter.</p></div><fieldset class="landing-check-question"><legend>Hvilken opgave mangler stadig en ansvarlig?</legend><label><input type="radio" name="control" value="agenda" /> Sende dagsordenen</label><label><input type="radio" name="control" value="room" /> Booke et mødelokale</label><label><input type="radio" name="control" value="notes" /> Tage noter til mødet</label></fieldset><p class="landing-answer-feedback" role="status" data-answer-feedback></p><div class="landing-step-actions"><button type="button" class="landing-back-button" data-next-step="1">← Til prompten</button><button type="button" class="landing-button" data-check-answer>Tjek mit svar <span aria-hidden="true">✓</span></button></div><a class="landing-finish-link" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath} data-finish-exercise hidden><span data-finish-label>Tag hele lektionen på kurset</span> <span aria-hidden="true">→</span></a></section>
 				<p class="landing-dialog-bottom">Dine rettelser bliver kun i denne åbne side. Der oprettes ingen profil.</p>
 			</div>
 		</dialog>

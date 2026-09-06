@@ -19,6 +19,7 @@ const steps = [...document.querySelectorAll<HTMLElement>('[data-exercise-step]')
 const progress = [...document.querySelectorAll<HTMLElement>('[data-progress]')];
 const feedback = document.querySelector<HTMLElement>('[data-answer-feedback]');
 const finish = document.querySelector<HTMLElement>('[data-finish-exercise]');
+const finishLabel = document.querySelector<HTMLElement>('[data-finish-label]');
 let exerciseOpener: HTMLElement | null = null;
 
 function showStep(step: string) {
@@ -93,6 +94,12 @@ document.querySelector('[data-check-answer]')?.addEventListener('click', () => {
 	feedback.dataset.correct = String(correct);
 	feedback.textContent = correct
 		? 'Præcis. Ingen har sagt ja til at tage noter. AI kan hjælpe med overblikket — du tjekker, at det stemmer med teksten.'
-		: 'Se mailtråden igen: Maja sender dagsordenen, og Jonas booker lokalet. Hvilken opgave har ingen sagt ja til endnu?';
-	finish.hidden = !correct;
+		: 'Ikke helt: Maja sender dagsordenen, og Jonas booker lokalet. Tilbage står spørgsmålet om noter, som ingen har svaret på. Det er præcis den slags, lektionen træner dig i at få øje på.';
+	// Begge svar fører videre. Den, der gætter forkert, har mest at hente i lektionen.
+	if (finishLabel) {
+		finishLabel.textContent = correct
+			? 'Tag hele lektionen på kurset'
+			: 'Det er præcis det, lektionen træner';
+	}
+	finish.hidden = false;
 });
