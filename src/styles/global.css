@@ -355,7 +355,9 @@ input:focus, select:focus, textarea:focus { outline: 3px solid rgb(118 185 255 /
 .admin-filter-summary { margin: 0 0 .8rem; color: var(--muted); font-size: .86rem; }
 .status-badge { flex: 0 0 auto; padding: .4rem .65rem; border-radius: 99px; background: var(--paper); color: var(--muted); font-size: .73rem; font-weight: 850; text-transform: uppercase; }
 .status-published { background: var(--mint); color: var(--green-dark); }
+.status-approved { background: var(--mint); color: var(--green-dark); }
 .status-review { background: #fff0dc; color: #7b4612; }
+.status-rejected { background: #fee9e7; color: #8a271d; }
 .status-archived { background: #e9eaed; color: #535861; }
 .admin-empty { padding: 2rem; text-align: center; color: var(--muted); }
 .admin-form-grid, .admin-inline-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
@@ -391,6 +393,18 @@ label small { color: var(--muted); font-weight: 500; line-height: 1.45; }
 	border-radius: var(--radius);
 	background: var(--paper);
 }
+.admin-relationship-card { display: grid; gap: .55rem; padding: 1rem .25rem; border-top: 1px solid var(--line); }
+.admin-relationship-card:first-child { border-top: 0; }
+.admin-relationship-card p { margin: 0; }
+.admin-relationship-card > small { color: var(--muted); }
+.admin-relationship-arrow { color: var(--green-dark); font-size: .82rem; font-weight: 850; text-transform: uppercase; letter-spacing: .04em; }
+.admin-relationship-card .admin-actions form { margin: 0; }
+.admin-entity-grid { display: grid; gap: .65rem; margin-top: 1rem; }
+.admin-entity-card { border: 1px solid var(--line); border-radius: .85rem; background: var(--paper); }
+.admin-entity-card summary { padding: .9rem 1rem; cursor: pointer; }
+.admin-entity-card .admin-inline-form { padding: 1rem; border-top: 1px solid var(--line); background: var(--surface); }
+.admin-relationship-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 1rem; align-items: center; padding: .9rem .25rem; border-top: 1px solid var(--line); }
+.admin-relationship-row:first-child { border-top: 0; }
 
 .article-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1rem; }
 .article-card { display: flex; flex-direction: column; min-height: 280px; padding: 1.4rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease; }
@@ -524,7 +538,7 @@ label small { color: var(--muted); font-weight: 500; line-height: 1.45; }
 	.auth-grid form + form { padding: 1.4rem 0 0; border: 0; border-top: 1px solid var(--line); }
 	.dashboard-head { align-items: start; flex-direction: column; }
 	.admin-sidebar { position: static; }
-	.admin-sidebar nav { display: grid; grid-template-columns: repeat(4, minmax(7rem, 1fr)); overflow-x: auto; }
+	.admin-sidebar nav { display: grid; grid-template-columns: repeat(5, minmax(7rem, 1fr)); overflow-x: auto; }
 	.admin-page-head { align-items: start; flex-direction: column; }
 	.admin-stat-grid { grid-template-columns: repeat(2, 1fr); }
 	.admin-form-grid, .admin-inline-form { grid-template-columns: 1fr; }
@@ -532,6 +546,7 @@ label small { color: var(--muted); font-weight: 500; line-height: 1.45; }
 	.admin-filter-bar label:first-child { grid-column: 1 / -1; }
 	.field-wide { grid-column: auto; }
 	.admin-option-row { grid-template-columns: 1fr; }
+	.admin-relationship-row { grid-template-columns: 1fr; align-items: start; }
 	.admin-lessons summary, .admin-question summary { flex-direction: column; }
 	.lesson-sidebar { position: static; }
 	.prompt-builder-head { align-items: start; flex-direction: column; }

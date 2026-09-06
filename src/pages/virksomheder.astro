@@ -1,0 +1,365 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { companySizeLabels, companySizes } from '../lib/leads/business';
+import { createServerSupabaseClient } from '../lib/supabase/server';
+import '../styles/business-landing.css';
+
+export const prerender = false;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+
+/** Tallene i "Platformen bag forløbet" skal komme fra det, der faktisk er publiceret. */
+async function publishedCount(table: 'tools' | 'use_cases' | 'resources') {
+	const { count } = await supabase
+		.from(table)
+		.select('id', { count: 'exact', head: true })
+		.eq('published', true)
+		.eq('locale', 'da');
+	return count ?? 0;
+}
+
+const [toolCount, useCaseCount, resourceCount] = await Promise.all([
+	publishedCount('tools'),
+	publishedCount('use_cases'),
+	publishedCount('resources'),
+]);
+/** Nul på tværs af alle tre betyder, at forespørgslen fejlede. Så viser vi dem ikke. */
+const showStats = toolCount + useCaseCount + resourceCount > 0;
+
+const status = Astro.url.searchParams.get('status');
+
+const problems = [
+	{
+		title: 'Værktøjerne er købt — men de bliver ikke brugt',
+		body: 'Licenserne til Copilot eller ChatGPT er på plads. Alligevel er det de samme få medarbejdere, der bruger dem, mens resten venter på, at nogen viser dem hvordan.',
+	},
+	{
+		title: 'Alle vil gerne, ingen tør',
+		body: 'Medarbejderne er usikre på, hvad de må lægge ind i et AI-værktøj. Uden klare spilleregler bliver forsigtighed hurtigt til stilstand.',
+	},
+	{
+		title: 'Pilotprojektet døde stille',
+		body: 'Der blev kørt et forsøg, og det virkede. Men da projektet sluttede, var der ingen til at bære det videre ud i resten af organisationen.',
+	},
+];
+
+const phases = [
+	{
+		number: '01',
+		title: 'Afklaring',
+		duration: '2–3 uger',
+		body: 'Vi kortlægger de arbejdsgange, hvor AI reelt flytter noget hos jer — og de steder, hvor I skal holde igen. I får en prioriteret liste og et nøgternt billede af, hvad der er at hente.',
+	},
+	{
+		number: '02',
+		title: 'Kompetenceløft',
+		duration: '4–8 uger',
+		body: 'Medarbejderne lærer AI på deres egne opgaver, ikke på generiske eksempler. Undervisning på dansk, øvelser fra jeres hverdag og én metode, de kan gentage uden hjælp.',
+	},
+	{
+		number: '03',
+		title: 'Forankring',
+		duration: 'Løbende',
+		body: 'Vi udpeger og træner et korps af AI-ambassadører, sætter spilleregler for data og ansvarlig brug, og aftaler hvordan I måler effekten, når forløbet er slut.',
+	},
+];
+
+const deliverables = [
+	{ title: 'Prioriteret mulighedsliste', body: 'De arbejdsgange, hvor AI betaler sig hos jer — rangeret efter effekt og risiko.' },
+	{ title: 'Spilleregler for data', body: 'En enkel model for, hvad medarbejderne må dele med et AI-værktøj, og hvad de aldrig må.' },
+	{ title: 'Promptbibliotek', body: 'Færdige, afprøvede prompts til jeres tilbagevendende opgaver. Skrevet på dansk.' },
+	{ title: 'Trænet ambassadørkorps', body: 'De kolleger, resten spørger, når forløbet er slut. Klædt på til rollen.' },
+	{ title: 'Adgang til LearnAI', body: 'Kurser, værktøjskatalog og use cases, som medarbejderne kan vende tilbage til.' },
+	{ title: 'Et målepunkt', body: 'Tid og kvalitet før og efter, så I kan se, om det virkede — og forklare det opad.' },
+];
+
+const questions = [
+	{
+		question: 'Hvad koster et forløb?',
+		answer: 'Prisen afhænger af omfang og antal medarbejdere. Skriv til mig med jeres situation, så får I et konkret oplæg frem for en standardpakke.',
+	},
+	{
+		question: 'Skal vi bruge bestemte AI-værktøjer?',
+		answer: 'Nej. Forløbet er værktøjsneutralt og tager udgangspunkt i det, I allerede har godkendt. Har I ikke valgt endnu, hjælper jeg med at afklare det.',
+	},
+	{
+		question: 'Hvordan håndterer I data og GDPR?',
+		answer: 'Øvelserne bygges, så medarbejderne kan træne uden at dele person- eller kundedata. Spillereglerne for, hvad der må deles, er en fast del af forløbet — ikke et bilag til sidst.',
+	},
+	{
+		question: 'Kan I køre det for hele organisationen på én gang?',
+		answer: 'Vi starter typisk med en afgrænset gruppe, hvor effekten er nem at se, og bruger den som løftestang til resten. Det giver hurtigere resultater end en samlet udrulning.',
+	},
+	{
+		question: 'Vi vil gerne prøve noget først. Kan vi det?',
+		answer: 'Ja. Tag det gratis minikursus “AI i praksis”. Det tager cirka en time og giver jer et fælles udgangspunkt, inden vi taler sammen.',
+	},
+	{
+		question: 'Hvor hurtigt kan vi komme i gang?',
+		answer: 'Udfyld formularen, så vender jeg tilbage med et forslag til en samtale på 30 minutter. Der beslutter vi, om der overhovedet er et forløb at lave.',
+	},
+];
+
+const title = 'AI-forløb for virksomheder';
+const description = 'Fra AI-nysgerrighed til AI-vaner: afklaring, kompetenceløft og forankring med et ambassadørkorps, der holder det i live bagefter.';
+
+const personSchema = {
+	'@type': 'Person',
+	name: 'Jesper Schneider',
+	url: 'https://jesperschneider.dk/',
+	jobTitle: 'Chef for digital forretningsudvikling',
+};
+const faqSchema = {
+	'@type': 'FAQPage',
+	mainEntity: questions.map((item) => ({
+		'@type': 'Question',
+		name: item.question,
+		acceptedAnswer: { '@type': 'Answer', text: item.answer },
+	})),
+};
+---
+
+<SiteLayout
+	title={`${title} — LearnAI.nu`}
+	{description}
+	pageType="WebPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'For virksomheder', url: '/virksomheder' },
+	]}
+	additionalSchema={[personSchema, faqSchema]}
+>
+	<div class="business-landing">
+		<section class="business-hero business-shell">
+			<div class="business-hero-copy">
+				<p class="business-eyebrow"><span class="business-dot"></span> For virksomheder</p>
+				<h1>AI bliver først værdifuldt, når medarbejderne bruger det <span>om mandagen</span>.</h1>
+				<p class="business-lead">
+					Jeg hjælper virksomheder med at gå fra AI-nysgerrighed til AI-vaner: en klar prioritering af, hvor
+					det betaler sig, et kompetenceløft der rammer den faktiske hverdag, og et ambassadørkorps der
+					holder det i live, når forløbet er slut.
+				</p>
+				<div class="business-hero-actions">
+					<a class="business-button" href="#kontakt">Book en uforpligtende snak <span aria-hidden="true">→</span></a>
+					<a class="business-text-link" href="/kurser/ai-i-praksis">Prøv det gratis kursus først <span aria-hidden="true">→</span></a>
+				</div>
+				<ul class="business-hero-meta">
+					<li>Undervisning på dansk</li>
+					<li>Værktøjsneutralt</li>
+					<li>Øvelser fra jeres egne opgaver</li>
+				</ul>
+			</div>
+			<aside class="business-hero-card" aria-label="Kort om forløbet">
+				<p class="business-card-label">Et forløb i tre trin</p>
+				<ol class="business-card-list">
+					{phases.map((phase) => (
+						<li>
+							<strong>{phase.title}</strong>
+							<span>{phase.duration}</span>
+						</li>
+					))}
+				</ol>
+				<p class="business-card-footer">
+					Første skridt er altid en samtale på 30 minutter. Er der ikke et forløb at lave, siger jeg det.
+				</p>
+			</aside>
+		</section>
+
+		<section class="business-section business-shell" aria-labelledby="problem-title">
+			<div class="business-section-heading">
+				<h2 id="problem-title">Det er sjældent teknologien, der er problemet</h2>
+				<p>De fleste virksomheder er ikke stoppet af manglende værktøjer. De er stoppet af tre ting, der ligner hinanden på tværs af brancher.</p>
+			</div>
+			<div class="business-grid business-grid-3">
+				{problems.map((problem) => (
+					<article class="business-card">
+						<h3>{problem.title}</h3>
+						<p>{problem.body}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="business-section business-shell" aria-labelledby="forloeb-title">
+			<div class="business-section-heading">
+				<h2 id="forloeb-title">Sådan arbejder vi</h2>
+				<p>Forløbet tilpasses jeres situation, men rækkefølgen er den samme: forstå, træn, forankr.</p>
+			</div>
+			<ol class="business-phases">
+				{phases.map((phase) => (
+					<li class="business-phase">
+						<p class="business-phase-number">{phase.number}</p>
+						<div>
+							<h3>{phase.title}</h3>
+							<p class="business-phase-duration">{phase.duration}</p>
+							<p>{phase.body}</p>
+						</div>
+					</li>
+				))}
+			</ol>
+		</section>
+
+		<section class="business-section business-shell" aria-labelledby="leverance-title">
+			<div class="business-section-heading">
+				<h2 id="leverance-title">Det får I med hjem</h2>
+				<p>Konkrete ting, der bliver i organisationen — også når jeg er ude af døren.</p>
+			</div>
+			<div class="business-grid business-grid-3">
+				{deliverables.map((item) => (
+					<article class="business-card business-card-tight">
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="business-section business-shell" aria-labelledby="afsender-title">
+			<div class="business-author">
+				<div>
+					<p class="business-eyebrow"><span class="business-dot"></span> Afsender</p>
+					<h2 id="afsender-title">Hvem står bag</h2>
+					<p>
+						Jeg hedder <strong>Jesper Schneider</strong> og er chef for digital forretningsudvikling i
+						TEKNIQ Arbejdsgiverne. Jeg har ansvaret for AI-strategi og implementering i en
+						medlemsorganisation — tale-til-tekst, chatbots og opbygningen af et AI-ambassadørkorps — og for
+						at teknologien rent faktisk bliver brugt bredt, ikke kun af de nysgerrige.
+					</p>
+					<p>
+						Før det brugte jeg 16+ år i digitalt salg og marketing. Jeg ser AI som et redskab til at styrke
+						beslutninger, effektivisere processer og skabe bedre oplevelser — ikke som et mål i sig selv.
+						Det er også sådan, forløbene er skruet sammen.
+					</p>
+					<p class="business-author-link">
+						<a href="https://jesperschneider.dk/" target="_blank" rel="noopener noreferrer">
+							Læs mere om mig <span aria-hidden="true">↗</span>
+						</a>
+					</p>
+				</div>
+				<dl class="business-stats">
+					{showStats && (
+						<>
+							<div>
+								<dt>Værktøjer i kataloget</dt>
+								<dd>{toolCount}</dd>
+							</div>
+							<div>
+								<dt>Use cases fra praksis</dt>
+								<dd>{useCaseCount}</dd>
+							</div>
+							<div>
+								<dt>Kuraterede ressourcer</dt>
+								<dd>{resourceCount}</dd>
+							</div>
+						</>
+					)}
+					<div class="business-stats-note">
+						<dt>Platformen bag forløbet</dt>
+						<dd>Deltagerne får adgang til LearnAI med kurser, værktøjskatalog og use cases, så de kan slå op og træne videre efter forløbet.</dd>
+					</div>
+				</dl>
+			</div>
+		</section>
+
+		<section class="business-section business-shell" aria-labelledby="faq-title">
+			<div class="business-section-heading">
+				<h2 id="faq-title">Spørgsmål, jeg får hver gang</h2>
+				<p>Er der noget, der ikke står her, så skriv det i formularen nedenfor.</p>
+			</div>
+			<div class="business-faq">
+				{questions.map((item) => (
+					<details>
+						<summary>
+							{item.question}
+							<span aria-hidden="true">+</span>
+						</summary>
+						<p>{item.answer}</p>
+					</details>
+				))}
+			</div>
+		</section>
+
+		<section class="business-contact" id="kontakt" aria-labelledby="kontakt-title">
+			<div class="business-shell business-contact-inner">
+				<div class="business-contact-copy">
+					<p class="business-eyebrow"><span class="business-dot"></span> Næste skridt</p>
+					<h2 id="kontakt-title">Fortæl mig, hvor I står</h2>
+					<p>
+						Udfyld formularen, så vender jeg tilbage med et forslag til en samtale på 30 minutter. Ingen
+						præsentation, ingen forpligtelse — vi finder ud af, om der er et forløb at lave.
+					</p>
+					<ul class="business-contact-points">
+						<li>Svar inden for to hverdage</li>
+						<li>Oplysningerne bruges kun til at kontakte jer</li>
+						<li>Du kan altid bede mig slette dem igen</li>
+					</ul>
+				</div>
+
+				<div class="business-form-card">
+					{status === 'success' && (
+						<p class="business-notice business-notice-success" role="status">
+							Tak. Jeg har modtaget din henvendelse og vender tilbage inden for to hverdage.
+						</p>
+					)}
+					{status === 'invalid' && (
+						<p class="business-notice business-notice-error" role="alert">
+							Noget mangler eller er udfyldt forkert. Kontrollér navn, arbejdsmail, virksomhed og samtykke.
+						</p>
+					)}
+					{status === 'save-error' && (
+						<p class="business-notice business-notice-error" role="alert">
+							Henvendelsen kunne ikke gemmes lige nu. Prøv igen om lidt, eller skriv direkte til mig.
+						</p>
+					)}
+
+					<form method="post" action="/api/leads/virksomheder" class="business-form">
+						<div class="business-field">
+							<label for="lead-name">Navn</label>
+							<input id="lead-name" name="name" type="text" autocomplete="name" required maxlength="120" />
+						</div>
+						<div class="business-field">
+							<label for="lead-email">Arbejdsmail</label>
+							<input id="lead-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+						</div>
+						<div class="business-field">
+							<label for="lead-company">Virksomhed</label>
+							<input id="lead-company" name="company" type="text" autocomplete="organization" required maxlength="160" />
+						</div>
+						<div class="business-field">
+							<label for="lead-role">Rolle <span>(valgfrit)</span></label>
+							<input id="lead-role" name="roleTitle" type="text" autocomplete="organization-title" maxlength="120" />
+						</div>
+						<div class="business-field">
+							<label for="lead-size">Antal medarbejdere <span>(valgfrit)</span></label>
+							<select id="lead-size" name="companySize">
+								<option value="">Vælg…</option>
+								{companySizes.map((size) => <option value={size}>{companySizeLabels[size]}</option>)}
+							</select>
+						</div>
+						<div class="business-field business-field-wide">
+							<label for="lead-goal">Hvad vil I gerne opnå? <span>(valgfrit)</span></label>
+							<textarea id="lead-goal" name="goal" rows="4" maxlength="2000"
+								placeholder="Fx: Vi har Copilot til 120 medarbejdere, men kun få bruger det."></textarea>
+						</div>
+
+						<p class="business-honeypot" aria-hidden="true">
+							<label for="lead-website">Efterlad dette felt tomt</label>
+							<input id="lead-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+						</p>
+
+						<div class="business-field business-field-wide business-consent">
+							<label for="lead-consent">
+								<input id="lead-consent" name="consent" type="checkbox" value="yes" required />
+								<span>Jeg accepterer, at LearnAI må kontakte mig om denne henvendelse. Se <a href="/privatliv">privatlivspolitikken</a>.</span>
+							</label>
+						</div>
+
+						<div class="business-field-wide">
+							<button class="business-button" type="submit">Send henvendelse <span aria-hidden="true">→</span></button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+	</div>
+</SiteLayout>

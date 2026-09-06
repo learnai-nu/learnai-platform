@@ -1,0 +1,238 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+import { entityTypes } from '../../../lib/knowledge-graph/contracts';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+if (!context.role) return new Response('Du har ikke adgang til administrationen.', { status: 403 });
+
+const nodeSelection = `
+	id,
+	content_items(title,type,status),
+	courses(title,status),
+	lessons(title),
+	entities(name,entity_type,status)
+`;
+
+const [entityResult, nodeResult, relationshipResult, tagResult] = await Promise.all([
+	context.supabase.from('entities')
+		.select('id,entity_type,name,slug,description,aliases,status,source_tag_id,updated_at,knowledge_nodes(id)')
+		.order('name'),
+	context.supabase.from('knowledge_nodes').select(nodeSelection).limit(500),
+	context.supabase.from('relationships')
+		.select(`
+			id,relation_type,status,origin,confidence,rationale,evidence,created_at,
+			source:knowledge_nodes!relationships_source_node_id_fkey(${nodeSelection}),
+			target:knowledge_nodes!relationships_target_node_id_fkey(${nodeSelection})
+		`)
+		.order('created_at', { ascending: false })
+		.limit(250),
+	context.supabase.from('tags').select('id,name,slug').order('name').limit(500),
+]);
+
+type NamedNode = {
+	id: string;
+	content_items?: { title: string; type: string; status: string } | Array<{ title: string; type: string; status: string }> | null;
+	courses?: { title: string; status: string } | Array<{ title: string; status: string }> | null;
+	lessons?: { title: string } | Array<{ title: string }> | null;
+	entities?: { name: string; entity_type: string; status: string } | Array<{ name: string; entity_type: string; status: string }> | null;
+};
+
+function one<T>(value: T | T[] | null | undefined) {
+	return Array.isArray(value) ? value[0] : value;
+}
+
+function nodeLabel(node: NamedNode | null) {
+	if (!node) return 'Ukendt node';
+	const content = one(node.content_items);
+	if (content) return `${content.title} · ${content.type}`;
+	const course = one(node.courses);
+	if (course) return `${course.title} · kursus`;
+	const lesson = one(node.lessons);
+	if (lesson) return `${lesson.title} · lektion`;
+	const entity = one(node.entities);
+	if (entity) return `${entity.name} · ${entity.entity_type}`;
+	return 'Ukendt node';
+}
+
+function evidenceExcerpt(value: unknown) {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+	const excerpt = (value as { excerpt?: unknown }).excerpt;
+	return typeof excerpt === 'string' ? excerpt : null;
+}
+
+const entities = entityResult.data ?? [];
+const sourceNodes = ((nodeResult.data ?? []) as NamedNode[])
+	.filter((node) => !one(node.entities))
+	.sort((a, b) => nodeLabel(a).localeCompare(nodeLabel(b), 'da'));
+const relationships = relationshipResult.data ?? [];
+const proposed = relationships.filter((relationship) => relationship.status === 'proposed');
+const reviewed = relationships.filter((relationship) => relationship.status !== 'proposed');
+const hasLoadError = [entityResult.error, nodeResult.error, relationshipResult.error, tagResult.error].some(Boolean);
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, string> = {
+	'entity-created': 'Entityen er oprettet.',
+	'entity-saved': 'Entityen er gemt.',
+	'suggestions-created': 'AI-forslagene er oprettet og afventer menneskelig godkendelse.',
+	'suggestion-empty': 'AI fandt ingen tilstrækkeligt sikre relationer.',
+	'suggestion-no-entities': 'Publicér mindst én entity, før AI kan foreslå relationer.',
+	'relationship-approved': 'Relationen er godkendt.',
+	'relationship-rejected': 'Relationen er afvist.',
+	'relationship-archived': 'Relationen er arkiveret.',
+};
+const errorStatuses = new Set([
+	'entity-error', 'suggestion-error', 'suggestion-provider-error',
+	'suggestion-not-configured', 'review-error',
+]);
+const entityTypeLabels: Record<string, string> = {
+	tool: 'AI-værktøj', topic: 'Emne', concept: 'Begreb', audience: 'Målgruppe',
+	use_case: 'Use case', industry: 'Branche', skill: 'Kompetence',
+};
+const relationshipLabels: Record<string, string> = {
+	about: 'handler om', mentions: 'omtaler', uses: 'bruger', demonstrates: 'demonstrerer',
+	targets: 'målretter', prerequisite_for: 'forudsætning for', related_to: 'relaterer til',
+	updates: 'opdaterer', derived_from: 'afledt af', part_of: 'del af',
+};
+---
+
+<AdminLayout
+	title="Vidensgraf"
+	description="Kurater entities og godkend relationer mellem LearnAI-kilder."
+	active="knowledgeGraph"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Knowledge Graph MVP</p>
+			<h1>Vidensgraf</h1>
+			<p>AI kan foreslå relationer. Kun en redaktør eller administrator kan godkende dem.</p>
+		</div>
+	</header>
+
+	{hasLoadError && <p class="notice notice-error" role="alert">Nogle grafdata kunne ikke hentes. Migrationen skal være anvendt, før siden virker.</p>}
+	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
+	{status && errorStatuses.has(status) && (
+		<p class="notice notice-error" role="alert">
+			Handlingen kunne ikke gennemføres. Kontrollér felterne, OpenAI-konfigurationen og databasemigrationen.
+		</p>
+	)}
+
+	<section class="admin-panel">
+		<div class="admin-panel-head">
+			<div><p class="eyebrow">Forslagskø</p><h2>Afventer godkendelse</h2></div>
+			<strong>{proposed.length} forslag</strong>
+		</div>
+		{proposed.length ? (
+			<div class="admin-list">
+				{proposed.map((relationship) => (
+						<article class="admin-relationship-card">
+							<p><strong>{nodeLabel(one(relationship.source) as NamedNode | null)}</strong></p>
+							<p class="admin-relationship-arrow">{relationshipLabels[relationship.relation_type] ?? relationship.relation_type} →</p>
+							<p><strong>{nodeLabel(one(relationship.target) as NamedNode | null)}</strong></p>
+							<p>{relationship.rationale}</p>
+							{evidenceExcerpt(relationship.evidence) && <small>Belæg: {evidenceExcerpt(relationship.evidence)}</small>}
+							<small>{relationship.origin === 'ai' ? 'AI-forslag' : 'Manuel'} · sikkerhed {Math.round(Number(relationship.confidence ?? 0) * 100)}%</small>
+							<div class="admin-actions">
+								<form method="post" action="/api/admin/knowledge-graph/relationship/review">
+									<input type="hidden" name="relationshipId" value={relationship.id} />
+									<input type="hidden" name="decision" value="approved" />
+									<button class="button button-small" type="submit">Godkend</button>
+								</form>
+								<form method="post" action="/api/admin/knowledge-graph/relationship/review">
+									<input type="hidden" name="relationshipId" value={relationship.id} />
+									<input type="hidden" name="decision" value="rejected" />
+									<button class="button button-ghost button-small" type="submit">Afvis</button>
+								</form>
+							</div>
+						</article>
+				))}
+			</div>
+		) : <div class="admin-empty"><p>Der er ingen forslag i køen.</p></div>}
+	</section>
+
+	<section class="admin-panel">
+		<div class="admin-panel-head">
+			<div><p class="eyebrow">AI-assistance</p><h2>Foreslå relationer</h2></div>
+		</div>
+		<form class="admin-inline-form" method="post" action="/api/admin/knowledge-graph/suggest">
+			<label class="field-wide">
+				Vælg artikel, kursus eller lektion
+				<select name="sourceNodeId" required>
+					<option value="">Vælg kilde…</option>
+					{sourceNodes.map((node) => <option value={node.id}>{nodeLabel(node)}</option>)}
+				</select>
+			</label>
+			<button class="button" type="submit">Foreslå relationer</button>
+		</form>
+		<p><small>AI kan kun vælge mellem publicerede entities. Alle forslag lander i køen ovenfor.</small></p>
+	</section>
+
+	<section class="admin-panel">
+		<div class="admin-panel-head">
+			<div><p class="eyebrow">Entity-katalog</p><h2>Faglige objekter</h2></div>
+			<strong>{entities.length} entities</strong>
+		</div>
+		<form class="admin-form" method="post" action="/api/admin/knowledge-graph/entity/save">
+			<div class="admin-form-grid">
+				<label>Navn<input name="name" required maxlength="160" /></label>
+				<label>Slug<input name="slug" required maxlength="160" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" /></label>
+				<label>Type<select name="entityType">{entityTypes.map((type) => <option value={type}>{entityTypeLabels[type]}</option>)}</select></label>
+				<label>Status<select name="status"><option value="draft">Kladde</option><option value="review">Gennemgang</option><option value="published">Publiceret</option><option value="archived">Arkiveret</option></select></label>
+				<label class="field-wide">Beskrivelse<textarea name="description" rows="3" maxlength="2000"></textarea></label>
+				<label class="field-wide">Aliaser<textarea name="aliasesText" rows="2" placeholder="Ét navn pr. linje eller adskilt med komma"></textarea></label>
+				<label>Eksisterende tag<select name="sourceTagId"><option value="">Intet tag</option>{tagResult.data?.map((tag) => <option value={tag.id}>{tag.name}</option>)}</select></label>
+			</div>
+			<button class="button" type="submit">Opret entity</button>
+		</form>
+
+		{entities.length > 0 && (
+			<div class="admin-entity-grid">
+				{entities.map((entity) => (
+					<details class="admin-entity-card">
+						<summary><strong>{entity.name}</strong> · {entityTypeLabels[entity.entity_type] ?? entity.entity_type} · {entity.status}</summary>
+						<form class="admin-inline-form" method="post" action="/api/admin/knowledge-graph/entity/save">
+							<input type="hidden" name="id" value={entity.id} />
+							<label>Navn<input name="name" required maxlength="160" value={entity.name} /></label>
+							<label>Slug<input name="slug" required maxlength="160" value={entity.slug} /></label>
+							<label>Type<select name="entityType">{entityTypes.map((type) => <option value={type} selected={entity.entity_type === type}>{entityTypeLabels[type]}</option>)}</select></label>
+							<label>Status<select name="status"><option value="draft" selected={entity.status === 'draft'}>Kladde</option><option value="review" selected={entity.status === 'review'}>Gennemgang</option><option value="published" selected={entity.status === 'published'}>Publiceret</option><option value="archived" selected={entity.status === 'archived'}>Arkiveret</option></select></label>
+							<label class="field-wide">Beskrivelse<textarea name="description" rows="3">{entity.description ?? ''}</textarea></label>
+							<label class="field-wide">Aliaser<textarea name="aliasesText" rows="2">{(entity.aliases ?? []).join('\n')}</textarea></label>
+							<label>Tag<select name="sourceTagId"><option value="">Intet tag</option>{tagResult.data?.map((tag) => <option value={tag.id} selected={entity.source_tag_id === tag.id}>{tag.name}</option>)}</select></label>
+							<button class="button button-small" type="submit">Gem</button>
+						</form>
+					</details>
+				))}
+			</div>
+		)}
+	</section>
+
+	<section class="admin-panel">
+		<div class="admin-panel-head"><div><p class="eyebrow">Historik</p><h2>Behandlede relationer</h2></div></div>
+		{reviewed.length ? (
+			<div class="admin-list">
+				{reviewed.map((relationship) => (
+					<article class="admin-relationship-row">
+						<span><strong>{nodeLabel(one(relationship.source) as NamedNode | null)}</strong> {relationshipLabels[relationship.relation_type] ?? relationship.relation_type} <strong>{nodeLabel(one(relationship.target) as NamedNode | null)}</strong></span>
+						<span class={`status-badge status-${relationship.status}`}>{relationship.status}</span>
+						{relationship.status !== 'archived' && (
+							<form method="post" action="/api/admin/knowledge-graph/relationship/review">
+								<input type="hidden" name="relationshipId" value={relationship.id} />
+								<input type="hidden" name="decision" value="archived" />
+								<button class="button button-ghost button-small" type="submit">Arkivér</button>
+							</form>
+						)}
+					</article>
+				))}
+			</div>
+		) : <div class="admin-empty"><p>Ingen behandlede relationer endnu.</p></div>}
+	</section>
+</AdminLayout>
