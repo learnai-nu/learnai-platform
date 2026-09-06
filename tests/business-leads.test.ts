@@ -110,6 +110,17 @@ describe('page wiring', () => {
 		expect(page).toContain('/kurser/ai-i-praksis');
 	});
 
+	it('says whose results the numbers are, so they cannot be read as client cases', () => {
+		expect(page).toContain('Tallene er fra TEKNIQ');
+		expect(page).toContain('Det er ikke kundecases');
+	});
+
+	it('keeps the documented figures together with their source', () => {
+		expect(page).toContain('84 %');
+		expect(page).toContain('95 %');
+		expect(page).toContain('CBS-speciale');
+	});
+
 	it('no longer renders from the generic slug page', () => {
 		expect(readFileSync('src/pages/[slug].astro', 'utf8')).not.toContain('virksomheder: {');
 	});
