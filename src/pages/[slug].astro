@@ -10,11 +10,6 @@ export function getStaticPaths() {
 			description: 'Dansk overblik over de AI-nyheder, der betyder noget i praksis.',
 			kicker: 'Aktuelt',
 		},
-		virksomheder: {
-			title: 'LearnAI for virksomheder',
-			description: 'Kompetenceudvikling, læringsforløb og ansvarlig AI-anvendelse.',
-			kicker: 'B2B',
-		},
 		om: {
 			title: 'Om LearnAI',
 			description: 'Vores ambition er at gøre AI forståelig og anvendelig for alle.',
@@ -42,7 +37,6 @@ const { title, description, kicker } = Astro.props;
 const pageTypes = {
 	vaerktoejer: 'CollectionPage',
 	nyheder: 'CollectionPage',
-	virksomheder: 'WebPage',
 	om: 'AboutPage',
 	privatliv: 'WebPage',
 	kontakt: 'ContactPage',

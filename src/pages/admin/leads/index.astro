@@ -1,0 +1,109 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
+import { companySizeLabels, leadStatusLabels, leadStatuses, type CompanySize, type LeadStatus } from '../../../lib/leads/business';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+
+const context = await getAdminContext(Astro.request, Astro.cookies);
+if (!context.claims) {
+	return new Response(null, { status: 302, headers: { Location: '/login?status=required' } });
+}
+// Leads indeholder persondata om navngivne personer. Kun administratorer.
+if (context.role !== 'admin') return new Response('Du har ikke adgang til leads.', { status: 403 });
+
+const { data: leads, error } = await context.supabase
+	.from('business_leads')
+	.select('id,name,work_email,company,role_title,company_size,goal,status,source,created_at')
+	.order('created_at', { ascending: false })
+	.limit(200);
+
+const status = Astro.url.searchParams.get('status');
+const dateFormat = new Intl.DateTimeFormat('da-DK', {
+	day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+});
+const openLeads = leads?.filter((lead) => lead.status === 'new').length ?? 0;
+---
+
+<AdminLayout
+	title="Leads"
+	description="Henvendelser fra virksomhedssiden."
+	active="leads"
+	email={adminEmail(context.claims)}
+	role={context.role}
+>
+	<header class="admin-page-head">
+		<div>
+			<p class="eyebrow">Leadmotor</p>
+			<h1>Leads</h1>
+			<p>
+				Henvendelser fra <a class="text-link" href="/virksomheder">/virksomheder</a>.
+				{openLeads > 0 ? ` ${openLeads} venter på svar.` : ' Alle er behandlet.'}
+			</p>
+		</div>
+	</header>
+
+	{status === 'saved' && <p class="notice" role="status">Status er opdateret.</p>}
+	{status === 'error' && <p class="notice notice-error" role="alert">Status kunne ikke opdateres.</p>}
+
+	<section class="admin-panel">
+		{error ? (
+			<p class="notice notice-error" role="alert">Listen kunne ikke hentes.</p>
+		) : leads?.length ? (
+			<div class="admin-leads">
+				{leads.map((lead) => (
+					<article class="admin-lead">
+						<div>
+							<strong>{lead.name} · {lead.company}</strong>
+							<small>
+								<a class="text-link" href={`mailto:${lead.work_email}`}>{lead.work_email}</a>
+								{lead.role_title ? ` · ${lead.role_title}` : ''}
+								{lead.company_size ? ` · ${companySizeLabels[lead.company_size as CompanySize]}` : ''}
+								{' · '}{dateFormat.format(new Date(lead.created_at))}
+							</small>
+							{lead.goal && <p class="admin-lead-goal">{lead.goal}</p>}
+						</div>
+						<form method="post" action="/api/admin/leads/status" class="admin-lead-status">
+							<input type="hidden" name="id" value={lead.id} />
+							<label class="admin-lead-label" for={`status-${lead.id}`}>Status for {lead.name}</label>
+							<select id={`status-${lead.id}`} name="status">
+								{leadStatuses.map((value) => (
+									<option value={value} selected={value === lead.status}>{leadStatusLabels[value as LeadStatus]}</option>
+								))}
+							</select>
+							<button type="submit">Gem</button>
+						</form>
+					</article>
+				))}
+			</div>
+		) : (
+			<div class="admin-empty">
+				<h2>Ingen henvendelser endnu</h2>
+				<p>Når nogen udfylder formularen på /virksomheder, dukker de op her.</p>
+			</div>
+		)}
+	</section>
+</AdminLayout>
+
+<style>
+	.admin-lead-label { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+	.admin-lead {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 24px;
+		padding: 18px 0;
+		border-top: 1px solid var(--orbit-border, #d6d9d2);
+	}
+	.admin-lead:first-child { border-top: 0; }
+	.admin-lead strong { display: block; }
+	.admin-lead small { display: block; margin-top: 4px; opacity: .78; }
+	.admin-lead-goal { margin: 10px 0 0; max-width: 62ch; font-size: 14px; line-height: 1.6; opacity: .85; }
+	.admin-lead-status { display: flex; gap: 8px; flex-shrink: 0; }
+	.admin-lead-status select, .admin-lead-status button { min-height: 40px; padding: 6px 10px; font: inherit; }
+	@media (max-width: 760px) {
+		.admin-lead-label { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+	.admin-lead { flex-direction: column; gap: 12px; }
+	}
+</style>
