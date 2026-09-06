@@ -43,34 +43,84 @@ const problems = [
 	},
 ];
 
-const phases = [
+const steps = [
 	{
 		number: '01',
-		title: 'Afklaring',
-		duration: '2–3 uger',
-		body: 'Vi kortlægger de arbejdsgange, hvor AI reelt flytter noget hos jer — og de steder, hvor I skal holde igen. I får en prioriteret liste og et nøgternt billede af, hvad der er at hente.',
+		title: 'Potentialeafdækning',
+		body: 'Vi kortlægger processer, data og opgaver og finder de steder, hvor AI skaber målbar værdi — og lige så vigtigt: de steder, hvor den ikke gør.',
 	},
 	{
 		number: '02',
-		title: 'Kompetenceløft',
-		duration: '4–8 uger',
-		body: 'Medarbejderne lærer AI på deres egne opgaver, ikke på generiske eksempler. Undervisning på dansk, øvelser fra jeres hverdag og én metode, de kan gentage uden hjælp.',
+		title: 'Rådgivning og strategi',
+		body: 'Use cases prioriteres efter værdi og risiko. I får en realistisk roadmap med milepæle, succeskriterier og styr på sikkerhed og GDPR fra dag ét.',
 	},
 	{
 		number: '03',
-		title: 'Forankring',
-		duration: 'Løbende',
-		body: 'Vi udpeger og træner et korps af AI-ambassadører, sætter spilleregler for data og ansvarlig brug, og aftaler hvordan I måler effekten, når forløbet er slut.',
+		title: 'Workshops',
+		body: 'Hands-on sessioner, hvor medarbejderne arbejder med AI på deres egne, konkrete opgaver. Læringen sidder fast, fordi den er relevant fra første dag.',
+	},
+	{
+		number: '04',
+		title: 'Kurser og kompetenceudvikling',
+		body: 'Kompetenceopbygning i niveauer — fælles, teamspecifik og individuel — samt uddannelse af interne AI-ambassadører, der bærer udviklingen videre.',
+	},
+	{
+		number: '05',
+		title: 'Forankring og ansvarlig drift',
+		body: 'Retningslinjer, politikker og KPI\'er, der gør AI til en tryg og blivende driftsdisciplin — ikke et engangsprojekt.',
+	},
+];
+
+/** Tallene er fra TEKNIQ, hvor Jesper selv har stået for indsatsen. Det skal
+    fremgå af siden, så de ikke læses som resultater hos en kunde. */
+const proof = [
+	{ value: '84 %', label: 'bruger AI dagligt' },
+	{ value: '95 %', label: 'føler sig kompetente' },
+	{ value: '100', label: 'medarbejdere trænet' },
+	{ value: '12', label: 'AI-ambassadører uddannet' },
+];
+
+const results = [
+	{
+		featured: true,
+		tag: 'Uafhængigt dokumenteret · 2026',
+		title: 'Effekten er målt udefra',
+		body: 'Et CBS-speciale har vurderet TEKNIQs AI-forankring op mod forskningens kriterier og bedømmer både den strategiske forankring og medarbejderaccepten som “meget stærk”: 84 % bruger AI dagligt, og 95 % føler sig kompetente i deres brug. Resultaterne er også fremhævet i den adm. direktørs bog om ledelse og AI.',
+	},
+	{
+		tag: 'Kompetencer',
+		title: 'Kompetenceløft på tre niveauer',
+		body: '100 medarbejdere trænet i generelle AI-kompetencer, teamspecifikke forløb for 10 teams og individuel opbygning — båret videre af 12 interne AI-ambassadører.',
+	},
+	{
+		tag: 'Chatbot',
+		title: 'KVIQ i ny generation',
+		body: 'Chatbotten er opgraderet til en ny generation med markant bedre svar og væsentligt lavere driftsomkostninger end den tidligere løsning.',
+	},
+	{
+		tag: 'Tale-til-tekst',
+		title: 'Fra telefonsamtaler til indsigt',
+		body: 'Automatiske referater af telefonsamtaler bruges til at analysere, hvad medlemmerne ringer om. Trends og afvigelser opfanges, og nyhedsbreve genereres på baggrund af dem.',
+	},
+	{
+		tag: 'Voicebot · 2026',
+		title: 'Telefonen tages — også efter lukketid',
+		body: 'En voicebot er under opbygning. Den besvarer i første omgang opkald uden for åbningstid, så ingen møder en tavs linje.',
+	},
+	{
+		tag: 'Næste skridt',
+		title: 'Agenter, der udfører opgaver',
+		body: 'AI-agenter, der løser konkrete opgaver — og på sigt hele teams af agenter: human-led, agent-operated teams.',
 	},
 ];
 
 const deliverables = [
-	{ title: 'Prioriteret mulighedsliste', body: 'De arbejdsgange, hvor AI betaler sig hos jer — rangeret efter effekt og risiko.' },
-	{ title: 'Spilleregler for data', body: 'En enkel model for, hvad medarbejderne må dele med et AI-værktøj, og hvad de aldrig må.' },
+	{ title: 'Prioriteret mulighedsliste', body: 'De processer og opgaver, hvor AI betaler sig hos jer — rangeret efter værdi og risiko.' },
+	{ title: 'Roadmap med milepæle', body: 'Hvad der sker hvornår, hvem der ejer det, og hvad succes ser ud som.' },
+	{ title: 'Spilleregler for data', body: 'Retningslinjer og politikker for, hvad medarbejderne må dele med et AI-værktøj — og hvad de aldrig må.' },
 	{ title: 'Promptbibliotek', body: 'Færdige, afprøvede prompts til jeres tilbagevendende opgaver. Skrevet på dansk.' },
-	{ title: 'Trænet ambassadørkorps', body: 'De kolleger, resten spørger, når forløbet er slut. Klædt på til rollen.' },
-	{ title: 'Adgang til LearnAI', body: 'Kurser, værktøjskatalog og use cases, som medarbejderne kan vende tilbage til.' },
-	{ title: 'Et målepunkt', body: 'Tid og kvalitet før og efter, så I kan se, om det virkede — og forklare det opad.' },
+	{ title: 'Trænet ambassadørkorps', body: 'De kolleger, resten spørger, når forløbet er slut. Uddannet efter train-the-trainer-princippet.' },
+	{ title: 'KPI\'er på faktisk brug', body: 'Vi måler på anvendelse og oplevet værdi — ikke på antal licenser.' },
 ];
 
 const questions = [
@@ -79,12 +129,24 @@ const questions = [
 		answer: 'Prisen afhænger af omfang og antal medarbejdere. Skriv til mig med jeres situation, så får I et konkret oplæg frem for en standardpakke.',
 	},
 	{
+		question: 'Hvad er AI-adoption egentlig?',
+		answer: 'Det er processen med at få AI-værktøjer i reel, daglig brug — ikke bare at indkøbe teknologien. Det kræver kompetenceopbygning, klare retningslinjer og forankring i medarbejdernes egne opgaver.',
+	},
+	{
+		question: 'Kan effekten måles?',
+		answer: 'Ja, og den skal måles på faktisk anvendelse og oplevet værdi frem for antal licenser. Hos TEKNIQ er forankringen vurderet uafhængigt i et CBS-speciale fra 2026: 84 % bruger AI dagligt, og 95 % føler sig kompetente i deres brug.',
+	},
+	{
+		question: 'Hvad er et AI-ambassadørkorps?',
+		answer: 'En gruppe medarbejdere, der uddannes som interne superbrugere og forandringsagenter. De hjælper kollegerne i gang, så fremdriften ikke afhænger af eksterne konsulenter, når forløbet er slut.',
+	},
+	{
 		question: 'Skal vi bruge bestemte AI-værktøjer?',
-		answer: 'Nej. Forløbet er værktøjsneutralt og tager udgangspunkt i det, I allerede har godkendt. Har I ikke valgt endnu, hjælper jeg med at afklare det.',
+		answer: 'Nej. Forløbet tager udgangspunkt i det, I allerede har godkendt — ofte Microsoft Copilot. Har I ikke valgt endnu, hjælper jeg med at afklare det.',
 	},
 	{
 		question: 'Hvordan håndterer I data og GDPR?',
-		answer: 'Øvelserne bygges, så medarbejderne kan træne uden at dele person- eller kundedata. Spillereglerne for, hvad der må deles, er en fast del af forløbet — ikke et bilag til sidst.',
+		answer: 'Sikkerhed og GDPR er med fra dag ét, ikke som et bilag til sidst. Øvelserne bygges, så medarbejderne kan træne uden at dele person- eller kundedata, og forløbet slutter med retningslinjer, I kan drive videre på.',
 	},
 	{
 		question: 'Kan I køre det for hele organisationen på én gang?',
@@ -94,20 +156,18 @@ const questions = [
 		question: 'Vi vil gerne prøve noget først. Kan vi det?',
 		answer: 'Ja. Tag det gratis minikursus “AI i praksis”. Det tager cirka en time og giver jer et fælles udgangspunkt, inden vi taler sammen.',
 	},
-	{
-		question: 'Hvor hurtigt kan vi komme i gang?',
-		answer: 'Udfyld formularen, så vender jeg tilbage med et forslag til en samtale på 30 minutter. Der beslutter vi, om der overhovedet er et forløb at lave.',
-	},
 ];
 
 const title = 'AI-forløb for virksomheder';
-const description = 'Fra AI-nysgerrighed til AI-vaner: afklaring, kompetenceløft og forankring med et ambassadørkorps, der holder det i live bagefter.';
+const description = 'Fra AI-nysgerrighed til daglig brug: potentialeafdækning, kompetenceløft og forankring. Metoden har givet 84 % daglig AI-brug hos TEKNIQ, dokumenteret i et CBS-speciale.';
 
 const personSchema = {
 	'@type': 'Person',
-	name: 'Jesper Schneider',
+	name: 'Jesper Gunris Schneider',
 	url: 'https://jesperschneider.dk/',
-	jobTitle: 'Chef for digital forretningsudvikling',
+	jobTitle: 'Chef for Digital Forretningsudvikling',
+	worksFor: { '@type': 'Organization', name: 'TEKNIQ', url: 'https://www.tekniq.dk/' },
+	sameAs: ['https://www.linkedin.com/in/jesperschneider/', 'https://jesperschneider.dk/'],
 };
 const faqSchema = {
 	'@type': 'FAQPage',
@@ -149,18 +209,19 @@ const faqSchema = {
 					<li>Øvelser fra jeres egne opgaver</li>
 				</ul>
 			</div>
-			<aside class="business-hero-card" aria-label="Kort om forløbet">
-				<p class="business-card-label">Et forløb i tre trin</p>
-				<ol class="business-card-list">
-					{phases.map((phase) => (
-						<li>
-							<strong>{phase.title}</strong>
-							<span>{phase.duration}</span>
-						</li>
+			<aside class="business-hero-card" aria-label="Dokumenteret effekt">
+				<p class="business-card-label">Dokumenteret effekt</p>
+				<dl class="business-proof">
+					{proof.map((item) => (
+						<div>
+							<dt>{item.value}</dt>
+							<dd>{item.label}</dd>
+						</div>
 					))}
-				</ol>
+				</dl>
 				<p class="business-card-footer">
-					Første skridt er altid en samtale på 30 minutter. Er der ikke et forløb at lave, siger jeg det.
+					Tallene er fra TEKNIQ, hvor jeg selv har stået for indsatsen. Forankringen er vurderet
+					uafhængigt i et CBS-speciale fra 2026.
 				</p>
 			</aside>
 		</section>
@@ -182,21 +243,24 @@ const faqSchema = {
 
 		<section class="business-section business-shell" aria-labelledby="forloeb-title">
 			<div class="business-section-heading">
-				<h2 id="forloeb-title">Sådan arbejder vi</h2>
-				<p>Forløbet tilpasses jeres situation, men rækkefølgen er den samme: forstå, træn, forankr.</p>
+				<h2 id="forloeb-title">AI-adoption i fem trin</h2>
+				<p>Adoption sker ikke i et slideshow. Forløbet tilpasses jeres situation, men rækkefølgen er den samme — fra potentiale til varig forankring, med mennesker i centrum hele vejen.</p>
 			</div>
 			<ol class="business-phases">
-				{phases.map((phase) => (
+				{steps.map((step) => (
 					<li class="business-phase">
-						<p class="business-phase-number">{phase.number}</p>
+						<p class="business-phase-number">{step.number}</p>
 						<div>
-							<h3>{phase.title}</h3>
-							<p class="business-phase-duration">{phase.duration}</p>
-							<p>{phase.body}</p>
+							<h3>{step.title}</h3>
+							<p>{step.body}</p>
 						</div>
 					</li>
 				))}
 			</ol>
+			<p class="business-model-note">
+				Logikken er enkel: vi bygger AI-kompetencer først og veksler dem derefter til værdi og varig
+				konkurrencefordel.
+			</p>
 		</section>
 
 		<section class="business-section business-shell" aria-labelledby="leverance-title">
@@ -214,25 +278,44 @@ const faqSchema = {
 			</div>
 		</section>
 
+		<section class="business-section business-shell" aria-labelledby="resultat-title">
+			<div class="business-section-heading">
+				<h2 id="resultat-title">Hvad metoden har givet</h2>
+				<p>Resultaterne herunder er fra TEKNIQ, hvor jeg selv har stået for indsatsen. Det er ikke kundecases — det er den metode, I får.</p>
+			</div>
+			<div class="business-results">
+				{results.map((item) => (
+					<article class={item.featured ? 'business-result business-result-featured' : 'business-result'}>
+						<p class="business-result-tag">{item.tag}</p>
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
 		<section class="business-section business-shell" aria-labelledby="afsender-title">
 			<div class="business-author">
 				<div>
 					<p class="business-eyebrow"><span class="business-dot"></span> Afsender</p>
 					<h2 id="afsender-title">Hvem står bag</h2>
 					<p>
-						Jeg hedder <strong>Jesper Schneider</strong> og er chef for digital forretningsudvikling i
-						TEKNIQ Arbejdsgiverne. Jeg har ansvaret for AI-strategi og implementering i en
-						medlemsorganisation — tale-til-tekst, chatbots og opbygningen af et AI-ambassadørkorps — og for
-						at teknologien rent faktisk bliver brugt bredt, ikke kun af de nysgerrige.
+						Jeg hedder <strong>Jesper Gunris Schneider</strong> og er chef for digital
+						forretningsudvikling i TEKNIQ. Jeg leder et tværfagligt digitalt team og har ansvaret for
+						AI-strategi og for, at teknologien rent faktisk bliver brugt bredt — ikke kun af de nysgerrige.
 					</p>
 					<p>
-						Før det brugte jeg 16+ år i digitalt salg og marketing. Jeg ser AI som et redskab til at styrke
-						beslutninger, effektivisere processer og skabe bedre oplevelser — ikke som et mål i sig selv.
-						Det er også sådan, forløbene er skruet sammen.
+						Jeg har arbejdet med digital forretning i mere end 25 år: e-commerce, telecom og nu
+						AI-transformation. Jeg ser AI som et redskab til at styrke beslutninger, effektivisere
+						processer og skabe bedre oplevelser — ikke som et mål i sig selv. Det er også sådan,
+						forløbene er skruet sammen.
 					</p>
 					<p class="business-author-link">
 						<a href="https://jesperschneider.dk/" target="_blank" rel="noopener noreferrer">
 							Læs mere om mig <span aria-hidden="true">↗</span>
+						</a>
+						<a href="https://www.linkedin.com/in/jesperschneider/" target="_blank" rel="noopener noreferrer">
+							LinkedIn <span aria-hidden="true">↗</span>
 						</a>
 					</p>
 				</div>

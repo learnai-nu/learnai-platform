@@ -57,6 +57,11 @@ Leads er persondata, og RLS er grænsen:
 Både siden `/admin/leads` og endpointet til statusskift afviser rollen `editor`
 eksplicit, så adgangen fejler ens i databasen og i applikationen.
 
+Migrationen opretter selv `private`-skemaet. Ingen tidligere migration gør det
+— de antog, at det fandtes — så et projekt, der ikke har kørt dem alle, fejler
+ellers med `3F000: schema "private" does not exist`. `anon` har ingen adgang til
+skemaet; `authenticated` har kun `usage`, så politikkerne kan kalde funktionen.
+
 ## Indholdet er et udkast
 
 Teksten om Jesper bygger på det, han selv har oplyst: rollen i TEKNIQ

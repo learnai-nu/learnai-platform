@@ -75,6 +75,12 @@ describe('database contract', () => {
 		for (const status of leadStatuses) expect(migration).toContain(`'${status}'`);
 	});
 
+	it('creates the private schema instead of assuming it exists', () => {
+		expect(migration).toContain('create schema if not exists private');
+		expect(migration).toContain('grant usage on schema private to authenticated');
+		expect(migration).toContain('revoke all on schema private from anon');
+	});
+
 	it('keeps RLS as the authorisation boundary', () => {
 		expect(migration).toContain('alter table public.business_leads enable row level security');
 		expect(migration).toContain('force row level security');
@@ -108,6 +114,17 @@ describe('page wiring', () => {
 	it('offers a low-commitment path next to the primary call to action', () => {
 		expect(page).toContain('href="#kontakt"');
 		expect(page).toContain('/kurser/ai-i-praksis');
+	});
+
+	it('says whose results the numbers are, so they cannot be read as client cases', () => {
+		expect(page).toContain('Tallene er fra TEKNIQ');
+		expect(page).toContain('Det er ikke kundecases');
+	});
+
+	it('keeps the documented figures together with their source', () => {
+		expect(page).toContain('84 %');
+		expect(page).toContain('95 %');
+		expect(page).toContain('CBS-speciale');
 	});
 
 	it('no longer renders from the generic slug page', () => {

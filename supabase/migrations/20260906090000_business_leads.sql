@@ -3,6 +3,15 @@
 -- RLS er grænsen: anon må indsætte og intet andet, editors ser ingenting.
 
 -- Migrationen kan køres igen oven på et miljø, hvor dele allerede findes.
+
+-- Tidligere migrationer antog, at private-skemaet fandtes. Det gør det ikke
+-- nødvendigvis, så det oprettes her. Skemaet må ikke være synligt for
+-- browserrollerne ud over den ene funktion, politikkerne kalder.
+create schema if not exists private;
+revoke all on schema private from public;
+revoke all on schema private from anon;
+grant usage on schema private to authenticated;
+
 do $$ begin
   create type public.business_lead_size as enum ('1-9', '10-49', '50-249', '250+');
 exception when duplicate_object then null; end $$;
