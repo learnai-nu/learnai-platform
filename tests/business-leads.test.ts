@@ -75,6 +75,12 @@ describe('database contract', () => {
 		for (const status of leadStatuses) expect(migration).toContain(`'${status}'`);
 	});
 
+	it('creates the private schema instead of assuming it exists', () => {
+		expect(migration).toContain('create schema if not exists private');
+		expect(migration).toContain('grant usage on schema private to authenticated');
+		expect(migration).toContain('revoke all on schema private from anon');
+	});
+
 	it('keeps RLS as the authorisation boundary', () => {
 		expect(migration).toContain('alter table public.business_leads enable row level security');
 		expect(migration).toContain('force row level security');
