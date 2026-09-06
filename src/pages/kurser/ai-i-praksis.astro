@@ -1,0 +1,254 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import {
+	challengeCoachLessonDescription,
+	courseLessonMinutes,
+	courseLessonTitle,
+	isChallengeCoachLesson,
+} from '../../lib/learning/course-overrides';
+import { createCanonicalUrl, createCourseSchema } from '../../lib/seo/schema';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/course-landing.css';
+
+export const prerender = false;
+
+const courseSlug = 'ai-i-praksis-dit-foerste-kursus';
+const coursePath = `/kurser/${courseSlug}`;
+
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: course, error } = await supabase
+	.from('courses')
+	.select('title,slug,description,course_modules(title,sort_order,lessons(title,slug,description,estimated_minutes,sort_order))')
+	.eq('slug', courseSlug)
+	.eq('status', 'published')
+	.maybeSingle();
+
+const modules = [...(course?.course_modules ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+const lessons = modules.flatMap((module) =>
+	[...(module.lessons ?? [])]
+		.sort((a, b) => a.sort_order - b.sort_order)
+		.map((lesson) => ({
+			title: courseLessonTitle(courseSlug, lesson.slug, lesson.title),
+			slug: lesson.slug,
+			description: isChallengeCoachLesson(courseSlug, lesson.slug)
+				? challengeCoachLessonDescription
+				: lesson.description ?? '',
+			minutes: courseLessonMinutes(courseSlug, lesson.slug, lesson.estimated_minutes) ?? 0,
+		})),
+);
+
+/** Modulerne vises som et forløb, så lektionsnumrene skal følge hele kurset. */
+let lessonCursor = 0;
+const modulePath = modules.map((module) => {
+	const count = module.lessons?.length ?? 0;
+	const from = lessonCursor + 1;
+	lessonCursor += count;
+	return {
+		title: module.title,
+		range: count > 1 ? `${String(from).padStart(2, '0')}–${String(lessonCursor).padStart(2, '0')}` : String(from).padStart(2, '0'),
+	};
+});
+
+const totalMinutes = lessons.reduce((sum, lesson) => sum + lesson.minutes, 0);
+const firstLesson = lessons[0] ?? null;
+const contentMissing = Boolean(error) || lessons.length === 0;
+
+const questions = [
+	{
+		question: 'Er kurset noget for mig, hvis jeg er helt ny?',
+		answer: 'Ja. Kurset er til dig, der er ny i AI, eller som har prøvet det uden at få en fast metode til dit arbejde. Vi starter med en konkret opgave og bygger videre derfra.',
+	},
+	{
+		question: 'Hvilket AI-værktøj skal jeg bruge?',
+		answer: 'Øvelserne kan afprøves i ChatGPT, Claude eller Copilot. Brug et værktøj, din arbejdsplads har godkendt. Øvelsen her på siden bruger et forberedt eksempel og kræver ingen AI-konto.',
+	},
+	{
+		question: 'Hvad koster kurset?',
+		answer: 'Kurset er gratis. Det fulde forløb “AI som dit daglige værktøj” er et separat tilbud.',
+	},
+	{
+		question: 'Hvor lang tid skal jeg sætte af?',
+		answer: `Ca. ${totalMinutes || 60} minutter fordelt på ${lessons.length || 6} lektioner. Du kan bruge mere tid på øvelserne og tage én lektion ad gangen.`,
+	},
+	{
+		question: 'Hvordan foregår undervisningen?',
+		answer: 'Du arbejder med korte tekster, eksempler og øvelser på dansk. Sidste lektion indeholder en quiz.',
+	},
+	{
+		question: 'Kan jeg bruge en opgave fra mit arbejde?',
+		answer: 'Start med et fiktivt eksempel, eller fjern oplysninger, du ikke må dele. Kurset indeholder en lektion om datasikkerhed og ansvarlig brug.',
+	},
+];
+
+const samplePrompt = 'Opsummér den fiktive mailtråd nedenfor. Lav tre punkter: 1) Hvad er besluttet? 2) Hvem gør hvad? 3) Hvad mangler afklaring? Brug kun oplysninger fra mailtråden. Skriv “ikke oplyst”, hvis noget mangler.\n\nMaja: Lad os holde intro-mødet torsdag kl. 10. Jeg sender en dagsorden onsdag.\nJonas: Det passer mig. Jeg booker et mødelokale.\nMaja: Fint. Kan nogen tage noter?';
+
+const title = 'AI i praksis — gratis minikursus';
+const description = `Lær AI med en opgave fra din hverdag. ${lessons.length || 6} praktiske lektioner på dansk, ca. ${totalMinutes || 60} minutter. Gratis og til begyndere.`;
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const courseSchema = createCourseSchema({
+	canonicalUrl,
+	name: course?.title ?? title,
+	description: course?.description ?? description,
+});
+const faqSchema = {
+	'@type': 'FAQPage',
+	mainEntity: questions.map((item) => ({
+		'@type': 'Question',
+		name: item.question,
+		acceptedAnswer: { '@type': 'Answer', text: item.answer },
+	})),
+};
+---
+
+<SiteLayout
+	title={`${title} — LearnAI.nu`}
+	{description}
+	pageType="WebPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Kurser', url: '/kurser' },
+		{ name: 'AI i praksis', url: '/kurser/ai-i-praksis' },
+	]}
+	additionalSchema={[courseSchema, faqSchema]}
+>
+	<div class="course-landing">
+		<section class="landing-hero landing-shell" aria-labelledby="hero-title">
+			<div class="landing-hero-copy">
+				<p class="landing-eyebrow"><span class="landing-course-badge">Gratis minikursus</span> AI i praksis</p>
+				<h1 id="hero-title">Lær AI med en opgave fra din <span>hverdag.</span></h1>
+				<p class="landing-lead">Få overblik over en mailtråd. Byg en prompt, du kan genbruge. Og lær at vurdere det svar, du får.</p>
+				<p class="landing-audience">Til dig, der vil i gang med AI på arbejdet.</p>
+				<div class="landing-hero-actions">
+					<button type="button" class="landing-button" data-open-exercise>Prøv første øvelse <span aria-hidden="true">↗</span></button>
+					<a class="landing-text-link" href={coursePath}>Start kurset <span aria-hidden="true">→</span></a>
+				</div>
+				<p class="landing-demo-note">Øvelsen tager to minutter · Ingen tilmelding · Intet sendes til AI</p>
+				<div class="landing-hero-meta">
+					<span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16V12M9 16V8M15 16V3"></path></svg>Begynder</span>
+					<span><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle><path d="M10 5v5l3 2"></path></svg>Ca. {totalMinutes || 60} minutter</span>
+					<span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h6v12H3zM11 4h6v12h-6"></path></svg>{lessons.length || 6} lektioner</span>
+				</div>
+			</div>
+
+			<div class="landing-workbench" aria-label="Fiktivt eksempel: Fra mailtråd til overblik">
+				<div class="landing-workbench-label"><span>ET KIG IND I LEKTION 01</span><span aria-hidden="true">↙</span></div>
+				<div class="landing-example-sheet">
+					<div class="landing-preview-switch" role="group" aria-label="Vis mailtråden eller overblikket">
+						<button type="button" data-preview="mail" aria-pressed="false" aria-controls="preview-mail"><span>01</span> Mailtråden</button>
+						<button type="button" data-preview="result" aria-pressed="true" aria-controls="preview-result"><span>02</span> Overblikket</button>
+					</div>
+					<section id="preview-mail" class="landing-preview-panel" data-preview-panel="mail" aria-labelledby="mail-title" hidden>
+						<p class="landing-sheet-label">TRE BESKEDER. HVAD ER AFTALT?</p>
+						<h2 id="mail-title">Re: Intro-møde</h2>
+						<div class="landing-mail-line"><span class="landing-avatar" aria-hidden="true">M</span><p><strong>Maja</strong>Lad os mødes torsdag kl. 10. Jeg sender en dagsorden onsdag.</p></div>
+						<div class="landing-mail-line"><span class="landing-avatar landing-avatar-blue" aria-hidden="true">J</span><p><strong>Jonas</strong>Det passer mig. Jeg booker et mødelokale.</p></div>
+						<div class="landing-mail-line"><span class="landing-avatar" aria-hidden="true">M</span><p><strong>Maja</strong>Fint. Kan nogen tage noter?</p></div>
+					</section>
+					<section id="preview-result" class="landing-preview-panel" data-preview-panel="result" aria-labelledby="result-title">
+						<p class="landing-sheet-label">ET FORBEREDT EKSEMPEL PÅ ET SVAR</p>
+						<h2 id="result-title">Nu er næste skridt tydeligt.</h2>
+						<div class="landing-result-row"><span class="landing-check" aria-hidden="true">✓</span><p><strong>Besluttet</strong>Intro-møde torsdag kl. 10.</p></div>
+						<div class="landing-result-row"><span class="landing-check" aria-hidden="true">✓</span><p><strong>Fordelt</strong>Maja sender dagsorden. Jonas booker lokale.</p></div>
+						<div class="landing-result-row landing-result-unresolved"><span class="landing-question" aria-hidden="true">?</span><p><strong>Mangler afklaring</strong>Hvem tager noter?</p></div>
+					</section>
+					<div class="landing-sheet-footer"><span class="landing-sheet-pencil" aria-hidden="true">↳</span><p><strong>AI laver udkastet.</strong> Du tjekker svaret.</p></div>
+				</div>
+				<p class="landing-example-caption">Fiktiv mailtråd · Skift visning og se forskellen</p>
+			</div>
+		</section>
+
+		<div class="landing-principle landing-shell"><span class="landing-eyebrow">&gt; LEARNAI’S PRINCIP</span><p>Start med opgaven. Lær det, der bringer dit arbejde videre.</p><span class="landing-principle-mark" aria-hidden="true">↘</span></div>
+
+		<section class="landing-outcomes landing-shell landing-section" id="udbytte" aria-labelledby="outcome-title">
+			<div class="landing-section-heading"><div><p class="landing-eyebrow">01 / Det tager du med</p><h2 id="outcome-title">En metode, du kan<br />bruge igen i morgen.</h2></div><p>Du behøver ikke kende alle AI-værktøjer.<br />Begynd med én opgave og en metode, du kan gentage.</p></div>
+			<div class="landing-outcome-grid">
+				<article><div class="landing-outcome-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="6" y="5" width="28" height="30" rx="1"></rect><path d="M12 13h16M12 20h16M12 27h8"></path></svg><span>01</span></div><h3>Skab overblik<br />i en mailtråd</h3><p>Find beslutninger, opgaver og ubesvarede spørgsmål i en tekst, der ellers kræver flere gennemlæsninger.</p></article>
+				<article><div class="landing-outcome-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M5 7h30v26H5zM5 16h30M16 16v17M25 16v17"></path></svg><span>02</span></div><h3>Byg en skabelon,<br />du kan genbruge</h3><p>Lær de fire byggesten i en brugbar prompt, og tilpas dem til den opgave, du sidder med.</p></article>
+				<article><div class="landing-outcome-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 4 33 9v11c0 8-13 16-13 16S7 28 7 20V9zM13 19l5 5 10-11"></path></svg><span>03</span></div><h3>Kontrollér<br />data og svar</h3><p>Tag stilling til, hvad du deler, og kontrollér svaret, før du bruger det i dit arbejde.</p></article>
+			</div>
+		</section>
+
+		<section class="landing-program" id="program" aria-labelledby="program-title">
+			<div class="landing-shell landing-program-grid">
+				<div class="landing-program-intro">
+					<p class="landing-eyebrow">02 / Kursusindhold</p>
+					<h2 id="program-title" tabindex="-1">Seks små skridt.<br /><span>En god start.</span></h2>
+					<p class="landing-program-description">Fra din første konkrete øvelse til vaner, der hjælper dig med at bruge AI med omtanke.</p>
+					<div class="landing-course-summary"><span>{lessons.length || 6} lektioner</span><span>Ca. {totalMinutes || 60} min.</span><span>Gratis</span></div>
+					{modulePath.length > 0 && (
+						<ol class="landing-module-path" aria-label={`Kursets ${modulePath.length} moduler`}>
+							{modulePath.map((module) => <li><span>{module.range}</span><strong>{module.title}</strong></li>)}
+						</ol>
+					)}
+				</div>
+				<div class="landing-lesson-list">
+					{contentMissing ? (
+						<p class="notice notice-error" role="alert">Kursusindholdet kunne ikke hentes lige nu. Prøv igen om lidt, eller <a href={coursePath}>åbn kurset direkte</a>.</p>
+					) : (
+						lessons.map((lesson, index) => (
+							<details class="landing-lesson" open={index === 0}>
+								<summary>
+									<span class="landing-lesson-number">{String(index + 1).padStart(2, '0')}</span>
+									<span class="landing-lesson-title">{lesson.title}<span class="landing-lesson-time-mobile">{lesson.minutes} min.</span></span>
+									<span class="landing-lesson-time">{lesson.minutes} min.</span>
+									<span class="landing-details-plus" aria-hidden="true">+</span>
+								</summary>
+								<div class="landing-lesson-body">
+									{lesson.description && <p>{lesson.description}</p>}
+									{index === 0 && <button type="button" class="landing-lesson-cta" data-open-exercise>Prøv øvelsen her på siden <span aria-hidden="true">↗</span></button>}
+								</div>
+							</details>
+						))
+					)}
+					<p class="landing-program-footnote">Tekst, eksempler og øvelser · Afsluttende quiz</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="landing-start landing-section landing-shell" aria-labelledby="start-title">
+			<div class="landing-section-heading"><div><p class="landing-eyebrow">03 / Sådan kommer du i gang</p><h2 id="start-title">Fra nysgerrig<br />til første øvelse.</h2></div><p>Prøv den korte øvelse her på siden med det samme. Vil du tage hele kurset, gemmes din progression på din profil.</p></div>
+			<div class="landing-start-grid">
+				<article><span>01 <span aria-hidden="true">↗</span></span><h3>Opret en gratis profil</h3><p>Brug din e-mail og en adgangskode.</p></article>
+				<article><span>02 <span aria-hidden="true">↗</span></span><h3>Bekræft din e-mail</h3><p>Følg linket i din indbakke.</p></article>
+				<article><span>03 <span aria-hidden="true">✓</span></span><h3>Start første lektion</h3><p>Begynd med at skabe overblik i en mailtråd.</p></article>
+			</div>
+			<div class="landing-start-actions">
+				<a class="landing-button" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath}>Start kurset <span aria-hidden="true">→</span></a>
+				<a class="landing-text-link" href="/login">Log ind <span aria-hidden="true">→</span></a>
+			</div>
+		</section>
+
+		<section class="landing-faq landing-shell landing-section" id="sporgsmal" aria-labelledby="faq-title">
+			<div><p class="landing-eyebrow">04 / Før du går i gang</p><h2 id="faq-title">Godt at vide.</h2><p>Et lille kursus skal være<br />nemt at komme i gang med.</p></div>
+			<div class="landing-faq-list">
+				{questions.map((item) => <details><summary>{item.question}<span class="landing-details-plus" aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}
+			</div>
+		</section>
+
+		<section class="landing-final">
+			<div class="landing-shell landing-final-inner">
+				<div><p class="landing-eyebrow">Din første AI-gevinst begynder her</p><h2>Prøv én opgave.<br />Se, hvad du lærer.</h2></div>
+				<div><a class="landing-button landing-button-dark" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath}>Start kurset <span aria-hidden="true">↗</span></a><p>Gratis · Din progression gemmes</p></div>
+				<span class="landing-final-decoration" aria-hidden="true">↗</span>
+			</div>
+		</section>
+
+		<dialog class="landing-exercise" aria-labelledby="exercise-title">
+			<div class="landing-dialog-top"><span class="landing-eyebrow">AI i praksis / Kort øvelse</span><button type="button" class="landing-close" data-close-exercise aria-label="Luk øvelsen">×</button></div>
+			<div class="landing-dialog-content">
+				<p class="landing-exercise-kicker">Kort smagsprøve på lektion 1 <span>Fiktiv mailtråd</span></p>
+				<h2 id="exercise-title" tabindex="-1">Gør næste skridt tydeligt.</h2>
+				<p class="landing-dialog-intro">Prøv at skelne mellem det, der er besluttet, og det, der stadig mangler et svar.</p>
+				<ol class="landing-exercise-progress" aria-label="Øvelsens trin"><li data-progress="0" aria-current="step"><span>1</span> Læs</li><li data-progress="1"><span>2</span> Bestil</li><li data-progress="2"><span>3</span> Kontrollér</li></ol>
+				<section data-exercise-step="0" aria-label="Trin 1: Læs mailtråden"><div class="landing-demo-mail"><div><strong>Emne: Intro-møde</strong><span>Fiktivt eksempel</span></div><p><strong>Maja</strong> Lad os holde intro-mødet torsdag kl. 10. Jeg sender en dagsorden onsdag.</p><p><strong>Jonas</strong> Det passer mig. Jeg booker et mødelokale.</p><p><strong>Maja</strong> Fint. Kan nogen tage noter?</p></div><p class="landing-exercise-tip"><strong>Din opgave:</strong> Find beslutningen, fordel opgaverne, og læg mærke til det ubesvarede spørgsmål.</p><button type="button" class="landing-button" data-next-step="1">Se en brugbar prompt <span aria-hidden="true">→</span></button></section>
+				<section data-exercise-step="1" aria-label="Trin 2: Se prompten" hidden><label class="landing-prompt-label" for="exercise-prompt">En tydelig bestilling til AI</label><p class="landing-field-help" id="prompt-help">Du kan redigere og kopiere prompten. Brug fiktiv tekst i et AI-værktøj, din arbejdsplads har godkendt.</p><textarea id="exercise-prompt" rows="9" aria-describedby="prompt-help">{samplePrompt}</textarea><div class="landing-copy-row"><button type="button" class="landing-copy-button" data-copy-prompt>Kopiér prompt <span aria-hidden="true">↗</span></button><span role="status" data-copy-status></span></div><p class="landing-exercise-tip">Øvelsen sender ikke prompten til AI. Det næste trin viser et forberedt svar, som ikke ændres af dine rettelser.</p><div class="landing-step-actions"><button type="button" class="landing-back-button" data-next-step="0">← Tilbage</button><button type="button" class="landing-button" data-next-step="2">Se et eksempel på et svar <span aria-hidden="true">→</span></button></div></section>
+				<section data-exercise-step="2" aria-label="Trin 3: Kontrollér svaret" hidden><p class="landing-prepared-label">Forberedt eksempel · Svaret ændres ikke af din prompt</p><div class="landing-answer-example"><p><strong>Besluttet</strong> Intro-møde torsdag kl. 10.</p><p><strong>Opgaver</strong> Maja sender dagsorden onsdag. Jonas booker et lokale.</p><p><strong>Mangler afklaring</strong> Det er ikke oplyst, hvem der tager noter.</p></div><fieldset class="landing-check-question"><legend>Hvilken opgave mangler stadig en ansvarlig?</legend><label><input type="radio" name="control" value="agenda" /> Sende dagsordenen</label><label><input type="radio" name="control" value="room" /> Booke et mødelokale</label><label><input type="radio" name="control" value="notes" /> Tage noter til mødet</label></fieldset><p class="landing-answer-feedback" role="status" data-answer-feedback></p><div class="landing-step-actions"><button type="button" class="landing-back-button" data-next-step="1">← Til prompten</button><button type="button" class="landing-button" data-check-answer>Tjek mit svar <span aria-hidden="true">✓</span></button></div><a class="landing-finish-link" href={firstLesson ? `${coursePath}/lektioner/${firstLesson.slug}` : coursePath} data-finish-exercise hidden>Tag hele lektionen på kurset →</a></section>
+				<p class="landing-dialog-bottom">Dine rettelser bliver kun i denne åbne side. Der oprettes ingen profil.</p>
+			</div>
+		</dialog>
+	</div>
+</SiteLayout>
+
+<script>
+	import '../../scripts/course-landing';
+</script>
