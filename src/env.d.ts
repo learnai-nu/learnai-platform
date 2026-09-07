@@ -7,6 +7,9 @@ interface ImportMetaEnv {
 	readonly OPENAI_API_KEY?: string;
 	readonly OPENAI_MODEL?: string;
 	readonly OPENAI_VECTOR_STORE_ID?: string;
+	readonly RESEND_API_KEY?: string;
+	readonly LEAD_NOTIFICATION_FROM?: string;
+	readonly LEAD_NOTIFICATION_TO?: string;
 }
 
 interface ImportMeta {

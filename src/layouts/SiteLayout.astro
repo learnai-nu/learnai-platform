@@ -1,5 +1,7 @@
 ---
 import '@fontsource-variable/inter';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import '../styles/global.css';
 import '../styles/blue-orbit-tokens.css';
 import '../styles/blue-orbit.css';
@@ -27,6 +29,8 @@ interface Props {
 	breadcrumbs?: BreadcrumbItem[];
 	mainEntity?: SchemaNode;
 	additionalSchema?: SchemaNode[];
+	/** Disable tracking for administrative or otherwise internal surfaces. */
+	analytics?: boolean;
 }
 
 const {
@@ -39,6 +43,7 @@ const {
 	breadcrumbs = [],
 	mainEntity,
 	additionalSchema = [],
+	analytics = true,
 } = Astro.props;
 
 const canonicalURL = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
@@ -84,6 +89,8 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>{title}</title>
 		{structuredData && <JsonLd data={structuredData} />}
+		{analytics && <Analytics />}
+		{analytics && <SpeedInsights />}
 	</head>
 	<body class="blue-orbit">
 		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>
@@ -92,5 +99,6 @@ const structuredData = noindex ? null : buildSitePageGraph({
 			<slot />
 		</main>
 		<BlueOrbitFooter />
+		<script src="../scripts/analytics.ts"></script>
 	</body>
 </html>

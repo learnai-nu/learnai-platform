@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { track } from '@vercel/analytics';
+import { ANALYTICS_EVENTS } from '../lib/analytics/events';
 import {
 	calculateWorkCompass,
 	workCompassQuestions,
@@ -129,7 +131,11 @@ export default function WorkCompass() {
 	function start() { setCurrentQuestion(0); setScreen('questions'); }
 	function continueAssessment() {
 		if (!selected) return;
-		if (currentQuestion === workCompassQuestions.length - 1) { setScreen('result'); return; }
+		if (currentQuestion === workCompassQuestions.length - 1) {
+			track(ANALYTICS_EVENTS.workCompassCompleted, { locale });
+			setScreen('result');
+			return;
+		}
 		setCurrentQuestion((value) => value + 1);
 	}
 	function restart() { setAnswers({}); setCurrentQuestion(0); setActionStatus('idle'); setScreen('intro'); }

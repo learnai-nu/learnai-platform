@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+import { ANALYTICS_EVENTS } from '../lib/analytics/events';
 import { companySizeLabels, companySizes } from '../lib/leads/business';
 import { createServerSupabaseClient } from '../lib/supabase/server';
 import '../styles/business-landing.css';
@@ -200,7 +201,7 @@ const faqSchema = {
 					holder det i live, når forløbet er slut.
 				</p>
 				<div class="business-hero-actions">
-					<a class="business-button" href="#kontakt">Book en uforpligtende snak <span aria-hidden="true">→</span></a>
+					<a class="business-button" href="#kontakt" data-analytics-event={ANALYTICS_EVENTS.businessContactOpened} data-analytics-source="business_hero">Book en uforpligtende snak <span aria-hidden="true">→</span></a>
 					<a class="business-text-link" href="/kurser/ai-i-praksis">Prøv det gratis kursus først <span aria-hidden="true">→</span></a>
 				</div>
 				<ul class="business-hero-meta">
@@ -380,7 +381,7 @@ const faqSchema = {
 
 				<div class="business-form-card">
 					{status === 'success' && (
-						<p class="business-notice business-notice-success" role="status">
+						<p class="business-notice business-notice-success" role="status" data-analytics-event={ANALYTICS_EVENTS.businessLeadSubmitted} data-analytics-source="business_form" data-analytics-trigger="load">
 							Tak. Jeg har modtaget din henvendelse og vender tilbage inden for to hverdage.
 						</p>
 					)}

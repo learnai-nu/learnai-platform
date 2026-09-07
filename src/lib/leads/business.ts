@@ -26,6 +26,7 @@ export const businessLeadSchema = z.object({
 });
 
 export type BusinessLeadInput = z.input<typeof businessLeadSchema>;
+export type BusinessLead = z.output<typeof businessLeadSchema>;
 
 export function toBusinessLeadRow(input: z.output<typeof businessLeadSchema>) {
 	return {

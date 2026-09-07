@@ -1,3 +1,6 @@
+import { track } from '@vercel/analytics';
+import { ANALYTICS_EVENTS } from '../lib/analytics/events';
+
 /**
  * Landingssidens to interaktive dele: skiftet mellem mailtråd og overblik i
  * heroen, og den korte øvelse i en dialog. Alt indhold står i HTML fra
@@ -21,6 +24,7 @@ const feedback = document.querySelector<HTMLElement>('[data-answer-feedback]');
 const finish = document.querySelector<HTMLElement>('[data-finish-exercise]');
 const finishLabel = document.querySelector<HTMLElement>('[data-finish-label]');
 let exerciseOpener: HTMLElement | null = null;
+let exerciseCompletionTracked = false;
 
 function showStep(step: string) {
 	for (const item of steps) item.hidden = item.dataset.exerciseStep !== step;
@@ -91,6 +95,10 @@ document.querySelector('[data-check-answer]')?.addEventListener('click', () => {
 	}
 
 	const correct = selected.value === 'notes';
+	if (!exerciseCompletionTracked) {
+		track(ANALYTICS_EVENTS.courseExerciseCompleted, { result: correct ? 'correct' : 'incorrect' });
+		exerciseCompletionTracked = true;
+	}
 	feedback.dataset.correct = String(correct);
 	feedback.textContent = correct
 		? 'Præcis. Ingen har sagt ja til at tage noter. AI kan hjælpe med overblikket — du tjekker, at det stemmer med teksten.'

@@ -4,6 +4,9 @@ interface Props {
 	variant?: 'filled' | 'tonal' | 'light' | 'text';
 	size?: 'compact' | 'default' | 'large';
 	arrow?: boolean;
+	analyticsEvent?: string;
+	analyticsSource?: string;
+	analyticsDetail?: string;
 }
 
 const {
@@ -11,10 +14,19 @@ const {
 	variant = 'filled',
 	size = 'default',
 	arrow = false,
+	analyticsEvent,
+	analyticsSource,
+	analyticsDetail,
 } = Astro.props;
 ---
 
-<a class:list={['orbit-button', `orbit-button-${variant}`, `orbit-button-${size}`]} href={href}>
+<a
+	class:list={['orbit-button', `orbit-button-${variant}`, `orbit-button-${size}`]}
+	href={href}
+	data-analytics-event={analyticsEvent}
+	data-analytics-source={analyticsSource}
+	data-analytics-detail={analyticsDetail}
+>
 	<slot />
 	{arrow && (
 		<svg viewBox="0 0 24 24" aria-hidden="true">
