@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { track } from '@vercel/analytics';
+import { ANALYTICS_EVENTS } from '../lib/analytics/events';
 import { mentorResponseSchema, type MentorResponse } from '../lib/ai/contracts';
 
 interface Props {
@@ -42,6 +44,7 @@ export default function AIMentor({ profileComplete }: Props) {
 			}
 			const parsed = mentorResponseSchema.safeParse(payload);
 			if (!parsed.success) throw new Error('AI Mentor returnerede et ugyldigt svar.');
+			track(ANALYTICS_EVENTS.aiMentorAnswered, { has_sources: parsed.data.sources.length > 0 });
 			setResult(parsed.data);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : 'AI Mentor kunne ikke svare lige nu.');

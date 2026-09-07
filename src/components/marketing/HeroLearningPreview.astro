@@ -1,5 +1,6 @@
 ---
 import OrbitButton from '../ui/OrbitButton.astro';
+import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 ---
 
 <section class="orbit-hero">
@@ -11,7 +12,14 @@ import OrbitButton from '../ui/OrbitButton.astro';
 			Uden hype og unødvendig teknik.
 		</p>
 		<div class="orbit-hero-actions">
-			<OrbitButton href="/kurser/ai-i-praksis-dit-foerste-kursus" size="large" arrow>Start gratis</OrbitButton>
+			<OrbitButton
+				href="/kurser/ai-i-praksis-dit-foerste-kursus"
+				size="large"
+				arrow
+				analyticsEvent={ANALYTICS_EVENTS.courseCtaClicked}
+				analyticsSource="home_hero"
+				analyticsDetail="course_page"
+			>Start gratis</OrbitButton>
 			<OrbitButton href="/laer?type=prompt" variant="text" size="large">Find en prompt</OrbitButton>
 		</div>
 		<p class="orbit-proof-line">Første kursus tager under én time</p>

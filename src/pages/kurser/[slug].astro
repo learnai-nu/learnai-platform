@@ -6,6 +6,7 @@ import {
 	type CourseLesson,
 } from '../../lib/learning/progress';
 import { courseLessonMinutes, courseLessonTitle } from '../../lib/learning/course-overrides';
+import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 import { createCanonicalUrl, createCourseSchema } from '../../lib/seo/schema';
 import '../../styles/course-experience.css';
@@ -99,7 +100,8 @@ const roadmapTitle = isStarterCourse
 const statusMessages: Record<string, string> = {
 	'lesson-completed': 'Lektionen er gemt som færdig. Godt arbejde!',
 };
-const statusMessage = statusMessages[Astro.url.searchParams.get('status') ?? ''];
+const currentStatus = Astro.url.searchParams.get('status') ?? '';
+const statusMessage = statusMessages[currentStatus];
 const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
 const courseSchema = createCourseSchema({
 	canonicalUrl,
@@ -198,7 +200,7 @@ const courseSchema = createCourseSchema({
 				</div>
 
 				<div class="course-module-list">
-			{statusMessage && <p class="notice" role="status">{statusMessage}</p>}
+			{statusMessage && <p class="notice" role="status" data-analytics-event={currentStatus === 'lesson-completed' ? ANALYTICS_EVENTS.lessonCompleted : undefined} data-analytics-source="course_progress" data-analytics-trigger="load">{statusMessage}</p>}
 			{progressError && <p class="notice notice-error" role="alert">Din progression kunne ikke hentes. Genindlæs siden og prøv igen.</p>}
 			{modulesError ? (
 				<div class="empty-state">

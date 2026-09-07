@@ -2,6 +2,7 @@
 import OrbitBrand from '../ui/OrbitBrand.astro';
 import HeaderAccount from './HeaderAccount.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 
 interface Props {
 	locale?: 'da' | 'en';
@@ -101,7 +102,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 			</details>
 			<LanguageSwitcher {locale} {alternates} />
 			<HeaderAccount />
-			<a class="orbit-header-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
+			<a class="orbit-header-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus" data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked} data-analytics-source="header_desktop" data-analytics-detail="course_page">Start gratis</a>
 		</div>
 
 		<details class="orbit-mobile-nav">
@@ -135,7 +136,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 					<a href="/login" data-account-anonymous>Log ind</a>
 					<a href="/dashboard" data-account-menu hidden><span data-account-name>Din profil</span></a>
 				</div>
-				<a class="orbit-mobile-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus">Start gratis</a>
+				<a class="orbit-mobile-cta" href="/kurser/ai-i-praksis-dit-foerste-kursus" data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked} data-analytics-source="header_mobile" data-analytics-detail="course_page">Start gratis</a>
 			</nav>
 		</details>
 	</div>
