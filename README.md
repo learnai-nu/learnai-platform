@@ -63,5 +63,8 @@ beskrevet i [`docs/prompt-library.md`](docs/prompt-library.md).
 Web Analytics, Speed Insights, eventnavne og privacy-regler er beskrevet i
 [`docs/analytics.md`](docs/analytics.md).
 
+Notifikationer om nye virksomhedsleads og de nødvendige Vercel/Resend-variabler
+er beskrevet i [`docs/lead-notifications.md`](docs/lead-notifications.md).
+
 Knowledge Graph MVP'ens datamodel, RLS og menneskelige godkendelsesflow er
 beskrevet i [`docs/knowledge-graph.md`](docs/knowledge-graph.md).
