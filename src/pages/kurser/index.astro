@@ -12,7 +12,7 @@ export const prerender = false;
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: courses, error } = await supabase
 	.from('courses')
-	.select('id,title,slug,description,level,estimated_minutes,price_dkk,is_featured')
+	.select('id,title,slug,description,level,estimated_minutes,price_dkk,intro_price_dkk,intro_seat_limit,is_featured')
 	.eq('status', 'published')
 	.order('is_featured', { ascending: false })
 	.order('published_at', { ascending: false });
@@ -83,6 +83,8 @@ const itemList = createItemListSchema(
 								level={levelLabel(course.level)}
 								duration={course.estimated_minutes}
 								price={Number(course.price_dkk)}
+								introPrice={course.intro_price_dkk === null ? null : Number(course.intro_price_dkk)}
+								introSeatLimit={course.intro_seat_limit}
 								featured={Boolean(course.is_featured)}
 							/>
 						))}

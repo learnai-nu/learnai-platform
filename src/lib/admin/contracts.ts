@@ -27,7 +27,18 @@ export const courseFormSchema = z.object({
 	description: optionalText(2_000),
 	estimatedMinutes: z.union([integerField(1, 100_000), z.literal('')]),
 	priceDkk: z.coerce.number().min(0).max(1_000_000),
+	introPriceDkk: z.union([z.literal(''), z.coerce.number().positive().max(1_000_000)]),
+	introSeatLimit: z.union([z.literal(''), integerField(1, 1_000_000)]),
 	isFeatured: z.enum(['true', 'false']).default('false'),
+}).superRefine((course, context) => {
+	const hasIntroPrice = course.introPriceDkk !== '';
+	const hasSeatLimit = course.introSeatLimit !== '';
+	if (hasIntroPrice !== hasSeatLimit) {
+		context.addIssue({ code: 'custom', message: 'Intropris og antal pladser skal udfyldes sammen.' });
+	}
+	if (hasIntroPrice && Number(course.introPriceDkk) >= course.priceDkk) {
+		context.addIssue({ code: 'custom', message: 'Introprisen skal være lavere end normalprisen.' });
+	}
 });
 
 export const moduleFormSchema = z.object({

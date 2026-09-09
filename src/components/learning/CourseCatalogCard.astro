@@ -7,14 +7,21 @@ interface Props {
 	level: string;
 	duration: number | null;
 	price: number;
+	introPrice?: number | null;
+	introSeatLimit?: number | null;
 	featured?: boolean;
 }
 
-const { index, title, slug, description, level, duration, price, featured = false } = Astro.props;
+const { index, title, slug, description, level, duration, price, introPrice = null, introSeatLimit = null, featured = false } = Astro.props;
 const courseNumber = String(index + 1).padStart(2, '0');
-const priceLabel = price === 0
-	? 'Gratis'
-	: new Intl.NumberFormat('da-DK', { style: 'currency', currency: 'DKK', maximumFractionDigits: 0 }).format(price);
+const formatPrice = (value: number) => new Intl.NumberFormat('da-DK', {
+	style: 'currency',
+	currency: 'DKK',
+	minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+	maximumFractionDigits: 2,
+}).format(value);
+const hasIntroOffer = introPrice !== null && introSeatLimit !== null && introPrice < price;
+const priceLabel = price === 0 ? 'Gratis' : formatPrice(hasIntroOffer ? introPrice : price);
 ---
 
 <article class:list={['catalog-course-card', { 'catalog-course-card-featured': featured }]}>
@@ -32,6 +39,7 @@ const priceLabel = price === 0
 			{featured && <span class="catalog-course-recommendation">Anbefalet start</span>}
 		</div>
 		<h3>{title}</h3>
+		{hasIntroOffer && <p class="catalog-course-offer"><strong>Intropris · 50 % rabat</strong><span>Normalpris <s>{formatPrice(price)}</s> · De første {introSeatLimit} pladser</span></p>}
 		<p class="catalog-course-description">{description || 'Et praktisk læringsforløb med konkrete øvelser og et tydeligt næste skridt.'}</p>
 		<div class="catalog-course-outcome">
 			<span>Dit udbytte</span>
