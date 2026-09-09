@@ -18,7 +18,7 @@ const { slug } = Astro.params;
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: course, error: courseError } = await supabase
 	.from('courses')
-	.select('id,title,slug,description,level,estimated_minutes,price_dkk')
+	.select('id,title,slug,description,level,estimated_minutes,price_dkk,intro_price_dkk,intro_seat_limit')
 	.eq('slug', slug)
 	.eq('status', 'published')
 	.maybeSingle();
@@ -73,12 +73,19 @@ const levelLabel = typeof course.level === 'string' && course.level in levelLabe
 	? levelLabels[course.level as keyof typeof levelLabels]
 	: 'Alle niveauer';
 const isStarterCourse = course.slug === 'ai-i-praksis-dit-foerste-kursus';
+const isLeadershipCourse = course.slug === 'ai-for-ledere';
 const outcomes = isStarterCourse
 	? [
 		'En AI-skabelon, du kan bruge på en rigtig arbejdsopgave.',
 		'Et enkelt håndværk til at forbedre svar uden lange superprompts.',
 		'Tre kontrolvaner, der beskytter data og troværdighed.',
 	]
+	: isLeadershipCourse
+		? [
+			'En afprøvet AI-arbejdsgang til din egen lederhverdag.',
+			'Klare spilleregler for data, kvalitet og menneskelig kontrol.',
+			'En 90-dages plan, der forbinder teamets læring med målbar effekt.',
+		]
 	: [
 		'En tydelig metode, du kan afprøve med det samme.',
 		'Konkrete øvelser, der forbinder viden med din arbejdsdag.',
@@ -96,7 +103,19 @@ const journeySteps = sortedModules.map((module, index) => {
 });
 const roadmapTitle = isStarterCourse
 	? 'Fra første resultat til en sikker arbejdsvane.'
+	: isLeadershipCourse
+		? 'Fra personlig praksis til tydelig teamledelse.'
 	: 'Fra ny viden til noget, du kan bruge.';
+const courseKicker = isLeadershipCourse ? 'Praktisk lederkursus' : 'Praktisk minikursus';
+const normalPrice = Number(course.price_dkk);
+const introPrice = course.intro_price_dkk === null ? null : Number(course.intro_price_dkk);
+const hasIntroOffer = introPrice !== null && course.intro_seat_limit !== null && introPrice < normalPrice;
+const formatPrice = (price: number) => new Intl.NumberFormat('da-DK', {
+	style: 'currency',
+	currency: 'DKK',
+	minimumFractionDigits: Number.isInteger(price) ? 0 : 2,
+	maximumFractionDigits: 2,
+}).format(price);
 const statusMessages: Record<string, string> = {
 	'lesson-completed': 'Lektionen er gemt som færdig. Godt arbejde!',
 };
@@ -108,7 +127,7 @@ const courseSchema = createCourseSchema({
 	name: course.title,
 	description: course.description ?? 'Praktisk AI-kursus på dansk.',
 	durationMinutes: course.estimated_minutes,
-	priceDkk: Number(course.price_dkk),
+	priceDkk: hasIntroOffer ? introPrice : normalPrice,
 	level: levelLabel,
 });
 ---
@@ -128,14 +147,21 @@ const courseSchema = createCourseSchema({
 			<div class="course-experience-rail">
 				<div class="course-experience-copy">
 					<a class="course-breadcrumb" href="/kurser">Kurser <span aria-hidden="true">/</span> {isStarterCourse ? 'Din første AI-gevinst' : course.title}</a>
-					<p class="course-experience-kicker">Praktisk minikursus</p>
+					<p class="course-experience-kicker">{courseKicker}</p>
 					<h1>{course.title}</h1>
 					<p class="course-experience-lead">{course.description}</p>
 					<div class="course-experience-meta" aria-label="Kursusinformation">
 						<span>{levelLabel}</span>
 						<span>{course.estimated_minutes ?? '—'} min.</span>
-						<span>{Number(course.price_dkk) === 0 ? 'Gratis' : `${course.price_dkk} kr.`}</span>
+						<span>{normalPrice === 0 ? 'Gratis' : hasIntroOffer ? `Intro ${formatPrice(introPrice)}` : formatPrice(normalPrice)}</span>
 					</div>
+					{hasIntroOffer && (
+						<div class="course-intro-offer" aria-label="Introduktionstilbud">
+							<span>Intropris · 50 % rabat</span>
+							<strong>{formatPrice(introPrice)}</strong>
+							<small>Normalpris <s>{formatPrice(normalPrice)}</s> · Gælder de første {course.intro_seat_limit} pladser</small>
+						</div>
+					)}
 					<div class="course-outcome-list">
 						<p>Du går herfra med</p>
 						<ul>{outcomes.map((outcome) => <li>{outcome}</li>)}</ul>

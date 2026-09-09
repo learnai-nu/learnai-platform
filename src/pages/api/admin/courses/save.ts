@@ -33,6 +33,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 		description: value.description || null,
 		estimated_minutes: value.estimatedMinutes === '' ? null : value.estimatedMinutes,
 		price_dkk: value.priceDkk,
+		intro_price_dkk: value.introPriceDkk === '' ? null : value.introPriceDkk,
+		intro_seat_limit: value.introSeatLimit === '' ? null : value.introSeatLimit,
 		is_featured: value.isFeatured === 'true',
 		updated_at: new Date().toISOString(),
 	};
