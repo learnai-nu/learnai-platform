@@ -27,7 +27,29 @@ const allowedTags = [
 	'br',
 ];
 
-export function renderMarkdown(markdown: string) {
+export interface RenderMarkdownOptions {
+	/**
+	 * Give every heading a stable `id` so a table of contents can link to it and
+	 * visitors can share a link straight to a section.
+	 */
+	headingIds?: boolean;
+}
+
+/** Slug that survives Danish letters, so anchors stay readable. */
+export function slugifyHeading(text: string) {
+	return text
+		.toLowerCase()
+		.replaceAll('æ', 'ae')
+		.replaceAll('ø', 'oe')
+		.replaceAll('å', 'aa')
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '')
+		.slice(0, 80);
+}
+
+export function renderMarkdown(markdown: string, { headingIds = false }: RenderMarkdownOptions = {}) {
 	const source = markdown.replace(/^[\u200B-\u200F\uFEFF]/, '');
 	const rendered = marked.parse(source, {
 		async: false,
@@ -37,10 +59,15 @@ export function renderMarkdown(markdown: string) {
 
 	if (typeof rendered !== 'string') return '';
 
-	return sanitizeHtml(rendered, {
+	const withAnchors = headingIds ? addHeadingIds(rendered) : rendered;
+
+	return sanitizeHtml(withAnchors, {
 		allowedTags,
 		allowedAttributes: {
 			a: ['href', 'title', 'rel'],
+			h2: ['id'],
+			h3: ['id'],
+			h4: ['id'],
 			code: ['class'],
 			th: ['align'],
 			td: ['align'],
@@ -56,5 +83,19 @@ export function renderMarkdown(markdown: string) {
 				},
 			}),
 		},
+	});
+}
+
+/** Duplicate headings get a numeric suffix so every anchor stays unique. */
+function addHeadingIds(html: string) {
+	const used = new Map<string, number>();
+	return html.replace(/<(h[234])>([\s\S]*?)<\/\1>/g, (match, tag: string, inner: string) => {
+		const text = inner.replace(/<[^>]*>/g, '').trim();
+		const base = slugifyHeading(text);
+		if (!base) return match;
+		const seen = used.get(base) ?? 0;
+		used.set(base, seen + 1);
+		const id = seen === 0 ? base : `${base}-${seen + 1}`;
+		return `<${tag} id="${id}">${inner}</${tag}>`;
 	});
 }

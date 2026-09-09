@@ -1,0 +1,167 @@
+/* Long-form article furniture: breadcrumb, byline, table of contents, FAQ,
+   sources, author bio and related reading. */
+
+.article-breadcrumb {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .5rem;
+	margin-bottom: 1.25rem;
+	font-size: .85rem;
+	color: var(--orbit-on-surface-variant);
+}
+.article-breadcrumb a { color: inherit; text-decoration: none; }
+.article-breadcrumb a:hover { color: var(--orbit-primary); text-decoration: underline; }
+.article-breadcrumb .sep { opacity: .45; }
+.article-breadcrumb [aria-current="page"] { color: var(--orbit-on-surface); font-weight: 600; }
+
+.article-meta { display: flex; align-items: center; gap: .85rem; margin-top: 1.75rem; }
+.article-meta-avatar {
+	display: grid;
+	place-items: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: var(--orbit-shape-full);
+	background: var(--orbit-primary);
+	color: var(--orbit-on-primary);
+	font-size: .9rem;
+	font-weight: 700;
+}
+.article-meta-author { display: block; font-weight: 700; }
+.article-meta-details { display: block; font-size: .84rem; color: var(--orbit-on-surface-variant); }
+
+.article-toc {
+	margin-bottom: 2rem;
+	padding: 0 1.1rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-lg);
+	background: var(--orbit-surface-low);
+}
+.article-toc > summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem 0;
+	font-weight: 700;
+	cursor: pointer;
+	list-style: none;
+}
+.article-toc > summary::-webkit-details-marker { display: none; }
+.article-toc-time { font-size: .8rem; font-weight: 500; color: var(--orbit-on-surface-variant); }
+.article-toc ol { display: grid; gap: .3rem; margin: 0; padding: 0 0 1.1rem 1.2rem; }
+.article-toc li.is-sub { margin-left: 1rem; font-size: .92rem; opacity: .85; }
+.article-toc a { color: inherit; }
+.article-toc a:hover { color: var(--orbit-primary); }
+
+/* Anchored headings need clearance for the sticky header when jumped to. */
+.article-body h2,
+.article-body h3 { scroll-margin-top: 6rem; }
+
+.article-faq { margin-top: 3rem; }
+.article-faq-list { display: grid; border-top: 1px solid var(--orbit-outline-variant); }
+.article-faq details { border-bottom: 1px solid var(--orbit-outline-variant); }
+.article-faq summary {
+	display: flex;
+	align-items: center;
+	gap: .8rem;
+	padding: 1rem 0;
+	font-size: 1.05rem;
+	font-weight: 600;
+	cursor: pointer;
+	list-style: none;
+}
+.article-faq summary::-webkit-details-marker { display: none; }
+.article-faq-num {
+	display: grid;
+	place-items: center;
+	flex-shrink: 0;
+	width: 1.75rem;
+	height: 1.75rem;
+	border-radius: var(--orbit-shape-full);
+	background: var(--orbit-primary-container);
+	color: var(--orbit-on-primary-container);
+	font-size: .8rem;
+	font-weight: 700;
+}
+.article-faq details p { margin: 0 0 1.1rem; padding-left: 2.55rem; line-height: 1.7; color: var(--orbit-on-surface-variant); }
+
+.article-sources { margin-top: 3rem; }
+.article-sources ol { display: grid; gap: .7rem; padding-left: 1.3rem; font-size: .92rem; }
+.article-sources cite { font-style: italic; }
+.article-sources .source-author { font-weight: 600; }
+
+.article-author {
+	display: flex;
+	gap: 1.1rem;
+	margin-top: 3rem;
+	padding: 1.5rem;
+	border-radius: var(--orbit-shape-lg);
+	background: var(--orbit-surface-low);
+}
+.article-author-avatar {
+	display: grid;
+	place-items: center;
+	flex-shrink: 0;
+	width: 3.5rem;
+	height: 3.5rem;
+	border-radius: var(--orbit-shape-full);
+	background: var(--orbit-primary);
+	color: var(--orbit-on-primary);
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+.article-author-label {
+	font-size: .72rem;
+	font-weight: 700;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: var(--orbit-on-surface-variant);
+}
+.article-author-name { margin: .25rem 0 .35rem; font-size: 1.15rem; font-weight: 700; }
+.article-author-summary { margin: 0 0 .8rem; color: var(--orbit-on-surface-variant); }
+.article-author-badges { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .9rem; }
+.article-author-badges span {
+	padding: .25rem .6rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-full);
+	background: var(--orbit-surface-bright);
+	font-size: .75rem;
+	font-weight: 600;
+}
+
+.article-related { margin-top: 3rem; }
+.article-related-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: 1rem;
+	margin-top: 1rem;
+}
+.article-related-card {
+	display: grid;
+	align-content: start;
+	gap: .45rem;
+	padding: 1.1rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-lg);
+	background: var(--orbit-surface-bright);
+	transition: border-color .18s var(--orbit-ease), transform .18s var(--orbit-ease);
+}
+.article-related-card:hover { border-color: var(--orbit-primary); transform: translateY(-2px); }
+.article-related-type {
+	font-size: .7rem;
+	font-weight: 700;
+	letter-spacing: .09em;
+	text-transform: uppercase;
+	color: var(--orbit-primary);
+}
+.article-related-card strong { font-size: 1rem; line-height: 1.35; }
+.article-related-excerpt {
+	font-size: .85rem;
+	line-height: 1.55;
+	color: var(--orbit-on-surface-variant);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.article-related-card { transition: none; }
+}

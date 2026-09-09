@@ -1,0 +1,26 @@
+---
+import type { FaqEntry } from '../../lib/seo/schema';
+
+/**
+ * The answers must be in the HTML for `FAQPage` markup to be legitimate, so
+ * `details` carries the accordion rather than JavaScript hiding the text.
+ */
+interface Props {
+	entries: FaqEntry[];
+}
+const { entries } = Astro.props;
+---
+
+{entries.length > 0 && (
+	<section class="article-faq" aria-labelledby="ofte-stillede-spoergsmaal">
+		<h2 id="ofte-stillede-spoergsmaal">Ofte stillede spørgsmål</h2>
+		<div class="article-faq-list">
+			{entries.map((entry, index) => (
+				<details>
+					<summary><span class="article-faq-num">{index + 1}</span>{entry.question}</summary>
+					<p>{entry.answer}</p>
+				</details>
+			))}
+		</div>
+	</section>
+)}

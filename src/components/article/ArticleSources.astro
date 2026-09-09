@@ -1,0 +1,29 @@
+---
+import type { ArticleCitation } from '../../lib/seo/schema';
+
+/** Visible source list; the same entries become `citation` in the JSON-LD. */
+interface Props {
+	sources: ArticleCitation[];
+}
+const { sources } = Astro.props;
+---
+
+{sources.length > 0 && (
+	<section class="article-sources" aria-labelledby="kilder">
+		<h2 id="kilder">Kilder</h2>
+		<p>Artiklen bygger på følgende kilder:</p>
+		<ol>
+			{sources.map((source) => (
+				<li>
+					{source.author && <span class="source-author">{source.author}: </span>}
+					<cite>{source.name}</cite>
+					{source.publisher && <span class="source-pub">, {source.publisher}</span>}
+					{source.year && <span class="source-year">, {source.year}</span>}
+					{source.url && (
+						<> — <a href={source.url} target="_blank" rel="noopener noreferrer">Åbn kilde</a></>
+					)}
+				</li>
+			))}
+		</ol>
+	</section>
+)}

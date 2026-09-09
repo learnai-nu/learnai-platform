@@ -1,0 +1,16 @@
+---
+/** Visible breadcrumb trail — the schema counterpart lives in SiteLayout. */
+interface Props {
+	items: { name: string; url?: string }[];
+}
+const { items } = Astro.props;
+---
+
+<nav class="article-breadcrumb" aria-label="Brødkrumme">
+	{items.map((item, index) => (
+		<>
+			{index > 0 && <span class="sep" aria-hidden="true">/</span>}
+			{item.url ? <a href={item.url}>{item.name}</a> : <span aria-current="page">{item.name}</span>}
+		</>
+	))}
+</nav>

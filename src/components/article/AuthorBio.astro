@@ -1,0 +1,16 @@
+---
+import { siteAuthor } from '../../lib/navigation/site-nav';
+---
+
+<aside class="article-author" aria-label="Om forfatteren">
+	<span class="article-author-avatar" aria-hidden="true">{siteAuthor.initials}</span>
+	<div>
+		<span class="article-author-label">Skrevet af</span>
+		<p class="article-author-name">{siteAuthor.name}</p>
+		<p class="article-author-summary">{siteAuthor.summary}</p>
+		<div class="article-author-badges">
+			{siteAuthor.credentials.map((credential) => <span>{credential}</span>)}
+		</div>
+		<a class="text-link" href={siteAuthor.href}>Læs mere om {siteAuthor.name.split(' ')[0]} →</a>
+	</div>
+</aside>

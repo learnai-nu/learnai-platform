@@ -6,8 +6,10 @@ import '../styles/global.css';
 import '../styles/blue-orbit-tokens.css';
 import '../styles/blue-orbit.css';
 import '../styles/learnai-typography.css';
+import '../styles/mobile-dock.css';
 import BlueOrbitFooter from '../components/marketing/BlueOrbitFooter.astro';
 import BlueOrbitHeader from '../components/marketing/BlueOrbitHeader.astro';
+import MobileDock from '../components/marketing/MobileDock.astro';
 import JsonLd from '../components/seo/JsonLd.astro';
 import {
 	buildSitePageGraph,
@@ -25,6 +27,14 @@ interface Props {
 	/** Translations of this page, rendered as hreflang alternates. */
 	alternates?: { locale: 'da' | 'en'; path: string }[];
 	noindex?: boolean;
+	/** Social share image, absolute or site-relative. */
+	image?: string | null;
+	imageAlt?: string | null;
+	/** `article` unlocks the Open Graph article timestamps below. */
+	ogType?: 'website' | 'article';
+	publishedTime?: string | null;
+	modifiedTime?: string | null;
+	articleSection?: string | null;
 	pageType?: PageSchemaType;
 	breadcrumbs?: BreadcrumbItem[];
 	mainEntity?: SchemaNode;
@@ -39,6 +49,12 @@ const {
 	locale = 'da',
 	alternates = [],
 	noindex = false,
+	image = null,
+	imageAlt = null,
+	ogType = 'website',
+	publishedTime = null,
+	modifiedTime = null,
+	articleSection = null,
 	pageType = 'WebPage',
 	breadcrumbs = [],
 	mainEntity,
@@ -48,6 +64,7 @@ const {
 
 const canonicalURL = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
 const siteOrigin = Astro.site ? new URL(Astro.site) : new URL('/', canonicalURL);
+const shareImage = image ? new URL(image, siteOrigin).toString() : null;
 const hreflangs = alternates.map((alternate) => ({
 	hreflang: alternate.locale === 'en' ? 'en' : 'da-DK',
 	href: new URL(alternate.path, siteOrigin).toString(),
@@ -72,25 +89,40 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<meta name="theme-color" content="#f2f4f0" />
-		{noindex && <meta name="robots" content="noindex, nofollow" />}
+		<meta
+			name="robots"
+			content={noindex
+				? 'noindex, nofollow'
+				: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+		/>
 		<link rel="canonical" href={canonicalURL} />
 		{hreflangs.map((alternate) => (
 			<link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
 		))}
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={ogType} />
 		<meta property="og:locale" content={locale === 'en' ? 'en' : 'da_DK'} />
 		<meta property="og:site_name" content="LearnAI.nu" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />
-		<meta name="twitter:card" content="summary" />
+		{shareImage && <meta property="og:image" content={shareImage} />}
+		{shareImage && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+		{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+		{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+		{ogType === 'article' && articleSection && <meta property="article:section" content={articleSection} />}
+		<meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+		{shareImage && <meta name="twitter:image" content={shareImage} />}
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>{title}</title>
 		{structuredData && <JsonLd data={structuredData} />}
 		{analytics && <Analytics />}
 		{analytics && <SpeedInsights />}
+		<noscript><style>@media (max-width: 1100px) { .orbit-mobile-nav { display: block; } .mn-bar { display: none; } }</style></noscript>
+		<script type="speculationrules" is:inline set:html={JSON.stringify({
+			prerender: [{ source: 'document', where: { selector_matches: 'a[href^="/"]' }, eagerness: 'moderate' }],
+		})} />
 	</head>
 	<body class="blue-orbit">
 		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>
@@ -99,6 +131,7 @@ const structuredData = noindex ? null : buildSitePageGraph({
 			<slot />
 		</main>
 		<BlueOrbitFooter />
+		<MobileDock />
 		<script src="../scripts/analytics.ts"></script>
 	</body>
 </html>
