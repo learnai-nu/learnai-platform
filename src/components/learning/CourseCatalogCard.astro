@@ -12,8 +12,7 @@ interface Props {
 	featured?: boolean;
 }
 
-const { index, title, slug, description, level, duration, price, introPrice = null, introSeatLimit = null, featured = false } = Astro.props;
-const courseNumber = String(index + 1).padStart(2, '0');
+const { title, slug, description, level, duration, price, introPrice = null, introSeatLimit = null, featured = false } = Astro.props;
 const formatPrice = (value: number) => new Intl.NumberFormat('da-DK', {
 	style: 'currency',
 	currency: 'DKK',
@@ -21,33 +20,32 @@ const formatPrice = (value: number) => new Intl.NumberFormat('da-DK', {
 	maximumFractionDigits: 2,
 }).format(value);
 const hasIntroOffer = introPrice !== null && introSeatLimit !== null && introPrice < price;
-const priceLabel = price === 0 ? 'Gratis' : formatPrice(hasIntroOffer ? introPrice : price);
+const isFree = price === 0;
+const priceLabel = isFree ? 'Gratis' : formatPrice(hasIntroOffer ? (introPrice as number) : price);
+/** The pill says what is unusual about the price; the line under the link says what it costs. */
+const statusLabel = isFree ? 'Gratis' : hasIntroOffer ? '50 % intro' : null;
 ---
 
 <article class:list={['catalog-course-card', { 'catalog-course-card-featured': featured }]}>
-	<div class="catalog-course-index" aria-hidden="true">
-		<span>{courseNumber}</span>
-		<i></i>
-	</div>
-	<div class="catalog-course-content">
-		<div class="catalog-course-topline">
-			<p class="catalog-course-meta">
-				<span>{level}</span>
-				<span>{duration ? `${duration} min.` : 'Tid følger'}</span>
-				<span>{priceLabel}</span>
-			</p>
+	<div class="catalog-course-topline">
+		<p class="catalog-course-meta">
+			<span>{level}</span>
+			<span>{duration ? `${duration} min.` : 'Tid følger'}</span>
+		</p>
+		<div class="catalog-course-badges">
 			{featured && <span class="catalog-course-recommendation">Anbefalet start</span>}
+			{statusLabel && <span class="catalog-course-status">{statusLabel}</span>}
 		</div>
-		<h3>{title}</h3>
-		{hasIntroOffer && <p class="catalog-course-offer"><strong>Intropris · 50 % rabat</strong><span>Normalpris <s>{formatPrice(price)}</s> · De første {introSeatLimit} pladser</span></p>}
-		<p class="catalog-course-description">{description || 'Et praktisk læringsforløb med konkrete øvelser og et tydeligt næste skridt.'}</p>
-		<div class="catalog-course-outcome">
-			<span>Dit udbytte</span>
-			<p>Forstå emnet, afprøv det i praksis og tag resultatet med videre.</p>
-		</div>
-		<a class="catalog-course-link" href={`/kurser/${slug}`} aria-label={`Se kurset ${title}`}>
-			<span>Se kurset</span>
-			<span aria-hidden="true">→</span>
-		</a>
 	</div>
+	<h3>{title}</h3>
+	<p class="catalog-course-description">{description || 'Et praktisk læringsforløb med konkrete øvelser og et tydeligt næste skridt.'}</p>
+	<a class="catalog-course-link" href={`/kurser/${slug}`} aria-label={`Se kurset ${title}`}>
+		<span>Se kurset</span>
+		<span aria-hidden="true">→</span>
+	</a>
+	<p class="catalog-course-price">
+		<span>{priceLabel}</span>
+		{hasIntroOffer && <s>{formatPrice(price)}</s>}
+		{hasIntroOffer && <span class="catalog-course-seats">De første {introSeatLimit} pladser</span>}
+	</p>
 </article>
