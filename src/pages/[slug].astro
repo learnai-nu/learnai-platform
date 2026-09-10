@@ -10,11 +10,6 @@ export function getStaticPaths() {
 			description: 'Dansk overblik over de AI-nyheder, der betyder noget i praksis.',
 			kicker: 'Aktuelt',
 		},
-		om: {
-			title: 'Om LearnAI',
-			description: 'Vores ambition er at gøre AI forståelig og anvendelig for alle.',
-			kicker: 'Mission',
-		},
 		privatliv: {
 			title: 'Privatliv',
 			description: 'Sådan beskytter LearnAI dine oplysninger.',
@@ -38,7 +33,6 @@ const isPrivacyPage = Astro.params.slug === 'privatliv';
 const pageTypes = {
 	vaerktoejer: 'CollectionPage',
 	nyheder: 'CollectionPage',
-	om: 'AboutPage',
 	privatliv: 'WebPage',
 	kontakt: 'ContactPage',
 } as const;

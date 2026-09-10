@@ -1,0 +1,267 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+export const prerender = true;
+
+/** Tallene er fra TEKNIQ, hvor Jesper selv har stået for indsatsen — ikke
+    resultater hos en kunde. Det skal fremgå af siden, som på /virksomheder. */
+const proof = [
+	{ value: '84 %', label: 'bruger AI dagligt' },
+	{ value: '95 %', label: 'føler sig kompetente' },
+	{ value: '100', label: 'medarbejdere trænet' },
+	{ value: '12', label: 'AI-ambassadører uddannet' },
+];
+
+const principles = [
+	{
+		number: '01',
+		title: 'Start med opgaven',
+		body: 'Ikke med teknologien. Et forløb begynder med noget, du faktisk skal have gjort på arbejdet — og slutter med, at du har gjort det.',
+	},
+	{
+		number: '02',
+		title: 'Kort nok til at blive gennemført',
+		body: 'Det første kursus tager under en time. Du skal kunne nå det mellem to møder, ikke sætte en hel dag af, som alligevel aldrig bliver booket.',
+	},
+	{
+		number: '03',
+		title: 'På dansk, om dansk arbejdsliv',
+		body: 'Eksemplerne er fra danske arbejdspladser, og sproget er dansk. Det lyder banalt, men det er forskellen på at forstå et eksempel og at oversætte det først.',
+	},
+];
+
+const beliefs = [
+	{
+		title: 'AI er et redskab, ikke et mål',
+		body: 'Værdien opstår, når teknologien styrker en beslutning, letter en proces eller giver en bedre oplevelse. Ikke når den bliver indført.',
+	},
+	{
+		title: 'Bred adoption slår avanceret brug',
+		body: 'Ti mennesker, der bruger AI hver dag til noget almindeligt, flytter mere end én, der bygger noget avanceret. Derfor handler forløbene om vaner, ikke om værktøjsnavne.',
+	},
+	{
+		title: 'Kvalitet og ansvar er en del af håndværket',
+		body: 'At kunne vurdere et svar, kende grænserne og vide, hvad man ikke må lægge ind i en model, er lige så meget en færdighed som at skrive en god prompt.',
+	},
+];
+---
+
+<SiteLayout
+	title="Om LearnAI — LearnAI.nu"
+	description="LearnAI gør AI forståelig og anvendelig på dansk arbejdsliv. Læs om tanken bag, principperne i forløbene og manden, der står bag."
+	pageType="AboutPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Om LearnAI', url: '/om' },
+	]}
+>
+	<section class="hero om-hero">
+		<div class="shell">
+			<div class="section-intro">
+			<p class="eyebrow">Om LearnAI</p>
+			<h1>AI bliver først værdifuldt, når nogen bruger det om mandagen.</h1>
+			<p class="hero-copy">
+				De fleste har prøvet AI. Langt færre har fået det ind i deres arbejdsuge. LearnAI findes for at
+				lukke det hul — med korte, konkrete forløb på dansk, hvor du arbejder med dine egne opgaver.
+			</p>
+			<div class="hero-actions">
+				<a class="button" href="/kurser">Se kurserne</a>
+				<a class="button button-ghost" href="/kontakt">Skriv til mig</a>
+			</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="shell">
+			<div class="section-intro">
+				<p class="eyebrow">Hvorfor</p>
+				<h2>Problemet er sjældent teknologien</h2>
+				<p>
+					Organisationer køber adgang til AI og håber, at brugen følger med. Den gør den ikke af sig selv.
+					Folk mangler ikke værktøjer — de mangler en anledning til at bruge dem på noget, der betyder
+					noget for dem, og et sted at lære det uden at skulle sætte en hel dag af.
+				</p>
+			</div>
+
+			<ol class="om-principles">
+				{principles.map((item) => (
+					<li>
+						<span class="om-number" aria-hidden="true">{item.number}</span>
+						<div>
+							<h3>{item.title}</h3>
+							<p>{item.body}</p>
+						</div>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<section class="section om-band">
+		<div class="shell">
+			<div class="section-intro">
+				<p class="eyebrow">Afsender</p>
+				<h2>Hvem står bag</h2>
+			</div>
+			<div class="om-author">
+				<div class="article-body">
+					<p>
+						Jeg hedder <strong>Jesper Gunris Schneider</strong> og er chef for digital
+						forretningsudvikling i TEKNIQ. Jeg leder et tværfagligt digitalt team og har ansvaret for
+						AI-strategi og for, at teknologien rent faktisk bliver brugt bredt — ikke kun af de nysgerrige.
+					</p>
+					<p>
+						Jeg har arbejdet med digital forretning i mere end 25 år: e-commerce, telecom og nu
+						AI-transformation. Jeg ser AI som et redskab til at styrke beslutninger, effektivisere
+						processer og skabe bedre oplevelser — ikke som et mål i sig selv. Det er også sådan,
+						forløbene her er skruet sammen.
+					</p>
+					<p>
+						LearnAI er min måde at gøre det arbejde tilgængeligt uden for min egen organisation. Alt
+						materialet er skrevet af mig, testet på rigtige medarbejdere og skrevet om, når det ikke virkede.
+					</p>
+					<p class="om-links">
+						<a href="https://jesperschneider.dk/" target="_blank" rel="noopener noreferrer">
+							jesperschneider.dk <span aria-hidden="true">↗</span>
+						</a>
+						<a href="https://www.linkedin.com/in/jesperschneider/" target="_blank" rel="noopener noreferrer">
+							LinkedIn <span aria-hidden="true">↗</span>
+						</a>
+					</p>
+				</div>
+				<div class="om-proof">
+					<p class="om-proof-title">Fra arbejdet i TEKNIQ</p>
+					<dl>
+						{proof.map((item) => (
+							<div>
+								<dt>{item.label}</dt>
+								<dd>{item.value}</dd>
+							</div>
+						))}
+					</dl>
+					<p class="om-proof-note">
+						Tallene er fra TEKNIQ, hvor jeg selv har stået for indsatsen — ikke resultater hos en kunde.
+						Forankringen er vurderet udefra i et CBS-speciale fra 2026.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="shell">
+			<div class="section-intro">
+				<p class="eyebrow">Sådan ser jeg på det</p>
+				<h2>Tre overbevisninger, der styrer indholdet</h2>
+			</div>
+			<div class="om-beliefs">
+				{beliefs.map((item) => (
+					<article>
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.om-hero h1 {
+		max-width: 20ch;
+		font-size: clamp(2.3rem, 5vw, 4rem);
+		line-height: 1.05;
+		letter-spacing: -.04em;
+	}
+
+	.om-hero .hero-copy { margin-top: 1.5rem; }
+
+	.om-principles {
+		display: grid;
+		gap: 0;
+		margin: 3rem 0 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--brand-rule);
+	}
+
+	.om-principles li {
+		display: grid;
+		grid-template-columns: 4rem minmax(0, 1fr);
+		gap: 1.5rem;
+		align-items: start;
+		padding-block: 2rem;
+		border-bottom: 1px solid var(--brand-rule);
+	}
+
+	.om-number {
+		font-family: var(--type-family-display);
+		font-size: 1.6rem;
+		font-weight: 500;
+		color: var(--brand-action);
+	}
+
+	.om-principles h3 { margin: 0; font-size: 1.35rem; font-weight: 700; }
+	.om-principles p { margin: .5rem 0 0; max-width: 62ch; color: var(--brand-muted); line-height: 1.65; }
+
+	.om-band { background: var(--color-paper); }
+
+	.om-author {
+		display: grid;
+		grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: start;
+		margin-top: 2.5rem;
+	}
+
+	.om-links { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: .5rem; font-weight: 600; }
+	.om-links a { color: var(--brand-action); }
+	.om-links a:hover { text-decoration: underline; }
+
+	.om-proof {
+		padding: 1.75rem;
+		border: 1px solid var(--brand-rule);
+		border-radius: 1rem;
+		background: var(--brand-card);
+	}
+
+	.om-proof-title {
+		margin: 0 0 1.25rem;
+		font-size: .75rem;
+		font-weight: 700;
+		letter-spacing: .09em;
+		text-transform: uppercase;
+		color: var(--color-amber-text);
+	}
+
+	.om-proof dl { display: grid; gap: 1rem; margin: 0; }
+	.om-proof dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--brand-rule); }
+	.om-proof dl > div:last-of-type { padding-bottom: 0; border-bottom: 0; }
+	.om-proof dt { color: var(--brand-muted); font-size: .95rem; }
+	.om-proof dd { margin: 0; font-family: var(--type-family-display); font-size: 1.5rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--color-navy); }
+	.om-proof-note { margin: 1.25rem 0 0; color: var(--brand-muted); font-size: .8rem; line-height: 1.55; }
+
+	.om-beliefs {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+		gap: 1.5rem;
+		margin-top: 2.5rem;
+	}
+
+	.om-beliefs article {
+		padding-left: 1rem;
+		border-left: 3px solid var(--color-amber);
+	}
+
+	.om-beliefs h3 { margin: 0; font-size: 1.2rem; font-weight: 700; }
+	.om-beliefs p { margin: .5rem 0 0; color: var(--brand-muted); line-height: 1.65; }
+
+	@media (max-width: 60rem) {
+		.om-author { grid-template-columns: 1fr; }
+	}
+
+	@media (max-width: 34rem) {
+		.om-principles li { grid-template-columns: 1fr; gap: .5rem; }
+	}
+</style>
