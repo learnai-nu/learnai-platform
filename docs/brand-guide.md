@@ -8,17 +8,21 @@ Visuel udgave: se den publicerede brand guide-artifact (link i sessionen).
 
 ## 1. Idé
 
+- **Fladen er altid lys** — hvid eller papir `#F5F3EE` — og teksten altid mørk. Ingen mørke sektioner.
 - Blå bærer **handling**: knapper, links, fremdrift, status.
 - Amber bærer **stemme**: emneetiketter, eyebrow-streger, den ene menneskelige CTA per side.
-- Navy bærer **dybde**: sjældne mørke felter, hvor der skal træffes en beslutning.
+- Navy bærer **blæk**: store tal, logo og den ene tynde annoncebar — ikke sektionsbunde.
 - En overskrift er aldrig blå, og man klikker aldrig på noget amber i en læringsflade.
+
+Fremhævning sker ved at skifte hvid til papir eller sand `#FBF1DC`, eller ved en 1 px amber-kant om
+kortet — aldrig ved at slukke lyset.
 
 ## 2. Farver
 
 | Token | Hex | Rolle | Kilde |
 | --- | --- | --- | --- |
 | `primary-blue` | `#004FA6` | Primær knap, links, fremdrift, tal (8,3:1 på hvid) | AIL, aflæst |
-| `navy` | `#16283F` | Mørke sektioner, priskort, footer | angst.dk, aflæst |
+| `navy` | `#16283F` | Blæk i store tal, logo, annoncebar. Ikke som sektionsbund | angst.dk, aflæst |
 | `navy-mid` | `#24446B` | Ikoner og checkmarks på lys bund | angst.dk, aflæst |
 | `deep-blue` | `#001E40` | Blæk på lyseblå flader | AIL, aflæst |
 | `highlight-blue` | `#3688F8` | Fokusring (25 %), hårlinjer. Ikke tekst på hvid | AIL, aflæst |
@@ -60,7 +64,8 @@ Angst.dk's Manrope er et gyldigt alternativ til Geist — vælg ét, ikke begge.
 - Kant: 1 px `greige-300`, aldrig 2 px.
 - Sektionens faste anslag: eyebrow → overskrift → manchet → 48 px → indhold.
 - Bølgestregen (angst.dk's `wave-divider`, amber ved 55 %) bruges ved bløde emneskift, ikke overalt.
-- Maks to navy-sektioner per side.
+- Sektionsbunde veksler mellem hvid og papir `#F5F3EE`; sand `#FBF1DC` til enkeltstående noter.
+- Ingen mørke sektioner. Annoncebaren (ca. 40 px) er systemets eneste mørke flade.
 
 ## 5. Komponenter
 
@@ -72,6 +77,7 @@ Angst.dk's Manrope er et gyldigt alternativ til Geist — vælg ét, ikke begge.
 - Fremdrift: cirkler med light-blue kant, aktivt trin fyldt navy. Store fortællende trin bruger
   Fraunces-tal (01–04).
 - Emnekort (genkendelse) har ingen knapper.
+- Fremhævede kort er hvide med 1 px amber-kant og et Fraunces-tal i navy — ikke mørke kort.
 
 ## 6. Sprog
 
@@ -91,7 +97,7 @@ modelnavne som salgsargument, løfter uden modtager, konkurrerende CTA'er.
   --color-light-blue:     #97C0F9;
   --color-badge-soft:     #E8F1FE;
 
-  /* Dybde */
+  /* Blæk */
   --color-navy:      #16283F;
   --color-navy-mid:  #24446B;
   --color-deep-blue: #001E40;
