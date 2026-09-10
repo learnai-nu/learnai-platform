@@ -304,13 +304,50 @@
 .catalog-empty-state a { color: var(--brand-action); font-weight: 760; }
 
 .catalog-next-step-wrap { margin-bottom: clamp(5rem, 9vw, 8rem); }
-.catalog-next-step { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; padding: clamp(2rem, 5vw, 4rem); background: var(--brand-signal); }
-.catalog-next-step-mark { display: grid; place-items: center; width: clamp(4rem, 7vw, 6rem); aspect-ratio: 1; border: 1px solid var(--brand-ink); border-radius: 50%; font-size: clamp(1.8rem, 4vw, 3rem); }
-.catalog-next-step .catalog-kicker { margin-bottom: .8rem; color: var(--brand-ink); }
-.catalog-next-step h2 { max-width: 720px; margin: 0; font-size: 2.25rem; font-weight: 600; letter-spacing: 0; line-height: 2.5rem; }
-.catalog-next-step div > p:last-child { max-width: 650px; margin: 1rem 0 0; line-height: 1.6; }
-.catalog-next-step > a { display: flex; justify-content: space-between; gap: 2rem; min-width: 230px; padding: 1rem; border: 1px solid var(--brand-ink); background: var(--brand-card); font-weight: 760; transition: transform .2s var(--orbit-ease), box-shadow .2s var(--orbit-ease); }
-.catalog-next-step > a:hover { transform: translate(-3px, -3px); box-shadow: 4px 4px 0 var(--brand-ink); }
+/* The announcement bar: the one dark element in the system, kept thin. Navy
+ * ground, paper text, amber link — same as the site-wide bar. */
+.catalog-next-step {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: .5rem clamp(1rem, 3vw, 2rem);
+	padding: .9rem clamp(1rem, 3vw, 1.75rem);
+	border-radius: .75rem;
+	background: var(--color-navy);
+	color: var(--color-paper);
+	text-align: center;
+}
+
+.catalog-next-step > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: .25rem .75rem; }
+.catalog-next-step .catalog-kicker { margin: 0; color: var(--color-amber-light); }
+
+.catalog-next-step h2 {
+	margin: 0;
+	font-family: var(--type-family-sans);
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 1.5rem;
+	color: var(--color-paper);
+}
+
+.catalog-next-step div > p:last-child { margin: 0; color: rgb(245 243 238 / 72%); font-size: .9rem; line-height: 1.5rem; }
+
+.catalog-next-step > a {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: .4rem;
+	padding: .3rem .85rem;
+	border-radius: 999px;
+	color: var(--color-amber-light);
+	font-size: .9rem;
+	font-weight: 600;
+	transition: background .2s var(--orbit-ease);
+}
+
+.catalog-next-step > a:hover { background: rgb(54 136 248 / 25%); }
 
 @media (max-width: 900px) {
 	.catalog-hero .catalog-rail { grid-template-columns: 1fr; }
@@ -319,8 +356,6 @@
 	.catalog-section-heading > div, .catalog-section-heading > p { flex-basis: auto; }
 	.catalog-section-heading h2 { max-width: 400px; font-size: 1.875rem; line-height: 2.25rem; }
 	.catalog-section-heading > p { max-width: 620px; }
-	.catalog-next-step { grid-template-columns: auto 1fr; }
-	.catalog-next-step > a { grid-column: 2; justify-self: start; }
 }
 
 @media (max-width: 560px) {
@@ -335,9 +370,7 @@
 	.catalog-course-topline { display: grid; }
 	.catalog-course-recommendation { justify-self: start; }
 	.catalog-course-card { padding: 1.4rem 1.15rem; }
-	.catalog-empty-state h3, .catalog-next-step h2 { font-size: 1.5rem; line-height: 2rem; }
-	.catalog-next-step { grid-template-columns: 1fr; padding: 1.5rem; }
-	.catalog-next-step-mark { width: 4rem; }
+	.catalog-empty-state h3 { font-size: 1.5rem; line-height: 2rem; }
 	.catalog-next-step > a { grid-column: auto; width: 100%; min-width: 0; }
 }
 
