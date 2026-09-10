@@ -1,5 +1,6 @@
 ---
 import { renderMarkdown } from '../lib/content/markdown';
+import { extractBlockHeadings } from '../lib/content/article';
 
 interface Props {
 	body: unknown;
@@ -23,6 +24,8 @@ const blocks =
 	Array.isArray((body as { blocks?: unknown }).blocks)
 		? (body as { blocks: unknown[] }).blocks
 		: [];
+const blockHeadings = extractBlockHeadings(body);
+let blockHeadingIndex = 0;
 
 function record(value: unknown): Record<string, unknown> | null {
 	return value && typeof value === 'object' && !Array.isArray(value)
@@ -41,7 +44,8 @@ function record(value: unknown): Record<string, unknown> | null {
 			const text = typeof block.text === 'string' ? block.text : '';
 
 			if (block.type === 'heading') {
-				return block.level === 3 ? <h3>{text}</h3> : <h2>{text}</h2>;
+				const id = blockHeadings[blockHeadingIndex++]?.id;
+				return block.level === 3 ? <h3 id={id}>{text}</h3> : <h2 id={id}>{text}</h2>;
 			}
 			if (block.type === 'callout') return <aside class="content-callout">{text}</aside>;
 			if (block.type === 'checklist' && Array.isArray(block.items)) {

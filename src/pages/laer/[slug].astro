@@ -9,7 +9,14 @@ import ContentBody from '../../components/ContentBody.astro';
 import PromptBuilder from '../../components/PromptBuilder';
 import RelatedContent from '../../components/article/RelatedContent.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
-import { countWords, estimateReadingMinutes, extractHeadings, parseArticleExtras } from '../../lib/content/article';
+import {
+	countBlockWords,
+	countWords,
+	estimateReadingMinutes,
+	extractBlockHeadings,
+	extractHeadings,
+	parseArticleExtras,
+} from '../../lib/content/article';
 import { renderMarkdown } from '../../lib/content/markdown';
 import { selectRelatedContent } from '../../lib/content/related';
 import { siteAuthor } from '../../lib/navigation/site-nav';
@@ -51,8 +58,8 @@ const markdown = item.body && typeof item.body === 'object' && 'markdown' in ite
 	? (item.body as { markdown: string }).markdown
 	: '';
 const bodyHtml = markdown ? renderMarkdown(markdown, { headingIds: true }) : '';
-const headings = extractHeadings(bodyHtml);
-const wordCount = countWords(bodyHtml);
+const headings = bodyHtml ? extractHeadings(bodyHtml) : extractBlockHeadings(item.body);
+const wordCount = bodyHtml ? countWords(bodyHtml) : countBlockWords(item.body);
 const readingMinutes = estimateReadingMinutes(wordCount);
 const isLongForm = !promptDefinition && wordCount > 0;
 
@@ -117,7 +124,7 @@ const publishedLabel = item.published_at
 		data-article-reader
 		data-reading-minutes={readingMinutes}
 	>
-		<div class:list={['shell', 'article-reading-layout', { 'has-toc': headings.length >= 3 }]}>
+		<div class:list={['shell', 'article-reading-layout', { 'has-toc': headings.length > 0 }]}>
 			{isLongForm && <ArticleToc headings={headings} readingMinutes={readingMinutes} />}
 		<header class="article-header">
 			<ArticleBreadcrumbs items={[

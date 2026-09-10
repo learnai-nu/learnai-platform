@@ -8,7 +8,7 @@ interface Props {
 const { headings, readingMinutes } = Astro.props;
 ---
 
-{headings.length >= 3 && (
+{headings.length > 0 && (
 	<>
 		<aside class="article-toc article-toc-desktop" aria-label="Artiklens indhold">
 			<p class="article-toc-label">Indhold</p>

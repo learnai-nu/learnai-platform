@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
 	countWords,
+	countBlockWords,
 	estimateReadingMinutes,
+	extractBlockHeadings,
 	extractHeadings,
 	parseArticleExtras,
 } from '../src/lib/content/article';
@@ -43,6 +45,21 @@ describe('overskrifter og indholdsfortegnelse', () => {
 		expect(countWords(html)).toBe(400);
 		expect(estimateReadingMinutes(countWords(html))).toBe(2);
 		expect(estimateReadingMinutes(10)).toBe(1);
+	});
+
+	it('gives legacy block articles the same headings and reading time', () => {
+		const body = {
+			blocks: [
+				{ type: 'heading', text: 'Kom i gang' },
+				{ type: 'paragraph', text: 'Tre synlige ord' },
+				{ type: 'heading', level: 3, text: 'Kom i gang' },
+			],
+		};
+		expect(extractBlockHeadings(body)).toEqual([
+			{ id: 'kom-i-gang', text: 'Kom i gang', level: 2 },
+			{ id: 'kom-i-gang-2', text: 'Kom i gang', level: 3 },
+		]);
+		expect(countBlockWords(body)).toBe(9);
 	});
 });
 

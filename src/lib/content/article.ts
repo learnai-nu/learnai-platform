@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { slugifyHeading } from './markdown';
 
 /**
  * Long-form article helpers: the reading aids (table of contents, reading time)
@@ -22,6 +23,41 @@ export function extractHeadings(html: string): ArticleHeading[] {
 		headings.push({ id: match[2], text, level: match[1] === 'h3' ? 3 : 2 });
 	}
 	return headings;
+}
+
+function contentBlocks(body: unknown) {
+	if (!body || typeof body !== 'object' || Array.isArray(body) || !('blocks' in body)) return [];
+	return Array.isArray(body.blocks) ? body.blocks : [];
+}
+
+/** Read headings from the legacy block format using the same anchor rules as Markdown. */
+export function extractBlockHeadings(body: unknown): ArticleHeading[] {
+	const used = new Map<string, number>();
+	return contentBlocks(body).flatMap((value) => {
+		if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+		const block = value as Record<string, unknown>;
+		if (block.type !== 'heading' || typeof block.text !== 'string' || !block.text.trim()) return [];
+		const base = slugifyHeading(block.text) || 'afsnit';
+		const seen = used.get(base) ?? 0;
+		used.set(base, seen + 1);
+		return [{
+			id: seen === 0 ? base : `${base}-${seen + 1}`,
+			text: block.text.trim(),
+			level: block.level === 3 ? 3 : 2,
+		} satisfies ArticleHeading];
+	});
+}
+
+/** Include checklist items as visible words when estimating legacy articles. */
+export function countBlockWords(body: unknown) {
+	const text = contentBlocks(body).flatMap((value) => {
+		if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+		const block = value as Record<string, unknown>;
+		const parts = typeof block.text === 'string' ? [block.text] : [];
+		if (Array.isArray(block.items)) parts.push(...block.items.filter((item): item is string => typeof item === 'string'));
+		return parts;
+	}).join(' ').replace(/\s+/g, ' ').trim();
+	return text ? text.split(' ').length : 0;
 }
 
 export function countWords(html: string) {
