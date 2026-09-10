@@ -22,6 +22,8 @@ let course: {
 	description: string | null;
 	estimated_minutes: number | null;
 	price_dkk: number;
+	intro_price_dkk: number | null;
+	intro_seat_limit: number | null;
 	is_featured: boolean;
 } | null = null;
 let modules: Array<{
@@ -44,11 +46,15 @@ let modules: Array<{
 if (!isNew) {
 	const courseResult = await context.supabase
 		.from('courses')
-		.select('id,title,slug,status,level,description,estimated_minutes,price_dkk,is_featured')
+		.select('id,title,slug,status,level,description,estimated_minutes,price_dkk,intro_price_dkk,intro_seat_limit,is_featured')
 		.eq('id', Astro.params.id)
 		.maybeSingle();
 	if (courseResult.error || !courseResult.data) return new Response('Kurset blev ikke fundet.', { status: 404 });
-	course = { ...courseResult.data, price_dkk: Number(courseResult.data.price_dkk) };
+	course = {
+		...courseResult.data,
+		price_dkk: Number(courseResult.data.price_dkk),
+		intro_price_dkk: courseResult.data.intro_price_dkk === null ? null : Number(courseResult.data.intro_price_dkk),
+	};
 
 	const moduleResult = await context.supabase
 		.from('course_modules')
@@ -116,6 +122,8 @@ const statusMessages: Record<string, string> = {
 			<label class="field-wide">Beskrivelse<textarea name="description" rows="4" maxlength="2000">{course?.description ?? ''}</textarea></label>
 			<label>Estimerede minutter<input name="estimatedMinutes" type="number" min="1" value={course?.estimated_minutes ?? ''} /></label>
 			<label>Pris i DKK<input name="priceDkk" type="number" min="0" step="0.01" value={course?.price_dkk ?? 0} /></label>
+			<label>Intropris i DKK<input name="introPriceDkk" type="number" min="0.01" step="0.01" value={course?.intro_price_dkk ?? ''} /></label>
+			<label>Antal intropladser<input name="introSeatLimit" type="number" min="1" step="1" value={course?.intro_seat_limit ?? ''} /></label>
 			<label class="checkbox-field">
 				<input type="hidden" name="isFeatured" value="false" />
 				<input type="checkbox" name="isFeatured" value="true" checked={course?.is_featured ?? false} />
