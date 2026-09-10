@@ -122,7 +122,7 @@ export function isNavItemActive(item: NavItem | DockItem, { pathname, currentTyp
 	if (!item.section) return false;
 	const inSection = pathname === item.section || pathname.startsWith(`${item.section}/`);
 	if (!inSection) return false;
-	if (item.type === 'knowledge') return !currentType || currentType === 'knowledge';
+	if (item.type === 'knowledge') return !currentType || ['knowledge', 'article', 'guide'].includes(currentType);
 	if (item.type === 'prompt' || item.type === 'news') return currentType === item.type;
 	if (item.type === 'all-courses') return pathname === '/kurser';
 	return true;

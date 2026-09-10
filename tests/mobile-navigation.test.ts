@@ -62,6 +62,8 @@ describe('delt navigationsmodel', () => {
 		const learn = menuGroups[0].items[0];
 		expect(isNavItemActive(learn, { pathname: '/laer', currentType: null })).toBe(true);
 		expect(isNavItemActive(learn, { pathname: '/laer', currentType: 'news' })).toBe(false);
+		expect(isNavItemActive(learn, { pathname: '/laer', currentType: 'article' })).toBe(true);
+		expect(isNavItemActive(learn, { pathname: '/laer', currentType: 'guide' })).toBe(true);
 		expect(isNavItemActive(learn, { pathname: '/kurser', currentType: null })).toBe(false);
 	});
 });

@@ -2,6 +2,7 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
+import '../../styles/knowledge-index.css';
 
 export const prerender = false;
 
@@ -14,7 +15,8 @@ let contentQuery = supabase
 	.select('id,title,slug,type,excerpt,published_at,updated_at')
 	.eq('status', 'published');
 
-if (selectedType === 'knowledge') contentQuery = contentQuery.in('type', ['article', 'guide']);
+if (!selectedType) contentQuery = contentQuery.in('type', ['article', 'guide', 'news']);
+else if (selectedType === 'knowledge') contentQuery = contentQuery.in('type', ['article', 'guide']);
 else if (selectedType && supportedTypes.includes(selectedType)) contentQuery = contentQuery.eq('type', selectedType);
 if (searchQuery) contentQuery = contentQuery.ilike('title', `%${searchQuery.replaceAll('%', '\\%').replaceAll('_', '\\_')}%`);
 
@@ -27,6 +29,21 @@ const typeLabels = {
 	prompt: 'Prompt',
 	tool: 'Værktøj',
 } as const;
+const filters = [
+	{ value: '', label: 'Alle', href: '/laer' },
+	{ value: 'article', label: 'Artikler', href: '/laer?type=article' },
+	{ value: 'guide', label: 'Guides', href: '/laer?type=guide' },
+	{ value: 'news', label: 'Nyheder', href: '/laer?type=news' },
+] as const;
+const viewCopy = {
+	article: { title: 'Artikler om AI.', description: 'Forklaringer og perspektiver, der gør udviklingen lettere at forstå.' },
+	guide: { title: 'Guides til AI i praksis.', description: 'Trin-for-trin-hjælp til konkrete opgaver og arbejdsgange.' },
+	news: { title: 'Nyheder & indsigt.', description: 'Udvalgte AI-nyheder med fokus på, hvad de betyder i praksis.' },
+	prompt: { title: 'Prompts til arbejdet.', description: 'Gennemprøvede skabeloner, du kan tilpasse til din opgave.' },
+} as const;
+const selectedView = selectedType && selectedType in viewCopy
+	? viewCopy[selectedType as keyof typeof viewCopy]
+	: { title: 'Lær AI i praksis.', description: 'Nyheder, danske guider og artikler, der hjælper dig fra idé til konkret anvendelse.' };
 const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
 const itemList = createItemListSchema(
 	canonicalUrl,
@@ -47,10 +64,20 @@ const itemList = createItemListSchema(
 	<section class="hero hero-compact">
 		<div class="shell section-intro">
 			<p class="eyebrow">Vidensportal</p>
-			<h1>{searchQuery ? `Søgeresultater for “${searchQuery}”` : 'Lær AI i praksis.'}</h1>
-			<p class="hero-copy">{searchQuery ? `${items?.length ?? 0} resultater i LearnAI-biblioteket.` : 'Danske guider og artikler, der hjælper dig fra idé til konkret anvendelse.'}</p>
+			<h1>{searchQuery ? `Søgeresultater for “${searchQuery}”` : selectedView.title}</h1>
+			<p class="hero-copy">{searchQuery ? `${items?.length ?? 0} resultater i LearnAI-biblioteket.` : selectedView.description}</p>
 		</div>
 	</section>
+	<nav class="knowledge-filter" aria-label="Filtrér indholdstype">
+		<div class="shell knowledge-filter-inner">
+			<span class="knowledge-filter-label">Vis</span>
+			{filters.map((filter) => (
+				<a href={filter.href} aria-current={(selectedType ?? '') === filter.value ? 'page' : undefined}>
+					{filter.label}
+				</a>
+			))}
+		</div>
+	</nav>
 	<section class="section section-tight">
 		<div class="shell">
 			{error ? (
@@ -70,7 +97,7 @@ const itemList = createItemListSchema(
 					))}
 				</div>
 			) : (
-				<div class="empty-state"><h2>Guides er på vej</h2><p>Kom snart tilbage.</p></div>
+				<div class="empty-state"><h2>Der er ikke noget i denne kategori endnu</h2><p>Vælg en anden kategori, eller kom snart tilbage.</p></div>
 			)}
 		</div>
 	</section>
