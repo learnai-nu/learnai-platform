@@ -109,8 +109,41 @@
 	font-weight: 700;
 }
 
-/* Eyebrow: amber rule, blue text — the one place both accents meet. */
-.blue-orbit .orbit-eyebrow::before {
+/* The pill is the clickable shape; everything that carries content keeps its
+ * 16px corners. That one distinction is what makes an action readable as an
+ * action without a label. */
+.button,
+.button-ghost,
+.blue-orbit .button,
+.blue-orbit .button-ghost,
+.blue-orbit .orbit-button,
+.blue-orbit .orbit-header-cta,
+.blue-orbit .orbit-mobile-cta {
+	border-radius: 999px;
+}
+
+/* The text button is a link, not a pill. */
+.blue-orbit .orbit-button-text {
+	border-radius: 0;
+}
+
+/* Eyebrow: one amber rule ahead of blue uppercase text, whichever family the
+ * page uses. Where a marker element already exists it is restyled rather than
+ * doubled with a pseudo-element. */
+.eyebrow::before,
+.business-dot,
+.landing-dot {
+	width: 1.5rem;
+	height: 2px;
+	border-radius: 2px;
+	background: var(--color-amber);
+	box-shadow: none;
+}
+
+.blue-orbit .orbit-eyebrow::before,
+.blue-orbit .catalog-eyebrow::before,
+.blue-orbit .catalog-kicker::before,
+.blue-orbit .course-experience-kicker::before {
 	content: "";
 	display: inline-block;
 	width: 1.5rem;
