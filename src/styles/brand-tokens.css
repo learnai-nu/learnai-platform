@@ -1,0 +1,171 @@
+/*
+ * LearnAI brand layer — see docs/brand-guide.md.
+ *
+ * Loaded last so it re-points the existing --orbit-*, --brand-* and global role
+ * tokens at the brand palette without any component having to change. Light
+ * surfaces and dark ink throughout: navy is ink and the announcement bar, never
+ * a section ground.
+ */
+
+:root {
+	/* Handling — blå */
+	--color-primary-blue: #004fa6;
+	--color-highlight-blue: #3688f8;
+	--color-light-blue: #97c0f9;
+	--color-badge-soft: #e8f1fe;
+
+	/* Blæk — navy */
+	--color-navy: #16283f;
+	--color-navy-mid: #24446b;
+	--color-deep-blue: #001e40;
+
+	/* Stemme — amber */
+	--color-amber: #b98b4e;
+	--color-amber-text: #8a6534;
+	--color-amber-light: #d4aa6e;
+	--color-sand: #fbf1dc;
+
+	/* Grund */
+	--color-paper: #f5f3ee;
+	--color-white: #ffffff;
+	--color-greige-100: #f5f4f2;
+	--color-greige-200: #efedeb;
+	--color-greige-300: #e7e5e3;
+	--color-greige-700: #57554f;
+	--color-greige-800: #3a3833;
+	--color-greige-950: #1c1b17;
+
+	/* Skrift */
+	--type-family-display: "Fraunces Variable", Fraunces, Georgia, "Times New Roman", serif;
+	--type-family-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+	/* --- Role tokens: orbit layer --- */
+	--orbit-primary: var(--color-primary-blue);
+	--orbit-on-primary: var(--color-white);
+	--orbit-primary-container: var(--color-badge-soft);
+	--orbit-on-primary-container: var(--color-deep-blue);
+	--orbit-deep: var(--color-navy);
+	--orbit-deepest: var(--color-greige-950);
+	--orbit-signal: var(--color-amber);
+	--orbit-decision: var(--color-amber);
+	--orbit-violet: var(--color-primary-blue);
+	--orbit-surface: var(--color-paper);
+	--orbit-surface-low: var(--color-greige-100);
+	--orbit-surface-container: var(--color-greige-200);
+	--orbit-surface-high: var(--color-greige-300);
+	--orbit-surface-bright: var(--color-white);
+	--orbit-on-surface: var(--color-greige-950);
+	--orbit-on-surface-variant: var(--color-greige-700);
+	--orbit-outline: var(--color-greige-700);
+	--orbit-outline-variant: var(--color-greige-300);
+	--orbit-shadow-1: 0 1px 2px rgb(28 27 23 / 6%), 0 4px 10px rgb(28 27 23 / 6%);
+	--orbit-shadow-2: 0 1px 2px rgb(28 27 23 / 6%), 0 12px 32px rgb(28 27 23 / 7%);
+	--orbit-shadow-3: 0 2px 4px rgb(28 27 23 / 8%), 0 24px 56px rgb(28 27 23 / 10%);
+
+	/* --- Role tokens: brand layer --- */
+	--brand-action: var(--color-primary-blue);
+	--brand-action-soft: var(--color-badge-soft);
+	--brand-ink: var(--color-greige-950);
+	--brand-ink-deep: var(--color-navy);
+	--brand-signal: var(--color-amber);
+	--brand-paper: var(--color-paper);
+	--brand-card: var(--color-white);
+	--brand-muted: var(--color-greige-700);
+	--brand-rule: var(--color-greige-300);
+
+	/* --- Role tokens: global.css layer --- */
+	--ink: var(--color-greige-950);
+	--muted: var(--color-greige-700);
+	--paper: var(--color-paper);
+	--surface: var(--color-white);
+	--surface-soft: var(--color-greige-100);
+	--line: var(--color-greige-300);
+	--border: var(--color-greige-300);
+	--green: var(--color-primary-blue);
+	--green-dark: var(--color-navy);
+	--mint: var(--color-badge-soft);
+	--lime: var(--color-amber);
+	--shadow: 0 1px 2px rgb(28 27 23 / 6%), 0 12px 32px rgb(28 27 23 / 7%);
+
+	font-family: var(--type-family-sans);
+	color: var(--ink);
+	background: var(--paper);
+}
+
+/* Fraunces carries the display voice; Geist keeps everything that is read fast
+ * or operated. Optical sizing is what makes one variable face work at both
+ * ends of the scale. */
+.blue-orbit h1,
+.blue-orbit h2 {
+	font-family: var(--type-family-display);
+	font-optical-sizing: auto;
+	font-weight: 500;
+	letter-spacing: -.015em;
+}
+
+.blue-orbit h3,
+.blue-orbit h4 {
+	font-family: var(--type-family-sans);
+	font-weight: 700;
+}
+
+/* The pill is the clickable shape; everything that carries content keeps its
+ * 16px corners. That one distinction is what makes an action readable as an
+ * action without a label. */
+.button,
+.button-ghost,
+.blue-orbit .button,
+.blue-orbit .button-ghost,
+.blue-orbit .orbit-button,
+.blue-orbit .orbit-header-cta,
+.blue-orbit .orbit-mobile-cta {
+	border-radius: 999px;
+}
+
+/* The text button is a link, not a pill. */
+.blue-orbit .orbit-button-text {
+	border-radius: 0;
+}
+
+/* The "recommended start" marker on a course card is an action, not a topic:
+ * it reads as the blue pill rather than an amber tag. */
+.blue-orbit .catalog-course-recommendation {
+	padding: .35rem .8rem;
+	border: 0;
+	border-radius: 999px;
+	background: var(--color-primary-blue);
+	color: #ffffff;
+}
+
+/* Eyebrow: one amber rule ahead of blue uppercase text, whichever family the
+ * page uses. Where a marker element already exists it is restyled rather than
+ * doubled with a pseudo-element. */
+.eyebrow::before,
+.business-dot,
+.landing-dot {
+	width: 1.5rem;
+	height: 2px;
+	border-radius: 2px;
+	background: var(--color-amber);
+	box-shadow: none;
+}
+
+.blue-orbit .orbit-eyebrow::before,
+.blue-orbit .catalog-eyebrow::before,
+.blue-orbit .catalog-kicker::before,
+.blue-orbit .course-experience-kicker::before {
+	content: "";
+	display: inline-block;
+	width: 1.5rem;
+	height: 2px;
+	margin-right: .55rem;
+	vertical-align: middle;
+	border-radius: 2px;
+	background: var(--color-amber);
+}
+
+/* Focus is one ring across the whole product. */
+.blue-orbit :focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgb(54 136 248 / 25%);
+}
