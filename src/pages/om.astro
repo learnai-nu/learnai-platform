@@ -31,6 +31,10 @@ const principles = [
 	},
 ];
 
+/** Hosted on jesperschneider.dk until we have a local copy of the portrait.
+    Swap for a file under public/images/ to get it served from our own domain. */
+const portrait = 'https://jesperschneider.dk/jesper.jpg';
+
 const beliefs = [
 	{
 		title: 'AI er et redskab, ikke et mål',
@@ -107,10 +111,24 @@ const beliefs = [
 			</div>
 			<div class="om-author">
 				<div class="article-body">
+					<div class="om-byline">
+						<img
+							class="om-portrait"
+							src={portrait}
+							alt="Portræt af Jesper Gunris Schneider"
+							width="900"
+							height="900"
+							loading="lazy"
+							decoding="async"
+						/>
+						<div>
+							<p class="om-byline-name">Jesper Gunris Schneider</p>
+							<p class="om-byline-role">Chef for Digital Forretningsudvikling, TEKNIQ</p>
+						</div>
+					</div>
 					<p>
-						Jeg hedder <strong>Jesper Gunris Schneider</strong> og er chef for digital
-						forretningsudvikling i TEKNIQ. Jeg leder et tværfagligt digitalt team og har ansvaret for
-						AI-strategi og for, at teknologien rent faktisk bliver brugt bredt — ikke kun af de nysgerrige.
+						Jeg leder et tværfagligt digitalt team i TEKNIQ og har ansvaret for AI-strategi og for,
+						at teknologien rent faktisk bliver brugt bredt — ikke kun af de nysgerrige.
 					</p>
 					<p>
 						Jeg har arbejdet med digital forretning i mere end 25 år — fra e-commerce og telecom til
@@ -216,6 +234,21 @@ const beliefs = [
 		align-items: start;
 		margin-top: 2.5rem;
 	}
+
+	.om-byline { display: flex; align-items: center; gap: 1.1rem; }
+
+	.om-portrait {
+		width: 5.5rem;
+		height: 5.5rem;
+		flex: 0 0 auto;
+		border-radius: 999px;
+		border: 2px solid var(--color-amber);
+		object-fit: cover;
+		background: var(--color-sand);
+	}
+
+	.om-byline-name { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--brand-ink); }
+	.om-byline-role { margin: .15rem 0 0; font-size: .9rem; color: var(--brand-muted); }
 
 	.om-links { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: .5rem; font-weight: 600; }
 	.om-links a { color: var(--brand-action); }
