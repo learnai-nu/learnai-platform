@@ -306,48 +306,59 @@
 .catalog-next-step-wrap { margin-bottom: clamp(5rem, 9vw, 8rem); }
 /* The announcement bar: the one dark element in the system, kept thin. Navy
  * ground, paper text, amber link — same as the site-wide bar. */
+/* The next-step bar: one line on a sand ground, so the footer stays the only
+ * dark band at the bottom of the page. Message left, action right. */
 .catalog-next-step {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	justify-content: center;
-	gap: .5rem clamp(1rem, 3vw, 2rem);
-	padding: .9rem clamp(1rem, 3vw, 1.75rem);
+	justify-content: space-between;
+	gap: .75rem clamp(1rem, 3vw, 2rem);
+	padding: .85rem 1rem .85rem clamp(1.15rem, 3vw, 1.75rem);
+	border: 1px solid var(--color-amber);
 	border-radius: .75rem;
-	background: var(--color-navy);
-	color: var(--color-paper);
-	text-align: center;
+	background: var(--color-sand);
+	color: var(--brand-ink);
 }
 
-.catalog-next-step > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: .25rem .75rem; }
-.catalog-next-step .catalog-kicker { margin: 0; color: var(--color-amber-light); }
+.catalog-next-step > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .75rem; }
+.catalog-next-step .catalog-kicker { margin: 0; color: var(--color-amber-text); }
 
 .catalog-next-step h2 {
 	margin: 0;
 	font-family: var(--type-family-sans);
 	font-size: 1rem;
-	font-weight: 600;
+	font-weight: 700;
 	letter-spacing: 0;
 	line-height: 1.5rem;
-	color: var(--color-paper);
+	color: var(--brand-ink);
 }
 
-.catalog-next-step div > p:last-child { margin: 0; color: rgb(245 243 238 / 72%); font-size: .9rem; line-height: 1.5rem; }
+.catalog-next-step div > p:last-child { margin: 0; color: var(--brand-muted); font-size: .85rem; line-height: 1.5rem; }
 
+/* Blue pill: what you click, at a real touch size. */
 .catalog-next-step > a {
 	display: inline-flex;
 	flex: 0 0 auto;
 	align-items: center;
-	gap: .4rem;
-	padding: .3rem .85rem;
+	gap: .45rem;
+	min-height: 2.75rem;
+	padding: .5rem 1.25rem;
 	border-radius: 999px;
-	color: var(--color-amber-light);
+	background: var(--brand-action);
+	color: #fff;
 	font-size: .9rem;
 	font-weight: 600;
-	transition: background .2s var(--orbit-ease);
+	transition: opacity .2s var(--orbit-ease);
 }
 
-.catalog-next-step > a:hover { background: rgb(54 136 248 / 25%); }
+.catalog-next-step > a:hover { opacity: .9; }
+
+@media (max-width: 45rem) {
+	.catalog-next-step { justify-content: center; text-align: center; }
+	.catalog-next-step > div { justify-content: center; }
+	.catalog-next-step > a { width: 100%; justify-content: center; }
+}
 
 @media (max-width: 900px) {
 	.catalog-hero .catalog-rail { grid-template-columns: 1fr; }
