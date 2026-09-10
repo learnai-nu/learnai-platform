@@ -1,3 +1,5 @@
+import { siteAuthor } from '../navigation/site-nav';
+
 export const schemaLanguage = 'da-DK';
 
 export type PageSchemaType =
@@ -43,6 +45,31 @@ interface ArticleSchemaOptions {
 	description: string;
 	datePublished?: string | null;
 	dateModified?: string | null;
+	/** Section label ("Guide", "Nyhed") — mirrors `article:section`. */
+	articleSection?: string | null;
+	keywords?: string[];
+	image?: string | null;
+	imageAlt?: string | null;
+	wordCount?: number | null;
+	readingMinutes?: number | null;
+	/** Works the article draws on, rendered as `citation` nodes. */
+	citations?: ArticleCitation[];
+	/** Entities the article is about, from the internal knowledge graph. */
+	about?: string[];
+	mentions?: string[];
+}
+
+export interface ArticleCitation {
+	name: string;
+	url?: string | null;
+	publisher?: string | null;
+	author?: string | null;
+	year?: string | null;
+}
+
+export interface FaqEntry {
+	question: string;
+	answer: string;
 }
 
 interface CourseSchemaOptions {
@@ -107,11 +134,23 @@ export function buildSitePageGraph({
 	const websiteId = `${homeUrl}#website`;
 	const webpageId = `${canonicalUrl.toString()}#webpage`;
 	const breadcrumbId = `${canonicalUrl.toString()}#breadcrumb`;
+	const personId = `${homeUrl}#person`;
 	const organization: SchemaNode = {
 		'@type': 'Organization',
 		'@id': organizationId,
 		name: 'LearnAI.nu',
 		url: homeUrl,
+		description: 'Praktisk AI-læring på dansk — guides, kurser og værktøjer.',
+		logo: {
+			'@type': 'ImageObject',
+			'@id': `${homeUrl}#logo`,
+			url: absoluteUrl('/favicon.svg', siteUrl),
+			contentUrl: absoluteUrl('/favicon.svg', siteUrl),
+			caption: 'LearnAI.nu',
+		},
+		areaServed: { '@type': 'Country', name: 'Danmark' },
+		knowsLanguage: { '@type': 'Language', name: 'Dansk' },
+		founder: { '@type': 'Person', '@id': personId },
 	};
 	const website: SchemaNode = {
 		'@type': 'WebSite',
@@ -120,6 +159,15 @@ export function buildSitePageGraph({
 		url: homeUrl,
 		inLanguage: schemaLanguage,
 		publisher: { '@type': 'Organization', '@id': organizationId },
+		// Lets Google offer a search box for the site directly in the results.
+		potentialAction: {
+			'@type': 'SearchAction',
+			target: {
+				'@type': 'EntryPoint',
+				urlTemplate: `${absoluteUrl('/search', siteUrl)}?q={search_term_string}`,
+			},
+			'query-input': 'required name=search_term_string',
+		},
 	};
 	const webpage: SchemaNode = {
 		'@type': pageType,
@@ -149,6 +197,7 @@ export function buildSitePageGraph({
 		'@context': 'https://schema.org',
 		'@graph': uniqueNodes([
 			organization,
+			createPersonSchema(siteUrl),
 			website,
 			webpage,
 			...(breadcrumb ? [breadcrumb] : []),
@@ -176,6 +225,32 @@ export function createItemListSchema(
 	};
 }
 
+/**
+ * The person behind LearnAI as a reusable `Person` node.
+ *
+ * Search engines weigh who stands behind a page, so the same author node is
+ * referenced from the organisation (as founder) and from every article.
+ */
+export function createPersonSchema(siteUrl: URL): SchemaNode {
+	const homeUrl = absoluteUrl('/', siteUrl);
+	return {
+		'@type': 'Person',
+		'@id': `${homeUrl}#person`,
+		name: siteAuthor.name,
+		jobTitle: siteAuthor.role,
+		description: siteAuthor.summary,
+		url: absoluteUrl(siteAuthor.href, siteUrl),
+		worksFor: { '@type': 'Organization', '@id': `${homeUrl}#organization` },
+		knowsAbout: [...siteAuthor.knowsAbout],
+		hasCredential: siteAuthor.credentials.map((credential) => ({
+			'@type': 'EducationalOccupationalCredential',
+			credentialCategory: 'Professional Experience',
+			name: credential,
+		})),
+		sameAs: [...siteAuthor.sameAs],
+	};
+}
+
 export function createArticleSchema({
 	canonicalUrl,
 	type,
@@ -183,8 +258,19 @@ export function createArticleSchema({
 	description,
 	datePublished,
 	dateModified,
+	articleSection,
+	keywords = [],
+	image,
+	imageAlt,
+	wordCount,
+	readingMinutes,
+	citations = [],
+	about = [],
+	mentions = [],
 }: ArticleSchemaOptions): SchemaNode {
-	const organizationId = `${absoluteUrl('/', canonicalUrl)}#organization`;
+	const homeUrl = absoluteUrl('/', canonicalUrl);
+	const organizationId = `${homeUrl}#organization`;
+	const imageUrl = image ? absoluteUrl(image, canonicalUrl) : null;
 	return {
 		'@type': type,
 		'@id': `${canonicalUrl.toString()}#article`,
@@ -195,8 +281,54 @@ export function createArticleSchema({
 		inLanguage: schemaLanguage,
 		...(datePublished ? { datePublished } : {}),
 		...(dateModified ? { dateModified } : {}),
-		author: { '@type': 'Organization', '@id': organizationId, name: 'LearnAI.nu' },
+		...(articleSection ? { articleSection } : {}),
+		...(keywords.length ? { keywords } : {}),
+		...(imageUrl
+			? {
+				image: {
+					'@type': 'ImageObject',
+					url: imageUrl,
+					contentUrl: imageUrl,
+					...(imageAlt ? { caption: imageAlt } : {}),
+				},
+				thumbnailUrl: imageUrl,
+			}
+			: {}),
+		...(typeof wordCount === 'number' && wordCount > 0 ? { wordCount } : {}),
+		...(typeof readingMinutes === 'number' && readingMinutes > 0
+			? { timeRequired: `PT${readingMinutes}M` }
+			: {}),
+		...(citations.length ? { citation: citations.map(createCitationNode) } : {}),
+		...(about.length ? { about: about.map((name) => ({ '@type': 'Thing', name })) } : {}),
+		...(mentions.length ? { mentions: mentions.map((name) => ({ '@type': 'Thing', name })) } : {}),
+		// The author is the person; the publisher stays the organisation.
+		author: { '@type': 'Person', '@id': `${homeUrl}#person`, name: siteAuthor.name },
 		publisher: { '@type': 'Organization', '@id': organizationId },
+	};
+}
+
+function createCitationNode(citation: ArticleCitation): SchemaNode {
+	return {
+		'@type': 'CreativeWork',
+		name: citation.name,
+		...(citation.url ? { url: citation.url } : {}),
+		...(citation.author ? { author: { '@type': 'Person', name: citation.author } } : {}),
+		...(citation.publisher ? { publisher: { '@type': 'Organization', name: citation.publisher } } : {}),
+		...(citation.year ? { datePublished: citation.year } : {}),
+	};
+}
+
+/** A `FAQPage` node — the questions must be visible on the page itself. */
+export function createFaqSchema(canonicalUrl: URL, entries: FaqEntry[]): SchemaNode {
+	return {
+		'@type': 'FAQPage',
+		'@id': `${canonicalUrl.toString()}#faq`,
+		inLanguage: schemaLanguage,
+		mainEntity: entries.map((entry) => ({
+			'@type': 'Question',
+			name: entry.question,
+			acceptedAnswer: { '@type': 'Answer', text: entry.answer },
+		})),
 	};
 }
 

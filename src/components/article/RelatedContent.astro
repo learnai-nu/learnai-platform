@@ -1,0 +1,31 @@
+---
+import type { RelatedCandidate } from '../../lib/content/related';
+
+interface Props {
+	items: RelatedCandidate[];
+	heading?: string;
+}
+const { items, heading = 'Læs videre' } = Astro.props;
+const typeLabels: Record<string, string> = {
+	article: 'Artikel',
+	guide: 'Guide',
+	news: 'Nyhed',
+	prompt: 'Prompt',
+	tool: 'Værktøj',
+};
+---
+
+{items.length > 0 && (
+	<section class="article-related" aria-labelledby="laes-videre">
+		<h2 id="laes-videre">{heading}</h2>
+		<div class="article-related-grid">
+			{items.map((item) => (
+				<a class="article-related-card" href={`/laer/${item.slug}`}>
+					<span class="article-related-type">{typeLabels[item.type] ?? 'Indhold'}</span>
+					<strong>{item.title}</strong>
+					{item.excerpt && <span class="article-related-excerpt">{item.excerpt}</span>}
+				</a>
+			))}
+		</div>
+	</section>
+)}

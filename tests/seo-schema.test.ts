@@ -55,6 +55,7 @@ describe('SEO schema contracts', () => {
 		expect(graph['@context']).toBe('https://schema.org');
 		expect(graph['@graph'].map((node) => node['@type'])).toEqual([
 			'Organization',
+			'Person',
 			'WebSite',
 			'WebPage',
 			'BreadcrumbList',
@@ -142,6 +143,7 @@ describe('SEO schema contracts', () => {
 	it('keeps authenticated and account pages out of search and schema output', () => {
 		for (const page of privatePages) expect(page).toMatch(/<SiteLayout[^>]+noindex/s);
 		expect(siteLayout).toContain('const structuredData = noindex ? null');
-		expect(siteLayout).toContain('<meta name="robots" content="noindex, nofollow" />');
+		expect(siteLayout).toContain("? 'noindex, nofollow'");
+		expect(siteLayout).toContain("'index, follow, max-image-preview:large");
 	});
 });

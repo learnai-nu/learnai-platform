@@ -26,6 +26,7 @@ const tokens = readFileSync(
 	'utf8',
 );
 const styles = readFileSync(new URL('../src/styles/blue-orbit.css', import.meta.url), 'utf8');
+const siteNav = readFileSync(new URL('../src/lib/navigation/site-nav.ts', import.meta.url), 'utf8');
 
 describe('LearnAI workbook homepage', () => {
 	it('uses the isolated component layout and core marketing components', () => {
@@ -36,12 +37,15 @@ describe('LearnAI workbook homepage', () => {
 	});
 
 	it('keeps the public navigation connected to real platform routes', () => {
-		expect(header).toContain("href: '/laer'");
-		expect(header).toContain("href: '/kurser'");
-		expect(header).toContain("href: '/laer?type=prompt'");
-		expect(header).toContain("href: '/mentor'");
+		// The routes live in one module that header, dock and drawer all read.
+		expect(siteNav).toContain("href: '/laer'");
+		expect(siteNav).toContain("href: '/kurser'");
+		expect(siteNav).toContain("href: '/laer?type=prompt'");
+		expect(siteNav).toContain("href: '/mentor'");
+		expect(siteNav).toContain("label: 'Start gratis'");
+		expect(header).toContain("import {");
+		expect(header).toContain("from '../../lib/navigation/site-nav'");
 		expect(header).toContain('href="/login"');
-		expect(header).toContain('Start gratis');
 		expect(header).toContain("Astro.url.searchParams.get('type')");
 	});
 

@@ -1,0 +1,179 @@
+---
+/**
+ * Thumb-reachable navigation for mobile.
+ *
+ * A bar pinned to the bottom of the viewport that steps aside while the visitor
+ * scrolls down and returns the moment they scroll up or stop. "Menu" opens a
+ * drawer whose first element is the person behind the site — trust before
+ * navigation — followed by the same menu groups the desktop header uses.
+ */
+import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
+import {
+	dockItems,
+	isNavGroupActive,
+	isNavItemActive,
+	menuGroups,
+	primaryCta,
+	siteAuthor,
+	type DockIcon,
+} from '../../lib/navigation/site-nav';
+
+const activeState = {
+	pathname: Astro.url.pathname,
+	currentType: Astro.url.searchParams.get('type'),
+};
+const icons: Record<DockIcon, string> = {
+	learn: 'M4 5h13a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2V5zM17 8h3v9a2 2 0 0 1-2 2h-1M8 9h6M8 13h6',
+	courses: 'M3 7.5 12 3l9 4.5-9 4.5-9-4.5zM7 10.5V16c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5v-5.5M20 8.5V14',
+	tools: 'M14.5 3.5a4.5 4.5 0 0 0-5.9 5.7L3 14.8V21h6.2l5.6-5.6a4.5 4.5 0 0 0 5.7-5.9l-3 3-2.9-2.9 3-3z',
+	start: 'M5 3.5 19 12 5 20.5V3.5z',
+	menu: 'M4 7h16M4 12h16M4 17h16',
+};
+---
+
+<nav class="mn-bar" aria-label="Mobilnavigation">
+	{dockItems.map((item) => item.href ? (
+		<a
+			class:list={['mn-item', { 'mn-item-cta': item.icon === 'start' }]}
+			href={item.href}
+			aria-current={isNavItemActive(item, activeState) ? 'page' : undefined}
+			aria-label={item.icon === 'start' ? `${item.label} — gratis AI-kursus` : undefined}
+			data-analytics-event={item.icon === 'start' ? ANALYTICS_EVENTS.courseCtaClicked : undefined}
+			data-analytics-source={item.icon === 'start' ? 'mobile_dock' : undefined}
+			data-analytics-detail={item.icon === 'start' ? 'course_page' : undefined}
+		>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[item.icon]}></path></svg>
+			{item.icon !== 'start' && <span>{item.label}</span>}
+		</a>
+	) : (
+		<button type="button" class="mn-item" data-open-drawer aria-haspopup="dialog" aria-expanded="false" aria-controls="mn-drawer">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[item.icon]}></path></svg>
+			<span>{item.label}</span>
+		</button>
+	))}
+</nav>
+
+<dialog class="mn-drawer" id="mn-drawer" aria-labelledby="mn-drawer-title">
+	<div class="mn-head">
+		<p class="mn-title" id="mn-drawer-title">Menu</p>
+		<button type="button" class="mn-icon-btn" data-close-drawer aria-label="Luk menu">
+			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"></path></svg>
+		</button>
+	</div>
+	<div class="mn-body">
+		<a class="mn-profile" href={siteAuthor.href}>
+			<span class="mn-avatar" aria-hidden="true">{siteAuthor.initials}</span>
+			<span class="mn-profile-text">
+				<b>Om mig</b>
+				<em>{siteAuthor.name} — {siteAuthor.role}</em>
+			</span>
+			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
+		</a>
+
+		<form class="mn-search" action="/search" method="get" role="search">
+			<label class="mn-sr-only" for="mn-search-input">Søg på LearnAI</label>
+			<input id="mn-search-input" type="search" name="q" placeholder="Søg på LearnAI" />
+			<button type="submit" aria-label="Søg">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+			</button>
+		</form>
+
+		{menuGroups.map((group) => (
+			<details class="mn-group" open={isNavGroupActive(group, activeState)}>
+				<summary class="mn-link">
+					{group.label}
+					<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l5 5 5-5"></path></svg>
+				</summary>
+				<div class="mn-subgroup">
+					{group.items.map((item) => item.href ? (
+						<a href={item.href} aria-current={isNavItemActive(item, activeState) ? 'page' : undefined}>
+							{item.label}<small>{item.description}</small>
+						</a>
+					) : (
+						<span aria-disabled="true">{item.label}<small>Kommer snart</small></span>
+					))}
+				</div>
+			</details>
+		))}
+
+		<a class="mn-link" href="/virksomheder">
+			Virksomheder
+			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
+		</a>
+		<a class="mn-link" href="/login" data-account-anonymous>
+			Log ind
+			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
+		</a>
+		<a class="mn-link" href="/dashboard" data-account-menu hidden>
+			<span data-account-name>Din profil</span>
+			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
+		</a>
+
+		<a
+			class="mn-cta"
+			href={primaryCta.href}
+			data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked}
+			data-analytics-source="mobile_drawer"
+			data-analytics-detail="course_page"
+		>{primaryCta.label}</a>
+	</div>
+</dialog>
+
+<script>
+	const bar = document.querySelector<HTMLElement>('.mn-bar');
+	const drawer = document.querySelector<HTMLDialogElement>('#mn-drawer');
+	const openers = [...document.querySelectorAll<HTMLButtonElement>('[data-open-drawer]')];
+
+	if (drawer) {
+		const setExpanded = (value: boolean) =>
+			openers.forEach((opener) => opener.setAttribute('aria-expanded', String(value)));
+		const close = () => {
+			const active = document.activeElement;
+			if (active instanceof HTMLElement && drawer.contains(active)) active.blur();
+			drawer.close();
+		};
+
+		openers.forEach((opener) => opener.addEventListener('click', () => {
+			drawer.showModal();
+			setExpanded(true);
+		}));
+		drawer.querySelectorAll('[data-close-drawer]').forEach((button) => button.addEventListener('click', close));
+		// Clicking the backdrop resolves to the dialog element itself.
+		drawer.addEventListener('click', (event) => { if (event.target === drawer) close(); });
+		drawer.addEventListener('close', () => {
+			setExpanded(false);
+			document.body.classList.remove('mn-locked');
+		});
+		// `showModal` already blocks interaction; the class stops iOS rubber-banding.
+		openers.forEach((opener) => opener.addEventListener('click', () => document.body.classList.add('mn-locked')));
+		drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+	}
+
+	if (bar) {
+		let lastY = window.scrollY;
+		let queued = false;
+		const update = () => {
+			const y = Math.max(0, window.scrollY);
+			const delta = y - lastY;
+			// Near the top the bar always shows; otherwise it hides going down and
+			// reappears going up — the small threshold keeps it from flickering.
+			if (y < 40) bar.classList.remove('mn-bar-hidden');
+			else if (delta > 8) bar.classList.add('mn-bar-hidden');
+			else if (delta < -8) bar.classList.remove('mn-bar-hidden');
+			if (Math.abs(delta) > 8 || y < 40) lastY = y;
+			queued = false;
+		};
+		window.addEventListener('scroll', () => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(update);
+		}, { passive: true });
+		// Scrolling that comes to rest brings the bar back, so the menu is always
+		// one tap away the moment the visitor stops to read.
+		let idle: number | undefined;
+		window.addEventListener('scroll', () => {
+			window.clearTimeout(idle);
+			idle = window.setTimeout(() => bar.classList.remove('mn-bar-hidden'), 220);
+		}, { passive: true });
+	}
+</script>

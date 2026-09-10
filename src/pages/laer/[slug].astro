@@ -1,9 +1,20 @@
 ---
+import '../../styles/article-longform.css';
+import ArticleBreadcrumbs from '../../components/article/ArticleBreadcrumbs.astro';
+import ArticleFaq from '../../components/article/ArticleFaq.astro';
+import ArticleSources from '../../components/article/ArticleSources.astro';
+import ArticleToc from '../../components/article/ArticleToc.astro';
+import AuthorBio from '../../components/article/AuthorBio.astro';
 import ContentBody from '../../components/ContentBody.astro';
 import PromptBuilder from '../../components/PromptBuilder';
+import RelatedContent from '../../components/article/RelatedContent.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import { countWords, estimateReadingMinutes, extractHeadings, parseArticleExtras } from '../../lib/content/article';
+import { renderMarkdown } from '../../lib/content/markdown';
+import { selectRelatedContent } from '../../lib/content/related';
+import { siteAuthor } from '../../lib/navigation/site-nav';
 import { parsePromptDefinition } from '../../lib/prompts/contracts';
-import { createArticleSchema, createCanonicalUrl, type SchemaNode } from '../../lib/seo/schema';
+import { createArticleSchema, createCanonicalUrl, createFaqSchema, type SchemaNode } from '../../lib/seo/schema';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
@@ -28,9 +39,38 @@ const typeLabels = {
 	prompt: 'Prompt',
 	tool: 'Værktøj',
 } as const;
+const typeLabel = typeLabels[item.type as keyof typeof typeLabels] ?? 'Indhold';
 const pageDescription = item.seo_description ?? item.excerpt ?? 'Praktisk AI-læring på dansk.';
 const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
-const articleSchema: SchemaNode | undefined = ['article', 'guide', 'news'].includes(item.type)
+const extras = parseArticleExtras(item.source_metadata);
+
+// Render once here so the table of contents, the reading time and the body all
+// describe the same HTML.
+const markdown = item.body && typeof item.body === 'object' && 'markdown' in item.body
+	&& typeof (item.body as { markdown?: unknown }).markdown === 'string'
+	? (item.body as { markdown: string }).markdown
+	: '';
+const bodyHtml = markdown ? renderMarkdown(markdown, { headingIds: true }) : '';
+const headings = extractHeadings(bodyHtml);
+const wordCount = countWords(bodyHtml);
+const readingMinutes = estimateReadingMinutes(wordCount);
+const isLongForm = !promptDefinition && wordCount > 0;
+
+// Related reading: rank the rest of the library against this article.
+const { data: candidates } = await supabase
+	.from('content_items')
+	.select('title,slug,type,excerpt,published_at,updated_at')
+	.eq('status', 'published')
+	.in('type', ['article', 'guide', 'news'])
+	.order('published_at', { ascending: false })
+	.limit(40);
+const related = selectRelatedContent(
+	{ slug: item.slug, title: item.title, type: item.type, keywords: extras.keywords },
+	candidates ?? [],
+);
+
+const isArticleType = ['article', 'guide', 'news'].includes(item.type);
+const articleSchema: SchemaNode | undefined = isArticleType
 	? createArticleSchema({
 		canonicalUrl,
 		type: item.type === 'news' ? 'NewsArticle' : 'Article',
@@ -38,33 +78,76 @@ const articleSchema: SchemaNode | undefined = ['article', 'guide', 'news'].inclu
 		description: pageDescription,
 		datePublished: item.published_at,
 		dateModified: item.updated_at,
+		articleSection: typeLabel,
+		keywords: extras.keywords ?? [],
+		image: extras.image ?? null,
+		imageAlt: extras.imageAlt ?? null,
+		wordCount: wordCount || null,
+		readingMinutes: isLongForm ? readingMinutes : null,
+		citations: extras.sources ?? [],
+		about: extras.about ?? [],
 	})
 	: undefined;
+const faqEntries = extras.faq ?? [];
+const additionalSchema = faqEntries.length ? [createFaqSchema(canonicalUrl, faqEntries)] : [];
+const publishedLabel = item.published_at
+	? new Date(item.published_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })
+	: null;
 ---
 
 <SiteLayout
 	title={`${item.seo_title ?? item.title} — LearnAI.nu`}
 	description={pageDescription}
+	ogType={isArticleType ? 'article' : 'website'}
+	image={extras.image ?? null}
+	imageAlt={extras.imageAlt ?? null}
+	publishedTime={item.published_at}
+	modifiedTime={item.updated_at}
+	articleSection={typeLabel}
 	breadcrumbs={[
 		{ name: 'Forside', url: '/' },
 		{ name: 'Lær AI', url: '/laer' },
 		{ name: item.title, url: Astro.url.pathname },
 	]}
 	mainEntity={articleSchema}
+	additionalSchema={additionalSchema}
 >
 	<article class="article-page">
 		<header class="shell article-header">
-			<a class="admin-back" href="/laer">← Lær AI</a>
-			<p class="eyebrow">{typeLabels[item.type as keyof typeof typeLabels] ?? 'Indhold'}</p>
+			<ArticleBreadcrumbs items={[
+				{ name: 'Forside', url: '/' },
+				{ name: 'Lær AI', url: '/laer' },
+				{ name: item.title },
+			]} />
+			<p class="eyebrow">{typeLabel}</p>
 			<h1>{item.title}</h1>
 			{item.excerpt && <p class="hero-copy">{item.excerpt}</p>}
-			<p class="article-date">Opdateret {new Date(item.updated_at).toLocaleDateString('da-DK')}</p>
+			<div class="article-meta">
+				<span class="article-meta-avatar" aria-hidden="true">{siteAuthor.initials}</span>
+				<div>
+					<span class="article-meta-author">{siteAuthor.name}</span>
+					<span class="article-meta-details">
+						{publishedLabel && <time datetime={item.published_at}>{publishedLabel}</time>}
+						{isLongForm && <> · {readingMinutes} min. læsning</>}
+						{' '}· Opdateret <time datetime={item.updated_at}>{new Date(item.updated_at).toLocaleDateString('da-DK')}</time>
+					</span>
+				</div>
+			</div>
 		</header>
 		<div class="shell article-content">
 			{promptDefinition ? (
 				<PromptBuilder client:load definition={promptDefinition} title={item.title} />
 			) : (
-				<ContentBody body={item.body} />
+				<>
+					{isLongForm && <ArticleToc headings={headings} readingMinutes={readingMinutes} />}
+					{bodyHtml
+						? <div class="article-body" set:html={bodyHtml} />
+						: <ContentBody body={item.body} />}
+					<ArticleFaq entries={faqEntries} />
+					<ArticleSources sources={extras.sources ?? []} />
+					<AuthorBio />
+					<RelatedContent items={related} />
+				</>
 			)}
 		</div>
 	</article>
