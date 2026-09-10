@@ -9,19 +9,32 @@ const { headings, readingMinutes } = Astro.props;
 ---
 
 {headings.length >= 3 && (
-	<details class="article-toc" open>
-		<summary>
-			<span>Indhold</span>
-			<span class="article-toc-time">{readingMinutes} min. læsning</span>
-		</summary>
-		<nav aria-label="Indholdsfortegnelse">
-			<ol>
-				{headings.map((heading) => (
-					<li class:list={[{ 'is-sub': heading.level === 3 }]}>
-						<a href={`#${heading.id}`}>{heading.text}</a>
-					</li>
-				))}
-			</ol>
-		</nav>
-	</details>
+	<>
+		<aside class="article-toc article-toc-desktop" aria-label="Artiklens indhold">
+			<p class="article-toc-label">Indhold</p>
+			<nav>
+				<ol>
+					{headings.map((heading) => (
+						<li class:list={{ 'is-subsection': heading.level === 3 }} data-toc-item={heading.id}>
+							<a href={`#${heading.id}`}>{heading.text}</a>
+						</li>
+					))}
+				</ol>
+			</nav>
+			<p class="article-time-left" data-reading-time-left>{readingMinutes} min. tilbage</p>
+		</aside>
+
+		<details class="article-toc article-toc-mobile">
+			<summary>Se artiklens indhold</summary>
+			<nav aria-label="Artiklens indhold på mobil">
+				<ol>
+					{headings.map((heading) => (
+						<li class:list={{ 'is-subsection': heading.level === 3 }} data-toc-item={heading.id}>
+							<a href={`#${heading.id}`}>{heading.text}</a>
+						</li>
+					))}
+				</ol>
+			</nav>
+		</details>
+	</>
 )}

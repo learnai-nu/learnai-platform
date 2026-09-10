@@ -11,6 +11,9 @@ import { selectRelatedContent } from '../src/lib/content/related';
 import { createArticleSchema, createFaqSchema } from '../src/lib/seo/schema';
 
 const articlePage = readFileSync(new URL('../src/pages/laer/[slug].astro', import.meta.url), 'utf8');
+const articleToc = readFileSync(new URL('../src/components/article/ArticleToc.astro', import.meta.url), 'utf8');
+const progressScript = readFileSync(new URL('../src/scripts/article-reading-progress.ts', import.meta.url), 'utf8');
+const articleStyles = readFileSync(new URL('../src/styles/article-longform.css', import.meta.url), 'utf8');
 
 describe('overskrifter og indholdsfortegnelse', () => {
 	it('only adds heading anchors when the caller asks for them', () => {
@@ -137,5 +140,17 @@ describe('artikelsiden', () => {
 			expect(articlePage).toContain(marker);
 		}
 		expect(articlePage).toContain('ogType={isArticleType');
+	});
+
+	it('nudges the reader forward with active and completed section markers', () => {
+		expect(articlePage).toContain('data-article-reader');
+		expect(articleToc).toContain('data-toc-item={heading.id}');
+		expect(articleToc).toContain('data-reading-time-left');
+		expect(articleToc).toContain('article-toc-mobile');
+		expect(progressScript).toContain('sectionEnd <= marker');
+		expect(progressScript).toContain("completed.add(heading.id)");
+		expect(progressScript).toContain("heading.classList.toggle('is-read'");
+		expect(articleStyles).toContain('content: "✓"');
+		expect(articleStyles).toContain('background: var(--color-amber)');
 	});
 });

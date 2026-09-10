@@ -112,8 +112,14 @@ const publishedLabel = item.published_at
 	mainEntity={articleSchema}
 	additionalSchema={additionalSchema}
 >
-	<article class="article-page">
-		<header class="shell article-header">
+	<article
+		class="article-page"
+		data-article-reader
+		data-reading-minutes={readingMinutes}
+	>
+		<div class:list={['shell', 'article-reading-layout', { 'has-toc': headings.length >= 3 }]}>
+			{isLongForm && <ArticleToc headings={headings} readingMinutes={readingMinutes} />}
+		<header class="article-header">
 			<ArticleBreadcrumbs items={[
 				{ name: 'Forside', url: '/' },
 				{ name: 'Lær AI', url: '/laer' },
@@ -134,12 +140,11 @@ const publishedLabel = item.published_at
 				</div>
 			</div>
 		</header>
-		<div class="shell article-content">
+		<div class:list={['article-content', { 'has-reading-rail': headings.some((heading) => heading.level === 2) }]}>
 			{promptDefinition ? (
 				<PromptBuilder client:load definition={promptDefinition} title={item.title} />
 			) : (
 				<>
-					{isLongForm && <ArticleToc headings={headings} readingMinutes={readingMinutes} />}
 					{bodyHtml
 						? <div class="article-body" set:html={bodyHtml} />
 						: <ContentBody body={item.body} />}
@@ -150,5 +155,10 @@ const publishedLabel = item.published_at
 				</>
 			)}
 		</div>
+		</div>
 	</article>
+	<script>
+		import { initArticleReadingProgress } from '../../scripts/article-reading-progress';
+		initArticleReadingProgress();
+	</script>
 </SiteLayout>
