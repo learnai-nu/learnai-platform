@@ -20,6 +20,9 @@ export const GET: APIRoute = ({ site, url }) => {
 		'',
 		`Sitemap: ${new URL('/sitemap.xml', origin).toString()}`,
 		'',
+		`# Agentvejledning: ${new URL('/llms.txt', origin).toString()}`,
+		`# Maskinlæsbare endepunkter: ${new URL('/agenter', origin).toString()}`,
+		'',
 	].join('\n');
 
 	return new Response(body, {

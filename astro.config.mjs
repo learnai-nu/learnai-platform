@@ -18,6 +18,10 @@ export default defineConfig({
   output: 'server',
 
   redirects: {
-    '/vaerktoejer': '/tools'
+    '/vaerktoejer': '/tools',
+    // Named aliases so a search for "learnai.nu developer resources" lands.
+    '/developers': '/agenter',
+    '/agents': '/agenter',
+    '/llms': '/llms.txt'
   }
 });

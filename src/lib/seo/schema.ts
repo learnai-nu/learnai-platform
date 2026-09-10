@@ -1,4 +1,4 @@
-import { siteAuthor } from '../navigation/site-nav';
+import { siteAuthor, siteOrganisation } from '../navigation/site-nav';
 
 export const schemaLanguage = 'da-DK';
 
@@ -138,9 +138,36 @@ export function buildSitePageGraph({
 	const organization: SchemaNode = {
 		'@type': 'Organization',
 		'@id': organizationId,
-		name: 'LearnAI.nu',
+		name: siteOrganisation.name,
+		legalName: siteOrganisation.legalName,
 		url: homeUrl,
-		description: 'Praktisk AI-læring på dansk — guides, kurser og værktøjer.',
+		description: siteOrganisation.description,
+		email: siteOrganisation.email,
+		// Agents check for a reachable contact and a location before they treat a
+		// site as a legitimate business worth recommending.
+		contactPoint: [
+			{
+				'@type': 'ContactPoint',
+				contactType: 'customer support',
+				email: siteOrganisation.email,
+				areaServed: 'DK',
+				availableLanguage: ['Danish', 'English'],
+			},
+			{
+				'@type': 'ContactPoint',
+				contactType: 'sales',
+				email: siteOrganisation.businessEmail,
+				areaServed: 'DK',
+				availableLanguage: ['Danish', 'English'],
+			},
+		],
+		address: {
+			'@type': 'PostalAddress',
+			addressCountry: siteOrganisation.address.addressCountry,
+			addressRegion: siteOrganisation.address.addressRegion,
+		},
+		sameAs: [...siteOrganisation.sameAs],
+		foundingDate: siteOrganisation.foundingDate,
 		logo: {
 			'@type': 'ImageObject',
 			'@id': `${homeUrl}#logo`,

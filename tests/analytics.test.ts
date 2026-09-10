@@ -10,7 +10,7 @@ const businessPage = readFileSync(new URL('../src/pages/virksomheder.astro', imp
 const coursePage = readFileSync(new URL('../src/pages/kurser/[slug].astro', import.meta.url), 'utf8');
 const mentor = readFileSync(new URL('../src/components/AIMentor.tsx', import.meta.url), 'utf8');
 const compass = readFileSync(new URL('../src/components/WorkCompass.tsx', import.meta.url), 'utf8');
-const privacyPage = readFileSync(new URL('../src/pages/[slug].astro', import.meta.url), 'utf8');
+const privacyPage = readFileSync(new URL('../src/lib/content/site-pages.ts', import.meta.url), 'utf8');
 
 describe('LearnAI analytics', () => {
 	it('loads first-party pageview and performance tracking from the shared layout', () => {

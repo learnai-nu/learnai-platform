@@ -131,3 +131,20 @@ export function isNavItemActive(item: NavItem | DockItem, { pathname, currentTyp
 export function isNavGroupActive(group: NavGroup, state: ActiveStateInput): boolean {
 	return group.items.some((item) => isNavItemActive(item, state));
 }
+
+/**
+ * The publisher behind the site, as the facts an agent needs to verify it:
+ * who we are, how to reach us, and where we are. Feeds the `Organization` node
+ * in the structured data and the trust anchor pages.
+ */
+export const siteOrganisation = {
+	name: 'LearnAI.nu',
+	legalName: 'LearnAI.nu',
+	description: 'Praktisk AI-læring på dansk — guides, kurser, prompts og værktøjer.',
+	email: 'kontakt@learnai.nu',
+	businessEmail: 'leads@learnai.nu',
+	/** Country only: the platform is run remotely and has no public street address. */
+	address: { addressCountry: 'DK', addressRegion: 'Sjælland' },
+	sameAs: ['https://www.linkedin.com/in/jesperschneider/'],
+	foundingDate: '2026',
+} as const;

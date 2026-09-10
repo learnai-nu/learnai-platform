@@ -40,10 +40,16 @@ describe('crawl- og delesignaler', () => {
 		expect(layout).toContain('max-snippet:-1');
 	});
 
-	it('upgrades the share card when the page has an image', () => {
-		expect(layout).toContain("content={shareImage ? 'summary_large_image' : 'summary'}");
-		expect(layout).toContain('property="og:image"');
+	it('always ships a share card, with the branded image as the fallback', () => {
+		expect(layout).toContain('<meta name="twitter:card" content="summary_large_image" />');
+		expect(layout).toContain('<meta property="og:image" content={shareImage} />');
+		expect(layout).toContain("const shareImage = new URL(image ?? DEFAULT_SHARE_IMAGE, siteOrigin).toString()");
 		expect(layout).toContain('article:published_time');
+	});
+
+	it('points machine clients at the Markdown variant and llms.txt', () => {
+		expect(layout).toContain('type="text/markdown"');
+		expect(layout).toContain("new URL('/llms.txt', siteOrigin).toString()");
 	});
 
 	it('prefetches internal links only', () => {

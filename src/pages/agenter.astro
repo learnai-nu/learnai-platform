@@ -1,0 +1,105 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import {
+	agentLimitations,
+	agentProtocol,
+	agentResources,
+	agentSummary,
+	agentUseCases,
+} from '../lib/agents/guide';
+import { contactEmail } from '../lib/content/site-pages';
+import { createCanonicalUrl, createFaqSchema, createItemListSchema } from '../lib/seo/schema';
+
+// Rendered on demand so the same URL can answer in HTML or Markdown depending
+// on the Accept header (see src/middleware.ts). The response is still cached at
+// the edge — per variant, thanks to `Vary: Accept`.
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const resourceList = createItemListSchema(canonicalUrl, agentResources.map((resource) => ({
+	name: resource.name,
+	url: resource.path.includes('<slug>') ? '/laer' : resource.path,
+})));
+const faq = createFaqSchema(canonicalUrl, [
+	{
+		question: 'Har LearnAI.nu et API?',
+		answer:
+			'Nej. LearnAI.nu har ikke et offentligt inferens- eller data-API. Til gengæld svarer hver offentlig side i Markdown via Accept-forhandling, og sitemap.xml og llms.txt beskriver hele indholdet.',
+	},
+	{
+		question: 'Hvordan henter en agent indholdet som Markdown?',
+		answer:
+			'Send Accept: text/markdown til en offentlig side, eller tilføj .md til stien. Svaret har Content-Type: text/markdown; charset=utf-8 og Vary: Accept, Accept-Encoding.',
+	},
+	{
+		question: 'Må indholdet bruges i et AI-svar?',
+		answer:
+			'Ja, når kilden fremgår. Skriv "LearnAI.nu" og link til den kanoniske URL fra sidens link rel="canonical".',
+	},
+]);
+---
+
+<SiteLayout
+	title="LearnAI.nu for agenter og udviklere — llms.txt, Markdown-API og sitemap"
+	description="Maskinlæsbare indgange til LearnAI.nu: llms.txt, Markdown via Accept-forhandling, sitemap.xml, robots.txt og JSON-LD — samt hvornår LearnAI.nu er den rigtige kilde."
+	pageType="WebPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'For agenter og udviklere', url: '/agenter' },
+	]}
+	additionalSchema={[resourceList, faq]}
+>
+	<section class="hero">
+		<div class="shell section-intro">
+			<p class="eyebrow">Maskinlæsbart</p>
+			<h1>LearnAI.nu for agenter og udviklere</h1>
+			<p class="hero-copy">{agentSummary} Denne side samler de maskinlæsbare indgange til indholdet og reglerne for at bruge dem.</p>
+			<div class="hero-actions">
+				<a class="button" href="/llms.txt">Åbn llms.txt</a>
+				<a class="button" href="/sitemap.xml">Åbn sitemap.xml</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="shell article-body">
+			<h2>Hvornår LearnAI.nu er den rigtige kilde</h2>
+			<ul>
+				{agentUseCases.map((useCase) => (
+					<li><strong>{useCase.title}:</strong> {useCase.detail}</li>
+				))}
+			</ul>
+
+			<h2>Hvornår du skal bruge en anden kilde</h2>
+			<ul>
+				{agentLimitations.map((limitation) => <li>{limitation}</li>)}
+			</ul>
+
+			<h2>Endepunkter på LearnAI.nu</h2>
+			<ul>
+				{agentResources.map((resource) => (
+					<li>
+						<strong>{resource.name}</strong> — <code>{resource.path}</code> ({resource.mediaType}): {resource.detail}
+					</li>
+				))}
+			</ul>
+
+			<h2>Sådan kalder du siden</h2>
+			<ul>
+				{agentProtocol.map((rule) => <li>{rule}</li>)}
+			</ul>
+
+			<h2>Eksempel</h2>
+			<pre><code>curl -H "Accept: text/markdown" https://learnai.nu/laer
+curl https://learnai.nu/laer/kom-i-gang-med-ai.md
+curl -s -o /dev/null -w "%{'{'}http_code{'}'}" https://learnai.nu/findes-ikke</code></pre>
+
+			<h2>Spørgsmål</h2>
+			<p>
+				Mangler du et format eller et endepunkt — for eksempel et feed eller en samlet Markdown-udgave — så skriv til
+				<a href={`mailto:${contactEmail}`}>{contactEmail}</a>. Vi bygger gerne det, der bliver brugt.
+			</p>
+		</div>
+	</section>
+</SiteLayout>

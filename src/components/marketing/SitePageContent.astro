@@ -1,0 +1,30 @@
+---
+import type { SitePageDefinition } from '../../lib/content/site-pages';
+
+interface Props {
+	page: SitePageDefinition;
+}
+
+const { page } = Astro.props;
+---
+
+<section class="hero">
+	<div class="shell section-intro">
+		<p class="eyebrow">{page.kicker}</p>
+		<h1>{page.title}</h1>
+		<p class="hero-copy">{page.intro}</p>
+	</div>
+</section>
+<section class="section">
+	<div class="shell article-body">
+		{page.sections.map((section) => (
+			<>
+				<h2>{section.heading}</h2>
+				{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+				{section.bullets && section.bullets.length > 0 && (
+					<ul>{section.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+				)}
+			</>
+		))}
+	</div>
+</section>

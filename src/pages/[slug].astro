@@ -10,21 +10,6 @@ export function getStaticPaths() {
 			description: 'Dansk overblik over de AI-nyheder, der betyder noget i praksis.',
 			kicker: 'Aktuelt',
 		},
-		om: {
-			title: 'Om LearnAI',
-			description: 'Vores ambition er at gøre AI forståelig og anvendelig for alle.',
-			kicker: 'Mission',
-		},
-		privatliv: {
-			title: 'Privatliv',
-			description: 'Sådan beskytter LearnAI dine oplysninger.',
-			kicker: 'Tillid',
-		},
-		kontakt: {
-			title: 'Kontakt',
-			description: 'Kontakt LearnAI om læring, partnerskaber eller virksomheder.',
-			kicker: 'Skriv til os',
-		},
 	} as const;
 
 	return Object.entries(pages).map(([slug, page]) => ({
@@ -34,13 +19,9 @@ export function getStaticPaths() {
 }
 
 const { title, description, kicker } = Astro.props;
-const isPrivacyPage = Astro.params.slug === 'privatliv';
 const pageTypes = {
 	vaerktoejer: 'CollectionPage',
 	nyheder: 'CollectionPage',
-	om: 'AboutPage',
-	privatliv: 'WebPage',
-	kontakt: 'ContactPage',
 } as const;
 const pageType = pageTypes[Astro.params.slug as keyof typeof pageTypes] ?? 'WebPage';
 ---
@@ -64,24 +45,4 @@ const pageType = pageTypes[Astro.params.slug as keyof typeof pageTypes] ?? 'WebP
 			</div>
 		</div>
 	</section>
-	{isPrivacyPage && (
-		<section class="section">
-			<div class="shell article-body">
-				<h2>Besøgsstatistik og ydeevne</h2>
-				<p>
-					LearnAI bruger Vercel Web Analytics og Vercel Speed Insights til at forstå, hvilke sider der bliver brugt,
-					og hvordan de teknisk fungerer. Målingen er cookie-fri og baseret på anonyme, aggregerede datapunkter.
-				</p>
-				<p>
-					Vi måler blandt andet sidevisninger, henvisningsside, browser- og enhedstype, omtrentlig geografisk region
-					samt centrale handlinger som kursusstart, gennemført øvelse og afsendt kontaktformular.
-				</p>
-				<h2>Det sender vi ikke til analytics</h2>
-				<p>
-					Navn, e-mailadresse, virksomhedsnavn, bruger-id, formularfelter, svar fra øvelser og indholdet af samtaler
-					med AI Mentor indgår ikke i vores analytics-events.
-				</p>
-			</div>
-		</section>
-	)}
 </SiteLayout>

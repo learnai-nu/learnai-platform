@@ -1,0 +1,25 @@
+---
+import SitePageContent from '../components/marketing/SitePageContent.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { aboutPage } from '../lib/content/site-pages';
+
+// Rendered on demand so the same URL can answer in HTML or Markdown depending
+// on the Accept header (see src/middleware.ts). The response is still cached at
+// the edge — per variant, thanks to `Vary: Accept`.
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+
+const page = aboutPage;
+---
+
+<SiteLayout
+	title={`${page.title} — LearnAI.nu`}
+	description={page.description}
+	pageType={page.pageType}
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: page.title, url: page.path },
+	]}
+>
+	<SitePageContent {page} />
+</SiteLayout>

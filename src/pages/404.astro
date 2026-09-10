@@ -1,0 +1,51 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+export const prerender = false;
+
+// A real 404 for people; agents that do not accept HTML get the Markdown
+// variant from the middleware instead.
+Astro.response.status = 404;
+Astro.response.statusText = 'Not Found';
+
+const suggestions = [
+	{ label: 'Forsiden', href: '/', detail: 'Overblik over hele LearnAI.nu.' },
+	{ label: 'Lær AI', href: '/laer', detail: 'Guides, nyheder og prompts på dansk.' },
+	{ label: 'Kurser', href: '/kurser', detail: 'Onlinekurser med moduler og øvelser.' },
+	{ label: 'Værktøjer', href: '/tools', detail: 'AI-værktøjer vurderet efter opgave.' },
+	{ label: 'Kontakt', href: '/kontakt', detail: 'Skriv, hvis du mener siden burde findes.' },
+	{ label: 'Sitemap', href: '/sitemap.xml', detail: 'Alle offentlige sider, maskinlæsbart.' },
+];
+---
+
+<SiteLayout
+	title="Siden findes ikke (404) — LearnAI.nu"
+	description="Der ligger ikke noget indhold på den adresse. Find vej videre til guides, kurser, værktøjer eller sitemap."
+	noindex
+>
+	<section class="hero">
+		<div class="shell section-intro">
+			<p class="eyebrow">404</p>
+			<h1>Siden findes ikke</h1>
+			<p class="hero-copy">
+				Adressen <code>{Astro.url.pathname}</code> peger ikke på noget indhold. Den kan være omdøbt — eller aldrig
+				have eksisteret. Herunder er de steder, der oftest er det, man ledte efter.
+			</p>
+		</div>
+	</section>
+	<section class="section">
+		<div class="shell article-body">
+			<h2>Kom videre herfra</h2>
+			<ul>
+				{suggestions.map((item) => (
+					<li><a href={item.href}>{item.label}</a> — {item.detail}</li>
+				))}
+			</ul>
+			<p>
+				Er du en agent eller et script, findes den fulde liste over sider i
+				<a href="/sitemap.xml">sitemap.xml</a>, og en beskrivelse af indholdet i
+				<a href="/llms.txt">llms.txt</a>.
+			</p>
+		</div>
+	</section>
+</SiteLayout>

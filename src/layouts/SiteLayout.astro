@@ -68,9 +68,16 @@ const {
 	analytics = true,
 } = Astro.props;
 
+const DEFAULT_SHARE_IMAGE = '/og-default.png';
+const DEFAULT_SHARE_IMAGE_ALT = 'LearnAI.nu — praktisk AI-læring på dansk';
+
 const canonicalURL = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
 const siteOrigin = Astro.site ? new URL(Astro.site) : new URL('/', canonicalURL);
-const shareImage = image ? new URL(image, siteOrigin).toString() : null;
+// Every page needs an og:image: agents use it for entity resolution, and a
+// shared link without one loses its card. Pages pass their own; the branded
+// default covers the rest.
+const shareImage = new URL(image ?? DEFAULT_SHARE_IMAGE, siteOrigin).toString();
+const shareImageAlt = imageAlt ?? (image ? null : DEFAULT_SHARE_IMAGE_ALT);
 const hreflangs = alternates.map((alternate) => ({
 	hreflang: alternate.locale === 'en' ? 'en' : 'da-DK',
 	href: new URL(alternate.path, siteOrigin).toString(),
@@ -111,16 +118,28 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />
-		{shareImage && <meta property="og:image" content={shareImage} />}
-		{shareImage && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+		<meta property="og:image" content={shareImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		{shareImageAlt && <meta property="og:image:alt" content={shareImageAlt} />}
 		{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
 		{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 		{ogType === 'article' && articleSection && <meta property="article:section" content={articleSection} />}
-		<meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-		{shareImage && <meta name="twitter:image" content={shareImage} />}
+		<meta name="twitter:image" content={shareImage} />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<!-- Agent entry points: the Markdown variant of this page and the site guide. -->
+		{!noindex && (
+			<link
+				rel="alternate"
+				type="text/markdown"
+				href={`${canonicalURL.pathname === '/' ? new URL('/index', siteOrigin).toString() : canonicalURL.toString()}.md`}
+				title="Markdown"
+			/>
+		)}
+		<link rel="alternate" type="text/plain" href={new URL('/llms.txt', siteOrigin).toString()} title="llms.txt" />
 		<title>{title}</title>
 		{structuredData && <JsonLd data={structuredData} />}
 		{analytics && <Analytics />}
