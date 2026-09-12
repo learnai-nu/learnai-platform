@@ -1,6 +1,11 @@
 import type { APIRoute } from 'astro';
 import { hasSameOrigin, redirectWithoutCache } from '../../lib/admin/security';
 import { weeklyBriefSchema, weeklyBriefSource } from '../../lib/leads/weekly-brief';
+import {
+	createOpaqueToken,
+	sendWeeklyBriefConfirmation,
+	sha256,
+} from '../../lib/email/weekly-brief';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 export const prerender = false;
@@ -17,18 +22,30 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	});
 	if (!parsed.success) return redirectWithoutCache('/ugebrief?status=invalid#tilmelding');
 
+	const token = createOpaqueToken();
 	const supabase = createServerSupabaseClient(request, cookies);
-	const { error } = await supabase.from('newsletter_subscribers').insert({
+	const { error } = await supabase.from('newsletter_subscription_requests').insert({
 		email: parsed.data.email,
 		first_name: parsed.data.firstName,
 		source: weeklyBriefSource,
+		consent_at: new Date().toISOString(),
+		confirmation_token_hash: await sha256(token),
 	});
 
-	// Existing subscribers receive the same neutral confirmation. This avoids
-	// revealing whether a given e-mail address is already in the database.
-	if (error && error.code !== '23505') {
+	if (error) {
 		return redirectWithoutCache('/ugebrief?status=save-error#tilmelding');
 	}
 
-	return redirectWithoutCache('/ugebrief?status=success#tilmelding');
+	try {
+		const delivery = await sendWeeklyBriefConfirmation({
+			email: parsed.data.email,
+			firstName: parsed.data.firstName,
+			token,
+		});
+		if (delivery === 'skipped') return redirectWithoutCache('/ugebrief?status=mail-error#tilmelding');
+	} catch {
+		return redirectWithoutCache('/ugebrief?status=mail-error#tilmelding');
+	}
+
+	return redirectWithoutCache('/ugebrief?status=check-email#tilmelding');
 };

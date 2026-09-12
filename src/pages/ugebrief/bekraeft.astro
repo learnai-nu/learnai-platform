@@ -1,0 +1,45 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import '../../styles/ugebrief.css';
+
+export const prerender = false;
+
+const token = Astro.url.searchParams.get('token') ?? '';
+const status = Astro.url.searchParams.get('status');
+const validToken = /^[a-f0-9]{64}$/.test(token);
+---
+
+<SiteLayout
+	title="Bekræft LearnAI Ugebrief"
+	description="Bekræft din tilmelding til LearnAI Ugebrief og podcast."
+	noindex={true}
+>
+	<section class="brief-confirm-page">
+		<div class="brief-confirm-card">
+			<p class="brief-kicker">LearnAI ugebrief</p>
+			{status === 'success' ? (
+				<>
+					<h1>Din tilmelding er bekræftet.</h1>
+					<p>Du modtager næste ugebrief med nyheder, kildelinks og podcast.</p>
+					<a class="button" href="/laer">Se de seneste nyheder</a>
+				</>
+			) : status === 'invalid' || !validToken ? (
+				<>
+					<h1>Linket er udløbet eller ugyldigt.</h1>
+					<p>Tilmeld dig igen, så sender vi et nyt bekræftelseslink.</p>
+					<a class="button" href="/ugebrief#tilmelding">Tilmeld igen</a>
+				</>
+			) : (
+				<>
+					<h1>Ét klik tilbage.</h1>
+					<p>Bekræft, at du vil modtage LearnAI Ugebrief og podcast hver mandag.</p>
+					{status === 'error' && <p class="brief-inline-error" role="alert">Bekræftelsen lykkedes ikke. Prøv igen.</p>}
+					<form method="post" action="/api/ugebrief/bekraeft">
+						<input type="hidden" name="token" value={token} />
+						<button class="brief-submit" type="submit">Bekræft min tilmelding <span aria-hidden="true">→</span></button>
+					</form>
+				</>
+			)}
+		</div>
+	</section>
+</SiteLayout>

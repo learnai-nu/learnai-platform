@@ -6,9 +6,9 @@ export const prerender = false;
 
 const status = Astro.url.searchParams.get('status');
 const statusMessages: Record<string, { title: string; text: string; error?: boolean }> = {
-	success: {
-		title: 'Du er skrevet på.',
-		text: 'Næste ugebrief lander i din indbakke med både links og podcast.',
+	'check-email': {
+		title: 'Tjek din indbakke.',
+		text: 'Vi har sendt et bekræftelseslink. Din tilmelding er først aktiv, når du har klikket på det.',
 	},
 	invalid: {
 		title: 'Tjek oplysningerne.',
@@ -18,6 +18,11 @@ const statusMessages: Record<string, { title: string; text: string; error?: bool
 	'save-error': {
 		title: 'Tilmeldingen blev ikke gemt.',
 		text: 'Prøv igen om et øjeblik.',
+		error: true,
+	},
+	'mail-error': {
+		title: 'Bekræftelsesmailen kunne ikke sendes.',
+		text: 'Prøv at tilmelde dig igen om et øjeblik.',
 		error: true,
 	},
 };

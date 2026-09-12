@@ -16,7 +16,8 @@
     "test": "vitest run",
     "catalog:prepare": "node scripts/prepare-catalog.mjs",
     "content:prepare": "node scripts/prepare-content-import.mjs",
-    "editorial:prepare": "node scripts/prepare-editorial-wave.mjs"
+		"editorial:prepare": "node scripts/prepare-editorial-wave.mjs",
+		"newsletter:send": "node scripts/send-weekly-brief.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",

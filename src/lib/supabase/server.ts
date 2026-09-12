@@ -9,11 +9,18 @@ function requiredPublicEnv(name: 'PUBLIC_SUPABASE_URL' | 'PUBLIC_SUPABASE_PUBLIS
 	return value;
 }
 
-export function createServerSupabaseClient(request: Request, cookies: AstroCookies) {
+export function createServerSupabaseClient(
+	request: Request,
+	cookies: AstroCookies,
+	additionalHeaders: Record<string, string> = {},
+) {
 	return createServerClient(
 		requiredPublicEnv('PUBLIC_SUPABASE_URL'),
 		requiredPublicEnv('PUBLIC_SUPABASE_PUBLISHABLE_KEY'),
 		{
+			global: {
+				headers: additionalHeaders,
+			},
 			cookies: {
 				getAll() {
 					return parseCookieHeader(request.headers.get('Cookie') ?? '');

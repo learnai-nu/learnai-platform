@@ -210,3 +210,42 @@
 @media (prefers-reduced-motion: reduce) {
 	.brief-submit { transition: none; }
 }
+.brief-confirm-page {
+	min-height: 70vh;
+	display: grid;
+	place-items: center;
+	padding: clamp(5rem, 10vw, 9rem) 1.25rem;
+	background: #f4f1eb;
+}
+
+.brief-confirm-card {
+	width: min(640px, 100%);
+	padding: clamp(2rem, 6vw, 4rem);
+	background: #172b46;
+	color: #fff;
+	border-top: 3px solid #b7792d;
+}
+
+.brief-confirm-card h1 {
+	margin: .7rem 0 1rem;
+	font-family: var(--font-serif);
+	font-size: clamp(2.25rem, 6vw, 4rem);
+	line-height: 1;
+}
+
+.brief-confirm-card p:not(.brief-kicker) {
+	max-width: 48ch;
+	color: #d9e1ea;
+	line-height: 1.65;
+}
+
+.brief-confirm-card form,
+.brief-confirm-card .button {
+	margin-top: 1.6rem;
+}
+
+.brief-inline-error {
+	padding: .75rem 1rem;
+	border-left: 3px solid #f0a75a;
+	background: rgb(255 255 255 / 8%);
+}
