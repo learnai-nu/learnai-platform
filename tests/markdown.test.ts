@@ -27,8 +27,25 @@ describe('sikker Markdown-rendering', () => {
 		].join('\n'));
 
 		expect(html).not.toContain('<script');
-		expect(html).not.toContain('<img');
+		expect(html).toContain('<img src="x" loading="lazy" decoding="async" />');
 		expect(html).not.toContain('href="javascript:');
+		expect(html).not.toContain('onerror');
+	});
+
+	it('bevarer redaktionelle billeder med billedtekst og sikre attributter', () => {
+		const html = renderMarkdown([
+			'<figure>',
+			'<img src="/images/guides/example.jpg" alt="En fagperson kontrollerer et udkast" width="1536" height="1024" onerror="alert(1)">',
+			'<figcaption>Kontrollér udkastet mod kilden.</figcaption>',
+			'</figure>',
+		].join('\n'));
+
+		expect(html).toContain('<figure>');
+		expect(html).toContain('src="/images/guides/example.jpg"');
+		expect(html).toContain('alt="En fagperson kontrollerer et udkast"');
+		expect(html).toContain('width="1536" height="1024"');
+		expect(html).toContain('loading="lazy" decoding="async"');
+		expect(html).toContain('<figcaption>Kontrollér udkastet mod kilden.</figcaption>');
 		expect(html).not.toContain('onerror');
 	});
 

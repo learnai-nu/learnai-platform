@@ -23,6 +23,9 @@ const allowedTags = [
 	'tr',
 	'th',
 	'td',
+	'figure',
+	'figcaption',
+	'img',
 	'hr',
 	'br',
 ];
@@ -65,6 +68,7 @@ export function renderMarkdown(markdown: string, { headingIds = false }: RenderM
 		allowedTags,
 		allowedAttributes: {
 			a: ['href', 'title', 'rel'],
+			img: ['src', 'alt', 'title', 'width', 'height', 'loading', 'decoding'],
 			h2: ['id'],
 			h3: ['id'],
 			h4: ['id'],
@@ -80,6 +84,14 @@ export function renderMarkdown(markdown: string, { headingIds = false }: RenderM
 				attribs: {
 					...attributes,
 					rel: 'noopener noreferrer',
+				},
+			}),
+			img: (_tagName, attributes) => ({
+				tagName: 'img',
+				attribs: {
+					...attributes,
+					loading: 'lazy',
+					decoding: 'async',
 				},
 			}),
 		},
