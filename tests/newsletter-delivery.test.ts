@@ -21,6 +21,8 @@ function validIssue() {
 		topStory: 'Ugens vigtigste historie',
 		issueUrl: 'https://learnai.nu/laer',
 		podcastUrl: 'https://learnai.nu/audio/news/2026/week-36/podcast.m4a',
+		podcastTitle: 'Uge 36: modellerne flytter ind i arbejdet',
+		podcastDuration: '8 min.',
 		categories: [{
 			title: 'Marketing',
 			summary: 'Tre bevægelser er værd at følge.',
@@ -62,7 +64,25 @@ describe('weekly brief delivery contract', () => {
 		const source = readFileSync('scripts/send-weekly-brief.mjs', 'utf8');
 		expect(source).toContain("mode !== '--send'");
 		expect(source).toContain("mode === '--dry-run'");
+		expect(source).toContain("mode === '--preview'");
 		expect(source).toContain('{{{RESEND_UNSUBSCRIBE_URL}}}');
 		expect(source).toContain('already_sent');
+	});
+
+	it('renders the supplied branded HTML as a safe dynamic preview', () => {
+		const directory = mkdtempSync(join(tmpdir(), 'learnai-newsletter-preview-'));
+		temporaryDirectories.push(directory);
+		const input = join(directory, 'issue.json');
+		const output = join(directory, 'issue.html');
+		writeFileSync(input, JSON.stringify(validIssue()));
+		const result = spawnSync(process.execPath, ['scripts/send-weekly-brief.mjs', input, '--preview', output], { encoding: 'utf8' });
+		expect(result.status).toBe(0);
+		const html = readFileSync(output, 'utf8');
+		expect(html).toContain('LearnAI<span style="color:#004fa6;">.nu</span>');
+		expect(html).toContain('Ugebrief &middot; Uge 36');
+		expect(html).toContain('01 &nbsp;Marketing');
+		expect(html).toContain('Uge 36: modellerne flytter ind i arbejdet');
+		expect(html).toContain('{{{RESEND_UNSUBSCRIBE_URL}}}');
+		expect(html).not.toContain('Postadresse indsættes');
 	});
 });
