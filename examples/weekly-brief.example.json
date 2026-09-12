@@ -1,0 +1,65 @@
+{
+  "year": 2026,
+  "week": 37,
+  "subject": "LearnAI – AI-nyheder uge 37, 2026",
+  "previewText": "Ugens vigtigste AI-historier, kilder og podcast.",
+  "period": "7.–13. september 2026",
+  "intro": "Her er ugens dokumenterede overblik – kort, konkret og uden unødvendig teknik.",
+  "topStory": "Tre ting fra AI-ugen, du kan bruge på mandag",
+  "issueUrl": "https://learnai.nu/laer?type=news",
+  "podcastUrl": "https://learnai.nu/ugebrief",
+  "podcastTitle": "Ugens AI-nyheder forklaret på otte minutter",
+  "podcastDuration": "8 min.",
+  "categories": [
+    {
+      "title": "Modelnyheder",
+      "summary": "Udbyderne flytter modellerne tættere på det daglige arbejde.",
+      "stories": [
+        {
+          "title": "Nye modeller fokuserer på længere arbejdsforløb",
+          "summary": "Den praktiske forskel ligger mindre i et enkelt svar og mere i, hvor længe modellen kan holde retning i en opgave.",
+          "url": "https://learnai.nu/laer?type=news"
+        },
+        {
+          "title": "Værktøjerne får flere indbyggede kontrolpunkter",
+          "summary": "Det bliver lettere at efterse kilder, mellemregninger og ændringer, før et resultat bruges videre.",
+          "url": "https://learnai.nu/laer?type=news"
+        }
+      ]
+    },
+    {
+      "title": "Business",
+      "summary": "Virksomhederne går fra forsøg til tydeligere arbejdsgange.",
+      "stories": [
+        {
+          "title": "AI-gevinster afhænger af processen omkring værktøjet",
+          "summary": "De bedste resultater opstår, når ansvar, kvalitetstjek og adgang til data er afklaret på forhånd.",
+          "url": "https://learnai.nu/laer?type=news"
+        }
+      ]
+    },
+    {
+      "title": "Education",
+      "summary": "Undervisere arbejder mere konkret med transparens og kildekritik.",
+      "stories": [
+        {
+          "title": "AI-brug bliver en del af selve opgavebeskrivelsen",
+          "summary": "Eleverne skal ikke blot aflevere et svar, men også kunne forklare deres metode, kilder og kontrol.",
+          "url": "https://learnai.nu/laer?type=news"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "Eksempel på primær kilde",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/news/"
+    },
+    {
+      "title": "Eksempel på primær kilde",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news"
+    }
+  ]
+}
