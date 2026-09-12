@@ -1,0 +1,130 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import '../styles/ugebrief.css';
+
+export const prerender = false;
+
+const status = Astro.url.searchParams.get('status');
+const statusMessages: Record<string, { title: string; text: string; error?: boolean }> = {
+	success: {
+		title: 'Du er skrevet på.',
+		text: 'Næste ugebrief lander i din indbakke med både links og podcast.',
+	},
+	invalid: {
+		title: 'Tjek oplysningerne.',
+		text: 'Skriv en gyldig e-mail, og acceptér samtykket.',
+		error: true,
+	},
+	'save-error': {
+		title: 'Tilmeldingen blev ikke gemt.',
+		text: 'Prøv igen om et øjeblik.',
+		error: true,
+	},
+};
+const statusMessage = statusMessages[status ?? ''];
+---
+
+<SiteLayout
+	title="LearnAI Ugebrief — AI-nyheder og podcast"
+	description="Få ugens vigtigste AI-nyheder på dansk med kildehenvisninger og en kort podcastversion. Én mail om ugen."
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Ugebrief og podcast', url: Astro.url.pathname },
+	]}
+>
+	<section class="brief-hero">
+		<div class="shell brief-hero-grid">
+			<div class="brief-intro">
+				<p class="brief-kicker">Ugebrief · hver mandag</p>
+				<h1>AI-ugen, skåret ned til det, du faktisk skal vide.</h1>
+				<p class="brief-lead">En kort, dansk opsummering med tydelige kilder — og en podcastversion til turen på arbejde.</p>
+				<ul class="brief-proof" aria-label="Det får du">
+					<li><strong>5 kategorier</strong><span>fra modeller til marketing</span></li>
+					<li><strong>3–5 historier</strong><span>i hver relevant kategori</span></li>
+					<li><strong>6–9 minutter</strong><span>som podcast</span></li>
+				</ul>
+			</div>
+
+			<aside class="brief-signup" id="tilmelding" aria-labelledby="signup-title">
+				<div class="brief-dispatch"><span>Mandag</span><strong>06:00</strong></div>
+				<p class="brief-signup-label">Ugebrief og podcast</p>
+				<h2 id="signup-title">Få overblikket — og lyt på vej til arbejde</h2>
+				<p>Én ugentlig mail. Ingen daglige notifikationer.</p>
+
+				{statusMessage && (
+					<div class:list={['brief-notice', { 'is-error': statusMessage.error }]} role={statusMessage.error ? 'alert' : 'status'}>
+						<strong>{statusMessage.title}</strong>
+						<span>{statusMessage.text}</span>
+					</div>
+				)}
+
+				<form class="brief-form" method="post" action="/api/ugebrief">
+					<label>
+						<span>Fornavn <small>valgfrit</small></span>
+						<input name="firstName" autocomplete="given-name" maxlength="80" />
+					</label>
+					<label>
+						<span>E-mail</span>
+						<input type="email" name="email" autocomplete="email" inputmode="email" maxlength="254" required />
+					</label>
+					<label class="brief-consent">
+						<input type="checkbox" name="consent" value="yes" required />
+						<span>Jeg accepterer at modtage LearnAI Ugebrief og podcast. Jeg kan altid afmelde mig. Se <a href="/privatliv">privatlivspolitikken</a>.</span>
+					</label>
+					<div class="honeypot" aria-hidden="true">
+						<label for="brief-website">Website</label>
+						<input id="brief-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+					</div>
+					<button class="brief-submit" type="submit">Send mig næste ugebrief <span aria-hidden="true">→</span></button>
+				</form>
+			</aside>
+		</div>
+	</section>
+
+	<section class="brief-edition" aria-labelledby="edition-title">
+		<div class="shell brief-edition-grid">
+			<div class="brief-edition-heading">
+				<p class="brief-kicker">Sådan ser en udgave ud</p>
+				<h2 id="edition-title">Én uge.<br />To formater.</h2>
+				<p>Læs overblikket på fem minutter, eller tryk play og tag det med dig.</p>
+			</div>
+			<div class="brief-paper" aria-label="Eksempel på ugebrief">
+				<div class="brief-paper-head"><span>LearnAI / Uge 36</span><span>7. september 2026</span></div>
+				<h3>Fire nye modeller gør opgaveøkonomi vigtigere end benchmarksejre</h3>
+				<div class="brief-paper-columns">
+					<div><span>Modelnyheder</span><p>Hvad ændrer sig — og hvilke leverandørpåstande skal testes?</p></div>
+					<div><span>Marketing</span><p>Sådan flytter agentisk handel ansvar tilbage til egne data.</p></div>
+					<div><span>Business</span><p>Fra modeldistribution til datacentre og nye kompetencer.</p></div>
+				</div>
+				<div class="brief-audio-row">
+					<span class="brief-play" aria-hidden="true">▶</span>
+					<div><strong>Ugens podcast</strong><span>07:24 · dansk</span></div>
+					<div class="brief-wave" aria-hidden="true">{Array.from({ length: 24 }).map((_, index) => <i style={`--i:${index}`}></i>)}</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="brief-method" aria-labelledby="method-title">
+		<div class="shell brief-method-grid">
+			<div>
+				<p class="brief-kicker">Kilder før konklusioner</p>
+				<h2 id="method-title">Du kan se, hvad der er dokumenteret — og hvad der er analyse.</h2>
+			</div>
+			<ul>
+				<li><span>Primær kilde</span><p>Produktnyheder og tal spores tilbage til udbyderen.</p></li>
+				<li><span>Uafhængig kilde</span><p>Væsentlige påstande sammenholdes med research og rapportering.</p></li>
+				<li><span>Redaktionel vurdering</span><p>Fortolkning og anbefalinger markeres tydeligt.</p></li>
+			</ul>
+		</div>
+	</section>
+
+	<section class="brief-final">
+		<div class="shell brief-final-inner">
+			<p class="brief-kicker">Næste udgave</p>
+			<h2>Klar mandag morgen.</h2>
+			<p>Tilmeld dig ovenfor, så sender vi både overblikket og lydfilen direkte til din indbakke.</p>
+			<a class="button" href="#tilmelding">Skriv mig på</a>
+		</div>
+	</section>
+</SiteLayout>

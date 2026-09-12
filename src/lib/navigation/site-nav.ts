@@ -29,6 +29,7 @@ export const menuGroups: NavGroup[] = [
 		items: [
 			{ label: 'Artikler & guides', description: 'Trin-for-trin og forklaringer', href: '/laer', section: '/laer', type: 'knowledge' },
 			{ label: 'Nyheder & indsigt', description: 'Det vigtigste fra AI-verdenen', href: '/laer?type=news', section: '/laer', type: 'news' },
+			{ label: 'Ugebrief & podcast', description: 'Ugens overblik direkte i indbakken', href: '/ugebrief', section: '/ugebrief' },
 			{ label: 'Research', description: 'Undersøgelser og dokumentation' },
 			{ label: 'Events', description: 'Konferencer og meetups', href: '/events', section: '/events' },
 			{ label: 'Ressourcer', description: 'Podcasts, bøger og kanaler', href: '/resources', section: '/resources' },
