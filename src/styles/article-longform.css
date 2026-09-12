@@ -309,6 +309,29 @@
 .blue-orbit .article-body p,
 .blue-orbit .article-body li { color: var(--color-greige-800); }
 
+.blue-orbit .article-body figure {
+	margin: clamp(2.4rem, 5vw, 3.5rem) 0;
+	overflow: hidden;
+	border-radius: var(--orbit-shape-lg);
+	background: var(--color-navy);
+	box-shadow: var(--orbit-shadow-2);
+}
+.blue-orbit .article-body figure img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+}
+.blue-orbit .article-body figure figcaption {
+	margin: 0;
+	padding: .75rem 1rem;
+	color: var(--color-greige-200);
+	background: var(--color-navy);
+	font-size: .78rem;
+	line-height: 1.45;
+}
+
 .blue-orbit .article-summary {
 	margin: 0 0 clamp(3rem, 6vw, 4.5rem);
 	padding: clamp(1.5rem, 4vw, 2.25rem);
