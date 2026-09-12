@@ -65,6 +65,9 @@ export interface ArticleCitation {
 	publisher?: string | null;
 	author?: string | null;
 	year?: string | null;
+	sourceType?: 'primary' | 'independent' | 'newsletter' | null;
+	publishedDate?: string | null;
+	note?: string | null;
 }
 
 export interface FaqEntry {

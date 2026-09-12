@@ -81,6 +81,15 @@ const sourceSchema = z.object({
 	publisher: z.string().trim().max(200).optional(),
 	author: z.string().trim().max(200).optional(),
 	year: z.string().trim().max(20).optional(),
+	sourceType: z.enum(['primary', 'independent', 'newsletter']).optional(),
+	publishedDate: z.string().trim().max(40).optional(),
+	note: z.string().trim().max(500).optional(),
+});
+
+const sectionLabelSchema = z.object({
+	headingId: z.string().trim().regex(/^[a-z0-9-]+$/).max(100),
+	kind: z.enum(['documented', 'analysis', 'practice']),
+	label: z.string().trim().min(2).max(100),
 });
 
 const articleExtrasSchema = z.object({
@@ -89,11 +98,36 @@ const articleExtrasSchema = z.object({
 	keywords: z.array(z.string().trim().min(2).max(80)).max(15).optional(),
 	image: z.string().trim().max(500).optional(),
 	imageAlt: z.string().trim().max(300).optional(),
+	imageCaption: z.string().trim().max(500).optional(),
+	summary: z.array(z.string().trim().min(3).max(500)).min(2).max(5).optional(),
+	sectionLabels: z.array(sectionLabelSchema).max(20).optional(),
 	/** Entities from the knowledge graph, surfaced as schema.org `about`. */
 	about: z.array(z.string().trim().min(2).max(120)).max(10).optional(),
 });
 
 export type ArticleExtras = z.infer<typeof articleExtrasSchema>;
+
+function escapeHtml(value: string) {
+	return value
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;')
+		.replaceAll("'", '&#039;');
+}
+
+/** Add editorial provenance labels only when validated metadata names a real H2. */
+export function decorateArticleHeadings(
+	html: string,
+	labels: NonNullable<ArticleExtras['sectionLabels']> = [],
+) {
+	return labels.reduce((output, entry) => {
+		const marker = `<h2 id="${entry.headingId}">`;
+		if (!output.includes(marker)) return output;
+		const label = `<p class="article-trust-label is-${entry.kind}">${escapeHtml(entry.label)}</p>`;
+		return output.replace(marker, `${label}${marker}`);
+	}, html);
+}
 
 /**
  * `source_metadata` is editor-supplied JSON, so anything malformed is dropped

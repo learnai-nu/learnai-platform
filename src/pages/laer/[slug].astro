@@ -1,7 +1,9 @@
 ---
 import '../../styles/article-longform.css';
 import ArticleBreadcrumbs from '../../components/article/ArticleBreadcrumbs.astro';
+import ArticleBriefCta from '../../components/article/ArticleBriefCta.astro';
 import ArticleFaq from '../../components/article/ArticleFaq.astro';
+import ArticleSummary from '../../components/article/ArticleSummary.astro';
 import ArticleSources from '../../components/article/ArticleSources.astro';
 import ArticleToc from '../../components/article/ArticleToc.astro';
 import AuthorBio from '../../components/article/AuthorBio.astro';
@@ -12,6 +14,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import {
 	countBlockWords,
 	countWords,
+	decorateArticleHeadings,
 	estimateReadingMinutes,
 	extractBlockHeadings,
 	extractHeadings,
@@ -57,7 +60,10 @@ const markdown = item.body && typeof item.body === 'object' && 'markdown' in ite
 	&& typeof (item.body as { markdown?: unknown }).markdown === 'string'
 	? (item.body as { markdown: string }).markdown
 	: '';
-const bodyHtml = markdown ? renderMarkdown(markdown, { headingIds: true }) : '';
+const renderedBodyHtml = markdown ? renderMarkdown(markdown, { headingIds: true }) : '';
+const bodyHtml = renderedBodyHtml
+	? decorateArticleHeadings(renderedBodyHtml, extras.sectionLabels ?? [])
+	: '';
 const headings = bodyHtml ? extractHeadings(bodyHtml) : extractBlockHeadings(item.body);
 const wordCount = bodyHtml ? countWords(bodyHtml) : countBlockWords(item.body);
 const readingMinutes = estimateReadingMinutes(wordCount);
@@ -147,11 +153,18 @@ const publishedLabel = item.published_at
 				</div>
 			</div>
 		</header>
+		{extras.image && (
+			<figure class="article-hero">
+				<img src={extras.image} alt={extras.imageAlt ?? ''} width="1536" height="1024" loading="eager" fetchpriority="high" />
+				{extras.imageCaption && <figcaption>{extras.imageCaption}</figcaption>}
+			</figure>
+		)}
 		<div class:list={['article-content', { 'has-reading-rail': headings.some((heading) => heading.level === 2) }]}>
 			{promptDefinition ? (
 				<PromptBuilder client:load definition={promptDefinition} title={item.title} />
 			) : (
 				<>
+					<ArticleSummary items={extras.summary ?? []} />
 					{bodyHtml
 						? <div class="article-body" set:html={bodyHtml} />
 						: <ContentBody body={item.body} />}
@@ -159,6 +172,7 @@ const publishedLabel = item.published_at
 					<ArticleSources sources={extras.sources ?? []} />
 					<AuthorBio />
 					<RelatedContent items={related} />
+					<ArticleBriefCta />
 				</>
 			)}
 		</div>

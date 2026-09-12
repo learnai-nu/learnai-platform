@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	countWords,
 	countBlockWords,
+	decorateArticleHeadings,
 	estimateReadingMinutes,
 	extractBlockHeadings,
 	extractHeadings,
@@ -67,12 +68,25 @@ describe('redaktionelle tilføjelser', () => {
 	it('accepts FAQ, sources and keywords from the editor metadata', () => {
 		const extras = parseArticleExtras({
 			faq: [{ question: 'Hvad er AI?', answer: 'Et værktøj.' }],
-			sources: [{ name: 'AI Index', url: 'https://aiindex.stanford.edu', year: '2026' }],
+			sources: [{ name: 'AI Index', url: 'https://aiindex.stanford.edu', year: '2026', sourceType: 'independent', note: 'Uafhængig rapport.' }],
 			keywords: ['ai', 'prompt'],
+			summary: ['Første pointe', 'Anden pointe'],
+			sectionLabels: [{ headingId: 'kom-i-gang', kind: 'practice', label: 'Praktisk konsekvens' }],
 		});
 		expect(extras.faq).toHaveLength(1);
 		expect(extras.sources?.[0].url).toBe('https://aiindex.stanford.edu');
+		expect(extras.sources?.[0].sourceType).toBe('independent');
 		expect(extras.keywords).toEqual(['ai', 'prompt']);
+		expect(extras.summary).toHaveLength(2);
+	});
+
+	it('adds provenance labels only to headings named by validated metadata', () => {
+		const html = '<h2 id="kom-i-gang">Kom i gang</h2><h2 id="andet">Andet</h2>';
+		const decorated = decorateArticleHeadings(html, [
+			{ headingId: 'kom-i-gang', kind: 'practice', label: 'Praktisk konsekvens' },
+		]);
+		expect(decorated).toContain('class="article-trust-label is-practice"');
+		expect(decorated).toContain('<h2 id="andet">Andet</h2>');
 	});
 
 	it('drops malformed metadata rather than breaking the page', () => {
@@ -153,9 +167,10 @@ describe('artikel-schema', () => {
 
 describe('artikelsiden', () => {
 	it('shows the trust and navigation furniture around the body', () => {
-		for (const marker of ['<ArticleBreadcrumbs', '<ArticleToc', '<ArticleSources', '<AuthorBio />', '<RelatedContent']) {
+		for (const marker of ['<ArticleBreadcrumbs', '<ArticleToc', '<ArticleSummary', '<ArticleSources', '<AuthorBio />', '<RelatedContent', '<ArticleBriefCta']) {
 			expect(articlePage).toContain(marker);
 		}
+		expect(articlePage).toContain('class="article-hero"');
 		expect(articlePage).toContain('ogType={isArticleType');
 	});
 

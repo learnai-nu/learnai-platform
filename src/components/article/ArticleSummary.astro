@@ -1,0 +1,16 @@
+---
+interface Props {
+	items: string[];
+}
+const { items } = Astro.props;
+---
+
+{items.length > 0 && (
+	<aside class="article-summary" aria-labelledby="kort-fortalt">
+		<p class="article-summary-label">Kort fortalt</p>
+		<h2 id="kort-fortalt">Det vigtigste på ét minut</h2>
+		<ul>
+			{items.map((item) => <li>{item}</li>)}
+		</ul>
+	</aside>
+)}

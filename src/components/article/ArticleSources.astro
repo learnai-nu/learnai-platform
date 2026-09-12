@@ -6,22 +6,32 @@ interface Props {
 	sources: ArticleCitation[];
 }
 const { sources } = Astro.props;
+const sourceTypeLabels = {
+	primary: 'Primær kilde',
+	independent: 'Uafhængig kilde',
+	newsletter: 'Nyhedsbrev',
+} as const;
 ---
 
 {sources.length > 0 && (
 	<section class="article-sources" aria-labelledby="kilder">
-		<h2 id="kilder">Kilder</h2>
-		<p>Artiklen bygger på følgende kilder:</p>
-		<ol>
+		<h2 id="kilder">Kilder og dokumentation</h2>
+		<p>Links står også tæt ved de påstande, de dokumenterer. Her er det samlede kildegrundlag og vores forbehold.</p>
+		<ol class="article-source-list">
 			{sources.map((source) => (
 				<li>
-					{source.author && <span class="source-author">{source.author}: </span>}
-					<cite>{source.name}</cite>
-					{source.publisher && <span class="source-pub">, {source.publisher}</span>}
-					{source.year && <span class="source-year">, {source.year}</span>}
-					{source.url && (
-						<> — <a href={source.url} target="_blank" rel="noopener noreferrer">Åbn kilde</a></>
-					)}
+					<div class="source-kind">{source.sourceType ? sourceTypeLabels[source.sourceType] : 'Kilde'}</div>
+					<div class="source-detail">
+						{source.author && <span class="source-author">{source.author}: </span>}
+						<cite>{source.name}</cite>
+						{source.publisher && <span class="source-pub"> · {source.publisher}</span>}
+						{source.publishedDate && <span class="source-year"> · {source.publishedDate}</span>}
+						{!source.publishedDate && source.year && <span class="source-year"> · {source.year}</span>}
+						{source.url && (
+							<> · <a href={source.url} target="_blank" rel="noopener noreferrer">Åbn kilde ↗</a></>
+						)}
+						{source.note && <p>{source.note}</p>}
+					</div>
 				</li>
 			))}
 		</ol>
