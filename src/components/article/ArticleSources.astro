@@ -4,23 +4,22 @@ import type { ArticleCitation } from '../../lib/seo/schema';
 /** Visible source list; the same entries become `citation` in the JSON-LD. */
 interface Props {
 	sources: ArticleCitation[];
+	locale?: 'da' | 'en';
 }
-const { sources } = Astro.props;
-const sourceTypeLabels = {
-	primary: 'Primær kilde',
-	independent: 'Uafhængig kilde',
-	newsletter: 'Nyhedsbrev',
-} as const;
+const { sources, locale = 'da' } = Astro.props;
+const sourceTypeLabels = locale === 'en'
+	? { primary: 'Primary source', independent: 'Independent source', newsletter: 'Newsletter' }
+	: { primary: 'Primær kilde', independent: 'Uafhængig kilde', newsletter: 'Nyhedsbrev' };
 ---
 
 {sources.length > 0 && (
 	<section class="article-sources" aria-labelledby="kilder">
-		<h2 id="kilder">Kilder og dokumentation</h2>
-		<p>Links står også tæt ved de påstande, de dokumenterer. Her er det samlede kildegrundlag og vores forbehold.</p>
+		<h2 id="kilder">{locale === 'en' ? 'Sources and documentation' : 'Kilder og dokumentation'}</h2>
+		<p>{locale === 'en' ? 'Links also appear next to the claims they support. This is the complete source list and its caveats.' : 'Links står også tæt ved de påstande, de dokumenterer. Her er det samlede kildegrundlag og vores forbehold.'}</p>
 		<ol class="article-source-list">
 			{sources.map((source) => (
 				<li>
-					<div class="source-kind">{source.sourceType ? sourceTypeLabels[source.sourceType] : 'Kilde'}</div>
+						<div class="source-kind">{source.sourceType ? sourceTypeLabels[source.sourceType] : locale === 'en' ? 'Source' : 'Kilde'}</div>
 					<div class="source-detail">
 						{source.author && <span class="source-author">{source.author}: </span>}
 						<cite>{source.name}</cite>
@@ -28,7 +27,7 @@ const sourceTypeLabels = {
 						{source.publishedDate && <span class="source-year"> · {source.publishedDate}</span>}
 						{!source.publishedDate && source.year && <span class="source-year"> · {source.year}</span>}
 						{source.url && (
-							<> · <a href={source.url} target="_blank" rel="noopener noreferrer">Åbn kilde ↗</a></>
+							<> · <a href={source.url} target="_blank" rel="noopener noreferrer">{locale === 'en' ? 'Open source ↗' : 'Åbn kilde ↗'}</a></>
 						)}
 						{source.note && <p>{source.note}</p>}
 					</div>

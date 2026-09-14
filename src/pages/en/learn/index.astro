@@ -1,0 +1,35 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { createCanonicalUrl, createItemListSchema } from '../../../lib/seo/schema';
+import { createServerSupabaseClient } from '../../../lib/supabase/server';
+import '../../../styles/knowledge-index.css';
+
+export const prerender = false;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+const { data: items, error } = await supabase
+	.from('content_items')
+	.select('id,title,slug,type,excerpt,published_at,updated_at')
+	.eq('status', 'published')
+	.eq('locale', 'en')
+	.in('type', ['article', 'guide', 'news'])
+	.order('published_at', { ascending: false });
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(canonicalUrl, (items ?? []).map((item) => ({ name: item.title, url: `/en/learn/${item.slug}` })));
+---
+
+<SiteLayout
+	title="Learn AI — LearnAI.nu"
+	description="Practical AI news, analysis and guidance in English."
+	locale="en"
+	alternates={[{ locale: 'da', path: '/laer' }, { locale: 'en', path: '/en/learn' }]}
+	pageType="CollectionPage"
+	breadcrumbs={[{ name: 'Home', url: '/en' }, { name: 'Learn AI', url: '/en/learn' }]}
+	mainEntity={itemList}
+>
+	<section class="hero hero-compact"><div class="shell section-intro"><p class="eyebrow">Knowledge portal</p><h1>Learn AI in practice.</h1><p class="hero-copy">Selected AI news and analysis with a focus on practical consequences.</p></div></section>
+	<section class="section section-tight"><div class="shell">
+		{error ? <p class="notice notice-error" role="alert">Content is currently unavailable.</p> : items?.length ? (
+			<div class="article-grid">{items.map((item) => <article class="article-card"><div class="course-meta"><span>{item.type === 'news' ? 'News' : item.type === 'guide' ? 'Guide' : 'Article'}</span><span>{new Date(item.published_at ?? item.updated_at).toLocaleDateString('en-GB')}</span></div><h2>{item.title}</h2><p>{item.excerpt ?? 'Practical AI learning.'}</p><a class="text-link" href={`/en/learn/${item.slug}`}>Read more →</a></article>)}</div>
+		) : <div class="empty-state"><h2>No English articles yet</h2><p>Please check back soon.</p></div>}
+	</div></section>
+</SiteLayout>

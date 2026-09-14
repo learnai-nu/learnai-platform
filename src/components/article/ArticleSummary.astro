@@ -1,14 +1,15 @@
 ---
 interface Props {
 	items: string[];
+	locale?: 'da' | 'en';
 }
-const { items } = Astro.props;
+const { items, locale = 'da' } = Astro.props;
 ---
 
 {items.length > 0 && (
 	<aside class="article-summary" aria-labelledby="kort-fortalt">
-		<p class="article-summary-label">Kort fortalt</p>
-		<h2 id="kort-fortalt">Det vigtigste på ét minut</h2>
+		<p class="article-summary-label">{locale === 'en' ? 'In brief' : 'Kort fortalt'}</p>
+		<h2 id="kort-fortalt">{locale === 'en' ? 'The essentials in one minute' : 'Det vigtigste på ét minut'}</h2>
 		<ul>
 			{items.map((item) => <li>{item}</li>)}
 		</ul>

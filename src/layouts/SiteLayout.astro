@@ -131,7 +131,7 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		})} />
 	</head>
 	<body class="blue-orbit">
-		<a class="orbit-skip-link" href="#main-content">Gå til indhold</a>
+		<a class="orbit-skip-link" href="#main-content">{locale === 'en' ? 'Skip to content' : 'Gå til indhold'}</a>
 		<BlueOrbitHeader {locale} {alternates} />
 		<main id="main-content">
 			<slot />

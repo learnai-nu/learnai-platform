@@ -7,13 +7,14 @@ import type { FaqEntry } from '../../lib/seo/schema';
  */
 interface Props {
 	entries: FaqEntry[];
+	locale?: 'da' | 'en';
 }
-const { entries } = Astro.props;
+const { entries, locale = 'da' } = Astro.props;
 ---
 
 {entries.length > 0 && (
 	<section class="article-faq" aria-labelledby="ofte-stillede-spoergsmaal">
-		<h2 id="ofte-stillede-spoergsmaal">Ofte stillede spørgsmål</h2>
+		<h2 id="ofte-stillede-spoergsmaal">{locale === 'en' ? 'Frequently asked questions' : 'Ofte stillede spørgsmål'}</h2>
 		<div class="article-faq-list">
 			{entries.map((entry, index) => (
 				<details>

@@ -13,7 +13,8 @@ const supportedTypes = ['article', 'guide', 'news', 'prompt', 'tool'];
 let contentQuery = supabase
 	.from('content_items')
 	.select('id,title,slug,type,excerpt,published_at,updated_at')
-	.eq('status', 'published');
+	.eq('status', 'published')
+	.eq('locale', 'da');
 
 if (!selectedType) contentQuery = contentQuery.in('type', ['article', 'guide', 'news']);
 else if (selectedType === 'knowledge') contentQuery = contentQuery.in('type', ['article', 'guide']);

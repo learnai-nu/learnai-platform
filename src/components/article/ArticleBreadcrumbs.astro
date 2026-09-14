@@ -2,11 +2,12 @@
 /** Visible breadcrumb trail — the schema counterpart lives in SiteLayout. */
 interface Props {
 	items: { name: string; url?: string }[];
+	locale?: 'da' | 'en';
 }
-const { items } = Astro.props;
+const { items, locale = 'da' } = Astro.props;
 ---
 
-<nav class="article-breadcrumb" aria-label="Brødkrumme">
+<nav class="article-breadcrumb" aria-label={locale === 'en' ? 'Breadcrumb' : 'Brødkrumme'}>
 	{items.map((item, index) => (
 		<>
 			{index > 0 && <span class="sep" aria-hidden="true">/</span>}

@@ -34,6 +34,7 @@ const { data: item, error } = await supabase
 	.from('content_items')
 	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at,source_metadata')
 	.eq('slug', Astro.params.slug)
+	.eq('locale', 'da')
 	.eq('status', 'published')
 	.maybeSingle();
 
@@ -74,6 +75,7 @@ const { data: candidates } = await supabase
 	.from('content_items')
 	.select('title,slug,type,excerpt,published_at,updated_at')
 	.eq('status', 'published')
+	.eq('locale', 'da')
 	.in('type', ['article', 'guide', 'news'])
 	.order('published_at', { ascending: false })
 	.limit(40);
