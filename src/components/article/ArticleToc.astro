@@ -4,14 +4,15 @@ import type { ArticleHeading } from '../../lib/content/article';
 interface Props {
 	headings: ArticleHeading[];
 	readingMinutes: number;
+	locale?: 'da' | 'en';
 }
-const { headings, readingMinutes } = Astro.props;
+const { headings, readingMinutes, locale = 'da' } = Astro.props;
 ---
 
 {headings.length > 0 && (
 	<>
-		<aside class="article-toc article-toc-desktop" aria-label="Artiklens indhold">
-			<p class="article-toc-label">Indhold</p>
+		<aside class="article-toc article-toc-desktop" aria-label={locale === 'en' ? 'Article contents' : 'Artiklens indhold'}>
+			<p class="article-toc-label">{locale === 'en' ? 'Contents' : 'Indhold'}</p>
 			<nav>
 				<ol>
 					{headings.map((heading) => (
@@ -21,12 +22,12 @@ const { headings, readingMinutes } = Astro.props;
 					))}
 				</ol>
 			</nav>
-			<p class="article-time-left" data-reading-time-left>{readingMinutes} min. tilbage</p>
+			<p class="article-time-left" data-reading-time-left>{readingMinutes} {locale === 'en' ? 'min. left' : 'min. tilbage'}</p>
 		</aside>
 
 		<details class="article-toc article-toc-mobile">
-			<summary>Se artiklens indhold</summary>
-			<nav aria-label="Artiklens indhold på mobil">
+			<summary>{locale === 'en' ? 'View article contents' : 'Se artiklens indhold'}</summary>
+			<nav aria-label={locale === 'en' ? 'Article contents on mobile' : 'Artiklens indhold på mobil'}>
 				<ol>
 					{headings.map((heading) => (
 						<li class:list={{ 'is-subsection': heading.level === 3 }} data-toc-item={heading.id}>

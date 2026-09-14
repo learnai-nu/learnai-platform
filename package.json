@@ -16,6 +16,7 @@
     "test": "vitest run",
     "catalog:prepare": "node scripts/prepare-catalog.mjs",
     "content:prepare": "node scripts/prepare-content-import.mjs",
+    "news:prepare": "node scripts/prepare-weekly-news-import.mjs",
 		"editorial:prepare": "node scripts/prepare-editorial-wave.mjs",
 		"newsletter:send": "node scripts/send-weekly-brief.mjs"
   },

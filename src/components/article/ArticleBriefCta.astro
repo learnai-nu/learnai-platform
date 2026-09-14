@@ -1,8 +1,13 @@
+---
+interface Props { locale?: 'da' | 'en' }
+const { locale = 'da' } = Astro.props;
+---
+
 <aside class="article-brief-cta" aria-labelledby="ugebrief-cta">
 	<div>
-		<p class="article-brief-label">Ugebrief og podcast</p>
-		<h2 id="ugebrief-cta">Få overblikket — og lyt på vej til arbejde</h2>
-		<p>Én ugentlig mail med opsummering, kildelinks og podcastversion.</p>
+		<p class="article-brief-label">{locale === 'en' ? 'Weekly brief and podcast' : 'Ugebrief og podcast'}</p>
+		<h2 id="ugebrief-cta">{locale === 'en' ? 'Get the overview — and listen on the way to work' : 'Få overblikket — og lyt på vej til arbejde'}</h2>
+		<p>{locale === 'en' ? 'One weekly email with a summary, source links and a podcast edition.' : 'Én ugentlig mail med opsummering, kildelinks og podcastversion.'}</p>
 	</div>
-	<a class="button" href="/ugebrief#tilmelding">Skriv mig på</a>
+	<a class="button" href="/ugebrief#tilmelding">{locale === 'en' ? 'Subscribe' : 'Skriv mig på'}</a>
 </aside>
