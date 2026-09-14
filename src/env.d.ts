@@ -11,6 +11,7 @@ interface ImportMetaEnv {
 	readonly RESEND_EMAIL_DOMAIN?: string;
 	readonly LEAD_NOTIFICATION_FROM?: string;
 	readonly LEAD_NOTIFICATION_TO?: string;
+	readonly ELEVENLABS_API_KEY?: string;
 }
 
 interface ImportMeta {
