@@ -57,6 +57,11 @@ interface ArticleSchemaOptions {
 	/** Entities the article is about, from the internal knowledge graph. */
 	about?: string[];
 	mentions?: string[];
+	audio?: {
+		url: string;
+		title?: string | null;
+		durationSeconds: number;
+	};
 }
 
 export interface ArticleCitation {
@@ -270,6 +275,7 @@ export function createArticleSchema({
 	citations = [],
 	about = [],
 	mentions = [],
+	audio,
 }: ArticleSchemaOptions): SchemaNode {
 	const homeUrl = absoluteUrl('/', canonicalUrl);
 	const organizationId = `${homeUrl}#organization`;
@@ -304,6 +310,17 @@ export function createArticleSchema({
 		...(citations.length ? { citation: citations.map(createCitationNode) } : {}),
 		...(about.length ? { about: about.map((name) => ({ '@type': 'Thing', name })) } : {}),
 		...(mentions.length ? { mentions: mentions.map((name) => ({ '@type': 'Thing', name })) } : {}),
+		...(audio
+			? {
+				audio: {
+					'@type': 'AudioObject',
+					name: audio.title ?? headline,
+					contentUrl: absoluteUrl(audio.url, canonicalUrl),
+					encodingFormat: 'audio/mpeg',
+					duration: `PT${Math.floor(audio.durationSeconds / 60)}M${audio.durationSeconds % 60}S`,
+				},
+			}
+			: {}),
 		// The author is the person; the publisher stays the organisation.
 		author: { '@type': 'Person', '@id': `${homeUrl}#person`, name: siteAuthor.name },
 		publisher: { '@type': 'Organization', '@id': organizationId },
