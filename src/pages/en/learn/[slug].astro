@@ -1,6 +1,7 @@
 ---
 import '../../../styles/article-longform.css';
 import ArticleBreadcrumbs from '../../../components/article/ArticleBreadcrumbs.astro';
+import ArticleAudioPlayer from '../../../components/article/ArticleAudioPlayer.astro';
 import ArticleBriefCta from '../../../components/article/ArticleBriefCta.astro';
 import ArticleFaq from '../../../components/article/ArticleFaq.astro';
 import ArticleSummary from '../../../components/article/ArticleSummary.astro';
@@ -34,7 +35,7 @@ const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.si
 const { data: candidates } = await supabase.from('content_items').select('title,slug,type,excerpt,published_at,updated_at')
 	.eq('status', 'published').eq('locale', 'en').in('type', ['article', 'guide', 'news']).order('published_at', { ascending: false }).limit(40);
 const related = selectRelatedContent({ slug: item.slug, title: item.title, type: item.type, keywords: extras.keywords ?? [] }, candidates ?? []);
-const articleSchema: SchemaNode = createArticleSchema({ canonicalUrl, type: item.type === 'news' ? 'NewsArticle' : 'Article', headline: item.title, description: pageDescription, datePublished: item.published_at, dateModified: item.updated_at, articleSection: item.type === 'news' ? 'News' : 'Article', keywords: extras.keywords ?? [], image: extras.image ?? null, imageAlt: extras.imageAlt ?? null, wordCount: countWords(bodyHtml), readingMinutes, citations: extras.sources ?? [], about: extras.about ?? [] });
+const articleSchema: SchemaNode = createArticleSchema({ canonicalUrl, type: item.type === 'news' ? 'NewsArticle' : 'Article', headline: item.title, description: pageDescription, datePublished: item.published_at, dateModified: item.updated_at, articleSection: item.type === 'news' ? 'News' : 'Article', keywords: extras.keywords ?? [], image: extras.image ?? null, imageAlt: extras.imageAlt ?? null, wordCount: countWords(bodyHtml), readingMinutes, citations: extras.sources ?? [], about: extras.about ?? [], audio: extras.audio ?? undefined });
 const faqEntries = extras.faq ?? [];
 const additionalSchema = faqEntries.length ? [createFaqSchema(canonicalUrl, faqEntries)] : [];
 const pairPath = `/laer/${item.slug.replace(/^week-/, 'uge-')}`;
@@ -44,8 +45,9 @@ const pairPath = `/laer/${item.slug.replace(/^week-/, 'uge-')}`;
 	<article class="article-page" data-article-reader data-reading-minutes={readingMinutes}><div class:list={['shell', 'article-reading-layout', { 'has-toc': headings.length > 0 }]}>
 		{headings.length > 0 && <ArticleToc headings={headings} readingMinutes={readingMinutes} locale="en" />}
 		<header class="article-header"><ArticleBreadcrumbs locale="en" items={[{ name: 'Home', url: '/en' }, { name: 'Learn AI', url: '/en/learn' }, { name: item.title }]} /><p class="eyebrow">News</p><h1>{item.title}</h1>{item.excerpt && <p class="hero-copy">{item.excerpt}</p>}<div class="article-meta"><span class="article-meta-avatar" aria-hidden="true">{siteAuthor.initials}</span><div><span class="article-meta-author">{siteAuthor.name}</span><span class="article-meta-details">{item.published_at && <time datetime={item.published_at}>{new Date(item.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time>} · {readingMinutes} min. read · Updated <time datetime={item.updated_at}>{new Date(item.updated_at).toLocaleDateString('en-GB')}</time></span></div></div></header>
+		{extras.audio && <ArticleAudioPlayer src={extras.audio.url} title={extras.audio.title} durationSeconds={extras.audio.durationSeconds} voiceName={extras.audio.voiceName} locale="en" />}
 		{extras.image && <figure class="article-hero"><img src={extras.image} alt={extras.imageAlt ?? ''} width="1536" height="1024" loading="eager" fetchpriority="high" />{extras.imageCaption && <figcaption>{extras.imageCaption}</figcaption>}</figure>}
 		<div class:list={['article-content', { 'has-reading-rail': headings.some((heading) => heading.level === 2) }]}><ArticleSummary items={extras.summary ?? []} locale="en" /><div class="article-body" set:html={bodyHtml} /><ArticleFaq entries={faqEntries} locale="en" /><ArticleSources sources={extras.sources ?? []} locale="en" /><AuthorBio locale="en" /><RelatedContent items={related} locale="en" /><ArticleBriefCta locale="en" /></div>
 	</div></article>
-	<script>import { initArticleReadingProgress } from '../../../scripts/article-reading-progress'; initArticleReadingProgress();</script>
+	<script>import { initArticleAudioPlayers } from '../../../scripts/article-audio-player'; import { initArticleReadingProgress } from '../../../scripts/article-reading-progress'; initArticleAudioPlayers(); initArticleReadingProgress();</script>
 </SiteLayout>

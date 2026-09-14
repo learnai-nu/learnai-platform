@@ -92,6 +92,14 @@ const sectionLabelSchema = z.object({
 	label: z.string().trim().min(2).max(100),
 });
 
+const articleAudioSchema = z.object({
+	url: z.string().trim().regex(/^\/audio\/[a-zA-Z0-9/_-]+\.mp3$/).max(500),
+	title: z.string().trim().min(3).max(200).optional(),
+	durationSeconds: z.number().int().positive().max(86_400),
+	voiceName: z.string().trim().min(2).max(100).optional(),
+	mimeType: z.literal('audio/mpeg').default('audio/mpeg'),
+});
+
 const articleExtrasSchema = z.object({
 	faq: z.array(faqEntrySchema).max(20).optional(),
 	sources: z.array(sourceSchema).max(30).optional(),
@@ -101,6 +109,7 @@ const articleExtrasSchema = z.object({
 	imageCaption: z.string().trim().max(500).optional(),
 	summary: z.array(z.string().trim().min(3).max(500)).min(2).max(5).optional(),
 	sectionLabels: z.array(sectionLabelSchema).max(20).optional(),
+	audio: articleAudioSchema.optional(),
 	/** Entities from the knowledge graph, surfaced as schema.org `about`. */
 	about: z.array(z.string().trim().min(2).max(120)).max(10).optional(),
 });

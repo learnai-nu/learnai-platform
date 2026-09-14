@@ -14,6 +14,8 @@ import { selectRelatedContent } from '../src/lib/content/related';
 import { createArticleSchema, createFaqSchema } from '../src/lib/seo/schema';
 
 const articlePage = readFileSync(new URL('../src/pages/laer/[slug].astro', import.meta.url), 'utf8');
+const articleAudio = readFileSync(new URL('../src/components/article/ArticleAudioPlayer.astro', import.meta.url), 'utf8');
+const audioScript = readFileSync(new URL('../src/scripts/article-audio-player.ts', import.meta.url), 'utf8');
 const articleToc = readFileSync(new URL('../src/components/article/ArticleToc.astro', import.meta.url), 'utf8');
 const progressScript = readFileSync(new URL('../src/scripts/article-reading-progress.ts', import.meta.url), 'utf8');
 const articleStyles = readFileSync(new URL('../src/styles/article-longform.css', import.meta.url), 'utf8');
@@ -72,12 +74,14 @@ describe('redaktionelle tilføjelser', () => {
 			keywords: ['ai', 'prompt'],
 			summary: ['Første pointe', 'Anden pointe'],
 			sectionLabels: [{ headingId: 'kom-i-gang', kind: 'practice', label: 'Praktisk konsekvens' }],
+			audio: { url: '/audio/articles/kom-i-gang.mp3', durationSeconds: 421, voiceName: 'Søren' },
 		});
 		expect(extras.faq).toHaveLength(1);
 		expect(extras.sources?.[0].url).toBe('https://aiindex.stanford.edu');
 		expect(extras.sources?.[0].sourceType).toBe('independent');
 		expect(extras.keywords).toEqual(['ai', 'prompt']);
 		expect(extras.summary).toHaveLength(2);
+		expect(extras.audio).toMatchObject({ url: '/audio/articles/kom-i-gang.mp3', durationSeconds: 421, voiceName: 'Søren' });
 	});
 
 	it('adds provenance labels only to headings named by validated metadata', () => {
@@ -147,6 +151,7 @@ describe('artikel-schema', () => {
 			readingMinutes: 6,
 			citations: [{ name: 'AI Index', url: 'https://aiindex.stanford.edu' }],
 			about: ['Generativ AI'],
+			audio: { url: '/audio/articles/kom-i-gang.mp3', title: 'Lyt til guiden', durationSeconds: 401 },
 		});
 		expect(schema.articleSection).toBe('Guide');
 		expect(schema.wordCount).toBe(1200);
@@ -155,6 +160,13 @@ describe('artikel-schema', () => {
 			{ '@type': 'CreativeWork', name: 'AI Index', url: 'https://aiindex.stanford.edu' },
 		]);
 		expect(schema.about).toEqual([{ '@type': 'Thing', name: 'Generativ AI' }]);
+		expect(schema.audio).toMatchObject({
+			'@type': 'AudioObject',
+			name: 'Lyt til guiden',
+			contentUrl: 'https://learnai.nu/audio/articles/kom-i-gang.mp3',
+			encodingFormat: 'audio/mpeg',
+			duration: 'PT6M41S',
+		});
 	});
 
 	it('publishes FAQ markup only alongside visible questions', () => {
@@ -167,11 +179,21 @@ describe('artikel-schema', () => {
 
 describe('artikelsiden', () => {
 	it('shows the trust and navigation furniture around the body', () => {
-		for (const marker of ['<ArticleBreadcrumbs', '<ArticleToc', '<ArticleSummary', '<ArticleSources', '<AuthorBio />', '<RelatedContent', '<ArticleBriefCta']) {
+		for (const marker of ['<ArticleBreadcrumbs', '<ArticleToc', '<ArticleAudioPlayer', '<ArticleSummary', '<ArticleSources', '<AuthorBio />', '<RelatedContent', '<ArticleBriefCta']) {
 			expect(articlePage).toContain(marker);
 		}
 		expect(articlePage).toContain('class="article-hero"');
 		expect(articlePage).toContain('ogType={isArticleType');
+	});
+
+	it('offers accessible playback, seeking, speed controls and a download fallback', () => {
+		expect(articleAudio).toContain('data-audio-toggle');
+		expect(articleAudio).toContain('data-audio-progress');
+		expect(articleAudio).toContain('aria-pressed');
+		expect(articleAudio).toContain('download');
+		expect(audioScript).toContain('audio.playbackRate');
+		expect(audioScript).toContain('other.pause()');
+		expect(articleStyles).toContain('--audio-progress');
 	});
 
 	it('nudges the reader forward with active and completed section markers', () => {
