@@ -59,6 +59,16 @@ export function validateAudioResponse(contentType, bytes) {
 
 export async function generateWeeklyPodcast({ inputPath, outputPath, voiceId = defaultVoiceId, fetchImpl = fetch }) {
 	if (!inputPath || !outputPath) throw new Error('Angiv både manuskript- og outputsti.');
+	return generateElevenLabsAudio({
+		text: await readFile(inputPath, 'utf8'),
+		outputPath,
+		voiceId,
+		fetchImpl,
+	});
+}
+
+export async function generateElevenLabsAudio({ text, outputPath, voiceId = defaultVoiceId, fetchImpl = fetch }) {
+	if (!outputPath) throw new Error('Angiv en outputsti.');
 	if (!outputPath.toLowerCase().endsWith('.mp3')) throw new Error('ElevenLabs-output skal gemmes som .mp3.');
 
 	const apiKey = readApiKey();
@@ -66,7 +76,7 @@ export async function generateWeeklyPodcast({ inputPath, outputPath, voiceId = d
 		throw new Error(`ELEVENLABS_API_KEY mangler. Sæt miljøvariablen eller gem nøglen i macOS Keychain med service-navnet ${keychainService}.`);
 	}
 
-	const request = buildElevenLabsRequest(await readFile(inputPath, 'utf8'), voiceId);
+	const request = buildElevenLabsRequest(text, voiceId);
 	const response = await fetchImpl(request.url, {
 		method: 'POST',
 		headers: {
@@ -76,7 +86,11 @@ export async function generateWeeklyPodcast({ inputPath, outputPath, voiceId = d
 		body: JSON.stringify(request.body),
 	});
 
-	if (!response.ok) throw new Error(`ElevenLabs afviste genereringen med HTTP ${response.status}.`);
+	if (!response.ok) {
+		const providerError = await response.json().catch(() => null);
+		const providerMessage = providerError?.detail?.message;
+		throw new Error(`ElevenLabs afviste genereringen med HTTP ${response.status}${providerMessage ? `: ${providerMessage}` : '.'}`);
+	}
 	const bytes = new Uint8Array(await response.arrayBuffer());
 	validateAudioResponse(response.headers.get('content-type'), bytes);
 
@@ -102,7 +116,7 @@ export async function generateWeeklyPodcast({ inputPath, outputPath, voiceId = d
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
-	const [inputPath, outputPath, voiceId] = process.argv.slice(2);
+	const [inputPath, outputPath, voiceId] = process.argv.slice(2).filter((argument, index) => index !== 0 || argument !== '--');
 	generateWeeklyPodcast({ inputPath, outputPath, voiceId })
 		.then((result) => console.log(JSON.stringify(result)))
 		.catch((error) => {
