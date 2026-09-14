@@ -144,7 +144,7 @@
 	grid-column: 1;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
-	gap: 1.4rem 2rem;
+	gap: 1.35rem 2rem;
 	max-width: 760px;
 	margin: clamp(2rem, 4vw, 3rem) 0 0;
 	padding: clamp(1.35rem, 3vw, 1.8rem);
@@ -182,8 +182,9 @@
 	font-size: .82rem;
 }
 .blue-orbit .article-audio-controls {
+	grid-column: 1 / -1;
 	display: grid;
-	grid-template-columns: auto minmax(13rem, 18rem) auto;
+	grid-template-columns: auto minmax(12rem, 1fr) auto;
 	align-items: center;
 	gap: 1rem;
 }
@@ -244,7 +245,7 @@
 .blue-orbit .article-audio button:focus-visible,
 .blue-orbit .article-audio input:focus-visible,
 .blue-orbit .article-audio a:focus-visible { outline: 3px solid var(--color-amber); outline-offset: 3px; }
-.blue-orbit .article-audio-download { justify-self: end; color: var(--color-greige-300); font-size: .75rem; }
+.blue-orbit .article-audio-download { align-self: start; justify-self: end; color: var(--color-greige-300); font-size: .75rem; }
 .blue-orbit .article-audio-error { grid-column: 1 / -1; margin: 0; color: var(--color-amber); font-size: .82rem; }
 .blue-orbit .article-audio audio { display: none; }
 
@@ -523,7 +524,7 @@
 	.blue-orbit .article-audio-controls { grid-template-columns: auto 1fr; }
 	.blue-orbit .article-audio-timeline { grid-column: 1 / -1; grid-row: 2; }
 	.blue-orbit .article-audio-speed { justify-self: end; }
-	.blue-orbit .article-audio-download { justify-self: start; }
+	.blue-orbit .article-audio-download { grid-row: 3; justify-self: start; }
 }
 
 .article-faq { margin-top: 3rem; }
