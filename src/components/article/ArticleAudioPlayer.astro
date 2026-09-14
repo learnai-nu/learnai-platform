@@ -52,29 +52,31 @@ function formatDuration(seconds: number) {
 	data-pause-label={labels.pause}
 	aria-label={labels.eyebrow}
 >
-	<div class="article-audio-intro">
-		<p class="article-audio-eyebrow">{labels.eyebrow}</p>
-		<h2>{labels.title}</h2>
-		<p>{formatDuration(durationSeconds)} min. · {labels.voice}</p>
-	</div>
-	<div class="article-audio-controls">
-		<button class="article-audio-toggle" type="button" data-audio-toggle aria-label={labels.play}>
-			<svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7 8 5-8 5V7Z" /></svg>
-			<svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7h3v10H8zm5 0h3v10h-3z" /></svg>
-			<span data-audio-toggle-label>{labels.play}</span>
-		</button>
+	<button class="article-audio-toggle" type="button" data-audio-toggle aria-label={labels.play}>
+		<svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7 8 5-8 5V7Z" /></svg>
+		<svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7h3v10H8zm5 0h3v10h-3z" /></svg>
+		<span data-audio-toggle-label>{labels.play}</span>
+	</button>
+	<div class="article-audio-main">
+		<div class="article-audio-intro">
+			<p class="article-audio-eyebrow">{labels.eyebrow}</p>
+			<h2>{labels.title}</h2>
+			<p>{formatDuration(durationSeconds)} min. · {labels.voice}</p>
+		</div>
 		<div class="article-audio-timeline">
 			<span data-audio-current>0:00</span>
 			<input type="range" min="0" max={durationSeconds} value="0" step="0.1" aria-label={labels.seek} data-audio-progress />
 			<span data-audio-duration>{formatDuration(durationSeconds)}</span>
 		</div>
+	</div>
+	<div class="article-audio-actions">
 		<div class="article-audio-speed" role="group" aria-label={labels.speed}>
 			{[1, 1.25, 1.5].map((rate) => (
 				<button type="button" class:list={{ 'is-active': rate === 1 }} data-audio-rate={rate} aria-pressed={rate === 1 ? 'true' : 'false'}>{rate}×</button>
 			))}
 		</div>
+		<a class="article-audio-download" href={src} download>{labels.download}</a>
 	</div>
-	<a class="article-audio-download" href={src} download>{labels.download}</a>
 	<p class="article-audio-error" data-audio-error hidden>{labels.error}</p>
 	<audio src={src} preload="metadata" data-audio-element></audio>
 </section>
