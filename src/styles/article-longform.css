@@ -650,6 +650,25 @@
 	text-underline-offset: .2em;
 }
 
+/* Claude keeps the same editorial system, but shifts the signature module from
+   LearnAI blue/amber to a quieter ink/terracotta palette inspired by documents. */
+.blue-orbit .claude-timeline { background: #25212a; }
+.blue-orbit .claude-timeline .chatgpt-timeline-kicker,
+.blue-orbit .claude-timeline .chatgpt-milestone span,
+.blue-orbit .claude-timeline .chatgpt-timeline-date,
+.blue-orbit .claude-timeline .chatgpt-timeline-detail aside > span { color: #e0a17a; }
+.blue-orbit .claude-timeline .chatgpt-timeline-filters button.is-active {
+	border-color: #e0a17a;
+	background: #e0a17a;
+	color: #251c1a;
+}
+.blue-orbit .claude-timeline .chatgpt-milestone::before { border-color: #25212a; }
+.blue-orbit .claude-timeline .chatgpt-milestone.is-active::before {
+	background: #e0a17a;
+	box-shadow: 0 0 0 4px rgb(224 161 122 / 22%);
+}
+.blue-orbit .claude-timeline .chatgpt-timeline-detail aside { border-color: #e0a17a; }
+
 .blue-orbit .article-body .article-trust-label {
 	margin: clamp(3.75rem, 8vw, 6rem) 0 .65rem;
 	color: var(--color-deep-blue);
