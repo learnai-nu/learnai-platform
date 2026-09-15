@@ -18,6 +18,24 @@ export default defineConfig({
   output: 'server',
 
   redirects: {
-    '/vaerktoejer': '/tools'
+    // Keep existing Danish→English tools alias
+    '/vaerktoejer': '/tools',
+    '/vaerktoejer/': '/tools',
+
+    // Legacy English marketing paths → current Danish surfaces (301)
+    '/articles': '/laer',
+    '/articles/': '/laer',
+    '/about': '/om',
+    '/about/': '/om',
+    '/courses': '/kurser',
+    '/courses/': '/kurser',
+    '/privacy': '/privatliv',
+    '/privacy/': '/privatliv',
+    // Query destination is supported by Astro→Vercel redirect emission
+    '/prompts': '/laer?type=prompt',
+    '/prompts/': '/laer?type=prompt',
+
+    // Orphan fallback: rewrite slug under /laer; missing content stays a real 404
+    '/articles/[...slug]': '/laer/[...slug]',
   }
 });

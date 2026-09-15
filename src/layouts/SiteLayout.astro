@@ -75,6 +75,13 @@ const hreflangs = alternates.map((alternate) => ({
 	hreflang: alternate.locale === 'en' ? 'en' : 'da-DK',
 	href: new URL(alternate.path, siteOrigin).toString(),
 }));
+const defaultAlternate = alternates.find((alternate) => alternate.locale === 'da');
+if (defaultAlternate) {
+	hreflangs.push({
+		hreflang: 'x-default',
+		href: new URL(defaultAlternate.path, siteOrigin).toString(),
+	});
+}
 const structuredData = noindex ? null : buildSitePageGraph({
 	siteUrl: new URL('/', Astro.site ?? canonicalURL),
 	canonicalUrl: canonicalURL,

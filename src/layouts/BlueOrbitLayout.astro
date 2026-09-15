@@ -5,14 +5,18 @@ import type { BreadcrumbItem, PageSchemaType, SchemaNode } from '../lib/seo/sche
 interface Props {
 	title: string;
 	description: string;
+	/** Page language. Defaults to Danish via SiteLayout. */
+	locale?: 'da' | 'en';
+	/** Translations of this page, rendered as hreflang alternates. */
+	alternates?: { locale: 'da' | 'en'; path: string }[];
 	pageType?: PageSchemaType;
 	breadcrumbs?: BreadcrumbItem[];
 	mainEntity?: SchemaNode;
 }
 
-const { title, description, pageType, breadcrumbs, mainEntity } = Astro.props;
+const { title, description, locale, alternates, pageType, breadcrumbs, mainEntity } = Astro.props;
 ---
 
-<SiteLayout {title} {description} {pageType} {breadcrumbs} {mainEntity}>
+<SiteLayout {title} {description} {locale} {alternates} {pageType} {breadcrumbs} {mainEntity}>
 	<slot />
 </SiteLayout>
