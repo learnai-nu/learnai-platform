@@ -2,7 +2,17 @@
 
 ## Status
 
-Udkast. Ikke redaktionelt gennemgået, ikke prissat, ikke klar til publicering.
+Udkast. Prismodel, format og certifikat er besluttet. Indhold er ikke redaktionelt gennemgået og
+kurset er ikke klar til publicering.
+
+## Besluttet
+
+| Beslutning | Valg |
+|---|---|
+| Pris | Betalt, lavt prispunkt. Forslag: 299 kr. normalpris, 199 kr. intropris |
+| Fokus | Claude-specifikt. Ikke modelneutralt |
+| Format | Video i hver lektion plus tekst og øvelse |
+| Certifikat | Ja. Udstedes af LearnAI.nu |
 
 ## Kilde og afgrænsning
 
@@ -23,12 +33,14 @@ hurtigt.
 - Arbejdstitel: **Kom godt i gang med Claude**
 - Slug: `claude-grundkursus`
 - Niveau: begynder – ingen teknisk baggrund
+- Pris: 299 kr. normalpris, 199 kr. intropris (bekræftes redaktionelt)
 - Varighed: ca. 150 minutter, 6 moduler, 16 lektioner
-- Format: tekst + korte videoer + øvelse i hver lektion, gennemføres i eget tempo
+- Format: skærmoptaget video i hver lektion (2-5 min) plus tekst og én øvelse, eget tempo
+- Certifikat: LearnAI.nu-certifikat ved bestået quiz og gennemført forløb
 - Praktisk resultat: deltageren har et fungerende Claude-opsæt, tre afprøvede arbejdsgange fra
   egen hverdag og et sæt spilleregler for data
 - Quiz: 10 scenariebaserede spørgsmål, 70 procent for at bestå, ubegrænsede forsøg
-- Preview: modul 1 er gratis preview
+- Preview: lektion 1.1 og 1.2 er gratis preview på salgssiden
 
 ## Læringsmål
 
@@ -44,7 +56,7 @@ Efter kurset kan deltageren:
 
 ## Modulstruktur
 
-### Modul 1 – Første samtale (20 min, gratis preview)
+### Modul 1 – Første samtale (20 min, 1.1 og 1.2 er preview)
 
 | Lektion | Indhold | Øvelse |
 |---|---|---|
@@ -101,6 +113,39 @@ ikke juridisk rådgivning.
 Afslutning: quiz, badge og henvisning til LearnAI's betalte forløb samt til Anthropics egne
 gratiskurser for dem, der vil videre mod Claude Code, API og MCP.
 
+## Produktplacering
+
+LearnAI har allerede et gratiskursus. Dette kursus er ikke en udvidelse af det, men et
+Claude-specifikt værktøjskursus:
+
+| Kursus | Rolle | Pris |
+|---|---|---|
+| Gratiskurset | Modelneutral introduktion til AI i hverdagen | 0 kr. |
+| **Claude grundkursus** | Bliv fortrolig med ét værktøj: Claude | 299 kr. |
+| Flagskibsforløbet | Fire ugers hybridforløb, organisation og dybde | Se eget dokument |
+| `ai-for-ledere` | Ledelsesansvar, strategi, 90-dages plan | 995 kr. |
+
+Prispunktet skal være lavt nok til at kunne købes uden godkendelse fra en chef, og højt nok til at
+signalere at det ikke er gratismateriale. 299 kr. er et forslag, ikke en endelig beslutning.
+
+## Videoproduktion
+
+- Hver lektion har én skærmoptagelse på 2-5 minutter, hvor opgaven løses i Claude i realtid.
+- Samlet videotid ca. 50-60 minutter ud af kursets 150.
+- Optages i Claudes eget interface. Ingen fortrolige data på skærmen, testdata kun.
+- Videoerne skal kunne genoptages enkeltvis, fordi Claudes interface ændrer sig. Derfor:
+  én opgave per video, ingen lange sammenhængende optagelser.
+- Alle videoer skal have undertekster og et tekstresumé, så kurset kan gennemføres uden lyd.
+- Datér hver video synligt, så deltageren kan se om interfacet er ændret siden optagelsen.
+
+## Certifikat
+
+- Udstedes af LearnAI.nu, ikke af Anthropic. Det skal fremgå tydeligt på selve certifikatet.
+- Krav: alle lektioner markeret gennemført plus quiz bestået med mindst 70 procent.
+- Indhold: deltagerens navn, kursustitel, dato, varighed, udsteder og et verificerbart ID.
+- Skal kunne deles på LinkedIn.
+- Formuleringen må ikke antyde en officiel Anthropic-certificering.
+
 ## Didaktiske valg
 
 - Én gennemgående case følger deltageren: en tilbagevendende arbejdsopgave, deltageren selv vælger
@@ -122,11 +167,11 @@ gratiskurser for dem, der vil videre mod Claude Code, API og MCP.
 
 ## Åbne beslutninger
 
-- [ ] Gratis eller betalt? Anbefaling: gratis, som indgang til flagskibskurset.
-- [ ] Skal kurset være Claude-specifikt eller modelneutralt med Claude som eksempel?
-- [ ] Videoproduktion: skærmoptagelser eller kun tekst og billeder i version 1?
-- [ ] Skal badge og certifikat udstedes, og i så fald af hvem?
-- [ ] Opdateringskadence, når Anthropic ændrer produktnavne – forslag: kvartalsvist review.
+- [ ] Endeligt prispunkt. Forslag: 299 kr. normal, 199 kr. intro.
+- [ ] Skal kurset sælges enkeltvis eller også indgå i en pakke med flagskibsforløbet?
+- [ ] Hvem optager og redigerer videoerne, og hvornår?
+- [ ] Certifikatets visuelle design og verifikations-URL.
+- [ ] Opdateringskadence, når Anthropic ændrer produktnavne. Forslag: kvartalsvist review.
 
 ## Publiceringsport
 
@@ -135,5 +180,8 @@ gratiskurser for dem, der vil videre mod Claude Code, API og MCP.
 - [ ] Produktnavne og funktioner kontrolleret mod Anthropics dokumentation med dato
 - [ ] Datasikkerhedsmodulet faktatjekket mod primærkilder
 - [ ] Quizspørgsmål fagligt valideret
+- [ ] Alle videoer optaget, tekstet, dateret og kontrolleret mod aktuelt Claude-interface
+- [ ] Certifikatskabelon, verifikations-ID og LinkedIn-deling testet
+- [ ] Betalings- og adgangsflow testet på det valgte prispunkt
 - [ ] Cover, landingsside og SEO på plads
 - [ ] Mobilvisning, tastaturnavigation og skærmlæsertekster kontrolleret
