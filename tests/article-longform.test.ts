@@ -20,6 +20,7 @@ const articleToc = readFileSync(new URL('../src/components/article/ArticleToc.as
 const progressScript = readFileSync(new URL('../src/scripts/article-reading-progress.ts', import.meta.url), 'utf8');
 const articleStyles = readFileSync(new URL('../src/styles/article-longform.css', import.meta.url), 'utf8');
 const chatGptTimeline = readFileSync(new URL('../src/components/article/ChatGptTimeline.astro', import.meta.url), 'utf8');
+const claudeTimeline = readFileSync(new URL('../src/components/article/ClaudeTimeline.astro', import.meta.url), 'utf8');
 const chatGptTimelineScript = readFileSync(new URL('../src/scripts/chatgpt-timeline.ts', import.meta.url), 'utf8');
 
 describe('overskrifter og indholdsfortegnelse', () => {
@@ -76,6 +77,14 @@ describe('redaktionelle tilføjelser', () => {
 		expect(chatGptTimeline).toContain('data-chatgpt-timeline');
 		expect(chatGptTimelineScript).toContain('initChatGptTimelines');
 		expect(articleStyles).toContain('.chatgpt-timeline-track');
+	});
+
+	it('supports the bounded Claude timeline module', () => {
+		expect(parseArticleExtras({ interactiveModule: 'claude-timeline' })).toMatchObject({ interactiveModule: 'claude-timeline' });
+		expect(articlePage).toContain('<ClaudeTimeline />');
+		expect(claudeTimeline).toContain('data-claude-timeline');
+		expect(claudeTimeline).toContain('Claudes udvikling');
+		expect(articleStyles).toContain('.claude-timeline');
 	});
 
 	it('accepts FAQ, sources and keywords from the editor metadata', () => {
