@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 ---
 import '../../styles/article-longform.css';
 import ArticleBreadcrumbs from '../../components/article/ArticleBreadcrumbs.astro';
@@ -11,6 +12,8 @@ import AuthorBio from '../../components/article/AuthorBio.astro';
 import ChatGptTimeline from '../../components/article/ChatGptTimeline.astro';
 import ClaudeTimeline from '../../components/article/ClaudeTimeline.astro';
 import ContentBody from '../../components/ContentBody.astro';
+import GuideCourseBanner from '../../components/article/GuideCourseBanner.astro';
+import GuideTools from '../../components/article/GuideTools.astro';
 import PromptBuilder from '../../components/PromptBuilder';
 import RelatedContent from '../../components/article/RelatedContent.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
@@ -25,6 +28,7 @@ import {
 } from '../../lib/content/article';
 import { renderMarkdown } from '../../lib/content/markdown';
 import { selectRelatedContent } from '../../lib/content/related';
+import { toolSlugsForGuide } from '../../lib/content/tool-guide-links';
 import { siteAuthor } from '../../lib/navigation/site-nav';
 import { parsePromptDefinition } from '../../lib/prompts/contracts';
 import { createArticleSchema, createCanonicalUrl, createFaqSchema, type SchemaNode } from '../../lib/seo/schema';
@@ -209,6 +213,18 @@ const related = selectRelatedContent(
 	{ slug: item.slug, title: displayTitle, type: contentType, keywords: extras.keywords },
 	candidates ?? [],
 );
+const preferredToolSlugs = contentType === 'guide' ? toolSlugsForGuide(item.slug) : [];
+const { data: matchingTools } = preferredToolSlugs.length
+	? await supabase
+		.from('tools')
+		.select('slug,name,tagline')
+		.eq('published', true)
+		.eq('locale', 'da')
+		.in('slug', preferredToolSlugs)
+	: { data: [] };
+const guideTools = preferredToolSlugs
+	.map((slug) => matchingTools?.find((tool) => tool.slug === slug))
+	.filter((tool): tool is { slug: string; name: string; tagline: string } => Boolean(tool));
 
 const isArticleType = ['article', 'guide', 'news'].includes(contentType);
 const articleSchema: SchemaNode | undefined = isArticleType
@@ -309,8 +325,10 @@ const publishedLabel = item.published_at
 						: <ContentBody body={item.body} />}
 					<ArticleFaq entries={faqEntries} />
 					<ArticleSources sources={articleSources} />
+					{contentType === 'guide' && <GuideTools tools={guideTools} />}
 					<AuthorBio />
 					<RelatedContent items={related} />
+					{contentType === 'guide' && <GuideCourseBanner />}
 					<ArticleBriefCta />
 				</>
 			)}
