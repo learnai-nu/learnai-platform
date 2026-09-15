@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
@@ -22,6 +23,8 @@ const articleStyles = readFileSync(new URL('../src/styles/article-longform.css',
 const chatGptTimeline = readFileSync(new URL('../src/components/article/ChatGptTimeline.astro', import.meta.url), 'utf8');
 const claudeTimeline = readFileSync(new URL('../src/components/article/ClaudeTimeline.astro', import.meta.url), 'utf8');
 const chatGptTimelineScript = readFileSync(new URL('../src/scripts/chatgpt-timeline.ts', import.meta.url), 'utf8');
+const guideTools = readFileSync(new URL('../src/components/article/GuideTools.astro', import.meta.url), 'utf8');
+const guideCourseBanner = readFileSync(new URL('../src/components/article/GuideCourseBanner.astro', import.meta.url), 'utf8');
 
 describe('overskrifter og indholdsfortegnelse', () => {
 	it('only adds heading anchors when the caller asks for them', () => {
@@ -85,6 +88,14 @@ describe('redaktionelle tilføjelser', () => {
 		expect(claudeTimeline).toContain('data-claude-timeline');
 		expect(claudeTimeline).toContain('Claudes udvikling');
 		expect(articleStyles).toContain('.claude-timeline');
+	});
+
+	it('connects guides to real tools and the free foundation course', () => {
+		expect(articlePage).toContain('<GuideTools tools={guideTools} />');
+		expect(articlePage).toContain('<GuideCourseBanner />');
+		expect(guideTools).toContain('/tools#${tool.slug}');
+		expect(guideCourseBanner).toContain('/kurser/ai-i-praksis-dit-foerste-kursus');
+		expect(articleStyles).toContain('.guide-course-banner');
 	});
 
 	it('accepts FAQ, sources and keywords from the editor metadata', () => {
