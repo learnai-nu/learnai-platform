@@ -10,7 +10,7 @@ const layout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.me
 describe('mobil-dock', () => {
 	it('is rendered on every public page', () => {
 		expect(layout).toContain("import MobileDock from '../components/marketing/MobileDock.astro'");
-		expect(layout).toContain('<MobileDock />');
+		expect(layout).toContain('<MobileDock {locale} />');
 		expect(layout).toContain("import '../styles/mobile-dock.css'");
 	});
 
@@ -34,7 +34,7 @@ describe('mobil-drawer', () => {
 		const groupsIndex = dock.indexOf('menuGroups.map');
 		expect(profileIndex).toBeGreaterThan(-1);
 		expect(profileIndex).toBeLessThan(groupsIndex);
-		expect(dock).toContain('<b>Om mig</b>');
+		expect(dock).toContain("{isEnglish ? 'About me (Danish)' : 'Om mig'}");
 		expect(siteAuthor.href).toBe('/om');
 	});
 

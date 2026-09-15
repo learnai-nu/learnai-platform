@@ -93,7 +93,7 @@ describe('logind-indikator', () => {
 	});
 
 	it('shows the account state in the mobile menu as well', () => {
-		expect(header).toContain('<a href="/login" data-account-anonymous>Log ind</a>');
+		expect(header).toContain("{isEnglish ? 'Log in' : 'Log ind'}");
 		expect(header).toContain('data-account-menu hidden');
 	});
 });

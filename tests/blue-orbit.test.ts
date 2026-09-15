@@ -51,7 +51,8 @@ describe('LearnAI workbook homepage', () => {
 
 	it('preserves keyboard access while removing the premature theme control', () => {
 		expect(header).toContain("event.key === 'Escape'");
-		expect(header).toContain("'Luk menu' : 'Åbn menu'");
+		expect(header).toContain("data-open-label={isEnglish ? 'Open menu' : 'Åbn menu'}");
+		expect(header).toContain("data-close-label={isEnglish ? 'Close menu' : 'Luk menu'}");
 		expect(header).not.toContain('orbit-theme-button');
 		expect(siteLayout).toContain('class="orbit-skip-link"');
 	});

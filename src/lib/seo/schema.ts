@@ -1,6 +1,15 @@
 import { siteAuthor } from '../navigation/site-nav';
 
-export const schemaLanguage = 'da-DK';
+export type SiteLocale = 'da' | 'en';
+
+export const schemaLanguages: Record<SiteLocale, 'da-DK' | 'en'> = {
+	da: 'da-DK',
+	en: 'en',
+};
+
+export function schemaLanguage(locale: SiteLocale = 'da') {
+	return schemaLanguages[locale];
+}
 
 export type PageSchemaType =
 	| 'WebPage'
@@ -36,6 +45,7 @@ interface SitePageGraphOptions {
 	breadcrumbs?: BreadcrumbItem[];
 	mainEntity?: SchemaNode;
 	additionalNodes?: SchemaNode[];
+	locale?: SiteLocale;
 }
 
 interface ArticleSchemaOptions {
@@ -62,6 +72,7 @@ interface ArticleSchemaOptions {
 		title?: string | null;
 		durationSeconds: number;
 	};
+	locale?: SiteLocale;
 }
 
 export interface ArticleCitation {
@@ -136,6 +147,7 @@ export function buildSitePageGraph({
 	breadcrumbs = [],
 	mainEntity,
 	additionalNodes = [],
+	locale = 'da',
 }: SitePageGraphOptions) {
 	const homeUrl = absoluteUrl('/', siteUrl);
 	const organizationId = `${homeUrl}#organization`;
@@ -157,7 +169,10 @@ export function buildSitePageGraph({
 			caption: 'LearnAI.nu',
 		},
 		areaServed: { '@type': 'Country', name: 'Danmark' },
-		knowsLanguage: { '@type': 'Language', name: 'Dansk' },
+		knowsLanguage: [
+			{ '@type': 'Language', name: 'Dansk' },
+			{ '@type': 'Language', name: 'English' },
+		],
 		founder: { '@type': 'Person', '@id': personId },
 	};
 	const website: SchemaNode = {
@@ -165,7 +180,7 @@ export function buildSitePageGraph({
 		'@id': websiteId,
 		name: 'LearnAI.nu',
 		url: homeUrl,
-		inLanguage: schemaLanguage,
+		inLanguage: Object.values(schemaLanguages),
 		publisher: { '@type': 'Organization', '@id': organizationId },
 		// Lets Google offer a search box for the site directly in the results.
 		potentialAction: {
@@ -183,7 +198,7 @@ export function buildSitePageGraph({
 		url: canonicalUrl.toString(),
 		name: title,
 		description,
-		inLanguage: schemaLanguage,
+		inLanguage: schemaLanguage(locale),
 		isPartOf: { '@type': 'WebSite', '@id': websiteId },
 		...(breadcrumbs.length ? { breadcrumb: { '@type': 'BreadcrumbList', '@id': breadcrumbId } } : {}),
 		...(mainEntity?.['@id'] ? { mainEntity: { '@type': mainEntity['@type'], '@id': mainEntity['@id'] } } : {}),
@@ -218,11 +233,13 @@ export function buildSitePageGraph({
 export function createItemListSchema(
 	canonicalUrl: URL,
 	items: Array<{ name: string; url: string }>,
+	locale: SiteLocale = 'da',
 ): SchemaNode {
 	return {
 		'@type': 'ItemList',
 		'@id': `${canonicalUrl.toString()}#itemlist`,
-		name: 'Indhold på siden',
+		name: locale === 'en' ? 'Content on this page' : 'Indhold på siden',
+		inLanguage: schemaLanguage(locale),
 		numberOfItems: items.length,
 		itemListElement: items.map((item, index) => ({
 			'@type': 'ListItem',
@@ -276,6 +293,7 @@ export function createArticleSchema({
 	about = [],
 	mentions = [],
 	audio,
+	locale = 'da',
 }: ArticleSchemaOptions): SchemaNode {
 	const homeUrl = absoluteUrl('/', canonicalUrl);
 	const organizationId = `${homeUrl}#organization`;
@@ -287,7 +305,7 @@ export function createArticleSchema({
 		description,
 		url: canonicalUrl.toString(),
 		mainEntityOfPage: { '@type': 'WebPage', '@id': `${canonicalUrl.toString()}#webpage` },
-		inLanguage: schemaLanguage,
+		inLanguage: schemaLanguage(locale),
 		...(datePublished ? { datePublished } : {}),
 		...(dateModified ? { dateModified } : {}),
 		...(articleSection ? { articleSection } : {}),
@@ -339,11 +357,11 @@ function createCitationNode(citation: ArticleCitation): SchemaNode {
 }
 
 /** A `FAQPage` node — the questions must be visible on the page itself. */
-export function createFaqSchema(canonicalUrl: URL, entries: FaqEntry[]): SchemaNode {
+export function createFaqSchema(canonicalUrl: URL, entries: FaqEntry[], locale: SiteLocale = 'da'): SchemaNode {
 	return {
 		'@type': 'FAQPage',
 		'@id': `${canonicalUrl.toString()}#faq`,
-		inLanguage: schemaLanguage,
+		inLanguage: schemaLanguage(locale),
 		mainEntity: entries.map((entry) => ({
 			'@type': 'Question',
 			name: entry.question,
@@ -367,7 +385,7 @@ export function createCourseSchema({
 		name,
 		description,
 		url: canonicalUrl.toString(),
-		inLanguage: schemaLanguage,
+		inLanguage: schemaLanguage(),
 		provider: { '@type': 'Organization', '@id': organizationId, name: 'LearnAI.nu' },
 		...(typeof durationMinutes === 'number' && durationMinutes > 0
 			? { timeRequired: `PT${durationMinutes}M` }
@@ -401,7 +419,7 @@ export function createLearningResourceSchema({
 		name,
 		description,
 		url: canonicalUrl.toString(),
-		inLanguage: schemaLanguage,
+		inLanguage: schemaLanguage(),
 		learningResourceType: 'lesson',
 		isPartOf: {
 			'@type': 'Course',

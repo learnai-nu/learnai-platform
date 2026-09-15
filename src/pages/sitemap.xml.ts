@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { contentPath } from '../lib/content/translations';
 import { createServerSupabaseClient } from '../lib/supabase/server';
 
 export const prerender = false;
@@ -29,6 +30,8 @@ const staticEntries: SitemapEntry[] = [
 	{ path: '/kontakt', changeFrequency: 'monthly', priority: '0.4' },
 	{ path: '/nyheder', changeFrequency: 'weekly', priority: '0.5' },
 	{ path: '/privatliv', changeFrequency: 'monthly', priority: '0.2' },
+	{ path: '/en', changeFrequency: 'weekly', priority: '0.7' },
+	{ path: '/en/learn', changeFrequency: 'daily', priority: '0.7' },
 	{ path: '/en/tools', changeFrequency: 'weekly', priority: '0.5' },
 	{ path: '/en/use-cases', changeFrequency: 'weekly', priority: '0.4' },
 	{ path: '/en/resources', changeFrequency: 'weekly', priority: '0.4' },
@@ -65,14 +68,14 @@ export const GET: APIRoute = async ({ request, cookies, site, url }) => {
 	// Only routes that actually resolve: the tool, use-case, resource and event
 	// catalogues are single pages, not one page per row.
 	const [content, courses] = await Promise.all([
-		supabase.from('content_items').select('slug,updated_at').eq('status', 'published'),
+		supabase.from('content_items').select('slug,updated_at,locale').eq('status', 'published'),
 		supabase.from('courses').select('slug,updated_at').eq('status', 'published'),
 	]);
 
 	const entries: SitemapEntry[] = [
 		...staticEntries,
 		...(content.data ?? []).map((row) => ({
-			path: `/laer/${row.slug}`,
+			path: contentPath(row.locale === 'en' ? 'en' : 'da', row.slug),
 			lastModified: row.updated_at,
 			changeFrequency: 'monthly' as const,
 			priority: '0.8',

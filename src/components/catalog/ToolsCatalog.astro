@@ -64,6 +64,7 @@ const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.si
 const itemList = createItemListSchema(
 	canonicalUrl,
 	sorted.map((tool) => ({ name: tool.name, url: tool.url ?? `${path}#${tool.slug}` })),
+	locale,
 );
 ---
 

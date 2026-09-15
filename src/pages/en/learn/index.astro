@@ -14,7 +14,7 @@ const { data: items, error } = await supabase
 	.in('type', ['article', 'guide', 'news'])
 	.order('published_at', { ascending: false });
 const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
-const itemList = createItemListSchema(canonicalUrl, (items ?? []).map((item) => ({ name: item.title, url: `/en/learn/${item.slug}` })));
+const itemList = createItemListSchema(canonicalUrl, (items ?? []).map((item) => ({ name: item.title, url: `/en/learn/${item.slug}` })), 'en');
 ---
 
 <SiteLayout

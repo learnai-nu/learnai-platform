@@ -54,6 +54,7 @@ const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.si
 const itemList = createItemListSchema(
 	canonicalUrl,
 	upcoming.map((event) => ({ name: event.title, url: event.registrationUrl ?? `${path}#${event.slug}` })),
+	locale,
 );
 
 function timeRange(event: CatalogEvent) {

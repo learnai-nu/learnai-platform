@@ -2,15 +2,16 @@
 interface Props {
 	light?: boolean;
 	compact?: boolean;
+	locale?: 'da' | 'en';
 }
 
-const { light = false, compact = false } = Astro.props;
+const { light = false, compact = false, locale = 'da' } = Astro.props;
 ---
 
 <a
 	class:list={['orbit-brand', { 'orbit-brand-light': light, 'orbit-brand-compact': compact }]}
-	href="/"
-	aria-label="LearnAI.nu – forside"
+	href={locale === 'en' ? '/en' : '/'}
+	aria-label={locale === 'en' ? 'LearnAI.nu – home' : 'LearnAI.nu – forside'}
 >
 	<svg class="orbit-brand-symbol" viewBox="0 0 44 44" aria-hidden="true">
 		<rect width="44" height="44" rx="3"></rect>

@@ -1,33 +1,36 @@
 ---
 import OrbitBrand from '../ui/OrbitBrand.astro';
+interface Props { locale?: 'da' | 'en'; }
+const { locale = 'da' } = Astro.props;
+const isEnglish = locale === 'en';
 ---
 
 <footer class="orbit-footer">
 	<div class="orbit-footer-brand">
-		<OrbitBrand light />
-		<p>AI-viden omsat til næste skridt.</p>
+		<OrbitBrand light {locale} />
+		<p>{isEnglish ? 'AI knowledge turned into a useful next step.' : 'AI-viden omsat til næste skridt.'}</p>
 	</div>
 	<div class="orbit-footer-column">
-		<strong>Udforsk</strong>
-		<a href="/laer">Lær AI</a>
-		<a href="/kurser">Kurser</a>
-		<a href="/laer?type=prompt">Prompts</a>
-		<a href="/tools">Værktøjer</a>
-		<a href="/use-cases">Use cases</a>
-		<a href="/resources">Ressourcer</a>
-		<a href="/events">Events</a>
+		<strong>{isEnglish ? 'Explore' : 'Udforsk'}</strong>
+		<a href={isEnglish ? '/en/learn' : '/laer'}>{isEnglish ? 'Learn AI' : 'Lær AI'}</a>
+		<a href="/kurser">{isEnglish ? 'Courses (Danish)' : 'Kurser'}</a>
+		<a href="/laer?type=prompt">{isEnglish ? 'Prompts (Danish)' : 'Prompts'}</a>
+		<a href={isEnglish ? '/en/tools' : '/tools'}>{isEnglish ? 'Tools' : 'Værktøjer'}</a>
+		<a href={isEnglish ? '/en/use-cases' : '/use-cases'}>Use cases</a>
+		<a href={isEnglish ? '/en/resources' : '/resources'}>{isEnglish ? 'Resources' : 'Ressourcer'}</a>
+		<a href={isEnglish ? '/en/events' : '/events'}>Events</a>
 	</div>
 	<div class="orbit-footer-column">
 		<strong>LearnAI</strong>
-		<a href="/ugebrief">Ugebrief & podcast</a>
-		<a href="/virksomheder">For virksomheder</a>
-		<a href="/om">Om os</a>
-		<a href="/kontakt">Kontakt</a>
+		<a href="/ugebrief">{isEnglish ? 'Weekly brief & podcast (Danish)' : 'Ugebrief & podcast'}</a>
+		<a href="/virksomheder">{isEnglish ? 'For businesses (Danish)' : 'For virksomheder'}</a>
+		<a href="/om">{isEnglish ? 'About (Danish)' : 'Om os'}</a>
+		<a href="/kontakt">{isEnglish ? 'Contact (Danish)' : 'Kontakt'}</a>
 	</div>
 	<div class="orbit-footer-column">
-		<strong>Brug LearnAI</strong>
+		<strong>{isEnglish ? 'Use LearnAI' : 'Brug LearnAI'}</strong>
 		<a href="/mentor">AI Mentor</a>
-		<a href="/privatliv">Privatliv</a>
+		<a href="/privatliv">{isEnglish ? 'Privacy (Danish)' : 'Privatliv'}</a>
 	</div>
 	<p class="orbit-copyright">© {new Date().getFullYear()} LearnAI.nu</p>
 </footer>

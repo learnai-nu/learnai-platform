@@ -28,6 +28,7 @@ import {
 import { renderMarkdown } from '../../lib/content/markdown';
 import { selectRelatedContent } from '../../lib/content/related';
 import { toolSlugsForGuide } from '../../lib/content/tool-guide-links';
+import { contentPath, sourceKeyForLocale } from '../../lib/content/translations';
 import { siteAuthor } from '../../lib/navigation/site-nav';
 import { parsePromptDefinition } from '../../lib/prompts/contracts';
 import { createArticleSchema, createCanonicalUrl, createFaqSchema, type SchemaNode } from '../../lib/seo/schema';
@@ -38,7 +39,7 @@ export const prerender = false;
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: item, error } = await supabase
 	.from('content_items')
-	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at,source_metadata')
+	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at,source_key,source_metadata')
 	.eq('slug', Astro.params.slug)
 	.eq('locale', 'da')
 	.eq('status', 'published')
@@ -247,6 +248,16 @@ const articleSchema: SchemaNode | undefined = isArticleType
 	: undefined;
 const faqEntries = articleFaq;
 const additionalSchema = faqEntries.length ? [createFaqSchema(canonicalUrl, faqEntries)] : [];
+const counterpartSourceKey = sourceKeyForLocale(item.source_key, 'en');
+let counterpartSlug: string | null = null;
+if (counterpartSourceKey) {
+	const { data: counterpart } = await supabase.from('content_items').select('slug')
+		.eq('source_key', counterpartSourceKey).eq('locale', 'en').eq('status', 'published').maybeSingle();
+	counterpartSlug = counterpart?.slug ?? null;
+}
+const alternates = counterpartSlug
+	? [{ locale: 'da' as const, path: Astro.url.pathname }, { locale: 'en' as const, path: contentPath('en', counterpartSlug) }]
+	: [];
 const publishedLabel = item.published_at
 	? new Date(item.published_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })
 	: null;
@@ -255,6 +266,7 @@ const publishedLabel = item.published_at
 <SiteLayout
 	title={`${isChatGptGuide || isClaudeGuide ? displayTitle : item.seo_title ?? displayTitle} — LearnAI.nu`}
 	description={pageDescription}
+	{alternates}
 	ogType={isArticleType ? 'article' : 'website'}
 	image={extras.image ?? null}
 	imageAlt={extras.imageAlt ?? null}

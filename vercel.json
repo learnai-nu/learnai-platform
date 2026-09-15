@@ -1,9 +1,0 @@
-{
-  "redirects": [
-    {
-      "source": "/articles/:path*",
-      "destination": "/laer/:path*",
-      "permanent": true
-    }
-  ]
-}

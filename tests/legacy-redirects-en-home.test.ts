@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const astroConfig = readFileSync(new URL('../astro.config.mjs', import.meta.url), 'utf8');
 const middleware = readFileSync(new URL('../src/middleware.ts', import.meta.url), 'utf8');
-const vercelConfig = readFileSync(new URL('../vercel.json', import.meta.url), 'utf8');
+const legacyArticleRoute = readFileSync(new URL('../src/pages/articles/[slug].astro', import.meta.url), 'utf8');
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const danishHome = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 const englishHome = readFileSync(new URL('../src/pages/en/index.astro', import.meta.url), 'utf8');
@@ -22,18 +22,21 @@ describe('legacy redirects and English home SEO', () => {
 		expect(astroConfig).not.toContain("'/laer/[...slug]'");
 	});
 
-	it('redirects /articles/:slug(+) via explicit middleware 301 Response', () => {
+	it('redirects /articles/:slug(+) via middleware and a concrete Vercel route', () => {
 		expect(middleware).toContain("pathname.match(/^\\/articles\\/(.+)$/)");
 		expect(middleware).toContain('status: 301');
 		expect(middleware).toContain('Location:');
 		expect(middleware).toContain('`/laer/${slug}`');
 		expect(middleware).not.toContain('context.redirect');
+		expect(legacyArticleRoute).toContain("Astro.redirect(`/laer/${slug}`, 301)");
 	});
 
-	it('ships vercel.json platform edge redirect for articles→laer', () => {
-		expect(vercelConfig).toContain('"/articles/:path*"');
-		expect(vercelConfig).toContain('"/laer/:path*"');
-		expect(vercelConfig).toContain('"permanent": true');
+	it('keeps one redirect owner and avoids duplicate trailing-slash routes', () => {
+		expect(astroConfig).not.toContain("'/articles/':");
+		expect(astroConfig).not.toContain("'/about/':");
+		expect(astroConfig).not.toContain("'/courses/':");
+		expect(astroConfig).not.toContain("'/privacy/':");
+		expect(astroConfig).not.toContain("'/prompts/':");
 	});
 
 	it('emits reciprocal home hreflang including x-default', () => {
