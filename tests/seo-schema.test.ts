@@ -133,7 +133,7 @@ describe('SEO schema contracts', () => {
 		expect(learningIndex).toContain('pageType="CollectionPage"');
 		expect(learningIndex).toContain('createItemListSchema');
 		expect(learningPage).toContain('createArticleSchema');
-		expect(learningPage).toContain("item.type === 'news' ? 'NewsArticle' : 'Article'");
+		expect(learningPage).toContain("contentType === 'news' ? 'NewsArticle' : 'Article'");
 		expect(courseIndex).toContain('createItemListSchema');
 		expect(coursePage).toContain('createCourseSchema');
 		expect(lessonPage).toContain('createLearningResourceSchema');
