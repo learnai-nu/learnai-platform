@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
@@ -51,7 +52,8 @@ describe('LearnAI workbook homepage', () => {
 
 	it('preserves keyboard access while removing the premature theme control', () => {
 		expect(header).toContain("event.key === 'Escape'");
-		expect(header).toContain("'Luk menu' : 'Åbn menu'");
+		expect(header).toContain("data-open-label={isEnglish ? 'Open menu' : 'Åbn menu'}");
+		expect(header).toContain("data-close-label={isEnglish ? 'Close menu' : 'Luk menu'}");
 		expect(header).not.toContain('orbit-theme-button');
 		expect(siteLayout).toContain('class="orbit-skip-link"');
 	});

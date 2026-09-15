@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 ---
 import '../../../styles/article-longform.css';
 import ArticleBreadcrumbs from '../../../components/article/ArticleBreadcrumbs.astro';
@@ -12,6 +13,7 @@ import RelatedContent from '../../../components/article/RelatedContent.astro';
 import SiteLayout from '../../../layouts/SiteLayout.astro';
 import { countWords, estimateReadingMinutes, extractHeadings, parseArticleExtras } from '../../../lib/content/article';
 import { renderMarkdown } from '../../../lib/content/markdown';
+import { contentPath, sourceKeyForLocale } from '../../../lib/content/translations';
 import { selectRelatedContent } from '../../../lib/content/related';
 import { siteAuthor } from '../../../lib/navigation/site-nav';
 import { createArticleSchema, createCanonicalUrl, createFaqSchema, type SchemaNode } from '../../../lib/seo/schema';
@@ -20,7 +22,7 @@ import { createServerSupabaseClient } from '../../../lib/supabase/server';
 export const prerender = false;
 const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
 const { data: item, error } = await supabase.from('content_items')
-	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at,source_metadata')
+	.select('title,slug,type,excerpt,body,seo_title,seo_description,published_at,updated_at,source_key,source_metadata')
 	.eq('slug', Astro.params.slug).eq('locale', 'en').eq('status', 'published').maybeSingle();
 if (error || !item) return new Response('Content not found.', { status: 404 });
 
@@ -35,16 +37,27 @@ const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.si
 const { data: candidates } = await supabase.from('content_items').select('title,slug,type,excerpt,published_at,updated_at')
 	.eq('status', 'published').eq('locale', 'en').in('type', ['article', 'guide', 'news']).order('published_at', { ascending: false }).limit(40);
 const related = selectRelatedContent({ slug: item.slug, title: item.title, type: item.type, keywords: extras.keywords ?? [] }, candidates ?? []);
-const articleSchema: SchemaNode = createArticleSchema({ canonicalUrl, type: item.type === 'news' ? 'NewsArticle' : 'Article', headline: item.title, description: pageDescription, datePublished: item.published_at, dateModified: item.updated_at, articleSection: item.type === 'news' ? 'News' : 'Article', keywords: extras.keywords ?? [], image: extras.image ?? null, imageAlt: extras.imageAlt ?? null, wordCount: countWords(bodyHtml), readingMinutes, citations: extras.sources ?? [], about: extras.about ?? [], audio: extras.audio ?? undefined });
+const typeLabels = { article: 'Article', guide: 'Guide', news: 'News', prompt: 'Prompt', tool: 'Tool' } as const;
+const typeLabel = typeLabels[item.type as keyof typeof typeLabels] ?? 'Content';
+const articleSchema: SchemaNode = createArticleSchema({ canonicalUrl, type: item.type === 'news' ? 'NewsArticle' : 'Article', headline: item.title, description: pageDescription, datePublished: item.published_at, dateModified: item.updated_at, articleSection: typeLabel, keywords: extras.keywords ?? [], image: extras.image ?? null, imageAlt: extras.imageAlt ?? null, wordCount: countWords(bodyHtml), readingMinutes, citations: extras.sources ?? [], about: extras.about ?? [], audio: extras.audio ?? undefined, locale: 'en' });
 const faqEntries = extras.faq ?? [];
-const additionalSchema = faqEntries.length ? [createFaqSchema(canonicalUrl, faqEntries)] : [];
-const pairPath = `/laer/${item.slug.replace(/^week-/, 'uge-')}`;
+const additionalSchema = faqEntries.length ? [createFaqSchema(canonicalUrl, faqEntries, 'en')] : [];
+const counterpartSourceKey = sourceKeyForLocale(item.source_key, 'da');
+let counterpartSlug: string | null = null;
+if (counterpartSourceKey) {
+	const { data: counterpart } = await supabase.from('content_items').select('slug')
+		.eq('source_key', counterpartSourceKey).eq('locale', 'da').eq('status', 'published').maybeSingle();
+	counterpartSlug = counterpart?.slug ?? null;
+}
+const alternates = counterpartSlug
+	? [{ locale: 'da' as const, path: contentPath('da', counterpartSlug) }, { locale: 'en' as const, path: Astro.url.pathname }]
+	: [];
 ---
 
-<SiteLayout title={`${item.seo_title ?? item.title} — LearnAI.nu`} description={pageDescription} locale="en" alternates={[{ locale: 'da', path: pairPath }, { locale: 'en', path: Astro.url.pathname }]} ogType="article" image={extras.image ?? null} imageAlt={extras.imageAlt ?? null} publishedTime={item.published_at} modifiedTime={item.updated_at} articleSection="News" breadcrumbs={[{ name: 'Home', url: '/en' }, { name: 'Learn AI', url: '/en/learn' }, { name: item.title, url: Astro.url.pathname }]} mainEntity={articleSchema} additionalSchema={additionalSchema}>
+<SiteLayout title={`${item.seo_title ?? item.title} — LearnAI.nu`} description={pageDescription} locale="en" {alternates} ogType="article" image={extras.image ?? null} imageAlt={extras.imageAlt ?? null} publishedTime={item.published_at} modifiedTime={item.updated_at} articleSection={typeLabel} breadcrumbs={[{ name: 'Home', url: '/en' }, { name: 'Learn AI', url: '/en/learn' }, { name: item.title, url: Astro.url.pathname }]} mainEntity={articleSchema} additionalSchema={additionalSchema}>
 	<article class="article-page" data-article-reader data-reading-minutes={readingMinutes}><div class:list={['shell', 'article-reading-layout', { 'has-toc': headings.length > 0 }]}>
 		{headings.length > 0 && <ArticleToc headings={headings} readingMinutes={readingMinutes} locale="en" />}
-		<header class="article-header"><ArticleBreadcrumbs locale="en" items={[{ name: 'Home', url: '/en' }, { name: 'Learn AI', url: '/en/learn' }, { name: item.title }]} /><p class="eyebrow">News</p><h1>{item.title}</h1>{item.excerpt && <p class="hero-copy">{item.excerpt}</p>}<div class="article-meta"><span class="article-meta-avatar" aria-hidden="true">{siteAuthor.initials}</span><div><span class="article-meta-author">{siteAuthor.name}</span><span class="article-meta-details">{item.published_at && <time datetime={item.published_at}>{new Date(item.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time>} · {readingMinutes} min. read · Updated <time datetime={item.updated_at}>{new Date(item.updated_at).toLocaleDateString('en-GB')}</time></span></div></div></header>
+		<header class="article-header"><ArticleBreadcrumbs locale="en" items={[{ name: 'Home', url: '/en' }, { name: 'Learn AI', url: '/en/learn' }, { name: item.title }]} /><p class="eyebrow">{typeLabel}</p><h1>{item.title}</h1>{item.excerpt && <p class="hero-copy">{item.excerpt}</p>}<div class="article-meta"><span class="article-meta-avatar" aria-hidden="true">{siteAuthor.initials}</span><div><span class="article-meta-author">{siteAuthor.name}</span><span class="article-meta-details">{item.published_at && <time datetime={item.published_at}>{new Date(item.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time>} · {readingMinutes} min. read · Updated <time datetime={item.updated_at}>{new Date(item.updated_at).toLocaleDateString('en-GB')}</time></span></div></div></header>
 		{extras.audio && <ArticleAudioPlayer src={extras.audio.url} title={extras.audio.title} durationSeconds={extras.audio.durationSeconds} voiceName={extras.audio.voiceName} locale="en" />}
 		{extras.image && <figure class="article-hero"><img src={extras.image} alt={extras.imageAlt ?? ''} width="1536" height="1024" loading="eager" fetchpriority="high" />{extras.imageCaption && <figcaption>{extras.imageCaption}</figcaption>}</figure>}
 		<div class:list={['article-content', { 'has-reading-rail': headings.some((heading) => heading.level === 2) }]}><ArticleSummary items={extras.summary ?? []} locale="en" /><div class="article-body" set:html={bodyHtml} /><ArticleFaq entries={faqEntries} locale="en" /><ArticleSources sources={extras.sources ?? []} locale="en" /><AuthorBio locale="en" /><RelatedContent items={related} locale="en" /><ArticleBriefCta locale="en" /></div>

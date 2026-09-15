@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 /**
  * Single source of truth for the public navigation.
  *
@@ -56,10 +57,48 @@ export const menuGroups: NavGroup[] = [
 	},
 ];
 
+export const englishMenuGroups: NavGroup[] = [
+	{
+		label: 'Learn AI',
+		intro: 'Guides, news and practical analysis for using AI at work.',
+		items: [
+			{ label: 'Guides & learning', description: 'Practical explanations in English', href: '/en/learn', section: '/en/learn', type: 'knowledge' },
+			{ label: 'News & analysis', description: 'The most important AI developments', href: '/en/learn', section: '/en/learn', type: 'news' },
+			{ label: 'Weekly brief & podcast', description: 'Weekly overview in Danish', href: '/ugebrief', section: '/ugebrief' },
+			{ label: 'Events', description: 'Conferences and meetups', href: '/en/events', section: '/en/events' },
+			{ label: 'Resources', description: 'Podcasts, books and channels', href: '/en/resources', section: '/en/resources' },
+		],
+	},
+	{
+		label: 'Use AI',
+		intro: 'Choose a useful tool or start from a concrete workplace example.',
+		items: [
+			{ label: 'AI tools', description: 'Find the right tool for the task', href: '/en/tools', section: '/en/tools' },
+			{ label: 'Use cases', description: 'See how others use AI', href: '/en/use-cases', section: '/en/use-cases' },
+			{ label: 'AI Mentor', description: 'Guidance in Danish', href: '/mentor', section: '/mentor' },
+			{ label: 'Prompts', description: 'Danish prompt library', href: '/laer?type=prompt', section: '/laer', type: 'prompt' },
+		],
+	},
+	{
+		label: 'Courses',
+		intro: 'The current course catalogue is available in Danish.',
+		items: [
+			{ label: 'All courses', description: 'Browse the Danish course catalogue', href: '/kurser', section: '/kurser', type: 'all-courses' },
+			{ label: 'Free AI course', description: 'Get started in Danish', href: '/kurser/ai-i-praksis', section: '/kurser/ai-i-praksis' },
+			{ label: 'My courses', description: 'Continue where you left off', href: '/dashboard', section: '/dashboard' },
+		],
+	},
+];
+
 /** The primary CTA reused by header, dock and drawer. */
 export const primaryCta = {
 	label: 'Start gratis',
 	href: '/kurser/ai-i-praksis-dit-foerste-kursus',
+} as const;
+
+export const englishPrimaryCta = {
+	label: 'Explore in English',
+	href: '/en/learn',
 } as const;
 
 export type DockIcon = 'learn' | 'courses' | 'tools' | 'start' | 'menu';
@@ -83,6 +122,20 @@ export const dockItems: DockItem[] = [
 	{ label: 'Værktøjer', icon: 'tools', href: '/tools', section: '/tools' },
 	{ label: 'Menu', icon: 'menu' },
 ];
+
+export const englishDockItems: DockItem[] = [
+	{ label: 'Learn', icon: 'learn', href: '/en/learn', section: '/en/learn' },
+	{ label: 'Use cases', icon: 'courses', href: '/en/use-cases', section: '/en/use-cases' },
+	{ label: englishPrimaryCta.label, icon: 'start', href: englishPrimaryCta.href, section: englishPrimaryCta.href },
+	{ label: 'Tools', icon: 'tools', href: '/en/tools', section: '/en/tools' },
+	{ label: 'Menu', icon: 'menu' },
+];
+
+export function navigationForLocale(locale: 'da' | 'en' = 'da') {
+	return locale === 'en'
+		? { menuGroups: englishMenuGroups, primaryCta: englishPrimaryCta, dockItems: englishDockItems }
+		: { menuGroups, primaryCta, dockItems };
+}
 
 /**
  * The person behind LearnAI, shown at the top of the mobile drawer.

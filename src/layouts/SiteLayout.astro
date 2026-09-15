@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 ---
 import '@fontsource-variable/fraunces/opsz.css';
 import '@fontsource-variable/fraunces/opsz-italic.css';
@@ -91,6 +92,7 @@ const structuredData = noindex ? null : buildSitePageGraph({
 	breadcrumbs,
 	mainEntity,
 	additionalNodes: additionalSchema,
+	locale,
 });
 ---
 
@@ -143,8 +145,8 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		<main id="main-content">
 			<slot />
 		</main>
-		<BlueOrbitFooter />
-		<MobileDock />
+		<BlueOrbitFooter {locale} />
+		<MobileDock {locale} />
 		<script src="../scripts/analytics.ts"></script>
 	</body>
 </html>

@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 ---
 import OrbitBrand from '../ui/OrbitBrand.astro';
 import HeaderAccount from './HeaderAccount.astro';
@@ -6,8 +7,7 @@ import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 import {
 	isNavGroupActive,
 	isNavItemActive,
-	menuGroups,
-	primaryCta,
+	navigationForLocale,
 	type NavGroup,
 	type NavItem,
 } from '../../lib/navigation/site-nav';
@@ -18,6 +18,8 @@ interface Props {
 }
 
 const { locale = 'da', alternates = [] } = Astro.props;
+const { menuGroups, primaryCta } = navigationForLocale(locale);
+const isEnglish = locale === 'en';
 
 const activeState = { pathname: Astro.url.pathname, currentType: Astro.url.searchParams.get('type') };
 const isItemActive = (item: NavItem) => isNavItemActive(item, activeState);
@@ -27,8 +29,8 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 
 <header class="orbit-header">
 	<div class="orbit-header-inner">
-		<OrbitBrand />
-		<nav class="orbit-desktop-nav" aria-label="Primær navigation">
+		<OrbitBrand {locale} />
+		<nav class="orbit-desktop-nav" aria-label={isEnglish ? 'Primary navigation' : 'Primær navigation'}>
 			{menuGroups.map((group) => (
 				<details class:list={['orbit-nav-menu', { 'is-active': isGroupActive(group) }]}>
 					<summary>{group.label}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg></summary>
@@ -46,35 +48,35 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 							) : (
 								<span class="orbit-menu-upcoming" aria-disabled="true">
 									<span class="orbit-menu-mark" aria-hidden="true"></span>
-									<span><strong>{item.label}<em>Kommer snart</em></strong><small>{item.description}</small></span>
+									<span><strong>{item.label}<em>{isEnglish ? 'Coming soon' : 'Kommer snart'}</em></strong><small>{item.description}</small></span>
 								</span>
 							))}
 						</div>
 					</div>
 				</details>
 			))}
-			<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>Virksomheder</a>
+			<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Virksomheder'}</a>
 		</nav>
 
 		<div class="orbit-header-actions">
 			<details class="orbit-search-menu">
-				<summary aria-label="Søg på LearnAI"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></summary>
+				<summary aria-label={isEnglish ? 'Search Danish LearnAI' : 'Søg på LearnAI'}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></summary>
 				<form action="/search" method="get" role="search">
-					<label for="header-search">Søg på LearnAI</label>
-					<div><input id="header-search" type="search" name="q" placeholder="Fx prompts til møder" /><button type="submit">Søg</button></div>
+					<label for="header-search">{isEnglish ? 'Search Danish LearnAI' : 'Søg på LearnAI'}</label>
+					<div><input id="header-search" type="search" name="q" placeholder={isEnglish ? 'Search Danish content' : 'Fx prompts til møder'} /><button type="submit">{isEnglish ? 'Search' : 'Søg'}</button></div>
 				</form>
 			</details>
 			<LanguageSwitcher {locale} {alternates} />
-			<HeaderAccount />
+			<HeaderAccount {locale} />
 			<a class="orbit-header-cta" href={primaryCta.href} data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked} data-analytics-source="header_desktop" data-analytics-detail="course_page">{primaryCta.label}</a>
 		</div>
 
 		<details class="orbit-mobile-nav">
-			<summary aria-label="Åbn menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>
-			<nav aria-label="Mobil navigation">
+			<summary aria-label={isEnglish ? 'Open menu' : 'Åbn menu'} data-open-label={isEnglish ? 'Open menu' : 'Åbn menu'} data-close-label={isEnglish ? 'Close menu' : 'Luk menu'}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>
+			<nav aria-label={isEnglish ? 'Mobile navigation' : 'Mobil navigation'}>
 				<form action="/search" method="get" role="search" class="orbit-mobile-search">
-					<label for="mobile-search">Søg på LearnAI</label>
-					<div><input id="mobile-search" type="search" name="q" placeholder="Søg på LearnAI" /><button type="submit" aria-label="Søg"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button></div>
+					<label for="mobile-search">{isEnglish ? 'Search Danish LearnAI' : 'Søg på LearnAI'}</label>
+					<div><input id="mobile-search" type="search" name="q" placeholder={isEnglish ? 'Search Danish content' : 'Søg på LearnAI'} /><button type="submit" aria-label={isEnglish ? 'Search' : 'Søg'}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button></div>
 				</form>
 				{menuGroups.map((group) => (
 					<details class="orbit-mobile-section">
@@ -83,12 +85,12 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 							{group.items.map((item) => item.href ? (
 								<a href={item.href} aria-current={isItemActive(item) ? 'page' : undefined}>{item.label}</a>
 							) : (
-								<span aria-disabled="true">{item.label}<small>Kommer snart</small></span>
+								<span aria-disabled="true">{item.label}<small>{isEnglish ? 'Coming soon' : 'Kommer snart'}</small></span>
 							))}
 						</div>
 					</details>
 				))}
-				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>Virksomheder</a>
+				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Virksomheder'}</a>
 				<div class="orbit-mobile-meta">
 					{alternates.length > 1
 						? alternates.map((alternate) => (
@@ -96,9 +98,9 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 								{alternate.locale === 'en' ? 'English' : 'Dansk'}
 							</a>
 						))
-						: <span>Dansk</span>}
-					<a href="/login" data-account-anonymous>Log ind</a>
-					<a href="/dashboard" data-account-menu hidden><span data-account-name>Din profil</span></a>
+						: <span>{isEnglish ? 'English' : 'Dansk'}</span>}
+					<a href="/login" data-account-anonymous>{isEnglish ? 'Log in' : 'Log ind'}</a>
+					<a href="/dashboard" data-account-menu hidden><span data-account-name>{isEnglish ? 'Your profile' : 'Din profil'}</span></a>
 				</div>
 				<a class="orbit-mobile-cta" href={primaryCta.href} data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked} data-analytics-source="header_mobile" data-analytics-detail="course_page">{primaryCta.label}</a>
 			</nav>
@@ -126,7 +128,10 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 	mobileSections.forEach((section) => section.addEventListener('toggle', () => {
 		if (section.open) mobileSections.forEach((other) => { if (other !== section) closeDetails(other); });
 	}));
-	mobileDetails?.addEventListener('toggle', () => mobileSummary?.setAttribute('aria-label', mobileDetails.open ? 'Luk menu' : 'Åbn menu'));
+	mobileDetails?.addEventListener('toggle', () => mobileSummary?.setAttribute(
+		'aria-label',
+		mobileDetails.open ? mobileSummary.dataset.closeLabel ?? 'Luk menu' : mobileSummary.dataset.openLabel ?? 'Åbn menu',
+	));
 	document.addEventListener('click', (event) => desktopMenus.forEach((menu) => { if (!menu.contains(event.target as Node)) closeDetails(menu); }));
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {

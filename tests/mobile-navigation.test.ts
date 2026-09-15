@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { dockItems, isNavItemActive, menuGroups, siteAuthor } from '../src/lib/navigation/site-nav';
@@ -10,7 +11,7 @@ const layout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.me
 describe('mobil-dock', () => {
 	it('is rendered on every public page', () => {
 		expect(layout).toContain("import MobileDock from '../components/marketing/MobileDock.astro'");
-		expect(layout).toContain('<MobileDock />');
+		expect(layout).toContain('<MobileDock {locale} />');
 		expect(layout).toContain("import '../styles/mobile-dock.css'");
 	});
 
@@ -34,7 +35,7 @@ describe('mobil-drawer', () => {
 		const groupsIndex = dock.indexOf('menuGroups.map');
 		expect(profileIndex).toBeGreaterThan(-1);
 		expect(profileIndex).toBeLessThan(groupsIndex);
-		expect(dock).toContain('<b>Om mig</b>');
+		expect(dock).toContain("{isEnglish ? 'About me (Danish)' : 'Om mig'}");
 		expect(siteAuthor.href).toBe('/om');
 	});
 

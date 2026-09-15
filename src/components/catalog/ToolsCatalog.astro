@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { buildFacet, fetchTools, label, labels, searchIndex, type Locale } from '../../lib/catalog';
@@ -64,6 +65,7 @@ const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.si
 const itemList = createItemListSchema(
 	canonicalUrl,
 	sorted.map((tool) => ({ name: tool.name, url: tool.url ?? `${path}#${tool.slug}` })),
+	locale,
 );
 ---
 

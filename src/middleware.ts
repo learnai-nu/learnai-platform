@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 import { defineMiddleware } from 'astro:middleware';
 
 /**
@@ -18,8 +19,7 @@ export const onRequest = defineMiddleware((context, next) => {
 		return next();
 	}
 
-	// Explicit Response so Vercel emits a real HTTP 301 (context.redirect can
-	// surface as 404+Location in some edge/SSR paths, which browsers ignore).
+	// Explicit Response keeps the status code at 301 on the deployed SSR path.
 	return new Response(null, {
 		status: 301,
 		headers: { Location: `/laer/${slug}` },

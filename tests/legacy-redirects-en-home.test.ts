@@ -1,9 +1,9 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const astroConfig = readFileSync(new URL('../astro.config.mjs', import.meta.url), 'utf8');
 const middleware = readFileSync(new URL('../src/middleware.ts', import.meta.url), 'utf8');
-const vercelConfig = readFileSync(new URL('../vercel.json', import.meta.url), 'utf8');
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const danishHome = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 const englishHome = readFileSync(new URL('../src/pages/en/index.astro', import.meta.url), 'utf8');
@@ -30,10 +30,12 @@ describe('legacy redirects and English home SEO', () => {
 		expect(middleware).not.toContain('context.redirect');
 	});
 
-	it('ships vercel.json platform edge redirect for articles→laer', () => {
-		expect(vercelConfig).toContain('"/articles/:path*"');
-		expect(vercelConfig).toContain('"/laer/:path*"');
-		expect(vercelConfig).toContain('"permanent": true');
+	it('keeps one redirect owner and avoids duplicate trailing-slash routes', () => {
+		expect(astroConfig).not.toContain("'/articles/':");
+		expect(astroConfig).not.toContain("'/about/':");
+		expect(astroConfig).not.toContain("'/courses/':");
+		expect(astroConfig).not.toContain("'/privacy/':");
+		expect(astroConfig).not.toContain("'/prompts/':");
 	});
 
 	it('emits reciprocal home hreflang including x-default', () => {

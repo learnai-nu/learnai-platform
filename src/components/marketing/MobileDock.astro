@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 ---
 /**
  * Thumb-reachable navigation for mobile.
@@ -9,14 +10,17 @@
  */
 import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 import {
-	dockItems,
 	isNavGroupActive,
 	isNavItemActive,
-	menuGroups,
-	primaryCta,
+	navigationForLocale,
 	siteAuthor,
 	type DockIcon,
 } from '../../lib/navigation/site-nav';
+
+interface Props { locale?: 'da' | 'en'; }
+const { locale = 'da' } = Astro.props;
+const { dockItems, menuGroups, primaryCta } = navigationForLocale(locale);
+const isEnglish = locale === 'en';
 
 const activeState = {
 	pathname: Astro.url.pathname,
@@ -31,13 +35,13 @@ const icons: Record<DockIcon, string> = {
 };
 ---
 
-<nav class="mn-bar" aria-label="Mobilnavigation">
+<nav class="mn-bar" aria-label={isEnglish ? 'Mobile navigation' : 'Mobilnavigation'}>
 	{dockItems.map((item) => item.href ? (
 		<a
 			class:list={['mn-item', { 'mn-item-cta': item.icon === 'start' }]}
 			href={item.href}
 			aria-current={isNavItemActive(item, activeState) ? 'page' : undefined}
-			aria-label={item.icon === 'start' ? `${item.label} — gratis AI-kursus` : undefined}
+			aria-label={item.icon === 'start' ? (isEnglish ? item.label : `${item.label} — gratis AI-kursus`) : undefined}
 			data-analytics-event={item.icon === 'start' ? ANALYTICS_EVENTS.courseCtaClicked : undefined}
 			data-analytics-source={item.icon === 'start' ? 'mobile_dock' : undefined}
 			data-analytics-detail={item.icon === 'start' ? 'course_page' : undefined}
@@ -56,7 +60,7 @@ const icons: Record<DockIcon, string> = {
 <dialog class="mn-drawer" id="mn-drawer" aria-labelledby="mn-drawer-title">
 	<div class="mn-head">
 		<p class="mn-title" id="mn-drawer-title">Menu</p>
-		<button type="button" class="mn-icon-btn" data-close-drawer aria-label="Luk menu">
+		<button type="button" class="mn-icon-btn" data-close-drawer aria-label={isEnglish ? 'Close menu' : 'Luk menu'}>
 			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"></path></svg>
 		</button>
 	</div>
@@ -64,16 +68,16 @@ const icons: Record<DockIcon, string> = {
 		<a class="mn-profile" href={siteAuthor.href}>
 			<span class="mn-avatar" aria-hidden="true">{siteAuthor.initials}</span>
 			<span class="mn-profile-text">
-				<b>Om mig</b>
-				<em>{siteAuthor.name} — {siteAuthor.role}</em>
+				<b>{isEnglish ? 'About me (Danish)' : 'Om mig'}</b>
+				<em>{siteAuthor.name} — {isEnglish ? 'Digital business development & AI strategy' : siteAuthor.role}</em>
 			</span>
 			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
 		</a>
 
 		<form class="mn-search" action="/search" method="get" role="search">
-			<label class="mn-sr-only" for="mn-search-input">Søg på LearnAI</label>
-			<input id="mn-search-input" type="search" name="q" placeholder="Søg på LearnAI" />
-			<button type="submit" aria-label="Søg">
+			<label class="mn-sr-only" for="mn-search-input">{isEnglish ? 'Search Danish LearnAI' : 'Søg på LearnAI'}</label>
+			<input id="mn-search-input" type="search" name="q" placeholder={isEnglish ? 'Search Danish content' : 'Søg på LearnAI'} />
+			<button type="submit" aria-label={isEnglish ? 'Search' : 'Søg'}>
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
 			</button>
 		</form>
@@ -90,22 +94,22 @@ const icons: Record<DockIcon, string> = {
 							{item.label}<small>{item.description}</small>
 						</a>
 					) : (
-						<span aria-disabled="true">{item.label}<small>Kommer snart</small></span>
+						<span aria-disabled="true">{item.label}<small>{isEnglish ? 'Coming soon' : 'Kommer snart'}</small></span>
 					))}
 				</div>
 			</details>
 		))}
 
 		<a class="mn-link" href="/virksomheder">
-			Virksomheder
+			{isEnglish ? 'For businesses (Danish)' : 'Virksomheder'}
 			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
 		</a>
 		<a class="mn-link" href="/login" data-account-anonymous>
-			Log ind
+			{isEnglish ? 'Log in' : 'Log ind'}
 			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
 		</a>
 		<a class="mn-link" href="/dashboard" data-account-menu hidden>
-			<span data-account-name>Din profil</span>
+			<span data-account-name>{isEnglish ? 'Your profile' : 'Din profil'}</span>
 			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
 		</a>
 
