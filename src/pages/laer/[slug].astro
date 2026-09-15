@@ -8,7 +8,11 @@ import ArticleSummary from '../../components/article/ArticleSummary.astro';
 import ArticleSources from '../../components/article/ArticleSources.astro';
 import ArticleToc from '../../components/article/ArticleToc.astro';
 import AuthorBio from '../../components/article/AuthorBio.astro';
+import ChatGptTimeline from '../../components/article/ChatGptTimeline.astro';
+import ClaudeTimeline from '../../components/article/ClaudeTimeline.astro';
 import ContentBody from '../../components/ContentBody.astro';
+import GuideCourseBanner from '../../components/article/GuideCourseBanner.astro';
+import GuideTools from '../../components/article/GuideTools.astro';
 import PromptBuilder from '../../components/PromptBuilder';
 import RelatedContent from '../../components/article/RelatedContent.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
@@ -23,6 +27,7 @@ import {
 } from '../../lib/content/article';
 import { renderMarkdown } from '../../lib/content/markdown';
 import { selectRelatedContent } from '../../lib/content/related';
+import { toolSlugsForGuide } from '../../lib/content/tool-guide-links';
 import { siteAuthor } from '../../lib/navigation/site-nav';
 import { parsePromptDefinition } from '../../lib/prompts/contracts';
 import { createArticleSchema, createCanonicalUrl, createFaqSchema, type SchemaNode } from '../../lib/seo/schema';
@@ -40,6 +45,19 @@ const { data: item, error } = await supabase
 	.maybeSingle();
 
 if (error || !item) return new Response('Indholdet blev ikke fundet.', { status: 404 });
+const isChatGptGuide = item.slug === 'hvad-er-chatgpt-guide';
+const isClaudeGuide = item.slug === 'hvad-er-claude-ai-guide';
+const displayTitle = isChatGptGuide
+	? 'ChatGPT-guide: Sådan bruger du ChatGPT i 2026'
+	: isClaudeGuide
+		? 'Claude-guide: Sådan bruger du Claude i 2026'
+	: item.title;
+const displayExcerpt = isChatGptGuide
+	? 'En praktisk guide til chat, research, filer, projekter, apps, stemme og længere arbejdsopgaver — med konkrete trin, kontrolpunkter og en interaktiv tidslinje.'
+	: isClaudeGuide
+		? 'En praktisk guide til tekst, research, store dokumenter, Projects, Artifacts, Claude Code og stemme — med konkrete arbejdsgange og en interaktiv tidslinje.'
+	: item.excerpt;
+const contentType = isChatGptGuide || isClaudeGuide ? 'guide' : item.type;
 const promptDefinition = item.type === 'prompt'
 	? parsePromptDefinition(item.source_metadata)
 	: null;
@@ -51,10 +69,107 @@ const typeLabels = {
 	prompt: 'Prompt',
 	tool: 'Værktøj',
 } as const;
-const typeLabel = typeLabels[item.type as keyof typeof typeLabels] ?? 'Indhold';
-const pageDescription = item.seo_description ?? item.excerpt ?? 'Praktisk AI-læring på dansk.';
+const typeLabel = typeLabels[contentType as keyof typeof typeLabels] ?? 'Indhold';
+const pageDescription = isChatGptGuide || isClaudeGuide
+	? displayExcerpt
+	: item.seo_description ?? displayExcerpt ?? 'Praktisk AI-læring på dansk.';
 const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
 const extras = parseArticleExtras(item.source_metadata);
+const chatGptGuideSummary = [
+	'Brug Chat til spørgsmål og løbende sparring, Work til større leverancer og Codex til softwarearbejde.',
+	'Giv ChatGPT et tydeligt mål, relevant kontekst, ønsket format og de begrænsninger, svaret skal respektere.',
+	'Websøgning, research, filer, projekter, apps og stemme kan indgå i samme arbejdsgang — afhængigt af abonnement og opsætning.',
+	'Kontrollér altid centrale fakta, kilder, beregninger og handlinger, før resultatet bruges.',
+];
+const chatGptGuideSources = [
+	{
+		name: 'Use ChatGPT',
+		publisher: 'OpenAI',
+		url: 'https://learn.chatgpt.com/docs/use-chatgpt',
+		sourceType: 'primary' as const,
+		note: 'Officiel produktguide til Chat, Work, Codex og de centrale arbejdsformer.',
+	},
+	{
+		name: 'What’s new in ChatGPT',
+		publisher: 'OpenAI',
+		url: 'https://learn.chatgpt.com/docs/whats-new',
+		sourceType: 'primary' as const,
+		note: 'Officiel ændringslog. Funktioner kan variere efter abonnement, region og udrulning.',
+	},
+	{
+		name: 'Projects in ChatGPT',
+		publisher: 'OpenAI',
+		url: 'https://learn.chatgpt.com/docs/projects',
+		sourceType: 'primary' as const,
+		note: 'Officiel vejledning til projekter, filer, instruktioner og projektkontekst.',
+	},
+];
+const chatGptGuideFaq = [
+	{
+		question: 'Hvilken arbejdsform skal jeg vælge?',
+		answer: 'Vælg Chat til hurtige svar og sparring, Work til større materialer med flere trin og Codex til udvikling og kodearbejde. Din adgang kan afhænge af abonnementet.',
+	},
+	{
+		question: 'Kan jeg stole på ChatGPTs svar?',
+		answer: 'Brug svaret som arbejdsgrundlag, ikke som automatisk facit. Kontrollér især tal, citater, kilder, jura, sundhed, økonomi og handlinger med konsekvenser.',
+	},
+	{
+		question: 'Kan ChatGPT bruge mine egne filer?',
+		answer: 'Ja, ChatGPT kan arbejde med blandt andet dokumenter, regneark, billeder og PDF-filer. Del kun materiale, som du har ret og organisatorisk godkendelse til at behandle.',
+	},
+];
+const claudeGuideSummary = [
+	'Brug almindelig chat til sparring, Projects til vedvarende kontekst, Artifacts til synlige leverancer og Claude Code til softwarearbejde.',
+	'Research, websøgning, integrationer og lange kontekstvinduer gør Claude velegnet til dokumenttunge opgaver med flere kilder.',
+	'Claude kan oprette og redigere dokumenter, regneark, præsentationer og PDF-filer samt føre samtaler med stemme.',
+	'Kontrollér altid centrale fakta, kildehenvisninger, beregninger, kode og handlinger, før resultatet bruges.',
+];
+const claudeGuideSources = [
+	{
+		name: 'Features and capabilities', publisher: 'Anthropic',
+		url: 'https://support.claude.com/en/collections/18031719-features-and-capabilities',
+		sourceType: 'primary' as const,
+		note: 'Officiel indgang til Claudes aktuelle produktfunktioner. Tilgængelighed kan variere efter plan og platform.',
+	},
+	{
+		name: 'Introducing Claude Opus 4.8', publisher: 'Anthropic', publishedDate: '28. maj 2026',
+		url: 'https://www.anthropic.com/news/claude-opus-4-8', sourceType: 'primary' as const,
+		note: 'Officiel modelannoncering med oplysninger om indsatsstyring og dynamiske workflows.',
+	},
+	{
+		name: 'Use research on Claude', publisher: 'Anthropic', publishedDate: '2. juni 2026',
+		url: 'https://support.claude.com/en/articles/11088861-use-research-on-claude', sourceType: 'primary' as const,
+		note: 'Officiel vejledning til Research, websøgning, citater og forbundne datakilder.',
+	},
+	{
+		name: 'What are artifacts and how do I use them?', publisher: 'Anthropic',
+		url: 'https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them', sourceType: 'primary' as const,
+		note: 'Officiel dokumentation af Artifacts, deling, MCP-forbindelser og vedvarende lagring.',
+	},
+];
+const claudeGuideFaq = [
+	{
+		question: 'Hvornår bør jeg bruge et Project i Claude?',
+		answer: 'Brug et Project, når flere samtaler skal dele de samme filer, instruktioner og baggrundsviden. Det reducerer behovet for at forklare konteksten igen.',
+	},
+	{
+		question: 'Hvad er forskellen på Projects og Artifacts?',
+		answer: 'Et Project organiserer samtaler og viden over tid. Et Artifact er en konkret leverance — eksempelvis et dokument, et diagram, en prototype eller et lille interaktivt værktøj.',
+	},
+	{
+		question: 'Kan jeg stole på Claudes svar?',
+		answer: 'Nej, ikke uden kontrol. Bed om kilder og præcise henvisninger, og kontrollér især tal, citater, juridiske oplysninger, analyser og kode med konsekvenser.',
+	},
+];
+const summaryItems = extras.summary?.length
+	? extras.summary
+	: isChatGptGuide ? chatGptGuideSummary : isClaudeGuide ? claudeGuideSummary : [];
+const articleSources = extras.sources?.length
+	? extras.sources
+	: isChatGptGuide ? chatGptGuideSources : isClaudeGuide ? claudeGuideSources : [];
+const articleFaq = extras.faq?.length
+	? extras.faq
+	: isChatGptGuide ? chatGptGuideFaq : isClaudeGuide ? claudeGuideFaq : [];
 
 // Render once here so the table of contents, the reading time and the body all
 // describe the same HTML.
@@ -66,7 +181,20 @@ const renderedBodyHtml = markdown ? renderMarkdown(markdown, { headingIds: true 
 const bodyHtml = renderedBodyHtml
 	? decorateArticleHeadings(renderedBodyHtml, extras.sectionLabels ?? [])
 	: '';
-const headings = bodyHtml ? extractHeadings(bodyHtml) : extractBlockHeadings(item.body);
+const bodyHeadings = bodyHtml ? extractHeadings(bodyHtml) : extractBlockHeadings(item.body);
+// Keep the existing URL as the stable home of the guide. The metadata flag lets
+// editors reuse the bounded module, while the slug guarantees that the preview
+// can be reviewed before the production content row is updated.
+const hasChatGptTimeline = extras.interactiveModule === 'chatgpt-timeline'
+	|| isChatGptGuide;
+const hasClaudeTimeline = extras.interactiveModule === 'claude-timeline'
+	|| isClaudeGuide;
+const timelineHeading = hasChatGptTimeline
+	? { id: 'chatgpt-tidslinje', text: 'ChatGPTs udvikling', level: 2 as const }
+	: hasClaudeTimeline ? { id: 'claude-tidslinje', text: 'Claudes udvikling', level: 2 as const } : null;
+const headings = timelineHeading
+	? [timelineHeading, ...bodyHeadings]
+	: bodyHeadings;
 const wordCount = bodyHtml ? countWords(bodyHtml) : countBlockWords(item.body);
 const readingMinutes = estimateReadingMinutes(wordCount);
 const isLongForm = !promptDefinition && wordCount > 0;
@@ -81,16 +209,28 @@ const { data: candidates } = await supabase
 	.order('published_at', { ascending: false })
 	.limit(40);
 const related = selectRelatedContent(
-	{ slug: item.slug, title: item.title, type: item.type, keywords: extras.keywords },
+	{ slug: item.slug, title: displayTitle, type: contentType, keywords: extras.keywords },
 	candidates ?? [],
 );
+const preferredToolSlugs = contentType === 'guide' ? toolSlugsForGuide(item.slug) : [];
+const { data: matchingTools } = preferredToolSlugs.length
+	? await supabase
+		.from('tools')
+		.select('slug,name,tagline')
+		.eq('published', true)
+		.eq('locale', 'da')
+		.in('slug', preferredToolSlugs)
+	: { data: [] };
+const guideTools = preferredToolSlugs
+	.map((slug) => matchingTools?.find((tool) => tool.slug === slug))
+	.filter((tool): tool is { slug: string; name: string; tagline: string } => Boolean(tool));
 
-const isArticleType = ['article', 'guide', 'news'].includes(item.type);
+const isArticleType = ['article', 'guide', 'news'].includes(contentType);
 const articleSchema: SchemaNode | undefined = isArticleType
 	? createArticleSchema({
 		canonicalUrl,
-		type: item.type === 'news' ? 'NewsArticle' : 'Article',
-		headline: item.title,
+		type: contentType === 'news' ? 'NewsArticle' : 'Article',
+		headline: displayTitle,
 		description: pageDescription,
 		datePublished: item.published_at,
 		dateModified: item.updated_at,
@@ -100,12 +240,12 @@ const articleSchema: SchemaNode | undefined = isArticleType
 		imageAlt: extras.imageAlt ?? null,
 		wordCount: wordCount || null,
 		readingMinutes: isLongForm ? readingMinutes : null,
-		citations: extras.sources ?? [],
+		citations: articleSources,
 		about: extras.about ?? [],
 		audio: extras.audio ?? undefined,
 	})
 	: undefined;
-const faqEntries = extras.faq ?? [];
+const faqEntries = articleFaq;
 const additionalSchema = faqEntries.length ? [createFaqSchema(canonicalUrl, faqEntries)] : [];
 const publishedLabel = item.published_at
 	? new Date(item.published_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -113,7 +253,7 @@ const publishedLabel = item.published_at
 ---
 
 <SiteLayout
-	title={`${item.seo_title ?? item.title} — LearnAI.nu`}
+	title={`${isChatGptGuide || isClaudeGuide ? displayTitle : item.seo_title ?? displayTitle} — LearnAI.nu`}
 	description={pageDescription}
 	ogType={isArticleType ? 'article' : 'website'}
 	image={extras.image ?? null}
@@ -124,7 +264,7 @@ const publishedLabel = item.published_at
 	breadcrumbs={[
 		{ name: 'Forside', url: '/' },
 		{ name: 'Lær AI', url: '/laer' },
-		{ name: item.title, url: Astro.url.pathname },
+		{ name: displayTitle, url: Astro.url.pathname },
 	]}
 	mainEntity={articleSchema}
 	additionalSchema={additionalSchema}
@@ -140,11 +280,11 @@ const publishedLabel = item.published_at
 			<ArticleBreadcrumbs items={[
 				{ name: 'Forside', url: '/' },
 				{ name: 'Lær AI', url: '/laer' },
-				{ name: item.title },
+				{ name: displayTitle },
 			]} />
 			<p class="eyebrow">{typeLabel}</p>
-			<h1>{item.title}</h1>
-			{item.excerpt && <p class="hero-copy">{item.excerpt}</p>}
+			<h1>{displayTitle}</h1>
+			{displayExcerpt && <p class="hero-copy">{displayExcerpt}</p>}
 			<div class="article-meta">
 				<span class="article-meta-avatar" aria-hidden="true">{siteAuthor.initials}</span>
 				<div>
@@ -176,14 +316,18 @@ const publishedLabel = item.published_at
 				<PromptBuilder client:load definition={promptDefinition} title={item.title} />
 			) : (
 				<>
-					<ArticleSummary items={extras.summary ?? []} />
+					<ArticleSummary items={summaryItems} />
+					{hasChatGptTimeline && <ChatGptTimeline />}
+					{hasClaudeTimeline && <ClaudeTimeline />}
 					{bodyHtml
 						? <div class="article-body" set:html={bodyHtml} />
 						: <ContentBody body={item.body} />}
 					<ArticleFaq entries={faqEntries} />
-					<ArticleSources sources={extras.sources ?? []} />
+					<ArticleSources sources={articleSources} />
+					{contentType === 'guide' && <GuideTools tools={guideTools} />}
 					<AuthorBio />
 					<RelatedContent items={related} />
+					{contentType === 'guide' && <GuideCourseBanner />}
 					<ArticleBriefCta />
 				</>
 			)}
@@ -193,7 +337,9 @@ const publishedLabel = item.published_at
 	<script>
 		import { initArticleAudioPlayers } from '../../scripts/article-audio-player';
 		import { initArticleReadingProgress } from '../../scripts/article-reading-progress';
+		import { initChatGptTimelines } from '../../scripts/chatgpt-timeline';
 		initArticleAudioPlayers();
 		initArticleReadingProgress();
+		initChatGptTimelines();
 	</script>
 </SiteLayout>

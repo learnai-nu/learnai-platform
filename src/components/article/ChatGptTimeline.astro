@@ -1,0 +1,134 @@
+---
+const milestones = [
+	{
+		date: '30. nov. 2022',
+		year: '2022',
+		era: 'foundation',
+		title: 'ChatGPT åbner samtalen',
+		description: 'ChatGPT gør generativ AI tilgængelig i en enkel dialog: skriv en opgave, læs svaret og følg op i samme samtale.',
+		impact: 'AI flytter fra udviklerværktøj til noget, millioner kan afprøve uden kode.',
+		source: 'https://learn.chatgpt.com/docs/use-chatgpt',
+	},
+	{
+		date: '14. mar. 2023',
+		year: '2023',
+		era: 'foundation',
+		title: 'GPT-4 giver mere kapacitet',
+		description: 'GPT-4 løfter kvaliteten i krævende tekst- og ræsonnementsopgaver og bliver et vigtigt skridt fra demo til arbejdsredskab.',
+		impact: 'Flere faglige opgaver kan løses i dialog, men svarene kræver stadig kontrol.',
+		source: 'https://developers.openai.com/api/docs/models/gpt-4',
+	},
+	{
+		date: '6. nov. 2023',
+		year: '2023',
+		era: 'foundation',
+		title: 'Tilpasning bliver en del af produktet',
+		description: 'Faste instruktioner, egne materialer og specialiserede GPT’er gør det muligt at forme ChatGPT til bestemte roller og arbejdsgange.',
+		impact: 'Brugeren går fra enkeltstående prompts til genbrugelig kontekst.',
+		source: 'https://learn.chatgpt.com/docs/projects',
+	},
+	{
+		date: '13. maj 2024',
+		year: '2024',
+		era: 'multimodal',
+		title: 'GPT-4o samler flere medier',
+		description: 'Tekst, billeder og stemme bliver tættere integreret. ChatGPT kan se, lytte og svare i samme arbejdsflade.',
+		impact: 'Et skærmbillede, et dokument eller en samtale kan være udgangspunktet — ikke kun skrevet tekst.',
+		source: 'https://developers.openai.com/api/docs/models/chatgpt-4o-latest',
+	},
+	{
+		date: 'Efterår 2024',
+		year: '2024',
+		era: 'multimodal',
+		title: 'Søgning og arbejdsflader vokser frem',
+		description: 'Websøgning giver adgang til aktuelle kilder, mens redigerbare arbejdsflader gør længere tekster og kode lettere at bearbejde.',
+		impact: 'ChatGPT kan både hente nyt materiale og hjælpe med at forfine et konkret produkt.',
+		source: 'https://learn.chatgpt.com/docs/use-chatgpt',
+	},
+	{
+		date: '2025',
+		year: '2025',
+		era: 'agents',
+		title: 'Research og agenter tager flere trin',
+		description: 'Researchfunktioner kan planlægge en undersøgelse, sammenholde kilder og aflevere en dokumenteret rapport. Agentiske funktioner kan arbejde gennem flere trin.',
+		impact: 'Opgaven beskrives som et mål, ikke kun som ét spørgsmål.',
+		source: 'https://learn.chatgpt.com/docs/use-chatgpt',
+	},
+	{
+		date: '2025',
+		year: '2025',
+		era: 'agents',
+		title: 'Projekter samler konteksten',
+		description: 'Chats, filer og instruktioner kan samles omkring et vedvarende projekt, så arbejdet ikke skal begynde forfra hver gang.',
+		impact: 'ChatGPT bliver bedre egnet til tilbagevendende og tværgående opgaver.',
+		source: 'https://learn.chatgpt.com/docs/projects',
+	},
+	{
+		date: '9. jul. 2026',
+		year: '2026',
+		era: 'work',
+		title: 'ChatGPT Work leverer færdige materialer',
+		description: 'Work kan samle filer og værktøjer, planlægge længere forløb og skabe dokumenter, regneark, præsentationer, analyser og websites til gennemsyn.',
+		impact: 'Skellet bliver tydeligt: Chat til dialog, Work til leverancer og Codex til softwarearbejde.',
+		source: 'https://learn.chatgpt.com/docs/use-chatgpt',
+	},
+	{
+		date: 'Sep. 2026',
+		year: '2026',
+		era: 'work',
+		title: 'Modeller og værktøjer arbejder tættere sammen',
+		description: 'De nyeste modeller kombinerer ræsonnement, computerbrug og værktøjer til mere krævende end-to-end-opgaver.',
+		impact: 'Den praktiske forskel ligger ikke kun i modellen, men i hvilke kilder, filer og handlinger den får adgang til.',
+		source: 'https://learn.chatgpt.com/docs/whats-new',
+	},
+] as const;
+---
+
+<section class="chatgpt-timeline" data-ai-timeline data-chatgpt-timeline aria-labelledby="chatgpt-tidslinje">
+	<header class="chatgpt-timeline-header">
+		<p class="chatgpt-timeline-kicker">Fra chatbot til arbejdsplatform</p>
+		<h2 id="chatgpt-tidslinje">ChatGPTs udvikling</h2>
+		<p>Vælg et vendepunkt og se, hvad der ændrede sig for brugeren.</p>
+	</header>
+
+	<div class="chatgpt-timeline-filters" role="group" aria-label="Filtrér tidslinjen">
+		<button type="button" class="is-active" data-timeline-filter="all" aria-pressed="true">Hele rejsen</button>
+		<button type="button" data-timeline-filter="foundation" aria-pressed="false">2022–23</button>
+		<button type="button" data-timeline-filter="multimodal" aria-pressed="false">2024</button>
+		<button type="button" data-timeline-filter="agents" aria-pressed="false">2025</button>
+		<button type="button" data-timeline-filter="work" aria-pressed="false">2026</button>
+	</div>
+
+	<div class="chatgpt-timeline-track" aria-label="Vigtige milepæle">
+		{milestones.map((milestone, index) => (
+			<button
+				type="button"
+				class:list={['chatgpt-milestone', { 'is-active': index === milestones.length - 1 }]}
+				data-timeline-milestone
+				data-era={milestone.era}
+				data-date={milestone.date}
+				data-title={milestone.title}
+				data-description={milestone.description}
+				data-impact={milestone.impact}
+				data-source={milestone.source}
+				aria-pressed={index === milestones.length - 1 ? 'true' : 'false'}
+			>
+				<span>{milestone.year}</span>
+				<strong>{milestone.title}</strong>
+			</button>
+		))}
+	</div>
+
+	<article class="chatgpt-timeline-detail" data-timeline-detail aria-live="polite">
+		<div>
+			<p class="chatgpt-timeline-date" data-timeline-date>{milestones.at(-1)?.date}</p>
+			<h3 data-timeline-title>{milestones.at(-1)?.title}</h3>
+			<p data-timeline-description>{milestones.at(-1)?.description}</p>
+		</div>
+		<aside>
+			<span>Hvad ændrede det?</span>
+			<p data-timeline-impact>{milestones.at(-1)?.impact}</p>
+			<a href={milestones.at(-1)?.source} data-timeline-source rel="noopener noreferrer">Se OpenAI-kilden ↗</a>
+		</aside>
+	</article>
+</section>

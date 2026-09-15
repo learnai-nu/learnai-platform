@@ -1,0 +1,109 @@
+---
+const milestones = [
+	{
+		date: '14. mar. 2023', year: '2023', era: 'foundation', title: 'Claude lanceres bredt',
+		description: 'Anthropic åbner Claude som samtaleassistent og API efter en lukket testperiode med udvalgte partnere.',
+		impact: 'Claude bliver et praktisk alternativ til andre AI-assistenter med fokus på styrbarhed og lange tekstopgaver.',
+		source: 'https://www.anthropic.com/news/introducing-claude',
+	},
+	{
+		date: '11. maj 2023', year: '2023', era: 'foundation', title: 'Konteksten vokser til 100K tokens',
+		description: 'Claude kan behandle omkring 75.000 ord i én arbejdsgang og analysere langt større dokumentmængder end tidligere.',
+		impact: 'Hele rapporter, bøger og længere samtaler kan bruges som samlet kontekst.',
+		source: 'https://www.anthropic.com/news/100k-context-windows',
+	},
+	{
+		date: '11. jul. 2023', year: '2023', era: 'foundation', title: 'Claude 2 og claude.ai',
+		description: 'Claude 2 forbedrer blandt andet kodning, matematik og ræsonnement og bliver tilgængelig på et offentligt betawebsite.',
+		impact: 'Claude går fra partnerintegrationer til et produkt, almindelige brugere selv kan åbne og afprøve.',
+		source: 'https://www.anthropic.com/news/claude-2',
+	},
+	{
+		date: '4. mar. 2024', year: '2024', era: 'multimodal', title: 'Claude 3 bliver en modelfamilie',
+		description: 'Haiku, Sonnet og Opus giver forskellige balancer mellem hastighed, pris og kapacitet. Billedforståelse bliver en central funktion.',
+		impact: 'Brugeren kan vælge model efter opgaven i stedet for at bruge én model til alt.',
+		source: 'https://www.anthropic.com/news/claude-3-family',
+	},
+	{
+		date: '21. jun. 2024', year: '2024', era: 'multimodal', title: 'Artifacts skaber en arbejdsflade',
+		description: 'Claude 3.5 Sonnet lanceres sammen med Artifacts, hvor dokumenter, kode og interaktive prototyper vises og redigeres ved siden af chatten.',
+		impact: 'Samtalen kan munde ud i et konkret produkt, som brugeren kan se, rette og dele.',
+		source: 'https://www.anthropic.com/news/claude-3-5-sonnet',
+	},
+	{
+		date: '24. feb. 2025', year: '2025', era: 'agents', title: 'Extended thinking og Claude Code',
+		description: 'Claude 3.7 Sonnet introducerer hybrid ræsonnering, mens Claude Code starter som et agentisk udviklingsværktøj i terminalen.',
+		impact: 'Claude kan bruge mere tid på svære opgaver og arbejde direkte med en kodebase under brugerens kontrol.',
+		source: 'https://www.anthropic.com/news/claude-3-7-sonnet',
+	},
+	{
+		date: 'Mar.–apr. 2025', year: '2025', era: 'agents', title: 'Websøgning og Research',
+		description: 'Claude får adgang til aktuelle webkilder, og Research kan gennemføre flere sammenhængende søgninger og samle et dokumenteret svar.',
+		impact: 'Aktuel research bliver en arbejdsproces med kilder frem for et enkelt svar fra modellens træning.',
+		source: 'https://support.claude.com/en/articles/11088861-use-research-on-claude',
+	},
+	{
+		date: '22. maj 2025', year: '2025', era: 'agents', title: 'Claude 4 og Claude Code bliver generelt tilgængelig',
+		description: 'Opus 4 og Sonnet 4 kombinerer hurtige svar med længere tænkning og værktøjsbrug. Claude Code forlader research preview.',
+		impact: 'Claude bevæger sig tydeligt fra chatbot mod længere, agentiske arbejdsforløb.',
+		source: 'https://www.anthropic.com/news/claude-4',
+	},
+	{
+		date: '28. maj 2026', year: '2026', era: 'work', title: 'Opus 4.8 og dynamiske workflows',
+		description: 'Opus 4.8 forbedrer samarbejde og agentiske opgaver. Claude Code får dynamiske workflows til meget store problemer.',
+		impact: 'Mere krævende opgaver kan deles op og gennemføres over længere forløb med justerbar indsats.',
+		source: 'https://www.anthropic.com/news/claude-opus-4-8',
+	},
+	{
+		date: 'Sommer 2026', year: '2026', era: 'work', title: 'Voice, projekter og færdige filer',
+		description: 'Claude får tovejssamtaler med stemme, projekter til alle brugere og mulighed for at skabe og redigere dokumenter, regneark, præsentationer og PDF-filer.',
+		impact: 'Claude kan bruges gennem tale og levere konkrete arbejdsfiler — ikke kun tekst i chatvinduet.',
+		source: 'https://support.claude.com/en/collections/18031719-features-and-capabilities',
+	},
+] as const;
+---
+
+<section class="chatgpt-timeline claude-timeline" data-ai-timeline data-claude-timeline aria-labelledby="claude-tidslinje">
+	<header class="chatgpt-timeline-header">
+		<p class="chatgpt-timeline-kicker">Fra lang kontekst til digital kollega</p>
+		<h2 id="claude-tidslinje">Claudes udvikling</h2>
+		<p>Vælg et vendepunkt og se, hvordan Claude ændrede arbejdsformen.</p>
+	</header>
+
+	<div class="chatgpt-timeline-filters" role="group" aria-label="Filtrér tidslinjen">
+		<button type="button" class="is-active" data-timeline-filter="all" aria-pressed="true">Hele rejsen</button>
+		<button type="button" data-timeline-filter="foundation" aria-pressed="false">2023</button>
+		<button type="button" data-timeline-filter="multimodal" aria-pressed="false">2024</button>
+		<button type="button" data-timeline-filter="agents" aria-pressed="false">2025</button>
+		<button type="button" data-timeline-filter="work" aria-pressed="false">2026</button>
+	</div>
+
+	<div class="chatgpt-timeline-track" aria-label="Vigtige milepæle">
+		{milestones.map((milestone, index) => (
+			<button
+				type="button"
+				class:list={['chatgpt-milestone', { 'is-active': index === milestones.length - 1 }]}
+				data-timeline-milestone data-era={milestone.era} data-date={milestone.date}
+				data-title={milestone.title} data-description={milestone.description}
+				data-impact={milestone.impact} data-source={milestone.source}
+				aria-pressed={index === milestones.length - 1 ? 'true' : 'false'}
+			>
+				<span>{milestone.year}</span>
+				<strong>{milestone.title}</strong>
+			</button>
+		))}
+	</div>
+
+	<article class="chatgpt-timeline-detail" data-timeline-detail aria-live="polite">
+		<div>
+			<p class="chatgpt-timeline-date" data-timeline-date>{milestones.at(-1)?.date}</p>
+			<h3 data-timeline-title>{milestones.at(-1)?.title}</h3>
+			<p data-timeline-description>{milestones.at(-1)?.description}</p>
+		</div>
+		<aside>
+			<span>Hvad ændrede det?</span>
+			<p data-timeline-impact>{milestones.at(-1)?.impact}</p>
+			<a href={milestones.at(-1)?.source} data-timeline-source rel="noopener noreferrer">Se Anthropic-kilden ↗</a>
+		</aside>
+	</article>
+</section>

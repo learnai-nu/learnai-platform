@@ -19,6 +19,11 @@ const audioScript = readFileSync(new URL('../src/scripts/article-audio-player.ts
 const articleToc = readFileSync(new URL('../src/components/article/ArticleToc.astro', import.meta.url), 'utf8');
 const progressScript = readFileSync(new URL('../src/scripts/article-reading-progress.ts', import.meta.url), 'utf8');
 const articleStyles = readFileSync(new URL('../src/styles/article-longform.css', import.meta.url), 'utf8');
+const chatGptTimeline = readFileSync(new URL('../src/components/article/ChatGptTimeline.astro', import.meta.url), 'utf8');
+const claudeTimeline = readFileSync(new URL('../src/components/article/ClaudeTimeline.astro', import.meta.url), 'utf8');
+const chatGptTimelineScript = readFileSync(new URL('../src/scripts/chatgpt-timeline.ts', import.meta.url), 'utf8');
+const guideTools = readFileSync(new URL('../src/components/article/GuideTools.astro', import.meta.url), 'utf8');
+const guideCourseBanner = readFileSync(new URL('../src/components/article/GuideCourseBanner.astro', import.meta.url), 'utf8');
 
 describe('overskrifter og indholdsfortegnelse', () => {
 	it('only adds heading anchors when the caller asks for them', () => {
@@ -67,6 +72,31 @@ describe('overskrifter og indholdsfortegnelse', () => {
 });
 
 describe('redaktionelle tilføjelser', () => {
+	it('supports the bounded ChatGPT timeline module', () => {
+		expect(parseArticleExtras({ interactiveModule: 'chatgpt-timeline' })).toMatchObject({ interactiveModule: 'chatgpt-timeline' });
+		expect(parseArticleExtras({ interactiveModule: 'unknown' })).toEqual({});
+		expect(articlePage).toContain('<ChatGptTimeline />');
+		expect(chatGptTimeline).toContain('data-chatgpt-timeline');
+		expect(chatGptTimelineScript).toContain('initChatGptTimelines');
+		expect(articleStyles).toContain('.chatgpt-timeline-track');
+	});
+
+	it('supports the bounded Claude timeline module', () => {
+		expect(parseArticleExtras({ interactiveModule: 'claude-timeline' })).toMatchObject({ interactiveModule: 'claude-timeline' });
+		expect(articlePage).toContain('<ClaudeTimeline />');
+		expect(claudeTimeline).toContain('data-claude-timeline');
+		expect(claudeTimeline).toContain('Claudes udvikling');
+		expect(articleStyles).toContain('.claude-timeline');
+	});
+
+	it('connects guides to real tools and the free foundation course', () => {
+		expect(articlePage).toContain('<GuideTools tools={guideTools} />');
+		expect(articlePage).toContain('<GuideCourseBanner />');
+		expect(guideTools).toContain('/tools#${tool.slug}');
+		expect(guideCourseBanner).toContain('/kurser/ai-i-praksis-dit-foerste-kursus');
+		expect(articleStyles).toContain('.guide-course-banner');
+	});
+
 	it('accepts FAQ, sources and keywords from the editor metadata', () => {
 		const extras = parseArticleExtras({
 			faq: [{ question: 'Hvad er AI?', answer: 'Et værktøj.' }],

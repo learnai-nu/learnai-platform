@@ -3,6 +3,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import { buildFacet, fetchTools, label, labels, searchIndex, type Locale } from '../../lib/catalog';
 import { createCanonicalUrl, createItemListSchema } from '../../lib/seo/schema';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
+import { guideLinkForTool } from '../../lib/content/tool-guide-links';
 import '../../styles/catalog.css';
 
 interface Props {
@@ -54,6 +55,7 @@ const copy = locale === 'en'
 		empty: 'Ingen værktøjer matcher din søgning. Prøv en anden kategori eller et andet søgeord.',
 		failed: 'Værktøjskataloget kunne ikke hentes lige nu. Prøv igen om lidt.',
 		visit: 'Besøg',
+		guide: 'Guide',
 		filterLabel: 'Filtrér værktøjer',
 	};
 
@@ -132,7 +134,9 @@ const itemList = createItemListSchema(
 
 		<div class="catalog-shell">
 			<div class="catalog-grid">
-				{sorted.map((tool) => (
+				{sorted.map((tool) => {
+					const guideLink = locale === 'da' ? guideLinkForTool(tool.slug) : null;
+					return (
 					<article
 						class:list={['catalog-card', tool.featured && 'catalog-card-featured']}
 						id={tool.slug}
@@ -166,14 +170,18 @@ const itemList = createItemListSchema(
 						</ul>
 						<div class="catalog-card-footer">
 							{tool.pricing && <p class="catalog-price">{tool.pricing}</p>}
-							{tool.url && (
-								<a class="catalog-link" href={tool.url} target="_blank" rel="noopener noreferrer">
-									{copy.visit} {tool.name} <span aria-hidden="true">→</span>
-								</a>
-							)}
+							<div class="catalog-card-links">
+								{guideLink && <a class="catalog-guide-link" href={guideLink.href}>{guideLink.title} <span aria-hidden="true">→</span></a>}
+								{tool.url && (
+									<a class="catalog-link" href={tool.url} target="_blank" rel="noopener noreferrer">
+										{copy.visit} {tool.name} <span aria-hidden="true">↗</span>
+									</a>
+								)}
+							</div>
 						</div>
 					</article>
-				))}
+					);
+				})}
 			</div>
 			<p class="catalog-empty" data-catalog-empty hidden={sorted.length > 0}>{copy.empty}</p>
 		</div>

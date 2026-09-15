@@ -495,6 +495,180 @@
 	line-height: 1.55;
 }
 
+.blue-orbit .chatgpt-timeline {
+	margin: 0 0 clamp(3.5rem, 7vw, 5.5rem);
+	padding: clamp(1.35rem, 4vw, 2.25rem);
+	overflow: hidden;
+	background: var(--color-navy);
+	color: var(--color-paper);
+}
+.blue-orbit .chatgpt-timeline-header { max-width: 39rem; }
+.blue-orbit .chatgpt-timeline-kicker {
+	margin: 0 0 .55rem;
+	color: var(--color-amber);
+	font: 750 .68rem/1.3 var(--type-family-sans);
+	letter-spacing: .1em;
+	text-transform: uppercase;
+}
+.blue-orbit .chatgpt-timeline h2 {
+	margin: 0;
+	color: inherit;
+	font-size: clamp(1.75rem, 4vw, 2.45rem);
+	font-weight: 520;
+	letter-spacing: -.025em;
+	line-height: 1.08;
+	scroll-margin-top: 7rem;
+}
+.blue-orbit .chatgpt-timeline-header > p:last-child {
+	margin: .75rem 0 0;
+	color: var(--color-greige-300);
+	font-size: .94rem;
+	line-height: 1.55;
+}
+.blue-orbit .chatgpt-timeline-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .4rem;
+	margin: 1.5rem 0 1.35rem;
+}
+.blue-orbit .chatgpt-timeline-filters button {
+	padding: .48rem .75rem;
+	border: 1px solid rgb(255 255 255 / 20%);
+	border-radius: var(--orbit-shape-full);
+	background: transparent;
+	color: var(--color-greige-200);
+	font: 650 .74rem/1 var(--type-family-sans);
+}
+.blue-orbit .chatgpt-timeline-filters button.is-active {
+	border-color: var(--color-amber);
+	background: var(--color-amber);
+	color: var(--color-navy);
+}
+.blue-orbit .chatgpt-timeline-track {
+	position: relative;
+	display: grid;
+	grid-auto-columns: minmax(8.5rem, 1fr);
+	grid-auto-flow: column;
+	gap: .4rem;
+	padding: 1.2rem 0 .5rem;
+	overflow-x: auto;
+	scrollbar-color: var(--color-amber) rgb(255 255 255 / 12%);
+}
+.blue-orbit .chatgpt-timeline-track::before {
+	content: "";
+	position: absolute;
+	top: 1.55rem;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: rgb(255 255 255 / 24%);
+}
+.blue-orbit .chatgpt-milestone {
+	position: relative;
+	display: grid;
+	align-content: start;
+	gap: .5rem;
+	min-width: 0;
+	padding: 1.35rem .55rem .7rem 0;
+	border: 0;
+	background: transparent;
+	color: var(--color-greige-300);
+	text-align: left;
+}
+.blue-orbit .chatgpt-milestone::before {
+	content: "";
+	position: absolute;
+	top: .05rem;
+	left: 0;
+	width: .72rem;
+	height: .72rem;
+	border: 2px solid var(--color-navy);
+	border-radius: 50%;
+	background: var(--color-greige-500);
+	box-shadow: 0 0 0 1px rgb(255 255 255 / 35%);
+}
+.blue-orbit .chatgpt-milestone span {
+	color: var(--color-amber);
+	font: 750 .7rem/1 var(--type-family-sans);
+}
+.blue-orbit .chatgpt-milestone strong {
+	font: 620 .77rem/1.35 var(--type-family-sans);
+}
+.blue-orbit .chatgpt-milestone:hover,
+.blue-orbit .chatgpt-milestone.is-active { color: var(--color-paper); }
+.blue-orbit .chatgpt-milestone.is-active::before {
+	background: var(--color-amber);
+	box-shadow: 0 0 0 4px rgb(185 139 78 / 24%);
+}
+.blue-orbit .chatgpt-timeline-detail {
+	display: grid;
+	grid-template-columns: minmax(0, 1.35fr) minmax(13rem, .65fr);
+	gap: clamp(1.25rem, 4vw, 2.5rem);
+	margin-top: 1.35rem;
+	padding-top: 1.35rem;
+	border-top: 1px solid rgb(255 255 255 / 18%);
+}
+.blue-orbit .chatgpt-timeline-date {
+	margin: 0 0 .4rem;
+	color: var(--color-amber);
+	font: 700 .7rem/1.3 var(--type-family-sans);
+	letter-spacing: .06em;
+	text-transform: uppercase;
+}
+.blue-orbit .chatgpt-timeline-detail h3 {
+	margin: 0 0 .65rem;
+	color: inherit;
+	font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+	font-weight: 560;
+	line-height: 1.15;
+}
+.blue-orbit .chatgpt-timeline-detail p {
+	margin: 0;
+	color: var(--color-greige-200);
+	font-size: .9rem;
+	line-height: 1.58;
+}
+.blue-orbit .chatgpt-timeline-detail aside {
+	padding-left: 1.15rem;
+	border-left: 2px solid var(--color-amber);
+}
+.blue-orbit .chatgpt-timeline-detail aside > span {
+	display: block;
+	margin-bottom: .35rem;
+	color: var(--color-amber);
+	font: 750 .65rem/1.3 var(--type-family-sans);
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+.blue-orbit .chatgpt-timeline-detail a {
+	display: inline-block;
+	margin-top: .7rem;
+	color: var(--color-paper);
+	font-size: .74rem;
+	font-weight: 650;
+	text-decoration: underline;
+	text-underline-offset: .2em;
+}
+
+/* Claude keeps the same editorial system, but shifts the signature module from
+   LearnAI blue/amber to a quieter ink/terracotta palette inspired by documents. */
+.blue-orbit .claude-timeline { background: #25212a; }
+.blue-orbit .claude-timeline .chatgpt-timeline-kicker,
+.blue-orbit .claude-timeline .chatgpt-milestone span,
+.blue-orbit .claude-timeline .chatgpt-timeline-date,
+.blue-orbit .claude-timeline .chatgpt-timeline-detail aside > span { color: #e0a17a; }
+.blue-orbit .claude-timeline .chatgpt-timeline-filters button.is-active {
+	border-color: #e0a17a;
+	background: #e0a17a;
+	color: #251c1a;
+}
+.blue-orbit .claude-timeline .chatgpt-milestone::before { border-color: #25212a; }
+.blue-orbit .claude-timeline .chatgpt-milestone.is-active::before {
+	background: #e0a17a;
+	box-shadow: 0 0 0 4px rgb(224 161 122 / 22%);
+}
+.blue-orbit .claude-timeline .chatgpt-timeline-detail aside { border-color: #e0a17a; }
+
 .blue-orbit .article-body .article-trust-label {
 	margin: clamp(3.75rem, 8vw, 6rem) 0 .65rem;
 	color: var(--color-deep-blue);
@@ -562,6 +736,21 @@
 	}
 	.blue-orbit .article-audio-speed button { padding: .36rem .4rem; }
 	.blue-orbit .article-audio-error { grid-column: 1 / -1; }
+	.blue-orbit .chatgpt-timeline { margin-inline: -2.6rem 0; padding: 1.25rem 1rem 1.4rem; }
+	.blue-orbit .chatgpt-timeline-filters { flex-wrap: nowrap; margin-inline: -1rem; padding-inline: 1rem; overflow-x: auto; }
+	.blue-orbit .chatgpt-timeline-filters button { flex: 0 0 auto; }
+	.blue-orbit .chatgpt-timeline-track { grid-auto-columns: 8.3rem; margin-right: -1rem; }
+	.blue-orbit .chatgpt-timeline-detail { grid-template-columns: 1fr; }
+	.blue-orbit .chatgpt-timeline-detail aside { padding: .9rem 0 0; border-top: 1px solid rgb(255 255 255 / 16%); border-left: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.blue-orbit .chatgpt-timeline-detail { animation: timeline-enter 180ms ease-out; }
+}
+
+@keyframes timeline-enter {
+	from { opacity: .55; transform: translateY(3px); }
+	to { opacity: 1; transform: translateY(0); }
 }
 
 .article-faq { margin-top: 3rem; }
@@ -616,6 +805,78 @@
 .article-brief-cta h2 { margin: 0 0 .55rem; color: inherit; font-size: clamp(1.55rem, 3vw, 2.05rem); }
 .article-brief-cta p:last-child { margin: 0; color: var(--color-greige-300); line-height: 1.5; }
 .article-brief-cta .button { white-space: nowrap; background: var(--color-paper); color: var(--color-navy); }
+
+.guide-tools {
+	display: grid;
+	grid-template-columns: minmax(12rem, .75fr) minmax(0, 1.6fr);
+	gap: clamp(1.25rem, 4vw, 2.5rem);
+	margin-top: 3rem;
+	padding: clamp(1.25rem, 3vw, 1.75rem) 0;
+	border-block: 1px solid var(--orbit-outline-variant);
+}
+.guide-tools-heading h2 { margin: .25rem 0 .4rem; font-size: clamp(1.35rem, 3vw, 1.8rem); }
+.guide-tools-heading > p:last-child { margin: 0; color: var(--orbit-on-surface-variant); line-height: 1.55; }
+.guide-tools-eyebrow,
+.guide-course-eyebrow {
+	margin: 0;
+	color: var(--orbit-primary);
+	font-size: .7rem;
+	font-weight: 750;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+}
+.guide-tools-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.guide-tool-card {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	column-gap: .65rem;
+	align-content: start;
+	padding: 1rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-md);
+	background: var(--orbit-surface-bright);
+	transition: border-color .18s var(--orbit-ease), transform .18s var(--orbit-ease);
+}
+.guide-tool-card > span { grid-row: 1 / 3; color: var(--orbit-primary); font-size: 1.1rem; }
+.guide-tool-card strong { line-height: 1.35; }
+.guide-tool-card small { margin-top: .25rem; color: var(--orbit-on-surface-variant); line-height: 1.45; }
+.guide-tool-card:hover { border-color: var(--orbit-primary); transform: translateY(-2px); }
+
+.guide-course-banner {
+	display: grid;
+	grid-template-columns: minmax(0, 1.35fr) minmax(15rem, .8fr);
+	align-items: center;
+	gap: clamp(1.5rem, 4vw, 3rem);
+	margin-top: 3rem;
+	padding: clamp(1.5rem, 4vw, 2.5rem);
+	border: 1px solid color-mix(in srgb, var(--color-amber) 55%, var(--orbit-outline-variant));
+	border-top: 4px solid var(--color-amber);
+	border-radius: var(--orbit-shape-lg);
+	background: linear-gradient(135deg, var(--orbit-surface-low), var(--orbit-surface-bright));
+}
+.guide-course-copy h2 { margin: .4rem 0 .6rem; font-size: clamp(1.55rem, 3.5vw, 2.25rem); line-height: 1.12; }
+.guide-course-copy > p:last-child { margin: 0; color: var(--orbit-on-surface-variant); line-height: 1.65; }
+.guide-course-action { display: grid; gap: 1rem; }
+.guide-course-action ol {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .35rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: course-step;
+}
+.guide-course-action li {
+	counter-increment: course-step;
+	color: var(--orbit-on-surface-variant);
+	font-size: .72rem;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+.guide-course-action li::before { content: counter(course-step, decimal-leading-zero) ' '; color: var(--orbit-primary); }
+.guide-course-action li:not(:last-child)::after { content: ' →'; margin-left: .35rem; color: var(--orbit-outline); }
+.guide-course-action .button { justify-self: start; }
 
 .article-author {
 	display: flex;
@@ -689,11 +950,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.article-related-card { transition: none; }
+	.article-related-card,
+	.guide-tool-card { transition: none; }
 }
 
 @media (max-width: 560px) {
 	.article-source-list li,
-	.article-brief-cta { grid-template-columns: 1fr; }
+	.article-brief-cta,
+	.guide-tools,
+	.guide-course-banner { grid-template-columns: 1fr; }
+	.guide-tools-grid { grid-template-columns: 1fr; }
 	.article-brief-cta .button { justify-self: start; }
 }

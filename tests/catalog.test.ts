@@ -238,6 +238,11 @@ describe('catalog helpers', () => {
 });
 
 describe('catalog pages', () => {
+	it('links relevant tool cards back to published guides', () => {
+		expect(toolsPage).toContain('guideLinkForTool(tool.slug)');
+		expect(toolsPage).toContain('catalog-guide-link');
+	});
+
 	it('renders server-side so redaktionelle ændringer slår igennem med det samme', () => {
 		for (const page of [toolsPage, useCasesPage, resourcesPage, eventsPage]) {
 			expect(page).toContain('createServerSupabaseClient(Astro.request, Astro.cookies)');

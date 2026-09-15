@@ -1,0 +1,32 @@
+---
+interface ToolLink {
+	slug: string;
+	name: string;
+	tagline: string;
+}
+
+interface Props {
+	tools: ToolLink[];
+}
+
+const { tools } = Astro.props;
+---
+
+{tools.length > 0 && (
+	<section class="guide-tools" aria-labelledby="guide-tools-heading">
+		<div class="guide-tools-heading">
+			<p class="guide-tools-eyebrow">Fra viden til værktøj</p>
+			<h2 id="guide-tools-heading">Prøv det i praksis</h2>
+			<p>Find de værktøjer i kataloget, der passer direkte til denne guide.</p>
+		</div>
+		<div class="guide-tools-grid">
+			{tools.map((tool) => (
+				<a class="guide-tool-card" href={`/tools#${tool.slug}`}>
+					<span aria-hidden="true">↗</span>
+					<strong>{tool.name}</strong>
+					<small>{tool.tagline}</small>
+				</a>
+			))}
+		</div>
+	</section>
+)}
