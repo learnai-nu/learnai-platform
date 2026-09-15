@@ -110,7 +110,7 @@ const articleExtrasSchema = z.object({
 	summary: z.array(z.string().trim().min(3).max(500)).min(2).max(5).optional(),
 	sectionLabels: z.array(sectionLabelSchema).max(20).optional(),
 	audio: articleAudioSchema.optional(),
-	interactiveModule: z.enum(['chatgpt-timeline']).optional(),
+	interactiveModule: z.enum(['chatgpt-timeline', 'claude-timeline']).optional(),
 	/** Entities from the knowledge graph, surfaced as schema.org `about`. */
 	about: z.array(z.string().trim().min(2).max(120)).max(10).optional(),
 });
