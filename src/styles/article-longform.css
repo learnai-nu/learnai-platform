@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 /* Long-form article furniture: breadcrumb, byline, table of contents, FAQ,
    sources, author bio and related reading. */
 
@@ -806,6 +807,78 @@
 .article-brief-cta p:last-child { margin: 0; color: var(--color-greige-300); line-height: 1.5; }
 .article-brief-cta .button { white-space: nowrap; background: var(--color-paper); color: var(--color-navy); }
 
+.guide-tools {
+	display: grid;
+	grid-template-columns: minmax(12rem, .75fr) minmax(0, 1.6fr);
+	gap: clamp(1.25rem, 4vw, 2.5rem);
+	margin-top: 3rem;
+	padding: clamp(1.25rem, 3vw, 1.75rem) 0;
+	border-block: 1px solid var(--orbit-outline-variant);
+}
+.guide-tools-heading h2 { margin: .25rem 0 .4rem; font-size: clamp(1.35rem, 3vw, 1.8rem); }
+.guide-tools-heading > p:last-child { margin: 0; color: var(--orbit-on-surface-variant); line-height: 1.55; }
+.guide-tools-eyebrow,
+.guide-course-eyebrow {
+	margin: 0;
+	color: var(--orbit-primary);
+	font-size: .7rem;
+	font-weight: 750;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+}
+.guide-tools-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.guide-tool-card {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	column-gap: .65rem;
+	align-content: start;
+	padding: 1rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-md);
+	background: var(--orbit-surface-bright);
+	transition: border-color .18s var(--orbit-ease), transform .18s var(--orbit-ease);
+}
+.guide-tool-card > span { grid-row: 1 / 3; color: var(--orbit-primary); font-size: 1.1rem; }
+.guide-tool-card strong { line-height: 1.35; }
+.guide-tool-card small { margin-top: .25rem; color: var(--orbit-on-surface-variant); line-height: 1.45; }
+.guide-tool-card:hover { border-color: var(--orbit-primary); transform: translateY(-2px); }
+
+.guide-course-banner {
+	display: grid;
+	grid-template-columns: minmax(0, 1.35fr) minmax(15rem, .8fr);
+	align-items: center;
+	gap: clamp(1.5rem, 4vw, 3rem);
+	margin-top: 3rem;
+	padding: clamp(1.5rem, 4vw, 2.5rem);
+	border: 1px solid color-mix(in srgb, var(--color-amber) 55%, var(--orbit-outline-variant));
+	border-top: 4px solid var(--color-amber);
+	border-radius: var(--orbit-shape-lg);
+	background: linear-gradient(135deg, var(--orbit-surface-low), var(--orbit-surface-bright));
+}
+.guide-course-copy h2 { margin: .4rem 0 .6rem; font-size: clamp(1.55rem, 3.5vw, 2.25rem); line-height: 1.12; }
+.guide-course-copy > p:last-child { margin: 0; color: var(--orbit-on-surface-variant); line-height: 1.65; }
+.guide-course-action { display: grid; gap: 1rem; }
+.guide-course-action ol {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .35rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: course-step;
+}
+.guide-course-action li {
+	counter-increment: course-step;
+	color: var(--orbit-on-surface-variant);
+	font-size: .72rem;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+.guide-course-action li::before { content: counter(course-step, decimal-leading-zero) ' '; color: var(--orbit-primary); }
+.guide-course-action li:not(:last-child)::after { content: ' →'; margin-left: .35rem; color: var(--orbit-outline); }
+.guide-course-action .button { justify-self: start; }
+
 .article-author {
 	display: flex;
 	gap: 1.1rem;
@@ -878,11 +951,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.article-related-card { transition: none; }
+	.article-related-card,
+	.guide-tool-card { transition: none; }
 }
 
 @media (max-width: 560px) {
 	.article-source-list li,
-	.article-brief-cta { grid-template-columns: 1fr; }
+	.article-brief-cta,
+	.guide-tools,
+	.guide-course-banner { grid-template-columns: 1fr; }
+	.guide-tools-grid { grid-template-columns: 1fr; }
 	.article-brief-cta .button { justify-self: start; }
 }
