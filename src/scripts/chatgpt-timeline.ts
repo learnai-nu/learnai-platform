@@ -1,4 +1,4 @@
-const TIMELINE_SELECTOR = '[data-chatgpt-timeline]';
+const TIMELINE_SELECTOR = '[data-ai-timeline]';
 
 function setupTimeline(timeline: HTMLElement) {
 	if (timeline.dataset.timelineReady === 'true') return;
