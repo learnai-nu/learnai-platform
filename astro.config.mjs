@@ -35,7 +35,7 @@ export default defineConfig({
     '/prompts': '/laer?type=prompt',
     '/prompts/': '/laer?type=prompt',
 
-    // Orphan fallback: rewrite slug under /laer; missing content stays a real 404
-    '/articles/[...slug]': '/laer/[...slug]',
+    // Dynamic /articles/<slug> → /laer/<slug> is handled in src/middleware.ts
+    // (Astro config catch-all '[...slug]' is emitted literally by @astrojs/vercel).
   }
 });

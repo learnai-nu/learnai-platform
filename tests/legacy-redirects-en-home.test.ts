@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const astroConfig = readFileSync(new URL('../astro.config.mjs', import.meta.url), 'utf8');
+const middleware = readFileSync(new URL('../src/middleware.ts', import.meta.url), 'utf8');
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const danishHome = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 const englishHome = readFileSync(new URL('../src/pages/en/index.astro', import.meta.url), 'utf8');
@@ -15,7 +16,14 @@ describe('legacy redirects and English home SEO', () => {
 		expect(astroConfig).toContain("'/courses': '/kurser'");
 		expect(astroConfig).toContain("'/privacy': '/privatliv'");
 		expect(astroConfig).toContain("'/prompts': '/laer?type=prompt'");
-		expect(astroConfig).toContain("'/articles/[...slug]': '/laer/[...slug]'");
+		// Dynamic catch-all must NOT live in Astro config (literal path bug on Vercel)
+		expect(astroConfig).not.toContain("'/articles/[...slug]'");
+		expect(astroConfig).not.toContain("'/laer/[...slug]'");
+	});
+
+	it('redirects /articles/:slug(+) via middleware with 301 slug substitution', () => {
+		expect(middleware).toContain("pathname.match(/^\\/articles\\/(.+)$/)");
+		expect(middleware).toContain('context.redirect(`/laer/${slug}`, 301)');
 	});
 
 	it('emits reciprocal home hreflang including x-default', () => {
