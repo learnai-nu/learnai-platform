@@ -1,0 +1,140 @@
+---
+import OrbitButton from '../../components/ui/OrbitButton.astro';
+import BlueOrbitLayout from '../../layouts/BlueOrbitLayout.astro';
+import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
+
+export const prerender = true;
+---
+
+<BlueOrbitLayout
+	title="Practical AI learning in English | LearnAI.nu"
+	description="Short, practical AI guidance for work: curated tools, English learning content, and clear next steps from LearnAI.nu."
+	locale="en"
+	pageType="WebPage"
+	alternates={[
+		{ locale: 'da', path: '/' },
+		{ locale: 'en', path: '/en' },
+	]}
+>
+	<section class="orbit-hero">
+		<div class="orbit-hero-copy">
+			<p class="orbit-eyebrow"><span>&gt;</span> AI for your work</p>
+			<h1>Make AI useful<br /><span>in your work.</span></h1>
+			<p class="orbit-hero-lead">
+				Practical English learning content, curated tools, and clear next steps.
+				No hype — just what helps you move a real task forward.
+			</p>
+			<div class="orbit-hero-actions">
+				<OrbitButton
+					href="/en/learn"
+					size="large"
+					arrow
+					analyticsEvent={ANALYTICS_EVENTS.courseCtaClicked}
+					analyticsSource="en_home_hero"
+					analyticsDetail="learn_index"
+				>Explore English learning</OrbitButton>
+				<OrbitButton href="/en/tools" variant="text" size="large">Browse AI tools</OrbitButton>
+			</div>
+			<p class="orbit-proof-line">Danish courses and prompts remain available on the main site</p>
+		</div>
+
+		<div class="orbit-hero-stage" aria-label="Example of a practical AI task">
+			<div class="workbook-prompt">
+				<div class="workbook-label"><span>&gt;</span> Task</div>
+				<h2>What do you want AI to help with?</h2>
+				<div class="workbook-input">Describe your task in one sentence … <span>↵</span></div>
+				<div class="workbook-suggestions">
+					<p>Try for example</p>
+					<a href="/en/learn">Read a practical guide <b>↗</b></a>
+					<a href="/en/tools">Find a tool for the job <b>↗</b></a>
+					<a href="/en/use-cases">See how others use AI <b>↗</b></a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="workbook-note" aria-label="LearnAI principle">
+		<span>&gt; PRINCIPLE</span>
+		<p>Start with the task. Use only the AI knowledge that moves the work forward.</p>
+	</div>
+
+	<section class="orbit-section" id="how-it-works">
+		<div class="orbit-section-heading">
+			<div>
+				<p class="orbit-section-kicker">Choose by need</p>
+				<h2>What should AI<br />help you with?</h2>
+			</div>
+			<p>
+				Do not start with the technology. Start with what you want to understand,
+				solve, or get better at.
+			</p>
+		</div>
+		<div class="orbit-need-grid">
+			<a class="orbit-need-card" href="/en/learn">
+				<span class="need-mark">&gt; LEARN</span>
+				<h3>I want practical AI knowledge in English.</h3>
+				<p>Read selected guides, news and analysis focused on real workplace use.</p>
+				<strong>Open Learn AI <b>↗</b></strong>
+			</a>
+			<a class="orbit-need-card" href="/en/tools">
+				<span class="need-mark">&gt; CHOOSE</span>
+				<h3>I need the right tool for the job.</h3>
+				<p>Browse a curated catalogue of tools we actually use and when they fit.</p>
+				<strong>Browse tools <b>↗</b></strong>
+			</a>
+			<a class="orbit-need-card" href="/en/use-cases">
+				<span class="need-mark">&gt; APPLY</span>
+				<h3>I want examples from practice.</h3>
+				<p>See concrete use cases and decide what to try next in your own work.</p>
+				<strong>See use cases <b>↗</b></strong>
+			</a>
+		</div>
+	</section>
+
+	<section class="orbit-section orbit-courses" id="english-start">
+		<div class="orbit-section-heading">
+			<div>
+				<p class="orbit-section-kicker">Start here</p>
+				<h2>Begin with something<br />you can use today.</h2>
+			</div>
+			<OrbitButton href="/en/learn" variant="text" arrow>All English learning</OrbitButton>
+		</div>
+		<article class="orbit-course-card orbit-course-card-featured">
+			<div class="orbit-course-art orbit-course-art-primary">
+				<div class="course-workbook-cover">
+					<small>LEARNAI / EN</small>
+					<strong>Learn<br />AI</strong>
+					<span>English</span>
+				</div>
+			</div>
+			<div class="orbit-course-body">
+				<p class="orbit-course-meta">Guides · News · Analysis</p>
+				<h3>English learning index</h3>
+				<p>
+					Selected AI learning content in English. Danish courses and the prompt library
+					live on the Danish site when you need them.
+				</p>
+				<div class="orbit-course-footer">
+					<span><strong>Open</strong> the catalogue</span>
+					<OrbitButton href="/en/learn" variant="tonal" arrow>Go to Learn AI</OrbitButton>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	<section class="orbit-final-cta">
+		<div>
+			<p class="orbit-section-kicker">Your next step</p>
+			<h2>Pick one task. Leave with a clearer next move.</h2>
+		</div>
+		<OrbitButton
+			href="/en/learn"
+			variant="light"
+			size="large"
+			arrow
+			analyticsEvent={ANALYTICS_EVENTS.courseCtaClicked}
+			analyticsSource="en_home_final"
+			analyticsDetail="learn_index"
+		>Start with Learn AI</OrbitButton>
+	</section>
+</BlueOrbitLayout>
