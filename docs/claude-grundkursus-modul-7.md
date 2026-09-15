@@ -33,9 +33,9 @@ vurdere svaret. Så læs et enkelt afsnit først. Stil et spørgsmål, du kender
 rammer rigtigt der, er det et signal. Hvis den rammer forkert, har du sparet dig selv for at bygge
 videre på noget forkert.
 
-En kollega i en medlemsorganisation fik Claude til at opsummere en overenskomsttekst. Hun læste selv
-§4 først. Da opsummeringen beskrev §4 korrekt, læste hun resten med ro i maven. Det tog hende tre
-minutter og gjorde hele resten brugbar.
+Et eksempel fra casen: du skal opsummere den nye rejseafregningspolitik til infobrevet. Du læser
+selv §4 om dokumentationskrav først. Da opsummeringen beskriver §4 korrekt, læser du resten med ro i
+maven. Det tog tre minutter og gjorde hele resten brugbar.
 
 **Vane 2: Bed om kilder og åbn mindst én**
 
@@ -174,16 +174,16 @@ Teknikken hedder en eval. Ordet lyder teknisk. Det er den ikke.
 
 Først når prompten klarer de kendte eksempler, bruger du den på nye.
 
-**Et konkret eksempel.** En medarbejder i en brancheorganisation vil have Claude til at kategorisere
-indkomne medlemshenvendelser. Hun tager 8 henvendelser fra sidste måned, som hun selv har
+**Et konkret eksempel fra casen.** Fællespostkassen modtager omkring 60 henvendelser om ugen, og du
+vil have Claude til at kategorisere dem. Du tager 8 henvendelser fra sidste måned, som du selv har
 kategoriseret. Første runde: Claude rammer 5 ud af 8. De tre fejl er alle henvendelser, der handler
 om to ting på én gang – dem tvinger prompten ned i én kategori.
 
-Hun tilføjer én sætning: "en henvendelse kan have to kategorier, angiv den primære først". Anden
+Du tilføjer én sætning: "en henvendelse kan have to kategorier, angiv den primære først". Anden
 runde: 8 ud af 8.
 
-Nu ved hun ikke bare, at prompten virker. Hun ved, *hvor godt*, og hun ved hvorfor den fejlede før.
-Det tog hende 20 minutter.
+Nu ved du ikke bare, at prompten virker. Du ved *hvor godt*, og du ved hvorfor den fejlede før. Det
+tog 20 minutter.
 
 ### Hvorfor det er kursets vigtigste teknik
 
@@ -297,8 +297,8 @@ sandsynligt?
 *Forklaring: præcise tal er et af de fem steder, hvor modeller oftest finder på, netop fordi formen
 på et procenttal er meget forudsigelig. "Kan være" er det rigtige niveau – ikke "er altid".*
 
-**3.** Du vil bruge en prompt til at kategorisere indkomne henvendelser fremover. Hvad gør du, før
-du sætter den i drift?
+**3.** Du vil bruge en prompt til at kategorisere henvendelserne i fællespostkassen fremover. Hvad
+gør du, før du sætter den i drift?
 - a) Kører den på ti gamle henvendelser, du selv har kategoriseret ✔
 - b) Beder Claude vurdere, hvor pålidelig prompten er
 - c) Kører den på ti nye henvendelser og læser svarene igennem
@@ -328,8 +328,8 @@ eksempler igen, ellers kan man ikke se, om rettelsen hjalp.*
 
 ## Redaktionelle noter
 
-- Eksemplerne med medlemsorganisationen og brancheorganisationen skal tilpasses eller erstattes af
-  cases fra LearnAI's faktiske kundegrundlag. De er skrevet som generiske illustrationer.
+- Eksemplerne bruger LearnAI's standardcase, Fællesorganisationen Nord. Se
+  `docs/claude-grundkursus-case.md`. Tal og betegnelser skal stemme nøjagtigt overens med casen.
 - 7.2's tabel bør have et dansk eksempel på en falsk paragrafhenvisning, men eksemplet skal
   **konstrueres**, ikke hentes fra en rigtig lov, så vi ikke selv udbreder en forkert henvisning.
 - 7.3 er modulets tungeste lektion på 10 minutter. Overvej at splitte i to, hvis brugertest viser
@@ -337,3 +337,5 @@ eksempler igen, ellers kan man ikke se, om rettelsen hjalp.*
 - Videoen i 7.3 kræver et forberedt regneark med testdata. Det skal produceres, ikke improviseres.
 - Ingen af øvelserne kræver fortrolige data, men 7.3 beder deltageren om gamle sager. Der skal stå
   eksplicit: brug afsluttede, anonymiserede eksempler.
+- Til 7.3 skal der produceres et datasæt med 20 anonymiserede eksempelhenvendelser fra casen, så
+  deltagere uden egnede egne data kan gennemføre øvelsen.

@@ -89,6 +89,17 @@ Efter kurset kan deltageren:
 8. teste Claudes pålidelighed med en simpel eval på data, deltageren selv kender svaret på
 9. lægge en plan for de tre opgaver, der fremover løses med Claude
 
+## Standardcase
+
+Kurset bruger én gennemgående case: **Fællesorganisationen Nord**, en fiktiv dansk
+medlemsorganisation med 120 ansatte, hvor deltageren træder ind i rollen som administrativ
+koordinator. Casen er beskrevet i `docs/claude-grundkursus-case.md` og skal bruges konsekvent i alle
+moduler, videoer og quizspørgsmål.
+
+Arbejdsdelingen: **videoerne bruger casen**, så alle ser det samme uden at have data klar.
+**Øvelserne bruger deltagerens egen opgave**, så læringen sidder fast i noget virkeligt. Hvor en
+øvelse kræver data, deltageren ikke har, ligger der et datasæt fra casen at falde tilbage på.
+
 ## Kursets røde tråd
 
 Deltageren vælger i lektion 1.3 én tilbagevendende arbejdsopgave fra sin egen hverdag. Den opgave
@@ -333,6 +344,7 @@ sig med tekst i version 1.
 - [ ] Skal kurset sælges enkeltvis eller også indgå i en pakke med flagskibsforløbet?
 - [ ] Hvilke fire roller skal med i 8.1?
 - [ ] Overlapsanalyse mod `ai-i-praksis` – hvad skal flyttes eller skæres?
+- [ ] Hvem producerer casens eksempeldata (referater, henvendelser, politik, infobrev)?
 - [ ] Hvem optager og redigerer videoerne, og hvornår?
 - [ ] Certifikatets visuelle design og verifikations-URL.
 - [ ] Opdateringskadence. Forslag: kvartalsvist review af produktnavne, planregler og skærmbilleder.
@@ -344,6 +356,9 @@ sig med tekst i version 1.
 - [ ] Produktnavne og funktioner kontrolleret mod Anthropics dokumentation med dato
 - [ ] Tabellen over planafhængige funktioner verificeret mod live produkt
 - [ ] Alternativøvelser skrevet til hver planafhængig lektion
+- [ ] Casens tal og betegnelser er konsistente på tværs af alle moduler, videoer og quizspørgsmål
+- [ ] Navnet "Fællesorganisationen Nord" tjekket mod CVR og almindelig søgning
+- [ ] Casens eksempeldata produceret og tilgængelige som download
 - [ ] Modul 6 faktatjekket mod Datatilsynet, GDPR og AI-forordningen
 - [ ] Quizspørgsmål fagligt valideret, med mindst ét spørgsmål om evals
 - [ ] Alle videoer optaget, tekstet, dateret og kontrolleret mod aktuelt interface

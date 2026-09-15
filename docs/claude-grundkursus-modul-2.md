@@ -35,18 +35,18 @@ de skal være der.
 
 **1. Sæt scenen.** Hvem er du, hvad er situationen, hvad skal det bruges til?
 
-> Jeg er kommunikationsansvarlig i en brancheorganisation for installatører. Vi udsender et
-> nyhedsbrev hver måned til omkring 3.000 medlemsvirksomheder, typisk indehavere og
-> driftsansvarlige med travlt.
+> Jeg er administrativ koordinator i Fællesorganisationen Nord, en medlemsorganisation med 120
+> ansatte. Jeg udsender et personaleinfobrev hver måned til alle medarbejdere — blandet fagligt
+> niveau, og de fleste læser det hurtigt mellem to møder.
 
 **2. Definér opgaven.** Hvad skal der konkret ske? Brug et udsagnsord.
 
-> Skriv et udkast til denne måneds leder om de nye krav til dokumentation af eltekniske arbejder.
+> Skriv et udkast til denne måneds infobrev om de nye regler for rejseafregning.
 
 **3. Angiv reglerne.** Hvilket format, hvilken længde, hvilken tone, hvilke begrænsninger?
 
 > Maks. 250 ord. Direkte og konkret tone, ingen floskler. Start med, hvad det betyder for
-> modtagerens hverdag, ikke med reglen. Afslut med ét konkret næste skridt.
+> modtagerens hverdag, ikke med paragraffen. Afslut med ét konkret næste skridt.
 
 ### Hvorfor det virker
 
@@ -105,9 +105,9 @@ og instruktion.
 
 Claude ved en masse om verden. Den ved ingenting om dig.
 
-Den ved ikke, at jeres medlemmer hedder "medlemsvirksomheder" og ikke "kunder". Den ved ikke, at
-jeres direktør hader ordet "synergi". Den ved ikke, at det nyhedsbrev, du skriver, går til folk, der
-læser det på en telefon i en varebil.
+Den ved ikke, at I kalder dem medlemmer og aldrig kunder. Den ved ikke, at jeres direktør hader
+ordet "synergi". Den ved ikke, at det infobrev, du skriver, bliver læst på tre minutter mellem to
+møder.
 
 Alt det er **kontekst**, og det er forskellen mellem et svar, du skal skrive om, og et svar, du kan
 bruge.
@@ -129,11 +129,11 @@ Skriv den én gang. Genbrug den resten af året.
 
 Et udfyldt eksempel:
 
-> Jeg er chef for digital forretningsudvikling i en brancheorganisation med ca. 4.000
-> medlemsvirksomheder inden for el, vvs og ventilation. Modtagerne er indehavere og
-> driftsansvarlige — praktiske folk med travlt, som læser på telefonen. Vi kalder dem
-> medlemsvirksomheder, aldrig kunder. Tonen er konkret og ligefrem, aldrig sælgende. Vi undgår ord
-> som "rejse", "synergi" og "i en verden der forandrer sig".
+> Jeg er administrativ koordinator i Fællesorganisationen Nord, en medlemsorganisation med 120
+> ansatte og ca. 4.000 medlemmer. Modtagerne af mine infobreve er alle medarbejdere — blandet
+> fagligt niveau, travle, læser hurtigt. Vi kalder vores medlemmer for medlemmer, aldrig kunder.
+> Tonen er konkret og ligefrem, aldrig sælgende. Vi undgår ord som "rejse", "synergi" og "i en
+> verden der forandrer sig".
 
 ### Tre steder at lægge konteksten
 
@@ -182,10 +182,10 @@ og det visuelle — tabeller, grafer og diagrammer i et dokument.
 
 **Fire ting, det er værd at vedhæfte:**
 
-- **Et eksempel på det, du vil have.** Det sidste nyhedsbrev, du var tilfreds med. Ét godt eksempel
+- **Et eksempel på det, du vil have.** Det sidste infobrev, du var tilfreds med. Ét godt eksempel
   slår tre afsnit om tone.
-- **Kildematerialet.** Rapporten, referatet, regnearket. Lad Claude læse det i stedet for at
-  referere det.
+- **Kildematerialet.** Rejseafregningspolitikken, mødereferatet, regnearket. Lad Claude læse det i
+  stedet for at referere det.
 - **Et skærmbillede.** Når det er lettere at vise end at forklare.
 - **Jeres egne retningslinjer.** Sprogpolitik, designmanual, skabeloner.
 
@@ -200,8 +200,8 @@ problemet.
 
 ### Videomanus (3 min)
 
-1. Bed om et nyhedsbrev med en lang beskrivelse af ønsket tone. Vis resultatet
-2. Ny samtale: vedhæft et tidligere nyhedsbrev og skriv "samme stil og struktur". Vis resultatet
+1. Bed om et infobrev med en lang beskrivelse af ønsket tone. Vis resultatet
+2. Ny samtale: vedhæft et tidligere infobrev og skriv "samme stil og struktur". Vis resultatet
 3. Sammenlign. Den vedhæftede version rammer tættere med en fjerdedel af skrivearbejdet
 
 ### Øvelse
@@ -311,8 +311,8 @@ beskrive tone præcist nok til, at det virker.
 
 Claude er god til at skifte tone. Den er ikke god til at gætte, hvilken tone du vil have.
 
-"Skriv det professionelt" betyder ingenting. Professionelt for en advokat er ikke professionelt for
-en elinstallatør.
+"Skriv det professionelt" betyder ingenting. Professionelt over for direktionen er ikke det samme
+som professionelt over for en kollega i kantinen.
 
 **Tre måder at beskrive tone, der faktisk virker:**
 
@@ -324,17 +324,17 @@ en elinstallatør.
 
 ### Samme indhold, tre modtagere
 
-Det er den øvelse, der sidder fast. Tag ét budskab — for eksempel at I indfører en ny
-indberetningsproces — og skriv det til tre modtagere:
+Det er den øvelse, der sidder fast. Tag ét budskab — de nye regler for rejseafregning — og skriv
+det til tre modtagere:
 
 | Modtager | Hvad de vil vide | Hvad du skal skære væk |
 |---|---|---|
-| Direktionen | Hvad koster det, hvad er risikoen, hvornår | Detaljer om selve processen |
-| En kollega i afdelingen | Hvad ændrer sig for mig, hvornår, hvem hjælper | Strategisk begrundelse |
-| En medlemsvirksomhed | Hvad skal jeg gøre, og hvornår | Alt om jeres interne arbejde |
+| Direktionen | Hvad koster det, hvad er risikoen, hvornår træder det i kraft | Detaljer om selve processen |
+| En kollega i sekretariatet | Hvad ændrer sig for mig, hvornår, hvem hjælper | Den strategiske begrundelse |
+| Et medlem, der spørger | Om det overhovedet vedrører dem | Alt om jeres interne arbejdsgang |
 
-Det er den samme beslutning tre gange. Men hvis du sender direktionens version til
-medlemsvirksomhederne, har du spildt alles tid.
+Det er den samme besked tre gange. Men hvis du sender direktionens version ud til alle 120
+medarbejdere, har du spildt alles tid.
 
 ### Iteration som normalen
 
@@ -420,9 +420,8 @@ den gælder automatisk.*
 
 ## Redaktionelle noter
 
-- Eksemplerne bruger en brancheorganisation for installatører gennemgående. Det skal enten holdes
-  konsekvent gennem hele kurset eller udskiftes med LearnAI's egen standardcase. Det må ikke skifte
-  fra modul til modul.
+- Eksemplerne bruger LearnAI's standardcase, Fællesorganisationen Nord. Se
+  `docs/claude-grundkursus-case.md`. Tal og betegnelser skal stemme nøjagtigt overens med casen.
 - Kontekstblok-eksemplet i 2.2 er skrevet, så det kan genbruges som skabelon i modul 4 om projekter.
   Hold de to konsistente.
 - Fejlfindingstabellen i 2.4 skal produceres som et selvstændigt PDF-ark, deltageren kan hente ned.
