@@ -1,3 +1,4 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 18: /bin/ps: Operation not permitted
 .catalog-page {
 	background: var(--brand-paper);
 	color: var(--brand-ink);
@@ -231,6 +232,24 @@
 	font-family: var(--type-family-mono);
 	font-size: .78rem;
 }
+
+.catalog-card-links {
+	display: grid;
+	justify-items: end;
+	gap: .45rem;
+	margin-left: auto;
+	text-align: right;
+}
+
+.catalog-guide-link {
+	color: var(--brand-ink);
+	font-size: .85rem;
+	font-weight: 700;
+	text-decoration-thickness: 1px;
+	text-underline-offset: .2em;
+}
+
+.catalog-guide-link:hover { color: var(--brand-action); }
 
 .catalog-link {
 	color: var(--brand-action);
