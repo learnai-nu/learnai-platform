@@ -18,5 +18,10 @@ export const onRequest = defineMiddleware((context, next) => {
 		return next();
 	}
 
-	return context.redirect(`/laer/${slug}`, 301);
+	// Explicit Response so Vercel emits a real HTTP 301 (context.redirect can
+	// surface as 404+Location in some edge/SSR paths, which browsers ignore).
+	return new Response(null, {
+		status: 301,
+		headers: { Location: `/laer/${slug}` },
+	});
 });
