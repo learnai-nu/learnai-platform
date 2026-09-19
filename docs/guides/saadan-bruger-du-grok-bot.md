@@ -17,6 +17,10 @@ Grok Bot er xAI's løsning med AI-agenter, der kan udføre opgaver på tværs af
 
 Her viser jeg, hvordan du kommer i gang med en afgrænset opgave, skriver en brugbar brief og kontrollerer resultatet. Er du helt ny i generativ AI, så begynd med [Sådan kommer du i gang med generativ AI](https://learnai.nu/laer/saadan-kommer-du-i-gang-med-generativ-ai).
 
+![En fagperson gennemgår en opgave på sin laptop ved et lyst skrivebord.](/images/guides/grok-bot/hero.jpg)
+
+*AI-genereret illustration. En konkret opgave og tid til kontrol er et godt udgangspunkt.*
+
 ## Det vigtigste på ét minut
 
 - Start med **én konkret opgave**, hvor du selv kan vurdere resultatet.
@@ -38,6 +42,11 @@ Du kan eksempelvis bruge metoden til at:
 - **Bygge en mindre løsning:** Lav første version af en funktion eller et website, som efterfølgende kan testes.
 
 På Kursusoversigten omfattede arbejdet flere af de opgaver i samme projekt. En fejl i kursusdata kunne derfor ende både i databasen og i teksten på sitet. Kontrol undervejs var nødvendig, så fejlene ikke blev ført videre til næste trin.
+
+<figure>
+<img src="/images/guides/grok-bot/arbejdsgang.svg" alt="Fem trin: Du sætter målet. Grok Bot laver research og udfører arbejdet. Du kontrollerer og godkender." width="900" height="600" />
+<figcaption>Aftal, hvilke trin agenten må udføre, og hvor den skal stoppe for din vurdering.</figcaption>
+</figure>
 
 ## Sådan kommer du i gang rent praktisk
 
@@ -194,6 +203,11 @@ Jeg satte retningen, håndterede konti og domæne og beholdt godkendelsen af det
 | Website | En første version bygget med Astro |
 | Indhold | Katalogtekster, artikler og henvisninger til LearnAI |
 | Publicering | Koden i GitHub og sitet udgivet via Vercel |
+
+<figure>
+<img src="/images/guides/grok-bot/kursusoversigten-case.svg" alt="Seks trin i arbejdet med Kursusoversigten: marked, kursusdata, database, indhold, website og publicering." width="900" height="600" />
+<figcaption>På Kursusoversigten hjalp Grok Bot fra research til publicering, mens jeg beholdt retning og godkendelse.</figcaption>
+</figure>
 
 Da første version var online, fortsatte arbejdet med indholdskontrol, rettelser og synlighed i søgemaskiner. Her blev kvaliteten af briefen afgørende.
 
