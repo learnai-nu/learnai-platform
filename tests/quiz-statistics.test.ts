@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { quizPassRate, quizStatisticsSchema } from '../src/lib/admin/quiz-statistics';
 
 describe('quiz statistics', () => {
+	it('accepts existing imported PostgreSQL UUIDs', () => {
+		const metrics = { participants: 0, completed: 0, passed: 0, averageScore: null };
+		expect(quizStatisticsSchema.safeParse({ ...metrics, quizzes: [{ ...metrics, id: '33375a2f-e1b8-d227-8814-e7c6c81a8239', title: 'Quiz', courseTitle: 'Kursus' }] }).success).toBe(true);
+	});
+
 	it('distinguishes missing attempts from a zero pass rate', () => {
 		expect(quizPassRate(0, 0)).toBeNull();
 		expect(quizPassRate(3, 0)).toBe(0);

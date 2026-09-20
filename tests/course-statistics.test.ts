@@ -6,6 +6,10 @@ function course(overrides: Partial<CourseStatistics> = {}): CourseStatistics {
 }
 
 describe('course statistics', () => {
+	it('accepts existing imported PostgreSQL UUIDs', () => {
+		expect(courseStatisticsSchema.safeParse([course({ id: 'a878735a-8b7f-e43c-cc49-fdd9ef09ab08' })]).success).toBe(true);
+	});
+
 	it('distinguishes no denominator from zero completions', () => {
 		expect(completionRate(0, 0)).toBeNull();
 		expect(completionRate(4, 0)).toBe(0);

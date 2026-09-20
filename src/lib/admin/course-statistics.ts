@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 const count = z.number().int().nonnegative();
 export const courseStatisticsSchema = z.array(z.object({
-	id: z.uuid(),
+	// PostgreSQL also accepts imported UUIDs without RFC version/variant bits.
+	id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
 	title: z.string(),
 	enrolled: count,
 	notStarted: count,
