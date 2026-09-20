@@ -4,7 +4,7 @@ import SiteLayout from './SiteLayout.astro';
 interface Props {
 	title: string;
 	description: string;
-	active: 'dashboard' | 'content' | 'courses' | 'quizzes' | 'tools' | 'use-cases' | 'resources' | 'events' | 'knowledgeGraph' | 'leads';
+	active: 'dashboard' | 'content' | 'courses' | 'participants' | 'quizzes' | 'tools' | 'use-cases' | 'resources' | 'events' | 'knowledgeGraph' | 'leads';
 	email: string;
 	role: 'admin' | 'editor';
 }
@@ -14,6 +14,7 @@ const links = [
 	{ id: 'dashboard', label: 'Overblik', href: '/admin' },
 	{ id: 'content', label: 'Indhold', href: '/admin/indhold' },
 	{ id: 'courses', label: 'Kurser', href: '/admin/kurser' },
+	{ id: 'participants', label: 'Deltagere', href: '/admin/deltagere' },
 	{ id: 'quizzes', label: 'Quizzer', href: '/admin/quizzer' },
 	{ id: 'tools', label: 'Værktøjer', href: '/admin/vaerktoejer' },
 	{ id: 'use-cases', label: 'Use cases', href: '/admin/use-cases' },
@@ -34,7 +35,7 @@ const links = [
 					<small>{role === 'admin' ? 'Administrator' : 'Redaktør'}</small>
 				</div>
 				<nav aria-label="Administration">
-					{links.map((link) => (
+					{links.filter((link) => link.id !== 'participants' || role === 'admin').map((link) => (
 						<a href={link.href} aria-current={active === link.id ? 'page' : undefined}>
 							{link.label}
 						</a>

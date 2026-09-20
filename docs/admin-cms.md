@@ -50,7 +50,24 @@ som kursusstatistikken. SQL-testen `supabase/tests/admin_quiz_statistics.sql`
 kontrollerer gentagne forsøg, tomme quizzer, ufærdige forsøg, vægtet
 gennemsnit, unikke deltagere og afvisning af ikke-administratorer.
 
-### Adgangskontrol
+### Deltagere og fremskridt
+
+Kursusstatistikkens kort, kursusnavne og tal linker til `/admin/deltagere` med
+filtre for kursus og status. Administratorer kan søge efter navn/e-mail og
+se tilmelding, status, fuldførte lektioner, procent og seneste gemte aktivitet.
+Hver række kan foldes ud til en ordnet liste over lektionernes status.
+Historiske deltagere uden enrollment er med, ligesom i kursusstatistikken.
+Konverteringslinket viser kun tilmeldte, der har fuldført.
+
+`admin_course_participants` returnerer højst 50 kursusforløb pr. side.
+Navn kommer fra `profiles.display_name`, e-mail fra `auth.users`; hvis navnet
+mangler, vises det eksplicit. Funktionen kræver en bruger-id og adminrollen
+i serverstyret `app_metadata`. Editor og anon afvises både på siden og i
+databasen. Ingen nye direkte tabelrettigheder tildeles. Siden caches ikke,
+har noindex og bruger ikke analytics. SQL-testen kontrollerer også, at
+lektionsfremskridt ikke blandes mellem deltagere.
+
+### Generel adgangskontrol
 
 - Sider og mutationer validerer sessionen med Supabase `getClaims()`.
 - Rollen læses kun fra `app_metadata.role`.

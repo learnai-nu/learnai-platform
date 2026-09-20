@@ -1,4 +1,5 @@
 ---
+import { participantHref } from '../../lib/admin/course-participants';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { completionRate, courseStatisticsSchema, totalCourseStatistics } from '../../lib/admin/course-statistics';
 
@@ -20,6 +21,7 @@ function rate(enrolled: number, completed: number) {
 <section class="admin-panel course-statistics" aria-labelledby="course-statistics-title">
 	<div class="admin-panel-head">
 		<div><p class="eyebrow">Hele perioden</p><h2 id="course-statistics-title">Kursusstatus</h2></div>
+		<a class="text-link" href={participantHref()}>Se deltagere →</a>
 	</div>
 	{failed ? (
 		<p class="notice notice-error" role="alert">Kursusstatistikken kunne ikke hentes. Genindlæs siden eller prøv igen om lidt.</p>
@@ -28,15 +30,15 @@ function rate(enrolled: number, completed: number) {
 	) : (
 		<>
 			<div class="admin-stat-grid">
-				<div class="admin-stat"><span>Tilmeldinger</span><strong>{number.format(total.enrolled)}</strong></div>
-				<div class="admin-stat"><span>I gang</span><strong>{number.format(total.inProgress)}</strong></div>
-				<div class="admin-stat"><span>Fuldført</span><strong>{number.format(total.completed)}</strong></div>
-				<div class="admin-stat"><span>Tilmelding → gennemførsel</span><strong>{rate(total.enrolled, total.completedEnrolled)}</strong></div>
+				<a class="admin-stat" href={participantHref('', 'enrolled')}><span>Tilmeldinger</span><strong>{number.format(total.enrolled)}</strong></a>
+				<a class="admin-stat" href={participantHref('', 'in_progress')}><span>I gang</span><strong>{number.format(total.inProgress)}</strong></a>
+				<a class="admin-stat" href={participantHref('', 'completed')}><span>Fuldført</span><strong>{number.format(total.completed)}</strong></a>
+				<a class="admin-stat" href={participantHref('', 'converted')} aria-label="Se tilmeldte deltagere, der har fuldført"><span>Tilmelding → gennemførsel</span><strong>{rate(total.enrolled, total.completedEnrolled)}</strong></a>
 			</div>
 			{total.withoutEnrollment > 0 && (
 				<p class="notice" role="status">
 					{number.format(total.withoutEnrollment)} kursusforløb har fremskridt uden registreret tilmelding.
-					De indgår i “I gang” og “Fuldført”, men ikke i konverteringsraten.
+					De indgår i “I gang” og “Fuldført”, men ikke i konverteringsraten. <a class="text-link" href={participantHref('', 'unregistered')}>Se deltagerne →</a>
 				</p>
 			)}
 			<div class="statistics-table" role="region" aria-label="Kursusstatistik pr. kursus" tabindex="0">
@@ -45,10 +47,10 @@ function rate(enrolled: number, completed: number) {
 					<thead><tr><th scope="col">Kursus</th><th scope="col">Tilmeldte</th><th scope="col">Ikke startet</th><th scope="col">I gang</th><th scope="col">Fuldført</th><th scope="col">Konvertering</th></tr></thead>
 					<tbody>{courses.map((course) => (
 						<tr>
-							<th scope="row"><a class="text-link" href={`/admin/kurser/${course.id}`}>{course.title}</a></th>
-							<td>{number.format(course.enrolled)}</td><td>{number.format(course.notStarted)}</td>
-							<td>{number.format(course.inProgress)}</td><td>{number.format(course.completed)}</td>
-							<td>{rate(course.enrolled, course.completedEnrolled)}</td>
+							<th scope="row"><a class="text-link" href={participantHref(course.id)}>{course.title}</a></th>
+							<td><a class="text-link" href={participantHref(course.id, 'enrolled')} aria-label={`Se tilmeldte deltagere på ${course.title}`}>{number.format(course.enrolled)}</a></td><td><a class="text-link" href={participantHref(course.id, 'not_started')} aria-label={`Se ikke-startede deltagere på ${course.title}`}>{number.format(course.notStarted)}</a></td>
+							<td><a class="text-link" href={participantHref(course.id, 'in_progress')} aria-label={`Se igangværende deltagere på ${course.title}`}>{number.format(course.inProgress)}</a></td><td><a class="text-link" href={participantHref(course.id, 'completed')} aria-label={`Se fuldførte deltagere på ${course.title}`}>{number.format(course.completed)}</a></td>
+							<td><a class="text-link" href={participantHref(course.id, 'converted')} aria-label={`Se tilmeldte, der har fuldført ${course.title}`}>{rate(course.enrolled, course.completedEnrolled)}</a></td>
 						</tr>
 					))}</tbody>
 				</table>
