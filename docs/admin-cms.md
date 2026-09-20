@@ -13,6 +13,45 @@ CMS'et anvender almindelige HTML-formularer og kræver ikke klient-JavaScript.
 
 ## Autorisation
 
+### Kursusstatus
+
+Administratorer ser kursusstatistik på `/admin` og `/admin/kurser`: tilmeldte,
+ikke startet, i gang, fuldført og konvertering for hele perioden.
+`enrollments` er grundlaget for tilmeldinger; `lesson_progress` er grundlaget
+for aktivitet og gennemførsel. Fuldført kræver alle kursets nuværende lektioner,
+ikke en afrundet procent eller den potentielt forældede enrollment-status.
+Konvertering er fuldførte **blandt tilmeldte** divideret med tilmeldte.
+Samlet rate er vægtet efter antal tilmeldinger. Ingen tilmeldinger vises som `—`.
+
+Historiske fremskridt uden enrollment tælles i aktivitet, men holdes ude af
+konverteringen og vises med en datakvalitetsnote. Kontooprettelse alene er ikke
+en kursustilmelding; det eksisterende sign-up-flow opretter ikke enrollments.
+Denne oversigt ændrer ikke tilmeldings- eller betalingsflowet.
+
+Migrationen `admin_course_statistics` tilføjer en adminbeskyttet, privat
+aggregatfunktion og en offentlig SECURITY INVOKER-wrapper. Kun summerede tal
+returneres, og eksisterende RLS på kursistdata ændres ikke. SQL-testen i
+`supabase/tests/admin_course_statistics.sql` tester beregninger og rettigheder
+i en transaktion, der rulles tilbage.
+
+### Quizstatistik
+
+Admin-overblikket `/admin` viser også quizstatistik: unikke deltagere,
+afleverede og beståede forsøg, beståelsesprocent og gennemsnitlig score,
+samlet og pr. quiz med kursusnavn. Kun forsøg med `completed_at` indgår.
+Gentagne forsøg tæller i resultaterne, men personer tælles kun én gang i
+det samlede deltagerantal. Samlet gennemsnit beregnes over alle afleverede
+forsøg med score, inklusive nul; det er ikke et gennemsnit af quizgennemsnit.
+Manglende beregningsgrundlag vises som `—`. Browserbesvarelser registreres
+først ved aflevering, så oversigten viser ikke quizzer, der stadig udfyldes.
+
+`admin_quiz_statistics` følger samme private, adminbeskyttede aggregatmønster
+som kursusstatistikken. SQL-testen `supabase/tests/admin_quiz_statistics.sql`
+kontrollerer gentagne forsøg, tomme quizzer, ufærdige forsøg, vægtet
+gennemsnit, unikke deltagere og afvisning af ikke-administratorer.
+
+### Adgangskontrol
+
 - Sider og mutationer validerer sessionen med Supabase `getClaims()`.
 - Rollen læses kun fra `app_metadata.role`.
 - Roller `admin` og `editor` har redaktionel adgang.

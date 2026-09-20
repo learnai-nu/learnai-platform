@@ -1,5 +1,6 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
+import CourseStatistics from '../../../components/admin/CourseStatistics.astro';
 import { adminEmail, getAdminContext } from '../../../lib/auth/admin';
 
 export const prerender = false;
@@ -47,6 +48,8 @@ const statusMessages: Record<string, string> = {
 
 	{status && statusMessages[status] && <p class="notice" role="status">{statusMessages[status]}</p>}
 	{status === 'error' && <p class="notice notice-error" role="alert">Kurset kunne ikke gemmes.</p>}
+
+	{context.role === 'admin' && <CourseStatistics supabase={context.supabase} />}
 
 	<section class="admin-panel">
 		{courseResult.error || moduleResult.error || lessonResult.error ? (

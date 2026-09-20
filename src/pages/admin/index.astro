@@ -1,5 +1,7 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import CourseStatistics from '../../components/admin/CourseStatistics.astro';
+import QuizStatistics from '../../components/admin/QuizStatistics.astro';
 import { adminEmail, getAdminContext } from '../../lib/auth/admin';
 
 export const prerender = false;
@@ -65,16 +67,16 @@ const hasLoadError = [
 
 <AdminLayout
 	title="Overblik"
-	description="Redaktionelt overblik for LearnAI."
+	description="Overblik over kurser, quizresultater og indhold på LearnAI."
 	active="dashboard"
 	email={adminEmail(context.claims)}
 	role={context.role}
 >
 	<header class="admin-page-head">
 		<div>
-			<p class="eyebrow">Sprint 6</p>
-			<h1>God arbejdslyst.</h1>
-			<p>Administrér LearnAI’s indhold og læringsforløb fra ét sikkert sted.</p>
+			<p class="eyebrow">Administration</p>
+			<h1>Overblik</h1>
+			<p>Følg kursusaktivitet og quizresultater, og administrér LearnAI’s indhold.</p>
 		</div>
 		<div class="admin-actions">
 			<a class="button" href="/admin/indhold/ny">Nyt indhold</a>
@@ -83,6 +85,9 @@ const hasLoadError = [
 	</header>
 
 	{hasLoadError && <p class="notice notice-error" role="alert">Nogle admin-data kunne ikke hentes. Genindlæs siden.</p>}
+
+	{context.role === 'admin' && <CourseStatistics supabase={context.supabase} />}
+	{context.role === 'admin' && <QuizStatistics supabase={context.supabase} />}
 
 	<div class="admin-stat-grid">
 		{stats.map((stat) => (
