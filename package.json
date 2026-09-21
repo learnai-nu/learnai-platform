@@ -17,16 +17,17 @@
     "catalog:prepare": "node scripts/prepare-catalog.mjs",
     "content:prepare": "node scripts/prepare-content-import.mjs",
     "news:prepare": "node scripts/prepare-weekly-news-import.mjs",
-		"editorial:prepare": "node scripts/prepare-editorial-wave.mjs",
-		"newsletter:send": "node scripts/send-weekly-brief.mjs",
-		"podcast:generate": "node scripts/generate-weekly-podcast.mjs",
-		"article:audio": "node scripts/generate-article-audio.mjs"
+    "editorial:prepare": "node scripts/prepare-editorial-wave.mjs",
+    "newsletter:send": "node scripts/send-weekly-brief.mjs",
+    "podcast:generate": "node scripts/generate-weekly-podcast.mjs",
+    "article:audio": "node scripts/generate-article-audio.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",
     "@astrojs/vercel": "^11.0.3",
     "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource/geist-sans": "^5.3.0",
+    "@microsoft/clarity": "^1.0.2",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8",
     "@tailwindcss/vite": "^4.3.3",

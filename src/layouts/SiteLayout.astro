@@ -147,5 +147,6 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		<BlueOrbitFooter {locale} />
 		<MobileDock {locale} />
 		<script src="../scripts/analytics.ts"></script>
+		{analytics && <script src="../scripts/clarity.ts"></script>}
 	</body>
 </html>

@@ -1,8 +1,23 @@
 # Analytics på LearnAI.nu
 
-LearnAI bruger Vercel Web Analytics til trafik og anonyme produkthændelser samt
-Vercel Speed Insights til Core Web Vitals. Begge scripts indlæses fra
-`SiteLayout.astro`. Adminområdet slår dem eksplicit fra.
+LearnAI bruger Vercel Web Analytics til trafik og anonyme produkthændelser,
+Vercel Speed Insights til Core Web Vitals og Microsoft Clarity til heatmaps og
+sessionsoptagelser. Alle tre indlæses fra `SiteLayout.astro` og styres af
+`analytics`-propen, så adminområdet slår dem eksplicit fra.
+
+## Microsoft Clarity
+
+Clarity initialiseres i `src/scripts/clarity.ts` via pakken `@microsoft/clarity`.
+Scriptet kører kun, når `PUBLIC_CLARITY_PROJECT_ID` er sat, så lokal udvikling og
+previews er uden måling, medmindre variablen tilføjes bevidst. Projekt-id'et er
+ikke en hemmelighed og må gerne ligge i en `PUBLIC_`-variabel — sæt den i Vercel
+for de miljøer, der skal måles.
+
+Til forskel fra Vercel Analytics sætter Clarity cookies og optager anonymiserede
+sessioner. Privatlivssiden (`/privatliv`) beskriver det, og masking af indtastet
+tekst styres i Clarity-dashboardet — hold den på standardniveau eller strammere.
+Brug `Clarity.event()` og `Clarity.setTag()` med samme privacy-regler som nedenfor,
+hvis der senere skal sendes signaler til Clarity.
 
 ## Aktivering i Vercel
 
