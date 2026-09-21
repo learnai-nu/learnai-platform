@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-label="Tre nedadgående søjler for mandag den 14. september: Nasdaq minus 0,56 procent, Nvidia minus 3,4 procent og halvlederindekset cirka minus 6 procent">
+  <rect width="1536" height="1024" fill="#F5F3EE"/>
+  <rect x="0" y="0" width="1536" height="1024" fill="none" stroke="#E7E5E3" stroke-width="2"/>
+  <rect x="128" y="128" width="96" height="6" fill="#B98B4E"/>
+  <text x="1408" y="186" text-anchor="end" font-family="Fraunces, Georgia, 'DejaVu Serif', serif" font-size="128" fill="#16283F" fill-opacity="0.08">38</text>
+
+  <!-- zero baseline -->
+  <line x1="208" y1="316" x2="1328" y2="316" stroke="#16283F" stroke-width="4"/>
+
+  <!-- one hue, heights proportional at 72 px per percentage point, 8 px rounded free end -->
+  <g fill="#004FA6">
+    <path d="M 344 316 h 112 v 32 a 8 8 0 0 1 -8 8 h -96 a 8 8 0 0 1 -8 -8 Z"/>
+    <path d="M 712 316 h 112 v 237 a 8 8 0 0 1 -8 8 h -96 a 8 8 0 0 1 -8 -8 Z"/>
+    <path d="M 1080 316 h 112 v 424 a 8 8 0 0 1 -8 8 h -96 a 8 8 0 0 1 -8 -8 Z"/>
+  </g>
+
+  <g font-family="Fraunces, Georgia, 'DejaVu Serif', serif" font-size="56" fill="#16283F" text-anchor="middle">
+    <text x="400" y="432">&#8722;0,56&#8201;%</text>
+    <text x="768" y="637">&#8722;3,4&#8201;%</text>
+    <text x="1136" y="824">&#8776;&#8201;&#8722;6&#8201;%</text>
+  </g>
+</svg>
