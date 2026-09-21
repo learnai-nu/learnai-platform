@@ -12,9 +12,11 @@ import '../styles/blue-orbit-tokens.css';
 import '../styles/blue-orbit.css';
 import '../styles/learnai-typography.css';
 import '../styles/mobile-dock.css';
+import '../styles/cookie-consent.css';
 import '../styles/brand-tokens.css';
 import BlueOrbitFooter from '../components/marketing/BlueOrbitFooter.astro';
 import BlueOrbitHeader from '../components/marketing/BlueOrbitHeader.astro';
+import CookieConsent from '../components/marketing/CookieConsent.astro';
 import MobileDock from '../components/marketing/MobileDock.astro';
 import JsonLd from '../components/seo/JsonLd.astro';
 import {
@@ -146,6 +148,8 @@ const structuredData = noindex ? null : buildSitePageGraph({
 		</main>
 		<BlueOrbitFooter {locale} />
 		<MobileDock {locale} />
+		{analytics && <CookieConsent {locale} />}
 		<script src="../scripts/analytics.ts"></script>
+		{analytics && <script src="../scripts/clarity.ts"></script>}
 	</body>
 </html>

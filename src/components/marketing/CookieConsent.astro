@@ -1,0 +1,79 @@
+---
+/**
+ * Cookiesamtykke til Microsoft Clarity.
+ *
+ * Banneret vises først, når JavaScript har konstateret, at besøgende ikke
+ * allerede har valgt. Begge valg er lige tilgængelige — ingen mørke mønstre —
+ * og valget kan altid ændres igen via "Cookieindstillinger" i footeren.
+ */
+interface Props { locale?: 'da' | 'en'; }
+const { locale = 'da' } = Astro.props;
+const isEnglish = locale === 'en';
+
+const copy = isEnglish
+	? {
+		title: 'Statistics cookies',
+		body: 'We use Microsoft Clarity to see how the pages are used — heatmaps and anonymised session recordings. It requires cookies. Traffic measurement stays cookie-free either way.',
+		accept: 'Accept',
+		decline: 'Only necessary',
+		more: 'Privacy (Danish)',
+	}
+	: {
+		title: 'Cookies til statistik',
+		body: 'Vi bruger Microsoft Clarity til at se, hvordan siderne bruges — heatmaps og anonymiserede sessionsoptagelser. Det kræver cookies. Almindelig trafikmåling er cookie-fri uanset dit valg.',
+		accept: 'Accepter',
+		decline: 'Kun nødvendige',
+		more: 'Læs om privatliv',
+	};
+---
+
+<div class="cc-banner" id="cookie-consent" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title" hidden>
+	<div class="cc-text">
+		<strong id="cookie-consent-title">{copy.title}</strong>
+		<p>{copy.body} <a href="/privatliv">{copy.more}</a></p>
+	</div>
+	<div class="cc-actions">
+		<button type="button" class="cc-button cc-decline" data-consent="denied">{copy.decline}</button>
+		<button type="button" class="cc-button cc-accept" data-consent="granted">{copy.accept}</button>
+	</div>
+</div>
+
+<script>
+	import {
+		CONSENT_CHANGE_EVENT,
+		readConsent,
+		storeConsent,
+		type ConsentChoice,
+	} from '../../lib/analytics/consent';
+
+	const banner = document.querySelector<HTMLElement>('#cookie-consent');
+
+	if (banner) {
+		const show = () => { banner.hidden = false; };
+		const hide = () => { banner.hidden = true; };
+
+		const choose = (choice: ConsentChoice) => {
+			storeConsent(choice, window.localStorage);
+			window.dispatchEvent(new CustomEvent<ConsentChoice>(CONSENT_CHANGE_EVENT, { detail: choice }));
+			hide();
+		};
+
+		if (!readConsent(window.localStorage)) show();
+
+		banner.querySelectorAll<HTMLButtonElement>('[data-consent]').forEach((button) => {
+			button.addEventListener('click', () => {
+				const choice = button.dataset.consent;
+				if (choice === 'granted' || choice === 'denied') choose(choice);
+			});
+		});
+
+		// Samtykket skal være lige så let at trække tilbage, som det var at give.
+		document.querySelectorAll('[data-consent-reopen]').forEach((trigger) => {
+			trigger.addEventListener('click', (event) => {
+				event.preventDefault();
+				show();
+				banner.querySelector<HTMLButtonElement>('.cc-accept')?.focus();
+			});
+		});
+	}
+</script>
