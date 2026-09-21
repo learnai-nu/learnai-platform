@@ -1,0 +1,66 @@
+/* Cookiesamtykke — vises nederst, over mobil-dokken, indtil der er valgt. */
+
+.cc-banner {
+	position: fixed;
+	inset: auto 1rem 1rem;
+	z-index: 60;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	max-width: 52rem;
+	margin-inline: auto;
+	padding: 1.1rem 1.25rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-lg);
+	background: var(--orbit-surface-bright);
+	box-shadow: var(--orbit-shadow-3);
+}
+
+.cc-banner[hidden] { display: none; }
+
+.cc-text { flex: 1 1 22rem; }
+.cc-text strong { display: block; margin-bottom: .3rem; color: var(--orbit-on-surface); font-size: .95rem; }
+.cc-text p { margin: 0; color: var(--orbit-on-surface-variant); font-size: .85rem; line-height: 1.5; }
+.cc-text a { color: inherit; text-decoration: underline; }
+
+.cc-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+.cc-button {
+	min-height: 2.75rem;
+	padding: .6rem 1.15rem;
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: var(--orbit-shape-full);
+	background: var(--orbit-surface);
+	color: var(--orbit-on-surface);
+	font: inherit;
+	font-size: .85rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.cc-accept {
+	border-color: transparent;
+	background: var(--orbit-primary);
+	color: var(--orbit-on-primary);
+}
+
+.cc-button:hover { filter: brightness(.97); }
+.cc-button:focus-visible { outline: 2px solid var(--orbit-primary); outline-offset: 2px; }
+
+@media (max-width: 1100px) {
+	/* Banneret skal ikke dække mobil-dokken. */
+	.cc-banner { inset: auto .75rem calc(4.75rem + env(safe-area-inset-bottom)); }
+}
+
+/* Genåbning af banneret fra brødtekst — ser ud som et link, opfører sig som en knap. */
+.link-button {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-decoration: underline;
+	cursor: pointer;
+}

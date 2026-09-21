@@ -14,10 +14,26 @@ ikke en hemmelighed og må gerne ligge i en `PUBLIC_`-variabel — sæt den i Ve
 for de miljøer, der skal måles.
 
 Til forskel fra Vercel Analytics sætter Clarity cookies og optager anonymiserede
-sessioner. Privatlivssiden (`/privatliv`) beskriver det, og masking af indtastet
-tekst styres i Clarity-dashboardet — hold den på standardniveau eller strammere.
-Brug `Clarity.event()` og `Clarity.setTag()` med samme privacy-regler som nedenfor,
-hvis der senere skal sendes signaler til Clarity.
+sessioner. Masking af indtastet tekst styres i Clarity-dashboardet — hold den på
+standardniveau eller strammere. Brug `Clarity.event()` og `Clarity.setTag()` med
+samme privacy-regler som nedenfor, hvis der senere skal sendes signaler til Clarity.
+
+## Cookiesamtykke
+
+Clarity kører kun med cookies efter et aktivt ja. Logikken ligger i
+`src/lib/analytics/consent.ts`, banneret i
+`src/components/marketing/CookieConsent.astro`:
+
+- Uden gemt valg starter Clarity med `consentV2({ ad_Storage: 'denied', analytics_Storage: 'denied' })`.
+- Banneret vises kun, når der ikke findes et valg i `localStorage`
+  (`learnai:consent:clarity:v1`). Valget gemmes lokalt og sendes aldrig til serveren.
+- Et klik udsender `learnai:consent-change`, som `src/scripts/clarity.ts` lytter på,
+  så samtykket slår igennem uden genindlæsning.
+- `ad_Storage` er altid `denied` — LearnAI bruger ikke Clarity til annoncering.
+- Samtykket kan trækkes tilbage fra footerens "Cookieindstillinger" og fra
+  `/privatliv`; begge bruger `data-consent-reopen`.
+
+Vercel Analytics og Speed Insights er cookie-fri og kører derfor uanset valget.
 
 ## Aktivering i Vercel
 
