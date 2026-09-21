@@ -27,6 +27,56 @@ const categories = [
 	{ key: 'business', name: 'Business', file: 'Business', fallback: '/images/news/2026/week-36/business-v2.jpg' },
 ];
 
+const danishMonths = [
+	'januar', 'februar', 'marts', 'april', 'maj', 'juni',
+	'juli', 'august', 'september', 'oktober', 'november', 'december',
+];
+
+function isoWeekStart(isoYear, isoWeek) {
+	const jan4 = new Date(Date.UTC(isoYear, 0, 4));
+	const mondayOffset = (jan4.getUTCDay() + 6) % 7;
+	const firstMonday = new Date(jan4.getTime() - mondayOffset * 86400000);
+	return new Date(firstMonday.getTime() + (isoWeek - 1) * 7 * 86400000);
+}
+
+function copenhagenMidnightUtc(date) {
+	const hourIn = (candidate) =>
+		new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Copenhagen', hour: '2-digit', hour12: false }).format(candidate);
+	for (const offsetHours of [1, 2]) {
+		const candidate = new Date(date.getTime() - offsetHours * 3600000);
+		if (hourIn(candidate) === '00') return candidate;
+	}
+	return new Date(date.getTime() - 2 * 3600000);
+}
+
+function sqlTimestamp(date) {
+	return `${date.toISOString().slice(0, 19).replace('T', ' ')}+00`;
+}
+
+function weekPeriod(isoYear, isoWeek) {
+	const start = isoWeekStart(isoYear, isoWeek);
+	const end = new Date(start.getTime() + 6 * 86400000);
+	const startDay = start.getUTCDate();
+	const endDay = end.getUTCDate();
+	const startMonth = start.getUTCMonth();
+	const endMonth = end.getUTCMonth();
+	const endYear = end.getUTCFullYear();
+	const englishMonth = (index) =>
+		new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', month: 'long' }).format(new Date(Date.UTC(endYear, index, 1)));
+	const da = startMonth === endMonth
+		? `${startDay}.–${endDay}. ${danishMonths[endMonth]} ${endYear}`
+		: `${startDay}. ${danishMonths[startMonth]} – ${endDay}. ${danishMonths[endMonth]} ${endYear}`;
+	const en = startMonth === endMonth
+		? `${startDay}–${endDay} ${englishMonth(endMonth)} ${endYear}`
+		: `${startDay} ${englishMonth(startMonth)} – ${endDay} ${englishMonth(endMonth)} ${endYear}`;
+	// The week is published at the start of the following Monday, Copenhagen time.
+	const publishAt = copenhagenMidnightUtc(new Date(start.getTime() + 7 * 86400000));
+	return { da, en, publishAt };
+}
+
+const period = weekPeriod(year, week);
+const importedAt = new Date().toISOString();
+
 const sqlString = (value) => `'${String(value).replaceAll("'", "''")}'`;
 const jsonSql = (value) => `${sqlString(JSON.stringify(value))}::jsonb`;
 
@@ -90,13 +140,13 @@ function makeItem(category, locale, markdown, fileName) {
 	const sourceMetadata = {
 		year,
 		week,
-		period: english ? '7–13 September 2026' : '7.–13. september 2026',
+		period: english ? period.en : period.da,
 		locale,
 		category: category.name,
 		source_file: fileName,
 		source_system: 'learnai-weekly-agents',
 		source_collection: 'weekly-package',
-		imported_at: '2026-09-14T06:02:08+02:00',
+		imported_at: importedAt,
 		visual_status: 'fallback',
 		visual_fallback_from: '2026-week-36',
 		image: category.fallback,
@@ -179,7 +229,7 @@ commit;`;
 const publishSql = `begin;
 update public.content_items
 set status = 'published'::content_status,
-    published_at = timestamptz '${year}-09-13 22:00:00+00',
+    published_at = timestamptz '${sqlTimestamp(period.publishAt)}',
     updated_at = now()
 where source_key = any(array[${sourceKeys}]::text[])
   and status = 'draft'::content_status
