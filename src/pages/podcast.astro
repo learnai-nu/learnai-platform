@@ -1,0 +1,171 @@
+---
+import ArticleAudioPlayer from '../components/article/ArticleAudioPlayer.astro';
+import BlueOrbitLayout from '../layouts/BlueOrbitLayout.astro';
+import type { SchemaNode } from '../lib/seo/schema';
+import '../styles/podcast.css';
+
+export const prerender = true;
+
+const episode = {
+	week: 38,
+	year: 2026,
+	period: '14.–20. september 2026',
+	durationSeconds: 432.59,
+	audioUrl: '/audio/news/2026/week-38/Podcast_Uge38_DA.mp3',
+	title: 'AI-nyheder uge 38: Når tempo, sikkerhed og agentøkonomi mødes',
+};
+
+const episodeTopics = [
+	{
+		label: 'Headlines & launches',
+		title: 'Nye modeller og mere handlekraftige agenter',
+		text: 'Ugens lanceringer peger mod systemer, der løser længere opgaver og kræver tydeligere kontrol.',
+		href: '/laer/uge-38-headlines-and-launches',
+	},
+	{
+		label: 'Deep dives & analysis',
+		title: 'Kan AI-laboratorierne selv styre tempoet?',
+		text: 'Debatten om udviklingstempo bliver holdt op mod hændelsesrapporter og konkrete sikkerhedsvalg.',
+		href: '/laer/uge-38-deep-dives-and-analysis',
+	},
+	{
+		label: 'Marketing',
+		title: 'Når annoncen bliver en samtale',
+		text: 'Samtalebårne annoncer ændrer forholdet mellem platform, brand og den kunde, der stiller spørgsmålet.',
+		href: '/laer/uge-38-marketing',
+	},
+	{
+		label: 'Business',
+		title: 'Agentarbejde kræver nye driftsvalg',
+		text: 'Virksomheder skal vælge, hvor agenter må handle, og hvordan kvalitet, data og ansvar følges.',
+		href: '/laer/uge-38-business',
+	},
+];
+
+const canonicalUrl = new URL('/podcast', Astro.site ?? Astro.url).toString();
+const audioUrl = new URL(episode.audioUrl, Astro.site ?? Astro.url).toString();
+const podcastSchema: SchemaNode = {
+	'@type': 'PodcastSeries',
+	'@id': `${canonicalUrl}#series`,
+	name: 'LearnAI Podcast',
+	description: 'Ugens vigtigste AI-nyheder på dansk med tydelige kilder og praktiske konsekvenser.',
+	url: canonicalUrl,
+	inLanguage: 'da-DK',
+	webFeed: canonicalUrl,
+	hasPart: {
+		'@type': 'PodcastEpisode',
+		'@id': `${canonicalUrl}#uge-38-2026`,
+		name: episode.title,
+		description: 'Uge 38 samlet i et kort dansk lydformat med modelnyheder, analyse, marketing og business.',
+		episodeNumber: episode.week,
+		datePublished: '2026-09-21',
+		duration: 'PT7M13S',
+		inLanguage: 'da-DK',
+		associatedMedia: {
+			'@type': 'MediaObject',
+			contentUrl: audioUrl,
+			encodingFormat: 'audio/mpeg',
+		},
+	},
+};
+---
+
+<BlueOrbitLayout
+	title="LearnAI Podcast — ugens AI-nyheder på dansk"
+	description="Lyt til ugens vigtigste AI-nyheder på dansk. Korte episoder med tydelige kilder, redaktionel analyse og praktiske konsekvenser."
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: 'Forside', url: '/' },
+		{ name: 'Podcast', url: Astro.url.pathname },
+	]}
+	mainEntity={podcastSchema}
+>
+	<section class="podcast-hero">
+		<div class="podcast-shell podcast-hero-grid">
+			<div class="podcast-intro">
+				<p class="podcast-kicker">LearnAI Podcast · på dansk</p>
+				<h1>Ugens AI-nyheder.<br /><em>Klar til øret.</em></h1>
+				<p class="podcast-lead">Få det vigtigste fra AI-ugen på lidt over syv minutter — med kilderne og nuancerne i behold.</p>
+				<ul class="podcast-facts" aria-label="Oplysninger om den nyeste episode">
+					<li><span>Nyeste episode</span><strong>Uge {episode.week}</strong></li>
+					<li><span>Periode</span><strong>{episode.period}</strong></li>
+					<li><span>Spilletid</span><strong>7:13</strong></li>
+				</ul>
+			</div>
+			<div class="podcast-week-mark" aria-hidden="true">
+				<span>Uge</span>
+				<strong>{episode.week}</strong>
+				<em>{episode.year}</em>
+			</div>
+		</div>
+	</section>
+
+	<section class="podcast-latest" aria-labelledby="latest-title">
+		<div class="podcast-shell podcast-latest-grid">
+			<div class="podcast-episode-heading">
+				<p class="podcast-kicker">Nyeste episode</p>
+				<h2 id="latest-title">Når tempo, sikkerhed og agentøkonomi mødes</h2>
+				<p>Fire redaktionelle spor fra uge 38 — samlet i ét afsnit, du kan tage med dig.</p>
+			</div>
+			<div class="podcast-player-wrap">
+				<ArticleAudioPlayer
+					src={episode.audioUrl}
+					title="AI-nyheder uge 38"
+					durationSeconds={episode.durationSeconds}
+					voiceName="LearnAI"
+				/>
+				<p class="podcast-player-note">AI-oplæst på dansk · Baseret på LearnAI's validerede ugebrief</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="podcast-topics" aria-labelledby="topics-title">
+		<div class="podcast-shell">
+			<div class="podcast-section-heading">
+				<p class="podcast-kicker">I dette afsnit</p>
+				<h2 id="topics-title">Læs videre i ugens fire spor</h2>
+			</div>
+			<div class="podcast-topic-grid">
+				{episodeTopics.map((topic, index) => (
+					<a class="podcast-topic-card" href={topic.href}>
+						<span class="podcast-topic-index">{String(index + 1).padStart(2, '0')}</span>
+						<p>{topic.label}</p>
+						<h3>{topic.title}</h3>
+						<span class="podcast-topic-copy">{topic.text}</span>
+						<strong>Læs historien <span aria-hidden="true">→</span></strong>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="podcast-method" aria-labelledby="method-title">
+		<div class="podcast-shell podcast-method-grid">
+			<div>
+				<p class="podcast-kicker">Redaktion før oplæsning</p>
+				<h2 id="method-title">Samme kildearbejde.<br />Et andet format.</h2>
+			</div>
+			<ol>
+				<li><strong>Kilderne samles</strong><span>Nyhedsbreve og primærkilder bliver deduplikeret og kontrolleret.</span></li>
+				<li><strong>Ugen redigeres</strong><span>Dokumenterede forhold holdes adskilt fra analyse og praktiske konsekvenser.</span></li>
+				<li><strong>Briefet bliver til lyd</strong><span>Manuskriptet skrives til øret og oplæses som en kort dansk episode.</span></li>
+			</ol>
+		</div>
+	</section>
+
+	<section class="podcast-cta">
+		<div class="podcast-shell podcast-cta-inner">
+			<div>
+				<p class="podcast-kicker">Ny episode hver uge</p>
+				<h2>Få podcasten sammen med ugebriefet.</h2>
+				<p>Én mail med overblik, artikler, kildelinks og den nyeste lydfil.</p>
+			</div>
+			<a class="podcast-cta-button" href="/ugebrief#tilmelding">Tilmeld ugebriefet <span aria-hidden="true">→</span></a>
+		</div>
+	</section>
+</BlueOrbitLayout>
+
+<script>
+	import { initArticleAudioPlayers } from '../scripts/article-audio-player';
+	initArticleAudioPlayers();
+</script>

@@ -29,7 +29,8 @@ export const menuGroups: NavGroup[] = [
 		items: [
 			{ label: 'Artikler & guides', description: 'Trin-for-trin og forklaringer', href: '/laer', section: '/laer', type: 'knowledge' },
 			{ label: 'Nyheder & indsigt', description: 'Det vigtigste fra AI-verdenen', href: '/laer?type=news', section: '/laer', type: 'news' },
-			{ label: 'Ugebrief & podcast', description: 'Ugens overblik direkte i indbakken', href: '/ugebrief', section: '/ugebrief' },
+			{ label: 'Podcast', description: 'Lyt til ugens AI-overblik', href: '/podcast', section: '/podcast' },
+			{ label: 'Ugebrief', description: 'Ugens overblik direkte i indbakken', href: '/ugebrief', section: '/ugebrief' },
 			{ label: 'Research', description: 'Undersøgelser og dokumentation' },
 			{ label: 'Events', description: 'Konferencer og meetups', href: '/events', section: '/events' },
 			{ label: 'Ressourcer', description: 'Podcasts, bøger og kanaler', href: '/resources', section: '/resources' },
@@ -63,7 +64,8 @@ export const englishMenuGroups: NavGroup[] = [
 		items: [
 			{ label: 'Guides & learning', description: 'Practical explanations in English', href: '/en/learn', section: '/en/learn', type: 'knowledge' },
 			{ label: 'News & analysis', description: 'The most important AI developments', href: '/en/learn', section: '/en/learn', type: 'news' },
-			{ label: 'Weekly brief & podcast', description: 'Weekly overview in Danish', href: '/ugebrief', section: '/ugebrief' },
+			{ label: 'Podcast (Danish)', description: 'Listen to the weekly AI overview', href: '/podcast', section: '/podcast' },
+			{ label: 'Weekly brief (Danish)', description: 'Weekly overview by email', href: '/ugebrief', section: '/ugebrief' },
 			{ label: 'Events', description: 'Conferences and meetups', href: '/en/events', section: '/en/events' },
 			{ label: 'Resources', description: 'Podcasts, books and channels', href: '/en/resources', section: '/en/resources' },
 		],

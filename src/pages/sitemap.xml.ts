@@ -23,6 +23,8 @@ const staticEntries: SitemapEntry[] = [
 	{ path: '/use-cases', changeFrequency: 'weekly', priority: '0.7' },
 	{ path: '/resources', changeFrequency: 'weekly', priority: '0.7' },
 	{ path: '/events', changeFrequency: 'weekly', priority: '0.6' },
+	{ path: '/podcast', changeFrequency: 'weekly', priority: '0.8' },
+	{ path: '/ugebrief', changeFrequency: 'weekly', priority: '0.7' },
 	{ path: '/mentor', changeFrequency: 'monthly', priority: '0.6' },
 	{ path: '/virksomheder', changeFrequency: 'monthly', priority: '0.8' },
 	{ path: '/arbejdskompas', changeFrequency: 'monthly', priority: '0.6' },
