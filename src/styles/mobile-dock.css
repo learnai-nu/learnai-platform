@@ -45,15 +45,20 @@
 
 	.mn-item-cta {
 		place-self: center;
-		display: grid;
-		place-items: center;
-		width: 3.25rem;
-		height: 3.25rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: .2rem;
+		min-height: 2.75rem;
+		padding: 0 .8rem;
+		font-size: .8125rem;
+		font-weight: 600;
 		border-radius: var(--orbit-shape-full);
 		background: var(--orbit-primary);
 		color: var(--orbit-on-primary);
 		box-shadow: var(--orbit-shadow-2);
 	}
+	.mn-item-cta svg { width: 16px; height: 16px; }
 	.mn-item-cta[aria-current="page"] { color: var(--orbit-on-primary); }
 
 	.mn-drawer {

@@ -18,8 +18,8 @@ export const prerender = true;
 >
 	<section class="orbit-hero">
 		<div class="orbit-hero-copy">
-			<p class="orbit-eyebrow"><span>&gt;</span> AI for your work</p>
-			<h1>Make AI useful<br /><span>in your work.</span></h1>
+			<p class="orbit-eyebrow">AI for your work</p>
+			<h1>Make AI useful <em>in your work.</em></h1>
 			<p class="orbit-hero-lead">
 				Practical English learning content, curated tools, and clear next steps.
 				No hype — just what helps you move a real task forward.
@@ -38,25 +38,25 @@ export const prerender = true;
 			<p class="orbit-proof-line">Danish courses and prompts remain available on the main site</p>
 		</div>
 
-		<div class="orbit-hero-stage" aria-label="Example of a practical AI task">
-			<div class="workbook-prompt">
-				<div class="workbook-label"><span>&gt;</span> Task</div>
-				<h2>What do you want AI to help with?</h2>
-				<div class="workbook-input">Describe your task in one sentence … <span>↵</span></div>
-				<div class="workbook-suggestions">
-					<p>Try for example</p>
-					<a href="/en/learn">Read a practical guide <b>↗</b></a>
-					<a href="/en/tools">Find a tool for the job <b>↗</b></a>
-					<a href="/en/use-cases">See how others use AI <b>↗</b></a>
+		<div class="orbit-hero-stage">
+			<nav class="task-card" aria-labelledby="task-card-title">
+				<p class="task-card-kicker">Start from your task</p>
+				<h2 id="task-card-title">What do you want AI to help with?</h2>
+				<div class="task-suggestions">
+					<p>Pick a starting point</p>
+					<ul>
+						<li><a href="/en/learn">Read a practical guide</a></li>
+						<li><a href="/en/tools">Find a tool for the job</a></li>
+						<li><a href="/en/use-cases">See how others use AI</a></li>
+					</ul>
 				</div>
-			</div>
+			</nav>
 		</div>
 	</section>
 
-	<div class="workbook-note" aria-label="LearnAI principle">
-		<span>&gt; PRINCIPLE</span>
+	<aside class="orbit-principle" aria-label="LearnAI principle">
 		<p>Start with the task. Use only the AI knowledge that moves the work forward.</p>
-	</div>
+	</aside>
 
 	<section class="orbit-section" id="how-it-works">
 		<div class="orbit-section-heading">
@@ -71,22 +71,22 @@ export const prerender = true;
 		</div>
 		<div class="orbit-need-grid">
 			<a class="orbit-need-card" href="/en/learn">
-				<span class="need-mark">&gt; LEARN</span>
+				<span class="need-top"><span class="need-number" aria-hidden="true">01</span><span class="need-mark">Learn</span></span>
 				<h3>I want practical AI knowledge in English.</h3>
 				<p>Read selected guides, news and analysis focused on real workplace use.</p>
-				<strong>Open Learn AI <b>↗</b></strong>
+				<strong>Open Learn AI <b aria-hidden="true">→</b></strong>
 			</a>
 			<a class="orbit-need-card" href="/en/tools">
-				<span class="need-mark">&gt; CHOOSE</span>
+				<span class="need-top"><span class="need-number" aria-hidden="true">02</span><span class="need-mark">Choose</span></span>
 				<h3>I need the right tool for the job.</h3>
 				<p>Browse a curated catalogue of tools we actually use and when they fit.</p>
-				<strong>Browse tools <b>↗</b></strong>
+				<strong>Browse tools <b aria-hidden="true">→</b></strong>
 			</a>
 			<a class="orbit-need-card" href="/en/use-cases">
-				<span class="need-mark">&gt; APPLY</span>
+				<span class="need-top"><span class="need-number" aria-hidden="true">03</span><span class="need-mark">Apply</span></span>
 				<h3>I want examples from practice.</h3>
 				<p>See concrete use cases and decide what to try next in your own work.</p>
-				<strong>See use cases <b>↗</b></strong>
+				<strong>See use cases <b aria-hidden="true">→</b></strong>
 			</a>
 		</div>
 	</section>
@@ -129,7 +129,6 @@ export const prerender = true;
 		</div>
 		<OrbitButton
 			href="/en/learn"
-			variant="light"
 			size="large"
 			arrow
 			analyticsEvent={ANALYTICS_EVENTS.courseCtaClicked}

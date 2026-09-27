@@ -51,10 +51,10 @@ body.blue-orbit {
 .blue-orbit .work-compass-question-meta,
 .blue-orbit .work-compass-insights article > span,
 .blue-orbit .work-compass-learning-plan small {
-	font-family: var(--type-family-mono);
+	font-family: var(--type-family-sans);
 	font-size: var(--type-label-size);
-	font-weight: 650;
-	letter-spacing: .075em;
+	font-weight: 700;
+	letter-spacing: .08em;
 	line-height: var(--type-label-leading);
 	text-transform: uppercase;
 }
@@ -63,8 +63,8 @@ body.blue-orbit {
 .blue-orbit .orbit-hero h1,
 .blue-orbit .work-compass-intro h1 {
 	font-size: var(--type-display-size);
-	font-weight: 650;
-	letter-spacing: -.045em;
+	font-weight: 500;
+	letter-spacing: -.02em;
 	line-height: var(--type-display-leading);
 }
 
@@ -75,8 +75,8 @@ body.blue-orbit {
 .blue-orbit .auth-shell h1,
 .blue-orbit .dashboard-head h1 {
 	font-size: var(--type-page-size);
-	font-weight: 650;
-	letter-spacing: -.04em;
+	font-weight: 500;
+	letter-spacing: -.02em;
 	line-height: var(--type-page-leading);
 }
 
@@ -114,7 +114,7 @@ body.blue-orbit {
 .blue-orbit .empty-state > h3 {
 	max-width: 400px;
 	font-size: var(--type-section-size);
-	font-weight: 600;
+	font-weight: 500;
 	letter-spacing: 0;
 	line-height: var(--type-section-leading);
 }
@@ -240,7 +240,7 @@ body.blue-orbit {
 
 @media (max-width: 560px) {
 	:root {
-		--type-display-size: clamp(3rem, 14vw, 4.2rem);
+		--type-display-size: clamp(2.5rem, 11.5vw, 3.5rem);
 		--type-page-size: 2.25rem;
 		--type-page-leading: 2.5rem;
 	}

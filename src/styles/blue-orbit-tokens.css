@@ -47,8 +47,8 @@
 	--brand-rule: var(--orbit-outline-variant);
 	--type-family-sans: "Inter Variable", Inter, "Inter Fallback", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	--type-family-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
-	--type-display-size: clamp(3.5rem, 6vw, 5.7rem);
-	--type-display-leading: .96;
+	--type-display-size: clamp(2.75rem, 5.4vw, 4.75rem);
+	--type-display-leading: 1.02;
 	--type-page-size: clamp(3rem, 5vw, 4.5rem);
 	--type-page-leading: 1;
 	--type-section-size: 2.25rem;

@@ -42,7 +42,7 @@ html:has(.course-landing) { scroll-behavior: smooth; scroll-padding-top: 100px; 
 .landing-hero { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 72px; padding-block: 64px; }
 .landing-hero-copy { min-width: 0; }
 .landing-course-badge { padding: 5px 8px; background: #e8edff; border-radius: 2px; }
-.landing-hero h1 { max-width: 660px; margin-block: 24px; font-size: clamp(3.25rem, 5.4vw, 5rem); font-weight: 650; letter-spacing: -.06em; line-height: 1.015; text-wrap: initial; }
+.landing-hero h1 { max-width: 660px; margin-block: 24px; font-size: clamp(3.25rem, 5.4vw, 5rem); font-weight: 650; letter-spacing: -.02em; line-height: 1.04; text-wrap: initial; }
 .landing-hero h1 > span { color: var(--landing-blue); }
 .landing-lead { max-width: 490px; font-size: 18px; line-height: 1.65; color: var(--landing-muted); }
 .landing-audience { margin-top: 14px; font-size: 14px; color: var(--landing-muted); }
