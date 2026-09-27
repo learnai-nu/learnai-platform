@@ -731,6 +731,28 @@ body.blue-orbit {
 .orbit-course-footer > span { color: var(--orbit-on-surface-variant); font-size: .9375rem; }
 .orbit-course-footer > span strong { color: var(--color-navy); font-family: var(--type-family-display); font-size: 1.25rem; font-weight: 500; }
 
+/* The person behind LearnAI: white card, initials in navy, links to the full presentation. */
+.home-author { padding-top: 0; }
+.home-author-card {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: clamp(1.25rem, 4vw, 3rem);
+	align-items: start;
+	padding: clamp(1.75rem, 4vw, 3rem);
+	border: 1px solid var(--orbit-outline-variant);
+	border-radius: 1.25rem;
+	background: var(--orbit-surface-bright);
+}
+.home-author-avatar { display: grid; place-items: center; width: clamp(5rem, 10vw, 8rem); aspect-ratio: 1; border-radius: 50%; background: var(--color-badge-soft); color: var(--color-navy); font-family: var(--type-family-display); font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 500; }
+.blue-orbit .home-author h2 { margin: .75rem 0 1.25rem; font-size: clamp(1.9rem, 3.2vw, 2.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -.015em; }
+.home-author-card p:not(.orbit-section-kicker) { max-width: 40rem; margin: 0 0 1rem; color: var(--orbit-on-surface-variant); }
+.home-author-card strong { color: var(--orbit-on-surface); font-weight: 600; }
+.home-author-links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.5rem !important; }
+.home-author-links a { border-bottom: 1px solid currentColor; color: var(--orbit-primary); font-weight: 600; }
+@media (max-width: 560px) {
+	.home-author-card { grid-template-columns: 1fr; }
+}
+
 /* Closing call to action: sand, never a dark slab. */
 .orbit-final-cta {
 	display: flex;

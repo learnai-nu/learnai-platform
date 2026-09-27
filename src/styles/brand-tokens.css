@@ -164,6 +164,17 @@
 	background: var(--color-amber);
 }
 
+/* The author's portrait replaces the initials wherever the person is shown. */
+.blue-orbit img.author-photo {
+	display: block;
+	height: auto;
+	aspect-ratio: 1;
+	padding: 0;
+	border-radius: 50%;
+	background: var(--color-white);
+	object-fit: cover;
+}
+
 /* Focus is one ring across the whole product. */
 .blue-orbit :focus-visible {
 	outline: none;

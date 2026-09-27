@@ -148,12 +148,13 @@ export function navigationForLocale(locale: 'da' | 'en' = 'da') {
 export const siteAuthor = {
 	name: 'Jesper Schneider',
 	role: 'Digital forretningsudvikling & AI-strategi',
-	summary: 'Står bag LearnAI og har arbejdet med digitalisering i 16+ år.',
-	href: '/om',
+	summary: 'Står bag LearnAI og har arbejdet med digital forretning i 25+ år.',
+	/** Personal presentation on LearnAI itself, so readers stay on the site. /om is LearnAI's mission page. */
+	href: '/om-mig',
 	initials: 'JS',
-	/** Optional portrait. Drop a file at this path in `public/` to show it. */
+	/** Square portrait used for avatars and the Person node (public/om/). */
 	image: '/om/jesper-schneider.jpg',
-	sameAs: ['https://www.linkedin.com/in/jesperschneider/'],
+	sameAs: ['https://jesperschneider.dk/', 'https://www.linkedin.com/in/jesperschneider/'],
 	/** Credentials rendered as badges and as `hasCredential` in the Person node. */
 	credentials: ['AI-strategi', 'Digital forretningsudvikling', 'E-commerce'],
 	/** Topical authority signals for the `knowsAbout` property. */

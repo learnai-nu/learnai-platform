@@ -298,7 +298,7 @@ const publishedLabel = item.published_at
 			<h1>{displayTitle}</h1>
 			{displayExcerpt && <p class="hero-copy">{displayExcerpt}</p>}
 			<div class="article-meta">
-				<span class="article-meta-avatar" aria-hidden="true">{siteAuthor.initials}</span>
+				<img class="article-meta-avatar author-photo" src={siteAuthor.image} alt="" width="88" height="88" decoding="async" />
 				<div>
 					<span class="article-meta-author">{siteAuthor.name}</span>
 					<span class="article-meta-details">
