@@ -6,7 +6,7 @@ const { locale = 'da' } = Astro.props;
 ---
 
 <aside class="article-author" aria-label={locale === 'en' ? 'About the author' : 'Om forfatteren'}>
-	<span class="article-author-avatar" aria-hidden="true">{siteAuthor.initials}</span>
+	<img class="article-author-avatar author-photo" src={siteAuthor.image} alt="" width="96" height="96" loading="lazy" decoding="async" />
 	<div>
 		<span class="article-author-label">{locale === 'en' ? 'Written by' : 'Skrevet af'}</span>
 		<p class="article-author-name">{siteAuthor.name}</p>

@@ -743,7 +743,7 @@ body.blue-orbit {
 	border-radius: 1.25rem;
 	background: var(--orbit-surface-bright);
 }
-.home-author-avatar { display: grid; place-items: center; width: clamp(4rem, 8vw, 6rem); aspect-ratio: 1; border-radius: 50%; background: var(--color-badge-soft); color: var(--color-navy); font-family: var(--type-family-display); font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 500; }
+.home-author-avatar { display: grid; place-items: center; width: clamp(5rem, 10vw, 8rem); aspect-ratio: 1; border-radius: 50%; background: var(--color-badge-soft); color: var(--color-navy); font-family: var(--type-family-display); font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 500; }
 .blue-orbit .home-author h2 { margin: .75rem 0 1.25rem; font-size: clamp(1.9rem, 3.2vw, 2.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -.015em; }
 .home-author-card p:not(.orbit-section-kicker) { max-width: 40rem; margin: 0 0 1rem; color: var(--orbit-on-surface-variant); }
 .home-author-card strong { color: var(--orbit-on-surface); font-weight: 600; }

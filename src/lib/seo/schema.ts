@@ -265,6 +265,7 @@ export function createPersonSchema(siteUrl: URL): SchemaNode {
 		jobTitle: siteAuthor.role,
 		description: siteAuthor.summary,
 		url: absoluteUrl(siteAuthor.href, siteUrl),
+		image: absoluteUrl(siteAuthor.image, siteUrl),
 		worksFor: { '@type': 'Organization', '@id': `${homeUrl}#organization` },
 		knowsAbout: [...siteAuthor.knowsAbout],
 		hasCredential: siteAuthor.credentials.map((credential) => ({
