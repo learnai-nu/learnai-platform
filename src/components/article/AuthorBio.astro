@@ -14,6 +14,6 @@ const { locale = 'da' } = Astro.props;
 		<div class="article-author-badges">
 			{siteAuthor.credentials.map((credential) => <span>{credential}</span>)}
 		</div>
-		<a class="text-link" href={siteAuthor.href} target="_blank" rel="noopener noreferrer">{locale === 'en' ? 'Read more about' : 'Læs mere om'} {siteAuthor.name.split(' ')[0]} <span aria-hidden="true">↗</span></a>
+		<a class="text-link" href={siteAuthor.href}>{locale === 'en' ? 'Read more about' : 'Læs mere om'} {siteAuthor.name.split(' ')[0]} →</a>
 	</div>
 </aside>

@@ -149,8 +149,8 @@ export const siteAuthor = {
 	name: 'Jesper Schneider',
 	role: 'Digital forretningsudvikling & AI-strategi',
 	summary: 'Står bag LearnAI og har arbejdet med digitalisering i 16+ år.',
-	/** The personal presentation lives on its own site; /om is LearnAI's mission page. */
-	href: 'https://jesperschneider.dk/',
+	/** Personal presentation on LearnAI itself, so readers stay on the site. /om is LearnAI's mission page. */
+	href: '/om-mig',
 	initials: 'JS',
 	/** Optional portrait. Drop a file at this path in `public/` to show it. */
 	image: '/om/jesper-schneider.jpg',

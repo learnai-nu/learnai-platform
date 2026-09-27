@@ -29,6 +29,7 @@ const staticEntries: SitemapEntry[] = [
 	{ path: '/virksomheder', changeFrequency: 'monthly', priority: '0.8' },
 	{ path: '/arbejdskompas', changeFrequency: 'monthly', priority: '0.6' },
 	{ path: '/om', changeFrequency: 'monthly', priority: '0.5' },
+	{ path: '/om-mig', changeFrequency: 'monthly', priority: '0.6' },
 	{ path: '/kontakt', changeFrequency: 'monthly', priority: '0.4' },
 	{ path: '/nyheder', changeFrequency: 'weekly', priority: '0.5' },
 	{ path: '/privatliv', changeFrequency: 'monthly', priority: '0.2' },

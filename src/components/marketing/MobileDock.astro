@@ -65,14 +65,13 @@ const icons: Record<DockIcon, string> = {
 		</button>
 	</div>
 	<div class="mn-body">
-		<a class="mn-profile" href={siteAuthor.href} target="_blank" rel="noopener noreferrer">
+		<a class="mn-profile" href={siteAuthor.href}>
 			<span class="mn-avatar" aria-hidden="true">{siteAuthor.initials}</span>
 			<span class="mn-profile-text">
 				<b>{isEnglish ? 'About me (Danish)' : 'Om mig'}</b>
 				<em>{siteAuthor.name} — {isEnglish ? 'Digital business development & AI strategy' : siteAuthor.role}</em>
-				<span class="mn-sr-only">{isEnglish ? '(opens jesperschneider.dk in a new tab)' : '(åbner jesperschneider.dk i en ny fane)'}</span>
 			</span>
-			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 13l6-6M8 7h5v5"></path></svg>
+			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
 		</a>
 
 		<form class="mn-search" action="/search" method="get" role="search">
