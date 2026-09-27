@@ -35,7 +35,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 					<summary>{group.label}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg></summary>
 					<div class="orbit-mega-menu">
 						<div class="orbit-mega-intro">
-							<strong>{group.label === 'Brug AI' ? 'Brug AI i praksis' : group.label === 'Kurser' ? 'Lær med et forløb' : group.label}</strong>
+							<strong>{group.heading ?? group.label}</strong>
 							<p>{group.intro}</p>
 						</div>
 						<div class="orbit-mega-links">
@@ -54,7 +54,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 					</div>
 				</details>
 			))}
-			<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Virksomheder'}</a>
+			<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Til virksomheder'}</a>
 		</nav>
 
 		<div class="orbit-header-actions">
@@ -89,7 +89,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 						</div>
 					</details>
 				))}
-				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Virksomheder'}</a>
+				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Til virksomheder'}</a>
 				<div class="orbit-mobile-meta">
 					{alternates.length > 1
 						? alternates.map((alternate) => (

@@ -12,11 +12,12 @@ const learnPage = readFileSync(new URL('../src/pages/laer/index.astro', import.m
 const toolsCatalog = readFileSync(new URL('../src/components/catalog/ToolsCatalog.astro', import.meta.url), 'utf8');
 
 describe('menugrupper', () => {
-	it('keeps prompts exclusively under Brug AI and out of the default knowledge feed', () => {
-		const useAi = menuGroups.find((group) => group.label === 'Brug AI');
-		const learnAi = menuGroups.find((group) => group.label === 'Lær AI');
+	it('keeps prompts exclusively under Prompts & værktøjer and out of the default knowledge feed', () => {
+		const useAi = menuGroups.find((group) => group.label === 'Prompts & værktøjer');
+		const learnAi = menuGroups.find((group) => group.label === 'Viden & nyheder');
 		expect(useAi?.items.some((item) => item.label === 'Prompts')).toBe(true);
 		expect(learnAi?.items.some((item) => item.label === 'Prompts')).toBe(false);
+		expect(menuGroups.flatMap((group) => group.items).every((item) => item.href)).toBe(true);
 		expect(learnPage).toContain("if (!selectedType) contentQuery = contentQuery.in('type', ['article', 'guide', 'news'])");
 	});
 

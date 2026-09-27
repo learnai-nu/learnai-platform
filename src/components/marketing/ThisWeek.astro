@@ -1,0 +1,52 @@
+---
+/**
+ * "Denne uge" — the homepage's living part.
+ *
+ * The weekly rhythm (news tracks, podcast, Ugebrief) is what a generated site
+ * cannot fake, so the homepage leads with it. Everything is read from the
+ * current episode, so updating the week in one place updates this section.
+ */
+import OrbitButton from '../ui/OrbitButton.astro';
+import { formatMinutes, latestEpisode as episode } from '../../lib/podcast/latest-episode';
+---
+
+<section class="orbit-section this-week" aria-labelledby="this-week-title">
+	<div class="this-week-head">
+		<div>
+			<p class="orbit-section-kicker">Denne uge · Uge {episode.week}</p>
+			<h2 id="this-week-title">{episode.headline}</h2>
+		</div>
+		<p>Ugens vigtigste AI-nyt i fire spor, {episode.period}. Kort, på dansk og med kilderne i behold.</p>
+	</div>
+
+	<div class="this-week-grid">
+		<ol class="this-week-topics">
+			{episode.topics.map((topic) => (
+				<li>
+					<a href={topic.href}>
+						<span class="this-week-label">{topic.label}</span>
+						<h3>{topic.title}</h3>
+						<p>{topic.text}</p>
+					</a>
+				</li>
+			))}
+		</ol>
+
+		<div class="this-week-side">
+			<a class="this-week-listen" href="/podcast">
+				<span class="this-week-play" aria-hidden="true">
+					<svg viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"></path></svg>
+				</span>
+				<span>
+					<strong>Lyt til uge {episode.week}</strong>
+					<small>{formatMinutes(episode.durationSeconds)} · Podcast på dansk</small>
+				</span>
+			</a>
+			<div class="this-week-brief">
+				<p class="this-week-label">Ugebrief · hver mandag</p>
+				<h3>Få overblikket i indbakken, før ugen starter.</h3>
+				<OrbitButton href="/ugebrief#tilmelding" size="compact" arrow>Tilmeld Ugebrief</OrbitButton>
+			</div>
+		</div>
+	</div>
+</section>
