@@ -148,7 +148,7 @@ export function navigationForLocale(locale: 'da' | 'en' = 'da') {
 export const siteAuthor = {
 	name: 'Jesper Schneider',
 	role: 'Digital forretningsudvikling & AI-strategi',
-	summary: 'Står bag LearnAI og har arbejdet med digitalisering i 16+ år.',
+	summary: 'Står bag LearnAI og har arbejdet med digital forretning i 25+ år.',
 	/** Personal presentation on LearnAI itself, so readers stay on the site. /om is LearnAI's mission page. */
 	href: '/om-mig',
 	initials: 'JS',
