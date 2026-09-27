@@ -51,8 +51,8 @@
 	margin: 0;
 	font-size: clamp(3.4rem, 7vw, 6.2rem);
 	font-weight: 740;
-	letter-spacing: -.072em;
-	line-height: .91;
+	letter-spacing: -.02em;
+	line-height: 1.02;
 }
 
 .catalog-hero-copy > p:not(.catalog-kicker) {

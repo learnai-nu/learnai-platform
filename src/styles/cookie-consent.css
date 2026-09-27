@@ -54,6 +54,18 @@
 	.cc-banner { inset: auto .75rem calc(4.75rem + env(safe-area-inset-bottom)); }
 }
 
+/* På mobil er banneret en slank bundbar, så forsidens første skærm og
+ * hovedhandlingen forbliver synlige, mens der vælges. */
+@media (max-width: 640px) {
+	.cc-banner { gap: .75rem; padding: .85rem 1rem; border-radius: 1rem; }
+	.cc-text { flex-basis: 100%; }
+	.cc-text strong { margin-bottom: .15rem; font-size: .875rem; }
+	.cc-text p { font-size: .8rem; line-height: 1.4; }
+	.cc-extra { display: none; }
+	.cc-actions { flex: 1 1 100%; flex-wrap: nowrap; }
+	.cc-button { flex: 1; min-height: 2.75rem; padding-inline: .75rem; }
+}
+
 /* Genåbning af banneret fra brødtekst — ser ud som et link, opfører sig som en knap. */
 .link-button {
 	padding: 0;

@@ -28,7 +28,7 @@ const tokens = readFileSync(
 const styles = readFileSync(new URL('../src/styles/blue-orbit.css', import.meta.url), 'utf8');
 const siteNav = readFileSync(new URL('../src/lib/navigation/site-nav.ts', import.meta.url), 'utf8');
 
-describe('LearnAI workbook homepage', () => {
+describe('LearnAI editorial homepage', () => {
 	it('uses the isolated component layout and core marketing components', () => {
 		expect(homepage).toContain('<BlueOrbitLayout');
 		expect(homepage).toContain('<HeroLearningPreview />');
@@ -74,17 +74,26 @@ describe('LearnAI workbook homepage', () => {
 	it('moves visitors from a clear promise to three real actions', () => {
 		expect(hero).toContain('Første kursus tager under én time');
 		expect(hero).toContain('Få AI til at fungere');
-		expect(hero).toContain('workbook-prompt');
-		expect(hero).toContain('workbook-note');
+		expect(hero).toContain('orbit-principle');
 		expect(hero).not.toContain('signal-console');
 		expect(hero.match(/<a href=/g)).toHaveLength(3);
 	});
 
+	it('makes the hero task field a working search form, not a picture of one', () => {
+		expect(hero).toContain('<form class="task-card" action="/search" method="get" role="search"');
+		expect(hero).toContain('name="q"');
+		expect(hero).toContain('<label class="sr-only" for="task-query">');
+		expect(hero).toContain('type="submit"');
+		expect(hero).not.toContain('workbook-input');
+		expect(hero).not.toContain('&gt;');
+	});
+
 	it('uses three need-based paths and one flagship course', () => {
 		expect(learningModel.match(/<a class="orbit-need-card/g)).toHaveLength(3);
-		expect(learningModel).toContain('LÆR');
-		expect(learningModel).toContain('LØS');
-		expect(learningModel).toContain('SPØRG');
+		expect(learningModel).toContain('>Lær<');
+		expect(learningModel).toContain('>Løs<');
+		expect(learningModel).toContain('>Spørg<');
+		expect(learningModel).not.toContain('&gt;');
 		expect(featuredCourses).toContain('orbit-course-card-featured');
 		expect(featuredCourses).toContain('course-workbook-cover');
 		expect(featuredCourses).not.toContain('data-filter');
@@ -94,7 +103,7 @@ describe('LearnAI workbook homepage', () => {
 	it('defines semantic color tokens and responsive overflow protection', () => {
 		expect(tokens).toContain('--orbit-primary: #315ef5');
 		expect(tokens).toContain('--orbit-decision: #f3d45b');
-		expect(styles).toContain('LearnAI workbook system');
+		expect(styles).toContain('LearnAI editorial homepage');
 		expect(styles).toContain(':where(.blue-orbit) a { color: inherit;');
 		expect(styles).toContain('.orbit-button-filled { background: var(--orbit-primary); color: var(--orbit-on-primary);');
 		expect(styles).not.toContain('.blue-orbit a { color: inherit;');
