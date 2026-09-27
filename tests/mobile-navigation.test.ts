@@ -35,7 +35,7 @@ describe('mobil-drawer', () => {
 		expect(profileIndex).toBeGreaterThan(-1);
 		expect(profileIndex).toBeLessThan(groupsIndex);
 		expect(dock).toContain("{isEnglish ? 'About me (Danish)' : 'Om mig'}");
-		expect(siteAuthor.href).toBe('/om');
+		expect(siteAuthor.href).toBe('https://jesperschneider.dk/');
 	});
 
 	it('opens as a modal dialog that closes on backdrop, button and navigation', () => {

@@ -1,0 +1,33 @@
+---
+/**
+ * The person behind LearnAI, on the homepage.
+ *
+ * A learning site is judged on who is teaching, so the sender is visible
+ * before the closing call to action — with a route to the full presentation
+ * on jesperschneider.dk rather than a thin summary here.
+ */
+import { siteAuthor } from '../../lib/navigation/site-nav';
+---
+
+<section class="orbit-section home-author" aria-labelledby="home-author-title">
+	<div class="home-author-card">
+		<span class="home-author-avatar" aria-hidden="true">{siteAuthor.initials}</span>
+		<div>
+			<p class="orbit-section-kicker">Afsender</p>
+			<h2 id="home-author-title">Hvem står bag</h2>
+			<p>
+				Jeg hedder <strong>Jesper Gunris Schneider</strong> og er chef for digital
+				forretningsudvikling i TEKNIQ. Jeg leder et tværfagligt digitalt team og har ansvaret for
+				AI-strategi og for, at teknologien rent faktisk bliver brugt bredt — ikke kun af de nysgerrige.
+			</p>
+			<p>
+				Jeg ser AI som et redskab til at styrke beslutninger, effektivisere processer og skabe
+				bedre oplevelser — ikke som et mål i sig selv. Det er også sådan, forløbene er skruet sammen.
+			</p>
+			<p class="home-author-links">
+				<a href={siteAuthor.href} target="_blank" rel="noopener noreferrer">Læs mere om mig <span aria-hidden="true">↗</span></a>
+				<a href="https://www.linkedin.com/in/jesperschneider/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+			</p>
+		</div>
+	</div>
+</section>

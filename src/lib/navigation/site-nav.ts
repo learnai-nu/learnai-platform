@@ -149,11 +149,12 @@ export const siteAuthor = {
 	name: 'Jesper Schneider',
 	role: 'Digital forretningsudvikling & AI-strategi',
 	summary: 'Står bag LearnAI og har arbejdet med digitalisering i 16+ år.',
-	href: '/om',
+	/** The personal presentation lives on its own site; /om is LearnAI's mission page. */
+	href: 'https://jesperschneider.dk/',
 	initials: 'JS',
 	/** Optional portrait. Drop a file at this path in `public/` to show it. */
 	image: '/om/jesper-schneider.jpg',
-	sameAs: ['https://www.linkedin.com/in/jesperschneider/'],
+	sameAs: ['https://jesperschneider.dk/', 'https://www.linkedin.com/in/jesperschneider/'],
 	/** Credentials rendered as badges and as `hasCredential` in the Person node. */
 	credentials: ['AI-strategi', 'Digital forretningsudvikling', 'E-commerce'],
 	/** Topical authority signals for the `knowsAbout` property. */
