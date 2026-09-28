@@ -5,9 +5,10 @@ const packageDir = resolve(process.argv[2] ?? '');
 const year = Number(process.argv[3]);
 const week = Number(process.argv[4]);
 const outputDir = resolve(process.argv[5] ?? resolve('.content-import', `week-${week}`));
+const publicationDate = process.argv[6] ?? new Date().toISOString();
 
-if (!packageDir || !Number.isInteger(year) || !Number.isInteger(week)) {
-	throw new Error('Usage: node scripts/prepare-weekly-news-import.mjs <package-dir> <year> <week> [output-dir]');
+if (!packageDir || !Number.isInteger(year) || !Number.isInteger(week) || Number.isNaN(Date.parse(publicationDate))) {
+	throw new Error('Usage: node scripts/prepare-weekly-news-import.mjs <package-dir> <year> <week> [output-dir] [publication-date]');
 }
 
 const categories = [
@@ -25,6 +26,7 @@ const categories = [
 	},
 	{ key: 'marketing', name: 'Marketing', file: 'Marketing', fallback: '/images/news/2026/week-36/marketing-v2.jpg' },
 	{ key: 'business', name: 'Business', file: 'Business', fallback: '/images/news/2026/week-36/business-v2.jpg' },
+	{ key: 'education', name: 'Education', file: 'Education', fallback: '/images/news/2026/week-36/education-v2.jpg' },
 ];
 
 const sqlString = (value) => `'${String(value).replaceAll("'", "''")}'`;
@@ -33,6 +35,12 @@ const jsonSql = (value) => `${sqlString(JSON.stringify(value))}::jsonb`;
 function field(markdown, label) {
 	const match = markdown.match(new RegExp(`\\*\\*${label}:\\*\\*\\s*([^\\n]+)`));
 	return match?.[1]?.replace(/\\s{2}$/, '').trim() ?? '';
+}
+
+function standfirst(markdown, english) {
+	const labelled = field(markdown, english ? 'Standfirst' : 'Underrubrik');
+	if (labelled) return labelled;
+	return markdown.match(/^\*([^*\n]+)\*$/m)?.[1]?.trim() ?? '';
 }
 
 function summary(markdown) {
@@ -49,7 +57,7 @@ function body(markdown) {
 
 function parseSources(markdown) {
 	const block = markdown.split(/^## (?:Kilder|Sources)\n/m)[1]?.split(/^## /m)[0] ?? '';
-	return [...block.matchAll(/^- \[([^\]]+)\]\((https?:\/\/[^)]+)\) · ([^\n]+)$/gm)].map((match) => {
+	const structured = [...block.matchAll(/^- \[([^\]]+)\]\((https?:\/\/[^)]+)\) · ([^\n]+)$/gm)].map((match) => {
 		const parts = match[3].split(' · ').map((part) => part.trim());
 		const kind = parts.shift() ?? '';
 		const publishedDate = parts.shift();
@@ -61,6 +69,19 @@ function parseSources(markdown) {
 				: 'primary';
 		return { name: match[1], url: match[2], sourceType, publishedDate, note };
 	});
+	if (structured.length) return structured;
+
+	// In prose-style source lists the verified URLs remain next to the claims.
+	// Preserve those links as machine-readable citations instead of emitting an
+	// empty source section.
+	const seen = new Set();
+	return [...markdown.matchAll(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g)]
+		.filter((match) => {
+			if (seen.has(match[2])) return false;
+			seen.add(match[2]);
+			return true;
+		})
+		.map((match) => ({ name: match[1], url: match[2] }));
 }
 
 function parseFaq(markdown) {
@@ -78,7 +99,7 @@ function storyHeadings(markdown) {
 function makeItem(category, locale, markdown, fileName) {
 	const english = locale === 'en';
 	const title = markdown.match(/^# (.+)$/m)?.[1]?.trim();
-	const excerpt = field(markdown, english ? 'Standfirst' : 'Underrubrik');
+	const excerpt = standfirst(markdown, english);
 	if (!title || !excerpt) throw new Error(`Missing title/standfirst in ${fileName}`);
 	const slug = `${english ? 'week' : 'uge'}-${week}-${category.key}`;
 	const sources = parseSources(markdown);
@@ -90,13 +111,13 @@ function makeItem(category, locale, markdown, fileName) {
 	const sourceMetadata = {
 		year,
 		week,
-		period: english ? '7–13 September 2026' : '7.–13. september 2026',
+		period: field(markdown, english ? 'Period' : 'Periode'),
 		locale,
 		category: category.name,
 		source_file: fileName,
 		source_system: 'learnai-weekly-agents',
 		source_collection: 'weekly-package',
-		imported_at: '2026-09-14T06:02:08+02:00',
+		imported_at: new Date().toISOString(),
 		visual_status: 'fallback',
 		visual_fallback_from: '2026-week-36',
 		image: category.fallback,
@@ -179,7 +200,7 @@ commit;`;
 const publishSql = `begin;
 update public.content_items
 set status = 'published'::content_status,
-    published_at = timestamptz '${year}-09-13 22:00:00+00',
+    published_at = timestamptz '${publicationDate}',
     updated_at = now()
 where source_key = any(array[${sourceKeys}]::text[])
   and status = 'draft'::content_status
