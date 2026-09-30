@@ -39,6 +39,23 @@ rapporteres som fallback.
 
 ## Opdatér ugens episode på sitet
 
-Ugens episode vedligeholdes ét sted: `src/lib/podcast/latest-episode.ts`. Opdatér uge, periode,
-varighed, lydfil, overskrift og de fire spor dér. Både `/podcast` og forsidens sektion
-"Denne uge" læser fra filen, så de altid viser samme uge.
+Ugens episode vedligeholdes ét sted: `src/lib/podcast/latest-episode.ts`. Opdatér uge, år,
+periode, publiceringsdato, valideret varighed, lydfil, overskrift og ét aktuelt emnespor for
+hver inkluderet kategori. Både `/podcast` og forsidens sektion "Denne uge" læser fra filen,
+så de altid viser samme uge.
+
+Testen `tests/latest-podcast.test.ts` finder automatisk den nyeste lydfil under
+`public/audio/news/` og fejler, hvis episodeobjektet stadig peger på en tidligere uge. En ny
+podcastfil må derfor ikke deployes alene: episodeobjektet og kategori-linkene skal opdateres i
+samme commit.
+
+## Ugebrevets podcastlink
+
+Podcastblokken i ugebrevet skal altid føre til `https://learnai.nu/podcast`, hvor lytteren får
+afspilleren, ugens emner og links til artiklerne. Den rå MP3/M4A-URL bruges kun til teknisk
+validering af lydfilen og må ikke være mailens CTA eller plaintext-link.
+
+Før udsendelse skal HTML-previewet kontrolleres for begge dele:
+
+- podcastknappen peger på `https://learnai.nu/podcast`;
+- ingen `href` i podcastblokken peger direkte på `/audio/news/`.
