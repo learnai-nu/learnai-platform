@@ -8,7 +8,15 @@ const course = {
 	price: 'Gratis',
 	title: 'AI i praksis — dit første kursus',
 	description: 'Forstå mulighederne, skriv din første gode prompt og brug AI sikkert på jobbet.',
-	lessons: 6,
+	/** Mirrors the lesson titles in supabase/migrations (free course, level 1). */
+	lessons: [
+		'Få sparring på en aktuel udfordring',
+		'Sådan “tænker” en sprogmodel',
+		'De fire byggesten i en brugbar prompt',
+		'Fra første udkast til noget, du vil bruge',
+		'Datasikkerhed, GDPR og sund fornuft',
+		'De tre kontrolvaner – og dit næste skridt',
+	],
 	href: '/kurser/ai-i-praksis-dit-foerste-kursus',
 };
 ---
@@ -33,8 +41,11 @@ const course = {
 			<p class="orbit-course-meta">{course.level} · {course.duration} · {course.price}</p>
 			<h3>{course.title}</h3>
 			<p>{course.description}</p>
+			<ol class="orbit-course-lessons" aria-label="Lektioner i kurset">
+				{course.lessons.map((lesson) => <li>{lesson}</li>)}
+			</ol>
 			<div class="orbit-course-footer">
-				<span><strong>{course.lessons}</strong> lektioner</span>
+				<span><strong>{course.lessons.length}</strong> lektioner</span>
 				<OrbitButton href={course.href} variant="tonal" arrow>Se kurset</OrbitButton>
 			</div>
 		</div>

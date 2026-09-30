@@ -36,3 +36,9 @@ Efter generering skal den ugentlige agent fortsat kontrollere varighed,
 filstørrelse, offentlig HTTP-status og matchende filstørrelse/hash, før et link
 må bruges i ugebrevet. macOS-stemmen Sara er kun nød-fallback og skal altid
 rapporteres som fallback.
+
+## Opdatér ugens episode på sitet
+
+Ugens episode vedligeholdes ét sted: `src/lib/podcast/latest-episode.ts`. Opdatér uge, periode,
+varighed, lydfil, overskrift og de fire spor dér. Både `/podcast` og forsidens sektion
+"Denne uge" læser fra filen, så de altid viser samme uge.

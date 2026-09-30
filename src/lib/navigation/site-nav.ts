@@ -17,27 +17,31 @@ export interface NavItem {
 }
 
 export interface NavGroup {
+	/** Named by content type, so the three groups never overlap in meaning. */
 	label: string;
+	/** Heading inside the open menu panel; defaults to the label. */
+	heading?: string;
 	intro: string;
 	items: NavItem[];
 }
 
 export const menuGroups: NavGroup[] = [
 	{
-		label: 'Lær AI',
-		intro: 'Viden, nyheder og fordybelse samlet efter det, du vil lære.',
+		label: 'Viden & nyheder',
+		heading: 'Hold dig opdateret',
+		intro: 'Artikler, guides og ugens nyheder — som tekst, lyd eller mail.',
 		items: [
 			{ label: 'Artikler & guides', description: 'Trin-for-trin og forklaringer', href: '/laer', section: '/laer', type: 'knowledge' },
 			{ label: 'Nyheder & indsigt', description: 'Det vigtigste fra AI-verdenen', href: '/laer?type=news', section: '/laer', type: 'news' },
 			{ label: 'Podcast', description: 'Lyt til ugens AI-overblik', href: '/podcast', section: '/podcast' },
 			{ label: 'Ugebrief', description: 'Ugens overblik direkte i indbakken', href: '/ugebrief', section: '/ugebrief' },
-			{ label: 'Research', description: 'Undersøgelser og dokumentation' },
 			{ label: 'Events', description: 'Konferencer og meetups', href: '/events', section: '/events' },
 			{ label: 'Ressourcer', description: 'Podcasts, bøger og kanaler', href: '/resources', section: '/resources' },
 		],
 	},
 	{
-		label: 'Brug AI',
+		label: 'Prompts & værktøjer',
+		heading: 'Brug AI i praksis',
 		intro: 'Fra den første prompt til konkrete arbejdsgange og det rigtige værktøj.',
 		items: [
 			{ label: 'AI Mentor', description: 'Få hjælp til dit næste skridt', href: '/mentor', section: '/mentor' },
@@ -48,6 +52,7 @@ export const menuGroups: NavGroup[] = [
 	},
 	{
 		label: 'Kurser',
+		heading: 'Lær med et forløb',
 		intro: 'Korte, praktiske forløb med progression og øvelser.',
 		items: [
 			{ label: 'Alle kurser', description: 'Se hele kursuskataloget', href: '/kurser', section: '/kurser', type: 'all-courses' },
@@ -117,7 +122,7 @@ export interface DockItem {
  * destinations plus the menu — more than that and the targets get too small.
  */
 export const dockItems: DockItem[] = [
-	{ label: 'Lær AI', icon: 'learn', href: '/laer', section: '/laer' },
+	{ label: 'Viden', icon: 'learn', href: '/laer', section: '/laer' },
 	{ label: 'Kurser', icon: 'courses', href: '/kurser', section: '/kurser' },
 	{ label: primaryCta.label, icon: 'start', href: primaryCta.href, section: primaryCta.href },
 	{ label: 'Værktøjer', icon: 'tools', href: '/tools', section: '/tools' },

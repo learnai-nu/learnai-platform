@@ -29,6 +29,12 @@ body.blue-orbit {
 	line-height: var(--type-body-leading);
 }
 
+/* A top-level link reads exactly like the menu triggers beside it. */
+.blue-orbit .orbit-desktop-nav > a {
+	font-size: .86rem;
+	font-weight: 650;
+}
+
 .blue-orbit .orbit-login-link,
 .blue-orbit .orbit-header-cta,
 .blue-orbit .orbit-button,

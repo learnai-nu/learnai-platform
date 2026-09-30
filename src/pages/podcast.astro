@@ -1,46 +1,14 @@
 ---
 import ArticleAudioPlayer from '../components/article/ArticleAudioPlayer.astro';
 import BlueOrbitLayout from '../layouts/BlueOrbitLayout.astro';
+import { latestEpisode } from '../lib/podcast/latest-episode';
 import type { SchemaNode } from '../lib/seo/schema';
 import '../styles/podcast.css';
 
 export const prerender = true;
 
-const episode = {
-	week: 38,
-	year: 2026,
-	period: '14.–20. september 2026',
-	durationSeconds: 432.59,
-	audioUrl: '/audio/news/2026/week-38/Podcast_Uge38_DA.mp3',
-	title: 'AI-nyheder uge 38: Når tempo, sikkerhed og agentøkonomi mødes',
-};
-
-const episodeTopics = [
-	{
-		label: 'Headlines & launches',
-		title: 'Nye modeller og mere handlekraftige agenter',
-		text: 'Ugens lanceringer peger mod systemer, der løser længere opgaver og kræver tydeligere kontrol.',
-		href: '/laer/uge-38-headlines-and-launches',
-	},
-	{
-		label: 'Deep dives & analysis',
-		title: 'Kan AI-laboratorierne selv styre tempoet?',
-		text: 'Debatten om udviklingstempo bliver holdt op mod hændelsesrapporter og konkrete sikkerhedsvalg.',
-		href: '/laer/uge-38-deep-dives-and-analysis',
-	},
-	{
-		label: 'Marketing',
-		title: 'Når annoncen bliver en samtale',
-		text: 'Samtalebårne annoncer ændrer forholdet mellem platform, brand og den kunde, der stiller spørgsmålet.',
-		href: '/laer/uge-38-marketing',
-	},
-	{
-		label: 'Business',
-		title: 'Agentarbejde kræver nye driftsvalg',
-		text: 'Virksomheder skal vælge, hvor agenter må handle, og hvordan kvalitet, data og ansvar følges.',
-		href: '/laer/uge-38-business',
-	},
-];
+const episode = latestEpisode;
+const episodeTopics = latestEpisode.topics;
 
 const canonicalUrl = new URL('/podcast', Astro.site ?? Astro.url).toString();
 const audioUrl = new URL(episode.audioUrl, Astro.site ?? Astro.url).toString();
@@ -54,9 +22,9 @@ const podcastSchema: SchemaNode = {
 	webFeed: canonicalUrl,
 	hasPart: {
 		'@type': 'PodcastEpisode',
-		'@id': `${canonicalUrl}#uge-38-2026`,
+		'@id': `${canonicalUrl}#uge-${episode.week}-${episode.year}`,
 		name: episode.title,
-		description: 'Uge 38 samlet i et kort dansk lydformat med modelnyheder, analyse, marketing og business.',
+		description: `Uge ${episode.week} samlet i et kort dansk lydformat med modelnyheder, analyse, marketing og business.`,
 		episodeNumber: episode.week,
 		datePublished: '2026-09-21',
 		duration: 'PT7M13S',
@@ -104,13 +72,13 @@ const podcastSchema: SchemaNode = {
 		<div class="podcast-shell podcast-latest-grid">
 			<div class="podcast-episode-heading">
 				<p class="podcast-kicker">Nyeste episode</p>
-				<h2 id="latest-title">Når tempo, sikkerhed og agentøkonomi mødes</h2>
-				<p>Fire redaktionelle spor fra uge 38 — samlet i ét afsnit, du kan tage med dig.</p>
+				<h2 id="latest-title">{episode.headline}</h2>
+				<p>Fire redaktionelle spor fra uge {episode.week} — samlet i ét afsnit, du kan tage med dig.</p>
 			</div>
 			<div class="podcast-player-wrap">
 				<ArticleAudioPlayer
 					src={episode.audioUrl}
-					title="AI-nyheder uge 38"
+					title={`AI-nyheder uge ${episode.week}`}
 					durationSeconds={episode.durationSeconds}
 					voiceName="LearnAI"
 				/>
