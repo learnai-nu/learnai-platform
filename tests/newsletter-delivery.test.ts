@@ -82,6 +82,8 @@ describe('weekly brief delivery contract', () => {
 		expect(html).toContain('Ugebrief &middot; Uge 36');
 		expect(html).toContain('01 &nbsp;Marketing');
 		expect(html).toContain('Uge 36: modellerne flytter ind i arbejdet');
+		expect(html).toContain('href="https://learnai.nu/podcast"');
+		expect(html).not.toContain('href="https://learnai.nu/audio/news/2026/week-36/podcast.m4a"');
 		expect(html).toContain('{{{RESEND_UNSUBSCRIBE_URL}}}');
 		expect(html).not.toContain('Postadresse indsættes');
 	});

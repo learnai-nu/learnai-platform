@@ -16,6 +16,7 @@ export interface WeeklyEpisode {
 	week: number;
 	year: number;
 	period: string;
+	datePublished: string;
 	durationSeconds: number;
 	audioUrl: string;
 	/** Full episode title used in structured data and the player. */
@@ -26,37 +27,44 @@ export interface WeeklyEpisode {
 }
 
 export const latestEpisode: WeeklyEpisode = {
-	week: 38,
+	week: 39,
 	year: 2026,
-	period: '14.–20. september 2026',
-	durationSeconds: 432.59,
-	audioUrl: '/audio/news/2026/week-38/Podcast_Uge38_DA.mp3',
-	title: 'AI-nyheder uge 38: Når tempo, sikkerhed og agentøkonomi mødes',
-	headline: 'Når tempo, sikkerhed og agentøkonomi mødes',
+	period: '21.–27. september 2026',
+	datePublished: '2026-09-28',
+	durationSeconds: 458.87,
+	audioUrl: '/audio/news/2026/week-39/Podcast_Uge39_DA.mp3',
+	title: 'AI-nyheder uge 39: Amazon, Muse og agenternes adgang',
+	headline: 'Amazon, Muse og agenternes adgang',
 	topics: [
 		{
 			label: 'Headlines & launches',
-			title: 'Nye modeller og mere handlekraftige agenter',
-			text: 'Ugens lanceringer peger mod systemer, der løser længere opgaver og kræver tydeligere kontrol.',
-			href: '/laer/uge-38-headlines-and-launches',
+			title: 'Muse, Gemini og Copilot rykker tættere på handling',
+			text: 'Meta, Google og Microsoft bygger syn, stemme og vedvarende arbejdsforløb ind i deres assistenter.',
+			href: '/laer/uge-39-headlines-and-launches',
 		},
 		{
 			label: 'Deep dives & analysis',
-			title: 'Kan AI-laboratorierne selv styre tempoet?',
-			text: 'Debatten om udviklingstempo bliver holdt op mod hændelsesrapporter og konkrete sikkerhedsvalg.',
-			href: '/laer/uge-38-deep-dives-and-analysis',
+			title: 'Forskning kræver tydelige forbehold og afgrænsning',
+			text: 'Enzymfund, sikkerhedstests og compute i rummet viser både mulighederne og grænserne for ugens AI-forskning.',
+			href: '/laer/uge-39-deep-dives-and-analysis',
 		},
 		{
 			label: 'Marketing',
-			title: 'Når annoncen bliver en samtale',
-			text: 'Samtalebårne annoncer ændrer forholdet mellem platform, brand og den kunde, der stiller spørgsmålet.',
-			href: '/laer/uge-38-marketing',
+			title: 'Amazon sætter grænsen for Metas shoppingagent',
+			text: 'Muse-konflikten gør adgang til produktdata, kunderejse og platformskontrol til et konkret marketingproblem.',
+			href: '/laer/uge-39-marketing',
 		},
 		{
 			label: 'Business',
-			title: 'Agentarbejde kræver nye driftsvalg',
-			text: 'Virksomheder skal vælge, hvor agenter må handle, og hvordan kvalitet, data og ansvar følges.',
-			href: '/laer/uge-38-business',
+			title: 'Billigere modeller ændrer regnestykket',
+			text: 'GPT-6 Sol og Luna samt Claude Opus 5.5 presser priserne, men godkendte opgaver er et bedre mål end tokens.',
+			href: '/laer/uge-39-business',
+		},
+		{
+			label: 'Education',
+			title: 'Elever og lærere efterlyser fælles AI-rammer',
+			text: 'Nye anbefalinger og undervisningsgreb flytter fokus fra kontrol til synlige faglige processer.',
+			href: '/laer/uge-39-education',
 		},
 	],
 };

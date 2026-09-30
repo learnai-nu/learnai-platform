@@ -9,6 +9,8 @@ export const prerender = true;
 
 const episode = latestEpisode;
 const episodeTopics = latestEpisode.topics;
+const durationMinutes = Math.floor(episode.durationSeconds / 60);
+const durationSeconds = Math.round(episode.durationSeconds % 60).toString().padStart(2, '0');
 
 const canonicalUrl = new URL('/podcast', Astro.site ?? Astro.url).toString();
 const audioUrl = new URL(episode.audioUrl, Astro.site ?? Astro.url).toString();
@@ -26,8 +28,8 @@ const podcastSchema: SchemaNode = {
 		name: episode.title,
 		description: `Uge ${episode.week} samlet i et kort dansk lydformat med modelnyheder, analyse, marketing og business.`,
 		episodeNumber: episode.week,
-		datePublished: '2026-09-21',
-		duration: 'PT7M13S',
+		datePublished: episode.datePublished,
+		duration: `PT${durationMinutes}M${durationSeconds}S`,
 		inLanguage: 'da-DK',
 		associatedMedia: {
 			'@type': 'MediaObject',
@@ -57,7 +59,7 @@ const podcastSchema: SchemaNode = {
 				<ul class="podcast-facts" aria-label="Oplysninger om den nyeste episode">
 					<li><span>Nyeste episode</span><strong>Uge {episode.week}</strong></li>
 					<li><span>Periode</span><strong>{episode.period}</strong></li>
-					<li><span>Spilletid</span><strong>7:13</strong></li>
+					<li><span>Spilletid</span><strong>{durationMinutes}:{durationSeconds}</strong></li>
 				</ul>
 			</div>
 			<div class="podcast-week-mark" aria-hidden="true">
@@ -73,7 +75,7 @@ const podcastSchema: SchemaNode = {
 			<div class="podcast-episode-heading">
 				<p class="podcast-kicker">Nyeste episode</p>
 				<h2 id="latest-title">{episode.headline}</h2>
-				<p>Fire redaktionelle spor fra uge {episode.week} — samlet i ét afsnit, du kan tage med dig.</p>
+				<p>Ugens redaktionelle spor — samlet i ét afsnit, du kan tage med dig.</p>
 			</div>
 			<div class="podcast-player-wrap">
 				<ArticleAudioPlayer
@@ -91,7 +93,7 @@ const podcastSchema: SchemaNode = {
 		<div class="podcast-shell">
 			<div class="podcast-section-heading">
 				<p class="podcast-kicker">I dette afsnit</p>
-				<h2 id="topics-title">Læs videre i ugens fire spor</h2>
+				<h2 id="topics-title">Læs videre i ugens historier</h2>
 			</div>
 			<div class="podcast-topic-grid">
 				{episodeTopics.map((topic, index) => (
