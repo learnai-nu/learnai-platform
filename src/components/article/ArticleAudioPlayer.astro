@@ -15,6 +15,7 @@ const {
 	locale = 'da',
 } = Astro.props;
 const isEnglish = locale === 'en';
+const downloadFormat = src.toLowerCase().endsWith('.m4a') ? 'M4A' : 'MP3';
 const labels = isEnglish
 	? {
 		eyebrow: 'Listen to the article',
@@ -24,7 +25,7 @@ const labels = isEnglish
 		pause: 'Pause',
 		seek: 'Playback position',
 		speed: 'Playback speed',
-		download: 'Download MP3',
+		download: `Download ${downloadFormat}`,
 		error: 'The audio could not be loaded.',
 	}
 	: {
@@ -35,7 +36,7 @@ const labels = isEnglish
 		pause: 'Pause',
 		seek: 'Afspilningsposition',
 		speed: 'Afspilningshastighed',
-		download: 'Hent MP3',
+		download: `Hent ${downloadFormat}`,
 		error: 'Lydfilen kunne ikke indlæses.',
 	};
 

@@ -14,6 +14,7 @@ const durationSeconds = Math.round(episode.durationSeconds % 60).toString().padS
 
 const canonicalUrl = new URL('/podcast', Astro.site ?? Astro.url).toString();
 const audioUrl = new URL(episode.audioUrl, Astro.site ?? Astro.url).toString();
+const audioEncodingFormat = episode.audioUrl.toLowerCase().endsWith('.m4a') ? 'audio/mp4' : 'audio/mpeg';
 const podcastSchema: SchemaNode = {
 	'@type': 'PodcastSeries',
 	'@id': `${canonicalUrl}#series`,
@@ -34,7 +35,7 @@ const podcastSchema: SchemaNode = {
 		associatedMedia: {
 			'@type': 'MediaObject',
 			contentUrl: audioUrl,
-			encodingFormat: 'audio/mpeg',
+			encodingFormat: audioEncodingFormat,
 		},
 	},
 };

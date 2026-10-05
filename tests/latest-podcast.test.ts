@@ -29,5 +29,7 @@ describe('latest podcast episode', () => {
 		expect(latestEpisode.topics.length).toBeGreaterThan(0);
 		expect(latestEpisode.topics.every((topic) => topic.href.startsWith(`/laer/uge-${newestAudio.week}-`))).toBe(true);
 		expect(new Set(latestEpisode.topics.map((topic) => topic.href)).size).toBe(latestEpisode.topics.length);
+		expect(latestEpisode.durationSeconds).toBeGreaterThanOrEqual(4 * 60);
+		expect(latestEpisode.durationSeconds).toBeLessThanOrEqual(12 * 60);
 	});
 });
