@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 
 const packageDir = resolve(process.argv[2] ?? '');
@@ -28,6 +28,18 @@ const categories = [
 	{ key: 'business', name: 'Business', file: 'Business', fallback: '/images/news/2026/week-36/business-v2.jpg' },
 	{ key: 'education', name: 'Education', file: 'Education', fallback: '/images/news/2026/week-36/education-v2.jpg' },
 ];
+
+const packageFiles = new Set(await readdir(packageDir));
+const includedCategories = categories.filter((category) => {
+	const daFile = `${category.file}_DA.md`;
+	const enFile = `${category.file}_EN.md`;
+	const hasDa = packageFiles.has(daFile);
+	const hasEn = packageFiles.has(enFile);
+	if (hasDa !== hasEn) throw new Error(`Incomplete language pair for ${category.name}: expected ${daFile} and ${enFile}`);
+	return hasDa && hasEn;
+});
+
+if (!includedCategories.length) throw new Error(`No complete DA/EN category pairs found in ${packageDir}`);
 
 const sqlString = (value) => `'${String(value).replaceAll("'", "''")}'`;
 const jsonSql = (value) => `${sqlString(JSON.stringify(value))}::jsonb`;
@@ -145,7 +157,7 @@ function makeItem(category, locale, markdown, fileName) {
 }
 
 const items = [];
-for (const category of categories) {
+for (const category of includedCategories) {
 	for (const locale of ['da', 'en']) {
 		const fileName = `${category.file}_${locale.toUpperCase()}.md`;
 		const markdown = await readFile(resolve(packageDir, fileName), 'utf8');
