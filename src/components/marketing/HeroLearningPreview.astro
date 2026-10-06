@@ -8,21 +8,21 @@ import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 		<p class="orbit-eyebrow">AI til dit arbejde</p>
 		<h1>Få AI til at fungere <em>i dit arbejde.</em></h1>
 		<p class="orbit-hero-lead">
-			Korte kurser, brugbare prompts og konkret sparring på dansk.
+			Praktiske guides, brugbare prompts og ugens AI-nyheder på dansk.
 			Uden hype og unødvendig teknik.
 		</p>
 		<div class="orbit-hero-actions">
 			<OrbitButton
-				href="/kurser/ai-i-praksis-dit-foerste-kursus"
+				href="/laer?type=prompt"
 				size="large"
 				arrow
-				analyticsEvent={ANALYTICS_EVENTS.courseCtaClicked}
+				analyticsEvent={ANALYTICS_EVENTS.primaryCtaClicked}
 				analyticsSource="home_hero"
-				analyticsDetail="course_page"
-			>Start gratis</OrbitButton>
-			<OrbitButton href="/laer?type=prompt" variant="text" size="large">Find en prompt</OrbitButton>
+				analyticsDetail="prompts"
+			>Find en prompt</OrbitButton>
+			<OrbitButton href="/laer" variant="text" size="large">Læs guides</OrbitButton>
 		</div>
-		<p class="orbit-proof-line">Første kursus tager under én time</p>
+		<p class="orbit-proof-line">Gratis og på dansk</p>
 	</div>
 
 	<div class="orbit-hero-stage">
@@ -47,7 +47,7 @@ import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
 					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
 				</button>
 			</div>
-			<p class="task-hint">Vi finder kurser, prompts og guides, der passer.</p>
+			<p class="task-hint">Vi finder prompts og guides, der passer.</p>
 			<div class="task-suggestions">
 				<p>Eller start med</p>
 				<ul>

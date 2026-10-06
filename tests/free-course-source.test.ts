@@ -13,7 +13,6 @@ const challengeContractMigration = readFileSync(
 	new URL('../supabase/migrations/20260903090000_align_challenge_coach_course_contract.sql', import.meta.url),
 	'utf8',
 );
-const landingPage = readFileSync(new URL('../src/pages/kurser/ai-i-arbejdet.astro', import.meta.url), 'utf8');
 
 describe('Rettelsespakke v2 course alignment', () => {
 	it('preserves every existing lesson identity while replacing the editorial content', () => {
@@ -37,12 +36,6 @@ describe('Rettelsespakke v2 course alignment', () => {
 		expect(migration).not.toContain('26 lektioner');
 	});
 
-	it('positions the waitlist as the four-week flagship course', () => {
-		expect(landingPage).toContain('AI som dit daglige værktøj');
-		expect(landingPage).toContain('2–5 timer om ugen');
-		expect(landingPage).toContain('tre bonuslektioner og to live-workshops');
-		expect(landingPage).not.toContain('Niveau 2');
-	});
 
 	it('replaces the original mail-thread exercise with the canonical challenge coach lesson', () => {
 		expect(challengeMigration).toContain("title = 'Få sparring på en aktuel udfordring'");

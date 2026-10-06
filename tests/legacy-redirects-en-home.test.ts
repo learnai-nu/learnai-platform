@@ -14,7 +14,7 @@ describe('legacy redirects and English home SEO', () => {
 		expect(astroConfig).toContain("'/vaerktoejer': '/tools'");
 		expect(astroConfig).toContain("'/articles': '/laer'");
 		expect(astroConfig).toContain("'/about': '/om'");
-		expect(astroConfig).toContain("'/courses': '/kurser'");
+		expect(astroConfig).toContain("'/courses': '/laer'");
 		expect(astroConfig).toContain("'/privacy': '/privatliv'");
 		expect(astroConfig).toContain("'/prompts': '/laer?type=prompt'");
 		// Dynamic catch-all must NOT live in Astro config (literal path bug on Vercel)
@@ -29,6 +29,13 @@ describe('legacy redirects and English home SEO', () => {
 		expect(middleware).toContain('`/laer/${slug}`');
 		expect(middleware).not.toContain('context.redirect');
 		expect(legacyArticleRoute).toContain("Astro.redirect(`/laer/${slug}`, 301)");
+	});
+
+	it('redirects the retired course catalogue and business page', () => {
+		const retiredCourses = readFileSync(new URL('../src/pages/kurser/[...path].astro', import.meta.url), 'utf8');
+		const retiredBusiness = readFileSync(new URL('../src/pages/virksomheder.astro', import.meta.url), 'utf8');
+		expect(retiredCourses).toContain("Astro.redirect('/laer', 301)");
+		expect(retiredBusiness).toContain("Astro.redirect('/', 301)");
 	});
 
 	it('keeps one redirect owner and avoids duplicate trailing-slash routes', () => {

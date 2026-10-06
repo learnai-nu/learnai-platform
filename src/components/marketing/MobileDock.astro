@@ -40,10 +40,10 @@ const icons: Record<DockIcon, string> = {
 			class:list={['mn-item', { 'mn-item-cta': item.icon === 'start' }]}
 			href={item.href}
 			aria-current={isNavItemActive(item, activeState) ? 'page' : undefined}
-			aria-label={item.icon === 'start' ? (isEnglish ? item.label : `${item.label} — gratis AI-kursus`) : undefined}
-			data-analytics-event={item.icon === 'start' ? ANALYTICS_EVENTS.courseCtaClicked : undefined}
+			aria-label={item.icon === 'start' ? item.label : undefined}
+			data-analytics-event={item.icon === 'start' ? ANALYTICS_EVENTS.primaryCtaClicked : undefined}
 			data-analytics-source={item.icon === 'start' ? 'mobile_dock' : undefined}
-			data-analytics-detail={item.icon === 'start' ? 'course_page' : undefined}
+			data-analytics-detail={item.icon === 'start' ? 'primary_cta' : undefined}
 		>
 			{item.icon === 'start' && <span>{isEnglish ? 'Explore' : 'Start'}</span>}
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[item.icon]}></path></svg>
@@ -100,10 +100,6 @@ const icons: Record<DockIcon, string> = {
 			</details>
 		))}
 
-		<a class="mn-link" href="/virksomheder">
-			{isEnglish ? 'For businesses (Danish)' : 'Til virksomheder'}
-			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
-		</a>
 		<a class="mn-link" href="/login" data-account-anonymous>
 			{isEnglish ? 'Log in' : 'Log ind'}
 			<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l6 6-6 6"></path></svg>
@@ -116,9 +112,9 @@ const icons: Record<DockIcon, string> = {
 		<a
 			class="mn-cta"
 			href={primaryCta.href}
-			data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked}
+			data-analytics-event={ANALYTICS_EVENTS.primaryCtaClicked}
 			data-analytics-source="mobile_drawer"
-			data-analytics-detail="course_page"
+			data-analytics-detail="primary_cta"
 		>{primaryCta.label}</a>
 	</div>
 </dialog>

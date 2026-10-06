@@ -6,7 +6,6 @@
  * wants to know who is teaching can check it without leaving the site — and
  * the page ends in the learning paths instead of an exit link.
  */
-import OrbitButton from '../components/ui/OrbitButton.astro';
 import BlueOrbitLayout from '../layouts/BlueOrbitLayout.astro';
 import { ANALYTICS_EVENTS } from '../lib/analytics/events';
 import { siteAuthor } from '../lib/navigation/site-nav';
@@ -16,30 +15,30 @@ export const prerender = true;
 
 const focusAreas = [
 	{
-		title: 'AI-strategi og implementering',
-		body: 'Fra retning og prioritering til løsninger, der er i drift og bliver brugt i hverdagen.',
+		title: 'AI i hverdagen',
+		body: 'Hvordan AI bliver et redskab i det arbejde, man allerede laver — ikke et mål i sig selv.',
 	},
 	{
-		title: 'Tale-til-tekst og chatbots',
-		body: 'Konkrete værktøjer, der sparer tid i møder, dokumentation og kundedialog.',
+		title: 'Værktøjer, der sparer tid',
+		body: 'Konkrete værktøjer og arbejdsgange, der frigør tid til det, der betyder noget.',
 	},
 	{
-		title: 'AI-ambassadører',
-		body: 'Et korps af kolleger, der hjælper andre i gang — fordi adoption sker mellem mennesker.',
+		title: 'Adoption mellem mennesker',
+		body: 'Ny teknologi slår først igennem, når folk hjælper hinanden i gang.',
 	},
 	{
-		title: 'Kompetenceudvikling',
-		body: 'Korte forløb og vidensdeling, så AI bliver brugt bredt og ikke kun af de nysgerrige.',
+		title: 'Læring og vidensdeling',
+		body: 'Viden, der er let at bruge, så AI bliver brugt bredt og ikke kun af de nysgerrige.',
 	},
 ];
 
 const nextSteps = [
 	{
-		kicker: 'Kursus · 60 min. · Gratis',
-		title: 'AI i praksis — dit første kursus',
-		body: 'Forstå mulighederne, skriv din første gode prompt og brug AI sikkert på jobbet.',
-		href: '/kurser/ai-i-praksis-dit-foerste-kursus',
-		cta: 'Start gratis',
+		kicker: 'Gratis skabeloner',
+		title: 'Promptbiblioteket',
+		body: 'Gennemprøvede prompts, du kan tilpasse til dine egne opgaver.',
+		href: '/laer?type=prompt',
+		cta: 'Find en prompt',
 	},
 	{
 		kicker: 'Hver mandag',
@@ -60,7 +59,7 @@ const nextSteps = [
 
 <BlueOrbitLayout
 	title="Om Jesper Gunris Schneider | LearnAI.nu"
-	description="Jesper Gunris Schneider står bag LearnAI. Chef for digital forretningsudvikling i TEKNIQ med ansvar for AI-strategi og bred brug af AI i praksis."
+	description="Jesper Gunris Schneider står bag LearnAI. Chef for digital forretningsudvikling med ansvar for AI-strategi og bred brug af AI i praksis."
 	pageType="AboutPage"
 	breadcrumbs={[
 		{ name: 'Forside', url: '/' },
@@ -74,15 +73,15 @@ const nextSteps = [
 			<h1>Jeg hjælper folk med at bruge AI <em>i det arbejde, de allerede laver.</em></h1>
 			<p class="about-lead">
 				Jeg hedder <strong>Jesper Gunris Schneider</strong> og står bag LearnAI. Til daglig er jeg chef for
-				digital forretningsudvikling i TEKNIQ, hvor jeg har ansvaret for AI-strategi — og for, at
-				teknologien rent faktisk bliver brugt bredt.
+				digital forretningsudvikling med ansvar for AI-strategi — og for, at teknologien rent faktisk
+				bliver brugt bredt.
 			</p>
 		</div>
 		<figure class="about-portrait">
 			<img
 				class="about-photo"
-				src="/om/jesper-schneider-portraet.webp"
-				alt="Portræt af Jesper Gunris Schneider i blå jakke med armene over kors"
+				src="/om/portraet-placeholder-stor.svg"
+				alt=""
 				width="720"
 				height="766"
 				fetchpriority="high"
@@ -90,7 +89,7 @@ const nextSteps = [
 			/>
 			<figcaption>
 				<strong>{siteAuthor.name}</strong>
-				<span>Digital forretningsudvikling & AI-strategi</span>
+				<span>Chef for digital forretningsudvikling</span>
 			</figcaption>
 		</figure>
 	</section>
@@ -120,7 +119,7 @@ const nextSteps = [
 
 	<section class="about-section" aria-labelledby="about-work-title">
 		<div class="about-section-heading">
-			<p class="orbit-section-kicker">Det arbejder jeg med</p>
+			<p class="orbit-section-kicker">Det optager mig</p>
 			<h2 id="about-work-title">Fra strategi til noget, der bliver brugt</h2>
 		</div>
 		<ol class="about-focus">
@@ -140,7 +139,7 @@ const nextSteps = [
 		<p>
 			I mit eget arbejde ser jeg det samme igen og igen: Folk er nysgerrige, men ved ikke, hvor de skal
 			starte, og det meste indhold om AI handler om teknologien i stedet for opgaven. LearnAI er mit bud
-			på det modsatte — korte danske forløb, gennemprøvede prompts og et ugentligt overblik, der starter
+			på det modsatte — praktiske danske guides, gennemprøvede prompts og et ugentligt overblik, der starter
 			med det, du skal have lavet.
 		</p>
 		<p class="about-principle">Start med opgaven. Brug kun den AI-viden, der bringer arbejdet videre.</p>
@@ -156,9 +155,9 @@ const nextSteps = [
 				<a
 					class:list={['about-next-card', { 'about-next-card-primary': index === 0 }]}
 					href={step.href}
-					data-analytics-event={index === 0 ? ANALYTICS_EVENTS.courseCtaClicked : undefined}
+					data-analytics-event={index === 0 ? ANALYTICS_EVENTS.primaryCtaClicked : undefined}
 					data-analytics-source={index === 0 ? 'about_me' : undefined}
-					data-analytics-detail={index === 0 ? 'course_page' : undefined}
+					data-analytics-detail={index === 0 ? 'prompts' : undefined}
 				>
 					<span class="about-next-kicker">{step.kicker}</span>
 					<h3>{step.title}</h3>
@@ -172,11 +171,10 @@ const nextSteps = [
 	<section class="about-contact" aria-labelledby="about-contact-title">
 		<div>
 			<p class="orbit-section-kicker">Kontakt</p>
-			<h2 id="about-contact-title">Vil du bruge AI bredere i din organisation?</h2>
-			<p>Jeg hjælper også virksomheder med forløb for teams og ledere.</p>
+			<h2 id="about-contact-title">Lad os holde kontakten</h2>
+			<p>Følg med på LinkedIn, eller læs mere om mig på jesperschneider.dk.</p>
 		</div>
 		<div class="about-contact-actions">
-			<OrbitButton href="/virksomheder" arrow>Se forløb for virksomheder</OrbitButton>
 			<p class="about-elsewhere">
 				<a href="https://www.linkedin.com/in/jesperschneider/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
 				<a href="https://jesperschneider.dk/" target="_blank" rel="noopener noreferrer">jesperschneider.dk <span aria-hidden="true">↗</span></a>

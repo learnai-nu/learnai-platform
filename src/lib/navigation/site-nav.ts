@@ -17,7 +17,7 @@ export interface NavItem {
 }
 
 export interface NavGroup {
-	/** Named by content type, so the three groups never overlap in meaning. */
+	/** Named by content type, so the groups never overlap in meaning. */
 	label: string;
 	/** Heading inside the open menu panel; defaults to the label. */
 	heading?: string;
@@ -50,16 +50,6 @@ export const menuGroups: NavGroup[] = [
 			{ label: 'Eksempler fra praksis', description: 'Se hvordan andre bruger AI', href: '/use-cases', section: '/use-cases' },
 		],
 	},
-	{
-		label: 'Kurser',
-		heading: 'Lær med et forløb',
-		intro: 'Korte, praktiske forløb med progression og øvelser.',
-		items: [
-			{ label: 'Alle kurser', description: 'Se hele kursuskataloget', href: '/kurser', section: '/kurser', type: 'all-courses' },
-			{ label: 'Gratis AI-kursus', description: 'Kom godt i gang med AI', href: '/kurser/ai-i-praksis', section: '/kurser/ai-i-praksis' },
-			{ label: 'Mine kurser', description: 'Fortsæt, hvor du slap', href: '/dashboard', section: '/dashboard' },
-		],
-	},
 ];
 
 export const englishMenuGroups: NavGroup[] = [
@@ -85,21 +75,12 @@ export const englishMenuGroups: NavGroup[] = [
 			{ label: 'Prompts', description: 'Danish prompt library', href: '/laer?type=prompt', section: '/laer', type: 'prompt' },
 		],
 	},
-	{
-		label: 'Courses',
-		intro: 'The current course catalogue is available in Danish.',
-		items: [
-			{ label: 'All courses', description: 'Browse the Danish course catalogue', href: '/kurser', section: '/kurser', type: 'all-courses' },
-			{ label: 'Free AI course', description: 'Get started in Danish', href: '/kurser/ai-i-praksis', section: '/kurser/ai-i-praksis' },
-			{ label: 'My courses', description: 'Continue where you left off', href: '/dashboard', section: '/dashboard' },
-		],
-	},
 ];
 
 /** The primary CTA reused by header, dock and drawer. */
 export const primaryCta = {
-	label: 'Start gratis',
-	href: '/kurser/ai-i-praksis-dit-foerste-kursus',
+	label: 'Find en prompt',
+	href: '/laer?type=prompt',
 } as const;
 
 export const englishPrimaryCta = {
@@ -123,7 +104,7 @@ export interface DockItem {
  */
 export const dockItems: DockItem[] = [
 	{ label: 'Viden', icon: 'learn', href: '/laer', section: '/laer' },
-	{ label: 'Kurser', icon: 'courses', href: '/kurser', section: '/kurser' },
+	{ label: 'Eksempler', icon: 'courses', href: '/use-cases', section: '/use-cases' },
 	{ label: primaryCta.label, icon: 'start', href: primaryCta.href, section: primaryCta.href },
 	{ label: 'Værktøjer', icon: 'tools', href: '/tools', section: '/tools' },
 	{ label: 'Menu', icon: 'menu' },
@@ -157,8 +138,8 @@ export const siteAuthor = {
 	/** Personal presentation on LearnAI itself, so readers stay on the site. /om is LearnAI's mission page. */
 	href: '/om-mig',
 	initials: 'JS',
-	/** Square portrait used for avatars and the Person node (public/om/). */
-	image: '/om/jesper-schneider.jpg',
+	/** Square placeholder used for avatars until a new portrait is ready (public/om/). */
+	image: '/om/portraet-placeholder.svg',
 	sameAs: ['https://jesperschneider.dk/', 'https://www.linkedin.com/in/jesperschneider/'],
 	/** Credentials rendered as badges and as `hasCredential` in the Person node. */
 	credentials: ['AI-strategi', 'Digital forretningsudvikling', 'E-commerce'],
@@ -185,7 +166,6 @@ export function isNavItemActive(item: NavItem | DockItem, { pathname, currentTyp
 	if (!inSection) return false;
 	if (item.type === 'knowledge') return !currentType || ['knowledge', 'article', 'guide'].includes(currentType);
 	if (item.type === 'prompt' || item.type === 'news') return currentType === item.type;
-	if (item.type === 'all-courses') return pathname === '/kurser';
 	return true;
 }
 

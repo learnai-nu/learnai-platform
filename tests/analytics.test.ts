@@ -6,8 +6,6 @@ const packageJson = readFileSync(new URL('../package.json', import.meta.url), 'u
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const adminLayout = readFileSync(new URL('../src/layouts/AdminLayout.astro', import.meta.url), 'utf8');
 const client = readFileSync(new URL('../src/scripts/analytics.ts', import.meta.url), 'utf8');
-const businessPage = readFileSync(new URL('../src/pages/virksomheder.astro', import.meta.url), 'utf8');
-const coursePage = readFileSync(new URL('../src/pages/kurser/[slug].astro', import.meta.url), 'utf8');
 const mentor = readFileSync(new URL('../src/components/AIMentor.tsx', import.meta.url), 'utf8');
 const compass = readFileSync(new URL('../src/components/WorkCompass.tsx', import.meta.url), 'utf8');
 const privacyPage = readFileSync(new URL('../src/pages/[slug].astro', import.meta.url), 'utf8');
@@ -35,12 +33,6 @@ describe('LearnAI analytics', () => {
 		expect(client).not.toContain('.value');
 	});
 
-	it('tracks confirmed conversions after their success state is rendered', () => {
-		expect(businessPage).toContain('data-analytics-event={ANALYTICS_EVENTS.businessLeadSubmitted}');
-		expect(businessPage).toContain('data-analytics-trigger="load"');
-		expect(coursePage).toContain("currentStatus === 'lesson-completed' ? ANALYTICS_EVENTS.lessonCompleted");
-	});
-
 	it('explains the privacy boundary to visitors', () => {
 		expect(privacyPage).toContain('Vercel Web Analytics og Vercel Speed Insights');
 		expect(privacyPage).toContain('cookie-fri');
@@ -56,14 +48,9 @@ describe('LearnAI analytics', () => {
 
 	it('uses a stable event vocabulary', () => {
 		expect(Object.values(ANALYTICS_EVENTS)).toEqual([
-			'course_cta_clicked',
-			'course_exercise_started',
-			'course_exercise_completed',
+			'primary_cta_clicked',
 			'work_compass_completed',
 			'ai_mentor_answered',
-			'lesson_completed',
-			'business_contact_opened',
-			'business_lead_submitted',
 		]);
 	});
 });

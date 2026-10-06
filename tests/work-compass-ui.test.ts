@@ -28,7 +28,7 @@ describe('AI work compass vertical slice', () => {
 	it('provides transparent results and a three-step learning route', () => {
 		expect(component).toContain('methodTitle');
 		expect(component).toContain('learningOrder');
-		expect(component).toContain('/kurser/ai-i-praksis-dit-foerste-kursus');
+		expect(component).not.toContain('/kurser');
 		expect(component).toContain('/mentor');
 		expect(component).toContain('/laer');
 		expect(styles).toContain('.work-compass-learning-plan');

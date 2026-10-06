@@ -43,7 +43,7 @@ const copy = {
 		},
 		plans: {
 			understanding: { eyebrow: 'Afklar opgaven', title: 'Lav et AI-opgavekort', body: 'Vælg én arbejdsopgave. Notér hvad AI må gøre, hvad du skal kontrollere, og hvad kun et menneske må beslutte.', cta: 'Se LearnAI-guides', href: '/laer' },
-			practice: { eyebrow: 'Byg metoden', title: 'Gør én opgave gentagelig', body: 'Beskriv den som input → AI-arbejde → kvalitetstjek → færdigt resultat. Afprøv den to gange og ret skabelonen.', cta: 'Start gratiskurset', href: '/kurser/ai-i-praksis-dit-foerste-kursus' },
+			practice: { eyebrow: 'Byg metoden', title: 'Gør én opgave gentagelig', body: 'Beskriv den som input → AI-arbejde → kvalitetstjek → færdigt resultat. Afprøv den to gange og ret skabelonen.', cta: 'Find en prompt', href: '/laer?type=prompt' },
 			adoption: { eyebrow: 'Forankr vanen', title: 'Planlæg næste gentagelse', body: 'Vælg et fast tidspunkt i næste uge. Gem din metode, og notér bagefter én forbedring til næste gang.', cta: 'Spørg AI Mentor', href: '/mentor' },
 		},
 	},
@@ -81,7 +81,7 @@ const copy = {
 		},
 		plans: {
 			understanding: { eyebrow: 'Clarify the task', title: 'Make an AI task card', body: 'Choose one work task. Note what AI may do, what you must check, and what only a person may decide.', cta: 'Explore LearnAI guides', href: '/laer' },
-			practice: { eyebrow: 'Build the method', title: 'Make one task repeatable', body: 'Describe it as input → AI work → quality check → finished result. Test it twice and improve the template.', cta: 'Start the free course', href: '/kurser/ai-i-praksis-dit-foerste-kursus' },
+			practice: { eyebrow: 'Build the method', title: 'Make one task repeatable', body: 'Describe it as input → AI work → quality check → finished result. Test it twice and improve the template.', cta: 'Find a prompt (Danish)', href: '/laer?type=prompt' },
 			adoption: { eyebrow: 'Anchor the habit', title: 'Schedule the next repeat', body: 'Choose a fixed time next week. Save your method, then note one improvement for next time.', cta: 'Ask AI Mentor', href: '/mentor' },
 		},
 	},

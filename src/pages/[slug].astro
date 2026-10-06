@@ -22,7 +22,7 @@ export function getStaticPaths() {
 		},
 		kontakt: {
 			title: 'Kontakt',
-			description: 'Kontakt LearnAI om læring, partnerskaber eller virksomheder.',
+			description: 'Kontakt LearnAI om læring eller partnerskaber.',
 			kicker: 'Skriv til os',
 		},
 	} as const;
@@ -90,7 +90,7 @@ const pageType = pageTypes[Astro.params.slug as keyof typeof pageTypes] ?? 'WebP
 				</p>
 				<p>
 					Vi måler blandt andet sidevisninger, henvisningsside, browser- og enhedstype, omtrentlig geografisk region
-					samt centrale handlinger som kursusstart, gennemført øvelse og afsendt kontaktformular.
+					samt centrale handlinger som klik på startknapper, svar fra AI Mentor og gennemført Arbejdskompas.
 				</p>
 				<h2>Det sender vi ikke til analytics</h2>
 				<p>

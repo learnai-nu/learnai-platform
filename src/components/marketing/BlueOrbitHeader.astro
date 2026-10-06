@@ -23,7 +23,6 @@ const isEnglish = locale === 'en';
 const activeState = { pathname: Astro.url.pathname, currentType: Astro.url.searchParams.get('type') };
 const isItemActive = (item: NavItem) => isNavItemActive(item, activeState);
 const isGroupActive = (group: NavGroup) => isNavGroupActive(group, activeState);
-const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pathname.startsWith('/virksomheder/');
 ---
 
 <header class="orbit-header">
@@ -54,7 +53,6 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 					</div>
 				</details>
 			))}
-			<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Til virksomheder'}</a>
 		</nav>
 
 		<div class="orbit-header-actions">
@@ -67,7 +65,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 			</details>
 			<LanguageSwitcher {locale} {alternates} />
 			<HeaderAccount {locale} />
-			<a class="orbit-header-cta" href={primaryCta.href} data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked} data-analytics-source="header_desktop" data-analytics-detail="course_page">{primaryCta.label}</a>
+			<a class="orbit-header-cta" href={primaryCta.href} data-analytics-event={ANALYTICS_EVENTS.primaryCtaClicked} data-analytics-source="header_desktop" data-analytics-detail="primary_cta">{primaryCta.label}</a>
 		</div>
 
 		<details class="orbit-mobile-nav">
@@ -89,8 +87,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 						</div>
 					</details>
 				))}
-				<a href="/virksomheder" aria-current={isBusinessActive ? 'page' : undefined}>{isEnglish ? 'For businesses (Danish)' : 'Til virksomheder'}</a>
-				<div class="orbit-mobile-meta">
+					<div class="orbit-mobile-meta">
 					{alternates.length > 1
 						? alternates.map((alternate) => (
 							<a href={alternate.path} lang={alternate.locale} aria-current={alternate.locale === locale ? 'true' : undefined}>
@@ -101,7 +98,7 @@ const isBusinessActive = Astro.url.pathname === '/virksomheder' || Astro.url.pat
 					<a href="/login" data-account-anonymous>{isEnglish ? 'Log in' : 'Log ind'}</a>
 					<a href="/dashboard" data-account-menu hidden><span data-account-name>{isEnglish ? 'Your profile' : 'Din profil'}</span></a>
 				</div>
-				<a class="orbit-mobile-cta" href={primaryCta.href} data-analytics-event={ANALYTICS_EVENTS.courseCtaClicked} data-analytics-source="header_mobile" data-analytics-detail="course_page">{primaryCta.label}</a>
+				<a class="orbit-mobile-cta" href={primaryCta.href} data-analytics-event={ANALYTICS_EVENTS.primaryCtaClicked} data-analytics-source="header_mobile" data-analytics-detail="primary_cta">{primaryCta.label}</a>
 			</nav>
 		</details>
 	</div>

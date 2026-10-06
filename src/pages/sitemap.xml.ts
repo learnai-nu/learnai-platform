@@ -18,7 +18,6 @@ interface SitemapEntry {
 const staticEntries: SitemapEntry[] = [
 	{ path: '/', changeFrequency: 'weekly', priority: '1.0' },
 	{ path: '/laer', changeFrequency: 'daily', priority: '0.9' },
-	{ path: '/kurser', changeFrequency: 'weekly', priority: '0.9' },
 	{ path: '/tools', changeFrequency: 'weekly', priority: '0.8' },
 	{ path: '/use-cases', changeFrequency: 'weekly', priority: '0.7' },
 	{ path: '/resources', changeFrequency: 'weekly', priority: '0.7' },
@@ -26,7 +25,6 @@ const staticEntries: SitemapEntry[] = [
 	{ path: '/podcast', changeFrequency: 'weekly', priority: '0.8' },
 	{ path: '/ugebrief', changeFrequency: 'weekly', priority: '0.7' },
 	{ path: '/mentor', changeFrequency: 'monthly', priority: '0.6' },
-	{ path: '/virksomheder', changeFrequency: 'monthly', priority: '0.8' },
 	{ path: '/arbejdskompas', changeFrequency: 'monthly', priority: '0.6' },
 	{ path: '/om', changeFrequency: 'monthly', priority: '0.5' },
 	{ path: '/om-mig', changeFrequency: 'monthly', priority: '0.6' },
@@ -70,21 +68,12 @@ export const GET: APIRoute = async ({ request, cookies, site, url }) => {
 
 	// Only routes that actually resolve: the tool, use-case, resource and event
 	// catalogues are single pages, not one page per row.
-	const [content, courses] = await Promise.all([
-		supabase.from('content_items').select('slug,updated_at,locale').eq('status', 'published'),
-		supabase.from('courses').select('slug,updated_at').eq('status', 'published'),
-	]);
+	const content = await supabase.from('content_items').select('slug,updated_at,locale').eq('status', 'published');
 
 	const entries: SitemapEntry[] = [
 		...staticEntries,
 		...(content.data ?? []).map((row) => ({
 			path: contentPath(row.locale === 'en' ? 'en' : 'da', row.slug),
-			lastModified: row.updated_at,
-			changeFrequency: 'monthly' as const,
-			priority: '0.8',
-		})),
-		...(courses.data ?? []).map((row) => ({
-			path: `/kurser/${row.slug}`,
 			lastModified: row.updated_at,
 			changeFrequency: 'monthly' as const,
 			priority: '0.8',

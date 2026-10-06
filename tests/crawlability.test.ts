@@ -8,7 +8,8 @@ const layout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.me
 describe('sitemap', () => {
 	it('is generated from the database, since the catalogues live there', () => {
 		expect(sitemap).toContain(".from('content_items')");
-		expect(sitemap).toContain(".from('courses')");
+		expect(sitemap).not.toContain("/kurser");
+		expect(sitemap).not.toContain("/virksomheder");
 		expect(sitemap).toContain(".eq('status', 'published')");
 		expect(sitemap).toContain('application/xml');
 	});
