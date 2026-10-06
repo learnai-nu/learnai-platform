@@ -63,9 +63,6 @@ beskrevet i [`docs/prompt-library.md`](docs/prompt-library.md).
 Web Analytics, Speed Insights, eventnavne og privacy-regler er beskrevet i
 [`docs/analytics.md`](docs/analytics.md).
 
-Notifikationer om nye virksomhedsleads og de nødvendige Vercel/Resend-variabler
-er beskrevet i [`docs/lead-notifications.md`](docs/lead-notifications.md).
-
 ElevenLabs-generatoren, den valgte danske podcaststemme og den sikre lokale
 Keychain-opsætning er beskrevet i
 [`docs/podcast-generation.md`](docs/podcast-generation.md).

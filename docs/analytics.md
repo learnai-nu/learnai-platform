@@ -45,14 +45,9 @@ inden for planens kvoter. Custom events kræver Pro eller Enterprise.
 
 | Event | Udløses når | Tilladte properties |
 | --- | --- | --- |
-| `course_cta_clicked` | En central kursusknap aktiveres | `source`, `detail` |
-| `course_exercise_started` | Prøveøvelsen åbnes | `source` |
-| `course_exercise_completed` | Kontrolspørgsmålet besvares | `result` |
+| `primary_cta_clicked` | En central startknap aktiveres | `source`, `detail` |
 | `work_compass_completed` | Alle 12 spørgsmål er besvaret | `locale` |
 | `ai_mentor_answered` | Et valideret mentorsvar vises | `has_sources` |
-| `lesson_completed` | En lektion er gemt som gennemført | `source` |
-| `business_contact_opened` | Kontaktsektionen åbnes fra heroen | `source` |
-| `business_lead_submitted` | Et lead er gemt og successiden vises | `source` |
 
 Eventnavne defineres centralt i `src/lib/analytics/events.ts`. Almindelige klik
 måles via `data-analytics-*` og `src/scripts/analytics.ts`. Bekræftede events efter

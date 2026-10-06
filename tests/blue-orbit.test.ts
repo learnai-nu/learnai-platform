@@ -17,10 +17,6 @@ const learningModel = readFileSync(
 	new URL('../src/components/marketing/LearningModel.astro', import.meta.url),
 	'utf8',
 );
-const featuredCourses = readFileSync(
-	new URL('../src/components/marketing/FeaturedCourses.astro', import.meta.url),
-	'utf8',
-);
 const tokens = readFileSync(
 	new URL('../src/styles/blue-orbit-tokens.css', import.meta.url),
 	'utf8',
@@ -33,16 +29,16 @@ describe('LearnAI editorial homepage', () => {
 		expect(homepage).toContain('<BlueOrbitLayout');
 		expect(homepage).toContain('<HeroLearningPreview />');
 		expect(homepage).toContain('<LearningModel />');
-		expect(homepage).toContain('<FeaturedCourses />');
+		expect(homepage).not.toContain('FeaturedCourses');
 	});
 
 	it('keeps the public navigation connected to real platform routes', () => {
 		// The routes live in one module that header, dock and drawer all read.
 		expect(siteNav).toContain("href: '/laer'");
-		expect(siteNav).toContain("href: '/kurser'");
+		expect(siteNav).not.toContain("'/kurser");
 		expect(siteNav).toContain("href: '/laer?type=prompt'");
 		expect(siteNav).toContain("href: '/mentor'");
-		expect(siteNav).toContain("label: 'Start gratis'");
+		expect(siteNav).toContain("label: 'Find en prompt'");
 		expect(header).toContain("import {");
 		expect(header).toContain("from '../../lib/navigation/site-nav'");
 		expect(header).toContain('href="/login"');
@@ -72,7 +68,8 @@ describe('LearnAI editorial homepage', () => {
 	});
 
 	it('moves visitors from a clear promise to three real actions', () => {
-		expect(hero).toContain('Første kursus tager under én time');
+		expect(hero).toContain('Gratis og på dansk');
+		expect(hero).not.toContain('/kurser');
 		expect(hero).toContain('Få AI til at fungere');
 		expect(hero).toContain('orbit-principle');
 		expect(hero).not.toContain('signal-console');
@@ -88,16 +85,12 @@ describe('LearnAI editorial homepage', () => {
 		expect(hero).not.toContain('&gt;');
 	});
 
-	it('uses three need-based paths and one flagship course', () => {
+	it('uses three need-based paths', () => {
 		expect(learningModel.match(/<a class="orbit-need-card/g)).toHaveLength(3);
 		expect(learningModel).toContain('>Lær<');
 		expect(learningModel).toContain('>Løs<');
 		expect(learningModel).toContain('>Spørg<');
 		expect(learningModel).not.toContain('&gt;');
-		expect(featuredCourses).toContain('orbit-course-card-featured');
-		expect(featuredCourses).toContain('course-workbook-cover');
-		expect(featuredCourses).not.toContain('data-filter');
-		expect(featuredCourses).not.toContain('const courses');
 	});
 
 	it('defines semantic color tokens and responsive overflow protection', () => {

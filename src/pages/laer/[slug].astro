@@ -11,7 +11,6 @@ import AuthorBio from '../../components/article/AuthorBio.astro';
 import ChatGptTimeline from '../../components/article/ChatGptTimeline.astro';
 import ClaudeTimeline from '../../components/article/ClaudeTimeline.astro';
 import ContentBody from '../../components/ContentBody.astro';
-import GuideCourseBanner from '../../components/article/GuideCourseBanner.astro';
 import GuideTools from '../../components/article/GuideTools.astro';
 import PromptBuilder from '../../components/PromptBuilder';
 import RelatedContent from '../../components/article/RelatedContent.astro';
@@ -339,7 +338,6 @@ const publishedLabel = item.published_at
 					{contentType === 'guide' && <GuideTools tools={guideTools} />}
 					<AuthorBio />
 					<RelatedContent items={related} />
-					{contentType === 'guide' && <GuideCourseBanner />}
 					<ArticleBriefCta />
 				</>
 			)}

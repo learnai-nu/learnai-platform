@@ -34,7 +34,7 @@
 	border-radius: 1.25rem;
 	background: var(--color-sand);
 }
-.about-photo { display: block; width: 100%; height: auto; margin-top: 1.5rem; }
+.about-photo { display: block; width: 100%; height: auto; }
 .about-portrait figcaption { display: grid; gap: .25rem; padding: 1.1rem 1.5rem; border-top: 1px solid var(--color-amber); background: var(--orbit-surface-bright); }
 .about-portrait strong { color: var(--orbit-on-surface); font-size: 1.05rem; }
 .about-portrait figcaption span { color: var(--color-amber-text); font-size: .8125rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }

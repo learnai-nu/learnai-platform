@@ -23,7 +23,6 @@ const chatGptTimeline = readFileSync(new URL('../src/components/article/ChatGptT
 const claudeTimeline = readFileSync(new URL('../src/components/article/ClaudeTimeline.astro', import.meta.url), 'utf8');
 const chatGptTimelineScript = readFileSync(new URL('../src/scripts/chatgpt-timeline.ts', import.meta.url), 'utf8');
 const guideTools = readFileSync(new URL('../src/components/article/GuideTools.astro', import.meta.url), 'utf8');
-const guideCourseBanner = readFileSync(new URL('../src/components/article/GuideCourseBanner.astro', import.meta.url), 'utf8');
 
 describe('overskrifter og indholdsfortegnelse', () => {
 	it('only adds heading anchors when the caller asks for them', () => {
@@ -89,12 +88,9 @@ describe('redaktionelle tilføjelser', () => {
 		expect(articleStyles).toContain('.claude-timeline');
 	});
 
-	it('connects guides to real tools and the free foundation course', () => {
+	it('connects guides to real tools', () => {
 		expect(articlePage).toContain('<GuideTools tools={guideTools} />');
-		expect(articlePage).toContain('<GuideCourseBanner />');
 		expect(guideTools).toContain('/tools#${tool.slug}');
-		expect(guideCourseBanner).toContain('/kurser/ai-i-praksis-dit-foerste-kursus');
-		expect(articleStyles).toContain('.guide-course-banner');
 	});
 
 	it('accepts FAQ, sources and keywords from the editor metadata', () => {

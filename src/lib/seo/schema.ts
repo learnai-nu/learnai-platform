@@ -160,7 +160,7 @@ export function buildSitePageGraph({
 		'@id': organizationId,
 		name: 'LearnAI.nu',
 		url: homeUrl,
-		description: 'Praktisk AI-læring på dansk — guides, kurser og værktøjer.',
+		description: 'Praktisk AI-læring på dansk — guides, prompts og værktøjer.',
 		logo: {
 			'@type': 'ImageObject',
 			'@id': `${homeUrl}#logo`,
@@ -265,7 +265,6 @@ export function createPersonSchema(siteUrl: URL): SchemaNode {
 		jobTitle: siteAuthor.role,
 		description: siteAuthor.summary,
 		url: absoluteUrl(siteAuthor.href, siteUrl),
-		image: absoluteUrl(siteAuthor.image, siteUrl),
 		worksFor: { '@type': 'Organization', '@id': `${homeUrl}#organization` },
 		knowsAbout: [...siteAuthor.knowsAbout],
 		hasCredential: siteAuthor.credentials.map((credential) => ({

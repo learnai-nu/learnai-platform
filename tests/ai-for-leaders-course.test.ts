@@ -5,7 +5,6 @@ const migration = readFileSync(
 	new URL('../supabase/migrations/20260909051145_build_ai_for_leaders_course.sql', import.meta.url),
 	'utf8',
 );
-const coursePage = readFileSync(new URL('../src/pages/kurser/[slug].astro', import.meta.url), 'utf8');
 const pricingMigration = readFileSync(
 	new URL('../supabase/migrations/20260909184649_add_course_intro_pricing.sql', import.meta.url),
 	'utf8',
@@ -44,17 +43,10 @@ describe('AI for ledere course source', () => {
 		expect(migration).toContain('Answer keys stay isolated in quiz_option_keys');
 	});
 
-	it('gives the generic course page a leadership-specific promise', () => {
-		expect(coursePage).toContain("const isLeadershipCourse = course.slug === 'ai-for-ledere'");
-		expect(coursePage).toContain('En afprøvet AI-arbejdsgang til din egen lederhverdag.');
-		expect(coursePage).toContain("const courseKicker = isLeadershipCourse ? 'Praktisk lederkursus'");
-	});
 
 	it('sets a 995 DKK normal price and a 50 percent intro offer for 50 seats', () => {
 		expect(pricingMigration).toContain('price_dkk = 995');
 		expect(pricingMigration).toContain('intro_price_dkk = 497.50');
 		expect(pricingMigration).toContain('intro_seat_limit = 50');
-		expect(coursePage).toContain('Intropris · 50 % rabat');
-		expect(coursePage).toContain('Gælder de første {course.intro_seat_limit} pladser');
 	});
 });

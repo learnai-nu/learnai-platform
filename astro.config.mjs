@@ -24,7 +24,7 @@ export default defineConfig({
     // Legacy English marketing paths → current Danish surfaces (301)
     '/articles': '/laer',
     '/about': '/om',
-    '/courses': '/kurser',
+    '/courses': '/laer',
     '/privacy': '/privatliv',
     // Query destination is supported by Astro→Vercel redirect emission
     '/prompts': '/laer?type=prompt',

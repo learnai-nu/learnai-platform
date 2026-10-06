@@ -13,12 +13,6 @@ import {
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const learningIndex = readFileSync(new URL('../src/pages/laer/index.astro', import.meta.url), 'utf8');
 const learningPage = readFileSync(new URL('../src/pages/laer/[slug].astro', import.meta.url), 'utf8');
-const courseIndex = readFileSync(new URL('../src/pages/kurser/index.astro', import.meta.url), 'utf8');
-const coursePage = readFileSync(new URL('../src/pages/kurser/[slug].astro', import.meta.url), 'utf8');
-const lessonPage = readFileSync(
-	new URL('../src/pages/kurser/[courseSlug]/lektioner/[lessonSlug].astro', import.meta.url),
-	'utf8',
-);
 const workCompass = readFileSync(new URL('../src/pages/arbejdskompas.astro', import.meta.url), 'utf8');
 const privatePages = [
 	'../src/pages/login.astro',
@@ -134,9 +128,6 @@ describe('SEO schema contracts', () => {
 		expect(learningIndex).toContain('createItemListSchema');
 		expect(learningPage).toContain('createArticleSchema');
 		expect(learningPage).toContain("contentType === 'news' ? 'NewsArticle' : 'Article'");
-		expect(courseIndex).toContain('createItemListSchema');
-		expect(coursePage).toContain('createCourseSchema');
-		expect(lessonPage).toContain('createLearningResourceSchema');
 		expect(workCompass).toContain("learningResourceType: 'self-assessment'");
 	});
 
