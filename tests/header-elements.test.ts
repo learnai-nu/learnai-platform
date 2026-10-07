@@ -1,34 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { menuGroups } from '../src/lib/navigation/site-nav';
 
 const header = readFileSync(new URL('../src/components/marketing/BlueOrbitHeader.astro', import.meta.url), 'utf8');
 const account = readFileSync(new URL('../src/components/marketing/HeaderAccount.astro', import.meta.url), 'utf8');
 const languageSwitcher = readFileSync(new URL('../src/components/marketing/LanguageSwitcher.astro', import.meta.url), 'utf8');
 const accountScript = readFileSync(new URL('../src/scripts/header-account.ts', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
-const searchPage = readFileSync(new URL('../src/pages/search.astro', import.meta.url), 'utf8');
-const learnPage = readFileSync(new URL('../src/pages/laer/index.astro', import.meta.url), 'utf8');
 const toolsCatalog = readFileSync(new URL('../src/components/catalog/ToolsCatalog.astro', import.meta.url), 'utf8');
-
-describe('menugrupper', () => {
-	it('keeps prompts exclusively under Prompts & værktøjer and out of the default knowledge feed', () => {
-		const useAi = menuGroups.find((group) => group.label === 'Prompts & værktøjer');
-		const learnAi = menuGroups.find((group) => group.label === 'Viden & nyheder');
-		expect(useAi?.items.some((item) => item.label === 'Prompts')).toBe(true);
-		expect(learnAi?.items.some((item) => item.label === 'Prompts')).toBe(false);
-		expect(menuGroups.flatMap((group) => group.items).every((item) => item.href)).toBe(true);
-		expect(learnPage).toContain("if (!selectedType) contentQuery = contentQuery.in('type', ['article', 'guide', 'news'])");
-	});
-
-	it('offers direct buttons for articles, guides and news', () => {
-		for (const type of ['article', 'guide', 'news']) {
-			expect(learnPage).toContain(`href: '/laer?type=${type}'`);
-		}
-		expect(learnPage).toContain('aria-label="Filtrér indholdstype"');
-		expect(learnPage).not.toContain("{ value: 'prompt', label: 'Prompts'");
-	});
-});
 
 describe('sprogvælger', () => {
 	it('only appears where the page actually has a translation', () => {
@@ -51,26 +29,6 @@ describe('søgning', () => {
 	it('sends both header forms to the dedicated search page', () => {
 		expect(header.match(/action="\/search" method="get" role="search"/g)).toHaveLength(2);
 		expect(header).not.toContain('action="/laer" method="get" role="search"');
-	});
-
-	it('searches every published catalogue, not just the knowledge section', () => {
-		for (const table of ['content_items', 'tools', 'use_cases', 'resources', 'events']) {
-			expect(searchPage).toContain(`.from('${table}')`);
-		}
-		expect(searchPage.match(/\.eq\('published', true\)/g)).toHaveLength(4);
-		expect(searchPage).toContain(".eq('status', 'published')");
-	});
-
-	it('escapes ILIKE wildcards so a query cannot widen its own pattern', () => {
-		expect(searchPage).toContain(".replaceAll('%', '\\\\%')");
-		expect(searchPage).toContain(".replaceAll('_', '\\\\_')");
-		expect(searchPage).toContain('.slice(0, 120)');
-	});
-
-	it('works without JavaScript and keeps itself out of the index', () => {
-		expect(searchPage).toContain('method="get"');
-		expect(searchPage).toContain('noindex');
-		expect(searchPage).toContain('export const prerender = false;');
 	});
 });
 

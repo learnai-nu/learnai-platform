@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
 	buildSitePageGraph,
@@ -9,17 +8,6 @@ import {
 	createLearningResourceSchema,
 	serializeJsonLd,
 } from '../src/lib/seo/schema';
-
-const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
-const learningIndex = readFileSync(new URL('../src/pages/laer/index.astro', import.meta.url), 'utf8');
-const learningPage = readFileSync(new URL('../src/pages/laer/[slug].astro', import.meta.url), 'utf8');
-const workCompass = readFileSync(new URL('../src/pages/arbejdskompas.astro', import.meta.url), 'utf8');
-const privatePages = [
-	'../src/pages/login.astro',
-	'../src/pages/dashboard/index.astro',
-	'../src/pages/dashboard/profil.astro',
-	'../src/pages/mentor.astro',
-].map((path) => readFileSync(new URL(path, import.meta.url), 'utf8'));
 
 describe('SEO schema contracts', () => {
 	it('builds one connected graph with stable IDs and no duplicate nodes', () => {
@@ -118,23 +106,5 @@ describe('SEO schema contracts', () => {
 			).toString(),
 		).toBe('https://learnai.nu/kurser');
 		expect(createCanonicalUrl(new URL('https://learnai.nu/')).toString()).toBe('https://learnai.nu/');
-	});
-
-	it('uses the central graph across every public content type', () => {
-		expect(siteLayout).toContain('buildSitePageGraph');
-		expect(siteLayout).toContain('<JsonLd data={structuredData} />');
-		expect(siteLayout).not.toContain('JSON.stringify(websiteSchema)');
-		expect(learningIndex).toContain('pageType="CollectionPage"');
-		expect(learningIndex).toContain('createItemListSchema');
-		expect(learningPage).toContain('createArticleSchema');
-		expect(learningPage).toContain("contentType === 'news' ? 'NewsArticle' : 'Article'");
-		expect(workCompass).toContain("learningResourceType: 'self-assessment'");
-	});
-
-	it('keeps authenticated and account pages out of search and schema output', () => {
-		for (const page of privatePages) expect(page).toMatch(/<SiteLayout[^>]+noindex/s);
-		expect(siteLayout).toContain('const structuredData = noindex ? null');
-		expect(siteLayout).toContain("? 'noindex, nofollow'");
-		expect(siteLayout).toContain("'index, follow, max-image-preview:large");
 	});
 });

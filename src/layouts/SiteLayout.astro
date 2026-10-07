@@ -49,6 +49,8 @@ interface Props {
 	additionalSchema?: SchemaNode[];
 	/** Disable tracking for administrative or otherwise internal surfaces. */
 	analytics?: boolean;
+	/** Render the public header, footer and mobile dock. Off for login and admin. */
+	chrome?: boolean;
 }
 
 const {
@@ -68,6 +70,7 @@ const {
 	mainEntity,
 	additionalSchema = [],
 	analytics = true,
+	chrome = true,
 } = Astro.props;
 
 const canonicalURL = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
@@ -142,12 +145,12 @@ const structuredData = noindex ? null : buildSitePageGraph({
 	</head>
 	<body class="blue-orbit">
 		<a class="orbit-skip-link" href="#main-content">{locale === 'en' ? 'Skip to content' : 'Gå til indhold'}</a>
-		<BlueOrbitHeader {locale} {alternates} />
+		{chrome && <BlueOrbitHeader {locale} {alternates} />}
 		<main id="main-content">
 			<slot />
 		</main>
-		<BlueOrbitFooter {locale} />
-		<MobileDock {locale} />
+		{chrome && <BlueOrbitFooter {locale} />}
+		{chrome && <MobileDock {locale} />}
 		{analytics && <CookieConsent {locale} />}
 		<script src="../scripts/analytics.ts"></script>
 		{analytics && <script src="../scripts/clarity.ts"></script>}

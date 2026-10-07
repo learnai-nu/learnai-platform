@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { createServerSupabaseClient } from '../../lib/supabase/server';
 
 function safeNextPath(value: string | null) {
-	return value?.startsWith('/') && !value.startsWith('//') ? value : '/dashboard';
+	return value?.startsWith('/') && !value.startsWith('//') ? value : '/admin';
 }
 
 export const GET: APIRoute = async ({ request, cookies, url }) => {

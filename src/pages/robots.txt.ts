@@ -3,22 +3,17 @@ import type { APIRoute } from 'astro';
 export const prerender = false;
 
 /**
- * Keeps the signed-in surfaces and the search page out of the index, and points
- * crawlers at the generated sitemap.
+ * LearnAI is closed. Crawlers may still fetch old addresses, so they see the
+ * 301 to the front page and drop them from the index.
  */
-export const GET: APIRoute = ({ site, url }) => {
-	const origin = site ? new URL(site) : new URL('/', url);
+export const GET: APIRoute = () => {
 	const body = [
 		'User-agent: *',
 		'Allow: /',
 		'Disallow: /admin',
 		'Disallow: /api/',
 		'Disallow: /auth/',
-		'Disallow: /dashboard',
 		'Disallow: /login',
-		'Disallow: /search',
-		'',
-		`Sitemap: ${new URL('/sitemap.xml', origin).toString()}`,
 		'',
 	].join('\n');
 
