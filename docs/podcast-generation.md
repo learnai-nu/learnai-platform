@@ -37,25 +37,24 @@ filstørrelse, offentlig HTTP-status og matchende filstørrelse/hash, før et li
 må bruges i ugebrevet. macOS-stemmen Sara er kun nød-fallback og skal altid
 rapporteres som fallback.
 
-## Opdatér ugens episode på sitet
+## Ugebrevet efter lukningen af learnai.nu
 
-Ugens episode vedligeholdes ét sted: `src/lib/podcast/latest-episode.ts`. Opdatér uge, år,
-periode, publiceringsdato, valideret varighed, lydfil, overskrift og ét aktuelt emnespor for
-hver inkluderet kategori. Både `/podcast` og forsidens sektion "Denne uge" læser fra filen,
-så de altid viser samme uge.
+learnai.nu er lukket og viser kun logoet; `/podcast` og artikelsiderne findes ikke længere.
+Ugebrevet er derfor en privat mail, der kun sendes til adressen i `WEEKLY_BRIEF_TO`:
 
-Testen `tests/latest-podcast.test.ts` finder automatisk den nyeste lydfil under
-`public/audio/news/` og fejler, hvis episodeobjektet stadig peger på en tidligere uge. En ny
-podcastfil må derfor ikke deployes alene: episodeobjektet og kategori-linkene skal opdateres i
-samme commit.
+- Historierne læses i selve mailen. `url` på en historie er valgfri og vises ikke.
+- `issueUrl`, `courseTitle` og `courseUrl` ignoreres.
+- `podcastUrl` skal pege direkte på lydfilen, fx
+  `https://learnai.nu/audio/news/2026/week-41/Podcast_Uge41_DA.mp3`. Lydfiler under
+  `public/audio/` serveres stadig, selv om sitet er lukket.
+- `src/lib/podcast/latest-episode.ts` skal ikke længere opdateres; det vises ingen steder.
 
-## Ugebrevets podcastlink
+Kør som før:
 
-Podcastblokken i ugebrevet skal altid føre til `https://learnai.nu/podcast`, hvor lytteren får
-afspilleren, ugens emner og links til artiklerne. Den rå MP3/M4A-URL bruges kun til teknisk
-validering af lydfilen og må ikke være mailens CTA eller plaintext-link.
+```bash
+node scripts/send-weekly-brief.mjs uge.json --preview preview.html   # kontrollér mailen
+WEEKLY_BRIEF_TO=din@mail.dk node scripts/send-weekly-brief.mjs uge.json --send
+```
 
-Før udsendelse skal HTML-previewet kontrolleres for begge dele:
-
-- podcastknappen peger på `https://learnai.nu/podcast`;
-- ingen `href` i podcastblokken peger direkte på `/audio/news/`.
+Før udsendelse skal HTML-previewet kontrolleres for, at podcastknappen peger på lydfilen, og at
+lydfilen svarer med HTTP 200 efter deploy.

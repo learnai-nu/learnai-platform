@@ -54,10 +54,16 @@ describe('weekly brief delivery contract', () => {
 		});
 	});
 
-	it('rejects non-HTTPS and non-LearnAI article links', () => {
+	it('requires the podcast link to point straight at a LearnAI audio file', () => {
 		const issue = validIssue();
-		issue.categories[0].stories[0].url = 'https://example.com/not-an-article';
+		issue.podcastUrl = 'https://learnai.nu/podcast';
+		expect(() => runDryIssue(issue)).toThrow(/audio/);
+		issue.podcastUrl = 'https://example.com/audio/podcast.m4a';
 		expect(() => runDryIssue(issue)).toThrow(/learnai\.nu/);
+	});
+
+	it('still accepts issues that carry the old article links', () => {
+		expect(() => runDryIssue(validIssue())).not.toThrow();
 	});
 
 	it('requires an explicit send flag before any external delivery', () => {
@@ -65,8 +71,14 @@ describe('weekly brief delivery contract', () => {
 		expect(source).toContain("mode !== '--send'");
 		expect(source).toContain("mode === '--dry-run'");
 		expect(source).toContain("mode === '--preview'");
-		expect(source).toContain('{{{RESEND_UNSUBSCRIBE_URL}}}');
-		expect(source).toContain('already_sent');
+	});
+
+	it('sends a private mail to WEEKLY_BRIEF_TO instead of a broadcast to subscribers', () => {
+		const source = readFileSync('scripts/send-weekly-brief.mjs', 'utf8');
+		expect(source).toContain('process.env.WEEKLY_BRIEF_TO');
+		expect(source).toContain('resend.emails.send(');
+		expect(source).not.toContain('broadcasts');
+		expect(source).not.toContain('segments');
 	});
 
 	it('renders the supplied branded HTML as a safe dynamic preview', () => {
@@ -82,9 +94,13 @@ describe('weekly brief delivery contract', () => {
 		expect(html).toContain('Ugebrief &middot; Uge 36');
 		expect(html).toContain('01 &nbsp;Marketing');
 		expect(html).toContain('Uge 36: modellerne flytter ind i arbejdet');
-		expect(html).toContain('href="https://learnai.nu/podcast"');
-		expect(html).not.toContain('href="https://learnai.nu/audio/news/2026/week-36/podcast.m4a"');
-		expect(html).toContain('{{{RESEND_UNSUBSCRIBE_URL}}}');
+		expect(html).toContain('href="https://learnai.nu/audio/news/2026/week-36/podcast.m4a"');
+		expect(html).toContain('href="https://openai.com/news/"');
+		// The site is closed: no links to article pages, the podcast page or the course.
+		expect(html).not.toContain('href="https://learnai.nu/laer');
+		expect(html).not.toContain('href="https://learnai.nu/podcast"');
+		expect(html).not.toContain('/kurser/');
+		expect(html).not.toContain('RESEND_UNSUBSCRIBE_URL');
 		expect(html).not.toContain('Postadresse indsættes');
 	});
 });
