@@ -1,12 +1,7 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { contentPath, sourceKeyForLocale } from '../src/lib/content/translations';
 import { buildSitePageGraph, createArticleSchema, createFaqSchema } from '../src/lib/seo/schema';
 import { englishMenuGroups, navigationForLocale } from '../src/lib/navigation/site-nav';
-
-const danishArticle = readFileSync(new URL('../src/pages/laer/[slug].astro', import.meta.url), 'utf8');
-const englishArticle = readFileSync(new URL('../src/pages/en/learn/[slug].astro', import.meta.url), 'utf8');
-const sitemap = readFileSync(new URL('../src/pages/sitemap.xml.ts', import.meta.url), 'utf8');
 
 describe('international SEO', () => {
 	it('marks English page, article and FAQ schema as English', () => {
@@ -40,22 +35,6 @@ describe('international SEO', () => {
 		expect(sourceKeyForLocale('learnai-backup:article:123', 'en')).toBeNull();
 		expect(contentPath('da', 'uge-37-business')).toBe('/laer/uge-37-business');
 		expect(contentPath('en', 'week-37-business')).toBe('/en/learn/week-37-business');
-	});
-
-	it('queries reciprocal published article pairs instead of guessing slugs', () => {
-		for (const page of [danishArticle, englishArticle]) {
-			expect(page).toContain(".eq('source_key', counterpartSourceKey)");
-			expect(page).toContain(".eq('status', 'published')");
-			expect(page).toContain('const alternates = counterpartSlug');
-		}
-		expect(englishArticle).not.toContain("replace(/^week-/, 'uge-')");
-	});
-
-	it('lists English entry points and routes English rows to /en/learn', () => {
-		expect(sitemap).toContain("{ path: '/en'");
-		expect(sitemap).toContain("{ path: '/en/learn'");
-		expect(sitemap).toContain("select('slug,updated_at,locale')");
-		expect(sitemap).toContain("contentPath(row.locale === 'en' ? 'en' : 'da', row.slug)");
 	});
 
 	it('uses English labels and available English routes in shared navigation', () => {

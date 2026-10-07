@@ -35,10 +35,6 @@ const toolsPage = readFileSync(new URL('../src/components/catalog/ToolsCatalog.a
 const useCasesPage = readFileSync(new URL('../src/components/catalog/UseCasesCatalog.astro', import.meta.url), 'utf8');
 const resourcesPage = readFileSync(new URL('../src/components/catalog/ResourcesCatalog.astro', import.meta.url), 'utf8');
 const eventsPage = readFileSync(new URL('../src/components/catalog/EventsCatalog.astro', import.meta.url), 'utf8');
-const localePages = ['tools', 'use-cases', 'resources', 'events'].flatMap((name) => [
-	readFileSync(new URL(`../src/pages/${name}.astro`, import.meta.url), 'utf8'),
-	readFileSync(new URL(`../src/pages/en/${name}.astro`, import.meta.url), 'utf8'),
-]);
 const filterScript = readFileSync(new URL('../src/scripts/catalog-filter.ts', import.meta.url), 'utf8');
 const saveRoute = readFileSync(new URL('../src/pages/api/admin/catalog/save.ts', import.meta.url), 'utf8');
 const adminPages = ['vaerktoejer', 'use-cases', 'ressourcer'].flatMap((section) => [
@@ -241,28 +237,6 @@ describe('catalog pages', () => {
 	it('links relevant tool cards back to published guides', () => {
 		expect(toolsPage).toContain('guideLinkForTool(tool.slug)');
 		expect(toolsPage).toContain('catalog-guide-link');
-	});
-
-	it('renders server-side so redaktionelle ændringer slår igennem med det samme', () => {
-		for (const page of [toolsPage, useCasesPage, resourcesPage, eventsPage]) {
-			expect(page).toContain('createServerSupabaseClient(Astro.request, Astro.cookies)');
-			expect(page).toContain('createItemListSchema');
-		}
-		for (const page of [toolsPage, useCasesPage, resourcesPage]) {
-			expect(page).toContain('data-catalog-search');
-		}
-		for (const page of localePages) {
-			expect(page).toContain('export const prerender = false;');
-		}
-	});
-
-	it('serves both languages from the same component with hreflang alternates', () => {
-		for (const page of [toolsPage, useCasesPage, resourcesPage, eventsPage]) {
-			expect(page).toContain("locale === 'en'");
-			expect(page).toMatch(/alternates=\{\[\{ locale: 'da'/);
-		}
-		expect(localePages.filter((page) => page.includes('locale="en"'))).toHaveLength(4);
-		expect(localePages.filter((page) => page.includes('locale="da"'))).toHaveLength(4);
 	});
 
 	it('shows a fejlbesked when Supabase is unavailable', () => {

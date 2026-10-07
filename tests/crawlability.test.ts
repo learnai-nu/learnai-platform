@@ -1,35 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const sitemap = readFileSync(new URL('../src/pages/sitemap.xml.ts', import.meta.url), 'utf8');
 const robots = readFileSync(new URL('../src/pages/robots.txt.ts', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 
-describe('sitemap', () => {
-	it('is generated from the database, since the catalogues live there', () => {
-		expect(sitemap).toContain(".from('content_items')");
-		expect(sitemap).not.toContain("/kurser");
-		expect(sitemap).not.toContain("/virksomheder");
-		expect(sitemap).toContain(".eq('status', 'published')");
-		expect(sitemap).toContain('application/xml');
-	});
-
-	it('only lists routes that actually resolve', () => {
-		for (const missingRoute of ['/tools/${', '/use-cases/${', '/resources/${', '/events/${']) {
-			expect(sitemap).not.toContain(missingRoute);
-		}
-	});
-
-	it('escapes URLs so a slug cannot break the document', () => {
-		expect(sitemap).toContain('function escapeXml');
-		expect(sitemap).toContain('escapeXml(new URL(entry.path, origin).toString())');
-	});
-});
-
 describe('robots.txt', () => {
-	it('points crawlers at the sitemap and away from private surfaces', () => {
-		expect(robots).toContain('/sitemap.xml');
-		for (const path of ['/admin', '/api/', '/auth/', '/dashboard', '/login', '/search']) {
+	it('keeps private surfaces out and no longer advertises a sitemap', () => {
+		expect(robots).not.toContain('Sitemap:');
+		for (const path of ['/admin', '/api/', '/auth/', '/login']) {
 			expect(robots).toContain(`Disallow: ${path}`);
 		}
 	});

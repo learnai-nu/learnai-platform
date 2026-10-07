@@ -12,9 +12,6 @@ import {
 const banner = readFileSync(new URL('../src/components/marketing/CookieConsent.astro', import.meta.url), 'utf8');
 const clarity = readFileSync(new URL('../src/scripts/clarity.ts', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
-const footer = readFileSync(new URL('../src/components/marketing/BlueOrbitFooter.astro', import.meta.url), 'utf8');
-const privacyPage = readFileSync(new URL('../src/pages/[slug].astro', import.meta.url), 'utf8');
-
 function memoryStorage(initial?: string) {
 	let value = initial;
 	return {
@@ -71,11 +68,5 @@ describe('cookiesamtykke', () => {
 		expect(banner).toContain('if (!readConsent(window.localStorage)) show()');
 		expect(banner).toContain('data-consent="denied"');
 		expect(banner).toContain('data-consent="granted"');
-	});
-
-	it('gør det lige så let at trække samtykket tilbage', () => {
-		expect(banner).toContain('[data-consent-reopen]');
-		expect(footer).toContain('data-consent-reopen');
-		expect(privacyPage).toContain('data-consent-reopen');
 	});
 });

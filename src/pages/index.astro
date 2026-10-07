@@ -1,40 +1,47 @@
 ---
-import HomeAuthor from '../components/marketing/HomeAuthor.astro';
-import ThisWeek from '../components/marketing/ThisWeek.astro';
-import HeroLearningPreview from '../components/marketing/HeroLearningPreview.astro';
-import LearningModel from '../components/marketing/LearningModel.astro';
-import OrbitButton from '../components/ui/OrbitButton.astro';
-import BlueOrbitLayout from '../layouts/BlueOrbitLayout.astro';
-import { ANALYTICS_EVENTS } from '../lib/analytics/events';
+/**
+ * LearnAI is closed. The front page shows only the logo, and every other public
+ * address redirects here (see [...path].astro). Login and the admin CMS remain.
+ */
+import '@fontsource/geist-sans/600.css';
 
 export const prerender = true;
 ---
 
-<BlueOrbitLayout
-	title="AI-guides, prompts og praktisk læring på dansk | LearnAI.nu"
-	description="Brug AI bedre på arbejdet med danske guides, gennemprøvede prompts og ugens AI-nyheder fra LearnAI.nu."
-	pageType="WebPage"
-	alternates={[
-		{ locale: 'da', path: '/' },
-		{ locale: 'en', path: '/en' },
-	]}
->
-	<HeroLearningPreview />
-	<ThisWeek />
-	<LearningModel />
-	<HomeAuthor />
-	<section class="orbit-final-cta">
-		<div>
-			<p class="orbit-section-kicker">Dit næste skridt</p>
-			<h2>Tag én opgave med. Gå herfra med et bedre næste skridt.</h2>
-		</div>
-		<OrbitButton
-			href="/laer?type=prompt"
-			size="large"
-			arrow
-			analyticsEvent={ANALYTICS_EVENTS.primaryCtaClicked}
-			analyticsSource="home_final"
-			analyticsDetail="prompts"
-		>Find en prompt</OrbitButton>
-	</section>
-</BlueOrbitLayout>
+<!doctype html>
+<html lang="da">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<title>LearnAI.nu</title>
+		<style>
+			:root { --ink: #16283f; --paper: #f5f3ee; }
+			* { margin: 0; box-sizing: border-box; }
+			html, body { height: 100%; }
+			body {
+				display: grid;
+				place-items: center;
+				padding: 16px;
+				background: var(--paper);
+				color: var(--ink);
+				font-family: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+			}
+			.logo { display: flex; align-items: center; gap: 14px; font-size: clamp(1.75rem, 6vw, 2.5rem); font-weight: 600; letter-spacing: -.02em; }
+			.logo svg { width: 1.5em; height: 1.5em; flex-shrink: 0; }
+			.logo rect { fill: var(--ink); }
+			.logo path { fill: none; stroke: var(--paper); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+			.logo span span { color: #004fa6; }
+		</style>
+	</head>
+	<body>
+		<h1 class="logo">
+			<svg viewBox="0 0 44 44" aria-hidden="true">
+				<rect width="44" height="44" rx="3"></rect>
+				<path d="m10 15 7 7-7 7M21 29h13"></path>
+			</svg>
+			<span>LearnAI<span>.nu</span></span>
+		</h1>
+	</body>
+</html>

@@ -1,0 +1,10 @@
+---
+/**
+ * LearnAI is closed: every address without its own route lands on the logo
+ * front page. A concrete route is needed because Vercel does not invoke
+ * middleware for paths it cannot map to an application route.
+ */
+export const prerender = false;
+
+return Astro.redirect('/', 301);
+---

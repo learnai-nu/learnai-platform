@@ -15,21 +15,5 @@ export default defineConfig({
   },
 
   adapter: vercel(),
-  output: 'server',
-
-  redirects: {
-    // Keep existing Danish→English tools alias
-    '/vaerktoejer': '/tools',
-
-    // Legacy English marketing paths → current Danish surfaces (301)
-    '/articles': '/laer',
-    '/about': '/om',
-    '/courses': '/laer',
-    '/privacy': '/privatliv',
-    // Query destination is supported by Astro→Vercel redirect emission
-    '/prompts': '/laer?type=prompt',
-
-    // Dynamic /articles/<slug> → /laer/<slug> is handled in src/middleware.ts
-    // (Astro config catch-all '[...slug]' is emitted literally by @astrojs/vercel).
-  }
+  output: 'server'
 });

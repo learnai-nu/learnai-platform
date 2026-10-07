@@ -11,19 +11,11 @@ import {
 } from '../src/lib/content/article';
 import { renderMarkdown } from '../src/lib/content/markdown';
 import { selectRelatedContent } from '../src/lib/content/related';
-import { createArticleSchema, createFaqSchema } from '../src/lib/seo/schema';
+import { createArticleSchema } from '../src/lib/seo/schema';
 
-const articlePage = readFileSync(new URL('../src/pages/laer/[slug].astro', import.meta.url), 'utf8');
 const articleAudio = readFileSync(new URL('../src/components/article/ArticleAudioPlayer.astro', import.meta.url), 'utf8');
 const audioScript = readFileSync(new URL('../src/scripts/article-audio-player.ts', import.meta.url), 'utf8');
-const articleToc = readFileSync(new URL('../src/components/article/ArticleToc.astro', import.meta.url), 'utf8');
-const progressScript = readFileSync(new URL('../src/scripts/article-reading-progress.ts', import.meta.url), 'utf8');
 const articleStyles = readFileSync(new URL('../src/styles/article-longform.css', import.meta.url), 'utf8');
-const chatGptTimeline = readFileSync(new URL('../src/components/article/ChatGptTimeline.astro', import.meta.url), 'utf8');
-const claudeTimeline = readFileSync(new URL('../src/components/article/ClaudeTimeline.astro', import.meta.url), 'utf8');
-const chatGptTimelineScript = readFileSync(new URL('../src/scripts/chatgpt-timeline.ts', import.meta.url), 'utf8');
-const guideTools = readFileSync(new URL('../src/components/article/GuideTools.astro', import.meta.url), 'utf8');
-
 describe('overskrifter og indholdsfortegnelse', () => {
 	it('only adds heading anchors when the caller asks for them', () => {
 		const markdown = '## Kom i gang\n\n### Første skridt\n';
@@ -71,28 +63,6 @@ describe('overskrifter og indholdsfortegnelse', () => {
 });
 
 describe('redaktionelle tilføjelser', () => {
-	it('supports the bounded ChatGPT timeline module', () => {
-		expect(parseArticleExtras({ interactiveModule: 'chatgpt-timeline' })).toMatchObject({ interactiveModule: 'chatgpt-timeline' });
-		expect(parseArticleExtras({ interactiveModule: 'unknown' })).toEqual({});
-		expect(articlePage).toContain('<ChatGptTimeline />');
-		expect(chatGptTimeline).toContain('data-chatgpt-timeline');
-		expect(chatGptTimelineScript).toContain('initChatGptTimelines');
-		expect(articleStyles).toContain('.chatgpt-timeline-track');
-	});
-
-	it('supports the bounded Claude timeline module', () => {
-		expect(parseArticleExtras({ interactiveModule: 'claude-timeline' })).toMatchObject({ interactiveModule: 'claude-timeline' });
-		expect(articlePage).toContain('<ClaudeTimeline />');
-		expect(claudeTimeline).toContain('data-claude-timeline');
-		expect(claudeTimeline).toContain('Claudes udvikling');
-		expect(articleStyles).toContain('.claude-timeline');
-	});
-
-	it('connects guides to real tools', () => {
-		expect(articlePage).toContain('<GuideTools tools={guideTools} />');
-		expect(guideTools).toContain('/tools#${tool.slug}');
-	});
-
 	it('accepts FAQ, sources and keywords from the editor metadata', () => {
 		const extras = parseArticleExtras({
 			faq: [{ question: 'Hvad er AI?', answer: 'Et værktøj.' }],
@@ -194,24 +164,9 @@ describe('artikel-schema', () => {
 			duration: 'PT6M41S',
 		});
 	});
-
-	it('publishes FAQ markup only alongside visible questions', () => {
-		const faq = createFaqSchema(canonicalUrl, [{ question: 'Hvad?', answer: 'Sådan.' }]);
-		expect(faq['@type']).toBe('FAQPage');
-		expect(articlePage).toContain('<ArticleFaq entries={faqEntries} />');
-		expect(articlePage).toContain('additionalSchema={additionalSchema}');
-	});
 });
 
 describe('artikelsiden', () => {
-	it('shows the trust and navigation furniture around the body', () => {
-		for (const marker of ['<ArticleBreadcrumbs', '<ArticleToc', '<ArticleAudioPlayer', '<ArticleSummary', '<ArticleSources', '<AuthorBio />', '<RelatedContent', '<ArticleBriefCta']) {
-			expect(articlePage).toContain(marker);
-		}
-		expect(articlePage).toContain('class="article-hero"');
-		expect(articlePage).toContain('ogType={isArticleType');
-	});
-
 	it('offers accessible playback, seeking, speed controls and a download fallback', () => {
 		expect(articleAudio).toContain('data-audio-toggle');
 		expect(articleAudio).toContain('data-audio-progress');
@@ -220,17 +175,5 @@ describe('artikelsiden', () => {
 		expect(audioScript).toContain('audio.playbackRate');
 		expect(audioScript).toContain('other.pause()');
 		expect(articleStyles).toContain('--audio-progress');
-	});
-
-	it('nudges the reader forward with active and completed section markers', () => {
-		expect(articlePage).toContain('data-article-reader');
-		expect(articleToc).toContain('data-toc-item={heading.id}');
-		expect(articleToc).toContain('data-reading-time-left');
-		expect(articleToc).toContain('article-toc-mobile');
-		expect(progressScript).toContain('sectionEnd <= marker');
-		expect(progressScript).toContain("completed.add(heading.id)");
-		expect(progressScript).toContain("heading.classList.toggle('is-read'");
-		expect(articleStyles).toContain('content: "✓"');
-		expect(articleStyles).toContain('background: var(--color-amber)');
 	});
 });

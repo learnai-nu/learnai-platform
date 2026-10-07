@@ -20,5 +20,5 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 	const { error } = await supabase.auth.signInWithPassword(parsed.data);
 	if (error) return redirectWithoutCache('/login?status=signin-error');
 
-	return redirectWithoutCache('/dashboard');
+	return redirectWithoutCache('/admin');
 };

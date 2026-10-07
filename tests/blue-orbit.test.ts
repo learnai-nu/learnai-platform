@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const homepage = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../src/layouts/BlueOrbitLayout.astro', import.meta.url), 'utf8');
 const siteLayout = readFileSync(new URL('../src/layouts/SiteLayout.astro', import.meta.url), 'utf8');
 const jsonLd = readFileSync(new URL('../src/components/seo/JsonLd.astro', import.meta.url), 'utf8');
@@ -17,21 +16,10 @@ const learningModel = readFileSync(
 	new URL('../src/components/marketing/LearningModel.astro', import.meta.url),
 	'utf8',
 );
-const tokens = readFileSync(
-	new URL('../src/styles/blue-orbit-tokens.css', import.meta.url),
-	'utf8',
-);
 const styles = readFileSync(new URL('../src/styles/blue-orbit.css', import.meta.url), 'utf8');
 const siteNav = readFileSync(new URL('../src/lib/navigation/site-nav.ts', import.meta.url), 'utf8');
 
 describe('LearnAI editorial homepage', () => {
-	it('uses the isolated component layout and core marketing components', () => {
-		expect(homepage).toContain('<BlueOrbitLayout');
-		expect(homepage).toContain('<HeroLearningPreview />');
-		expect(homepage).toContain('<LearningModel />');
-		expect(homepage).not.toContain('FeaturedCourses');
-	});
-
 	it('keeps the public navigation connected to real platform routes', () => {
 		// The routes live in one module that header, dock and drawer all read.
 		expect(siteNav).toContain("href: '/laer'");
@@ -91,16 +79,5 @@ describe('LearnAI editorial homepage', () => {
 		expect(learningModel).toContain('>Løs<');
 		expect(learningModel).toContain('>Spørg<');
 		expect(learningModel).not.toContain('&gt;');
-	});
-
-	it('defines semantic color tokens and responsive overflow protection', () => {
-		expect(tokens).toContain('--orbit-primary: #315ef5');
-		expect(tokens).toContain('--orbit-decision: #f3d45b');
-		expect(styles).toContain('LearnAI editorial homepage');
-		expect(styles).toContain(':where(.blue-orbit) a { color: inherit;');
-		expect(styles).toContain('.orbit-button-filled { background: var(--orbit-primary); color: var(--orbit-on-primary);');
-		expect(styles).not.toContain('.blue-orbit a { color: inherit;');
-		expect(styles).toContain('overflow-x: clip');
-		expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
 	});
 });

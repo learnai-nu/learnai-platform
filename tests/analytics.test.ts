@@ -8,8 +8,6 @@ const adminLayout = readFileSync(new URL('../src/layouts/AdminLayout.astro', imp
 const client = readFileSync(new URL('../src/scripts/analytics.ts', import.meta.url), 'utf8');
 const mentor = readFileSync(new URL('../src/components/AIMentor.tsx', import.meta.url), 'utf8');
 const compass = readFileSync(new URL('../src/components/WorkCompass.tsx', import.meta.url), 'utf8');
-const privacyPage = readFileSync(new URL('../src/pages/[slug].astro', import.meta.url), 'utf8');
-
 describe('LearnAI analytics', () => {
 	it('loads first-party pageview and performance tracking from the shared layout', () => {
 		expect(packageJson).toContain('"@vercel/analytics"');
@@ -31,12 +29,6 @@ describe('LearnAI analytics', () => {
 		expect(client).not.toContain('textContent');
 		expect(client).not.toContain('FormData');
 		expect(client).not.toContain('.value');
-	});
-
-	it('explains the privacy boundary to visitors', () => {
-		expect(privacyPage).toContain('Vercel Web Analytics og Vercel Speed Insights');
-		expect(privacyPage).toContain('cookie-fri');
-		expect(privacyPage).toContain('indholdet af samtaler');
 	});
 
 	it('tracks product use without sending user content or assessment results', () => {
