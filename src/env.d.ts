@@ -13,6 +13,8 @@ interface ImportMetaEnv {
 	readonly LEAD_NOTIFICATION_FROM?: string;
 	readonly LEAD_NOTIFICATION_TO?: string;
 	readonly ELEVENLABS_API_KEY?: string;
+	readonly DEMO_SITE_PASSWORD?: string;
+	readonly DEMO_SITE_COOKIE_SECRET?: string;
 }
 
 interface ImportMeta {

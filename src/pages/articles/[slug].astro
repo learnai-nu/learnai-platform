@@ -1,0 +1,14 @@
+---
+/**
+ * Keep legacy article links alive on Vercel. A concrete Astro route is needed
+ * because middleware is not invoked for paths that the deployment cannot map
+ * to an application route.
+ */
+const { slug } = Astro.params;
+
+if (!slug) {
+	return Astro.redirect('/laer', 301);
+}
+
+return Astro.redirect(`/laer/${slug}`, 301);
+---

@@ -1,8 +1,5 @@
 ---
-/**
- * LearnAI is closed. The front page shows only the logo, and every other public
- * address redirects here (see [...path].astro). Login and the admin CMS remain.
- */
+/** The public root remains closed. The private demo lives at /demo-site. */
 import '@fontsource/geist-sans/600.css';
 
 export const prerender = true;
@@ -13,21 +10,14 @@ export const prerender = true;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="robots" content="noindex" />
+		<meta name="robots" content="noindex, nofollow, noarchive" />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<title>LearnAI.nu</title>
 		<style>
 			:root { --ink: #16283f; --paper: #f5f3ee; }
 			* { margin: 0; box-sizing: border-box; }
 			html, body { height: 100%; }
-			body {
-				display: grid;
-				place-items: center;
-				padding: 16px;
-				background: var(--paper);
-				color: var(--ink);
-				font-family: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
-			}
+			body { display: grid; place-items: center; padding: 16px; background: var(--paper); color: var(--ink); font-family: "Geist Sans", ui-sans-serif, system-ui, sans-serif; }
 			.logo { display: flex; align-items: center; gap: 14px; font-size: clamp(1.75rem, 6vw, 2.5rem); font-weight: 600; letter-spacing: -.02em; }
 			.logo svg { width: 1.5em; height: 1.5em; flex-shrink: 0; }
 			.logo rect { fill: var(--ink); }
@@ -37,10 +27,7 @@ export const prerender = true;
 	</head>
 	<body>
 		<h1 class="logo">
-			<svg viewBox="0 0 44 44" aria-hidden="true">
-				<rect width="44" height="44" rx="3"></rect>
-				<path d="m10 15 7 7-7 7M21 29h13"></path>
-			</svg>
+			<svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="3"></rect><path d="m10 15 7 7-7 7M21 29h13"></path></svg>
 			<span>LearnAI<span>.nu</span></span>
 		</h1>
 	</body>

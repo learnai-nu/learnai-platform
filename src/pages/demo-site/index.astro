@@ -1,0 +1,79 @@
+---
+import HomeAuthor from '../../components/marketing/HomeAuthor.astro';
+import ThisWeek from '../../components/marketing/ThisWeek.astro';
+import HeroLearningPreview from '../../components/marketing/HeroLearningPreview.astro';
+import LearningModel from '../../components/marketing/LearningModel.astro';
+import OrbitButton from '../../components/ui/OrbitButton.astro';
+import BlueOrbitLayout from '../../layouts/BlueOrbitLayout.astro';
+import { ANALYTICS_EVENTS } from '../../lib/analytics/events';
+import { DEMO_COOKIE_NAME, isValidDemoCookie } from '../../lib/demo-site/access';
+
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+
+const authorized = isValidDemoCookie(Astro.cookies.get(DEMO_COOKIE_NAME)?.value);
+const status = Astro.url.searchParams.get('status');
+---
+
+{authorized ? (
+	<BlueOrbitLayout title="AI-guides, prompts og praktisk læring på dansk | LearnAI.nu" description="Privat demo af LearnAI.nu." pageType="WebPage">
+		<HeroLearningPreview />
+		<ThisWeek />
+		<LearningModel />
+		<HomeAuthor />
+		<section class="orbit-final-cta">
+			<div><p class="orbit-section-kicker">Dit næste skridt</p><h2>Tag én opgave med. Gå herfra med et bedre næste skridt.</h2></div>
+			<OrbitButton href="/laer?type=prompt" size="large" arrow analyticsEvent={ANALYTICS_EVENTS.primaryCtaClicked} analyticsSource="home_final" analyticsDetail="prompts">Find en prompt</OrbitButton>
+		</section>
+	</BlueOrbitLayout>
+) : (
+	<html lang="da">
+		<head>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1" />
+			<meta name="robots" content="noindex, nofollow, noarchive" />
+			<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+			<title>Privat demo — LearnAI.nu</title>
+		</head>
+		<body class="demo-gate">
+			<main class="demo-card">
+				<a class="demo-brand" href="/" aria-label="LearnAI.nu">
+					<svg viewBox="0 0 44 44" aria-hidden="true"><rect width="44" height="44" rx="3"></rect><path d="m10 15 7 7-7 7M21 29h13"></path></svg>
+					<span>LearnAI<span>.nu</span></span>
+				</a>
+				<p class="eyebrow">Privat demo</p>
+				<h1>Adgang til LearnAI</h1>
+				<p class="intro">Indtast adgangskoden for at åbne demositet.</p>
+				{status === 'invalid' && <p class="notice" role="alert">Adgangskoden er ikke korrekt.</p>}
+				{status === 'config-error' && <p class="notice" role="alert">Adgangen er ikke konfigureret endnu.</p>}
+				<form method="post" action="/api/demo-site/login">
+					<label for="password">Adgangskode</label>
+					<input id="password" name="password" type="password" autocomplete="current-password" required autofocus />
+					<button type="submit">Åbn demositet</button>
+				</form>
+			</main>
+		</body>
+		<style>
+			:global(*) { box-sizing: border-box; }
+			:global(html, body) { min-height: 100%; margin: 0; }
+			.demo-gate { display: grid; place-items: center; padding: 24px; background: #f5f3ee; color: #16283f; font-family: ui-sans-serif, system-ui, sans-serif; }
+			.demo-card { width: min(100%, 430px); padding: clamp(28px, 6vw, 48px); border-top: 3px solid #c8872f; background: #fff; box-shadow: 0 18px 50px rgb(22 40 63 / 12%); }
+			.demo-brand { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 44px; color: #16283f; font-size: 1.35rem; font-weight: 700; text-decoration: none; }
+			.demo-brand svg { width: 34px; height: 34px; }
+			.demo-brand rect { fill: #16283f; }
+			.demo-brand path { fill: none; stroke: #f5f3ee; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+			.demo-brand span span { color: #075eb7; }
+			.eyebrow { margin: 0 0 10px; color: #a45c12; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+			h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(2rem, 7vw, 3rem); line-height: 1; }
+			.intro { margin: 18px 0 26px; color: #526174; line-height: 1.6; }
+			.notice { padding: 12px 14px; border-left: 3px solid #b43d31; background: #fff1ef; color: #7f271e; }
+			form { display: grid; gap: 10px; }
+			label { font-size: .9rem; font-weight: 700; }
+			input { width: 100%; padding: 13px 14px; border: 1px solid #aeb8c4; border-radius: 3px; font: inherit; }
+			input:focus { outline: 3px solid rgb(7 94 183 / 18%); border-color: #075eb7; }
+			button { margin-top: 8px; padding: 13px 18px; border: 0; border-radius: 3px; background: #075eb7; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+			button:hover { background: #004b93; }
+		</style>
+	</html>
+)}

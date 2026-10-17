@@ -1,0 +1,180 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { createServerSupabaseClient } from '../lib/supabase/server';
+import { createCanonicalUrl, createItemListSchema } from '../lib/seo/schema';
+import '../styles/catalog.css';
+
+export const prerender = false;
+
+const query = Astro.url.searchParams.get('q')?.trim().slice(0, 120) ?? '';
+
+/** PostgREST passes the pattern straight to ILIKE, so the wildcards are escaped. */
+const pattern = `%${query.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_')}%`;
+const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+
+const [content, tools, useCases, resources, events] = query
+	? await Promise.all([
+		supabase
+			.from('content_items')
+			.select('title,slug,type,excerpt')
+			.eq('status', 'published')
+			.or(`title.ilike.${pattern},excerpt.ilike.${pattern}`)
+			.limit(20),
+		supabase
+			.from('tools')
+			.select('name,slug,tagline')
+			.eq('locale', 'da')
+			.eq('published', true)
+			.or(`name.ilike.${pattern},tagline.ilike.${pattern},description.ilike.${pattern}`)
+			.limit(20),
+		supabase
+			.from('use_cases')
+			.select('title,slug,problem_statement')
+			.eq('locale', 'da')
+			.eq('published', true)
+			.or(`title.ilike.${pattern},problem_statement.ilike.${pattern},solution.ilike.${pattern}`)
+			.limit(20),
+		supabase
+			.from('resources')
+			.select('title,slug,description')
+			.eq('locale', 'da')
+			.eq('published', true)
+			.or(`title.ilike.${pattern},description.ilike.${pattern}`)
+			.limit(20),
+		supabase
+			.from('events')
+			.select('title,slug,description')
+			.eq('locale', 'da')
+			.eq('published', true)
+			.or(`title.ilike.${pattern},description.ilike.${pattern}`)
+			.limit(20),
+	])
+	: [];
+
+const typeLabels: Record<string, string> = {
+	article: 'Artikel',
+	guide: 'Guide',
+	news: 'Nyhed',
+	prompt: 'Prompt',
+	tool: 'Værktøj',
+};
+
+const groups = query
+	? [
+		{
+			label: 'Viden og prompts',
+			items: (content?.data ?? []).map((item) => ({
+				title: item.title,
+				href: `/laer/${item.slug}`,
+				meta: typeLabels[item.type] ?? 'Indhold',
+				excerpt: item.excerpt ?? '',
+			})),
+		},
+		{
+			label: 'Værktøjer',
+			items: (tools?.data ?? []).map((item) => ({
+				title: item.name,
+				href: `/tools#${item.slug}`,
+				meta: 'Værktøj',
+				excerpt: item.tagline ?? '',
+			})),
+		},
+		{
+			label: 'Use cases',
+			items: (useCases?.data ?? []).map((item) => ({
+				title: item.title,
+				href: `/use-cases#${item.slug}`,
+				meta: 'Use case',
+				excerpt: item.problem_statement ?? '',
+			})),
+		},
+		{
+			label: 'Ressourcer',
+			items: (resources?.data ?? []).map((item) => ({
+				title: item.title,
+				href: `/resources#${item.slug}`,
+				meta: 'Ressource',
+				excerpt: item.description ?? '',
+			})),
+		},
+		{
+			label: 'Events',
+			items: (events?.data ?? []).map((item) => ({
+				title: item.title,
+				href: `/events#${item.slug}`,
+				meta: 'Event',
+				excerpt: item.description ?? '',
+			})),
+		},
+	].filter((group) => group.items.length > 0)
+	: [];
+
+const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+const failed = [content, tools, useCases, resources, events].some((result) => result?.error);
+const canonicalUrl = createCanonicalUrl(Astro.url, Astro.site ? new URL(Astro.site) : Astro.url);
+const itemList = createItemListSchema(
+	canonicalUrl,
+	groups.flatMap((group) => group.items).map((item) => ({ name: item.title, url: item.href })),
+);
+---
+
+<SiteLayout
+	title={query ? `Søgning: ${query} — LearnAI.nu` : 'Søg — LearnAI.nu'}
+	description="Søg på tværs af guides, prompts, værktøjer, use cases, ressourcer og events."
+	noindex
+	pageType="CollectionPage"
+	breadcrumbs={[{ name: 'Forside', url: '/' }, { name: 'Søg', url: '/search' }]}
+	mainEntity={itemList}
+>
+	<div class="catalog-page">
+		<section class="catalog-head">
+			<div class="catalog-shell">
+				<p class="catalog-eyebrow">Søgning</p>
+				<h1>Søg på LearnAI.</h1>
+				<form class="search-form" method="get" role="search">
+					<label class="orbit-eyebrow" for="search-input">Hvad leder du efter?</label>
+					<div class="search-row">
+						<input
+							id="search-input"
+							class="catalog-search"
+							type="search"
+							name="q"
+							value={query}
+							placeholder="Fx prompts til møder, ChatGPT eller kundeservice"
+							autofocus
+						/>
+						<button class="orbit-header-cta" type="submit">Søg</button>
+					</div>
+				</form>
+			</div>
+		</section>
+
+		<div class="catalog-shell">
+			{failed ? (
+				<p class="catalog-empty" role="alert">Søgningen kunne ikke gennemføres lige nu. Prøv igen om lidt.</p>
+			) : !query ? (
+				<p class="catalog-empty">Skriv et søgeord for at søge på tværs af guides, prompts, værktøjer, use cases, ressourcer og events.</p>
+			) : total === 0 ? (
+				<p class="catalog-empty">Ingen resultater for “{query}”. Prøv et bredere søgeord.</p>
+			) : (
+				<Fragment>
+					<p class="catalog-count">{total} {total === 1 ? 'resultat' : 'resultater'} for “{query}”</p>
+					{groups.map((group) => (
+						<section class="catalog-group" aria-labelledby={`gruppe-${group.label}`}>
+							<h2 class="catalog-section-title" id={`gruppe-${group.label}`}>{group.label}</h2>
+							<div class="catalog-grid">
+								{group.items.map((item) => (
+									<article class="catalog-card">
+										<p class="catalog-eyebrow">{item.meta}</p>
+										<h3><a class="catalog-link" href={item.href}>{item.title}</a></h3>
+										{item.excerpt && <p>{item.excerpt}</p>}
+									</article>
+								))}
+							</div>
+						</section>
+					))}
+				</Fragment>
+			)}
+		</div>
+	</div>
+</SiteLayout>

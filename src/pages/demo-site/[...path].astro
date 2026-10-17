@@ -1,0 +1,22 @@
+---
+import {
+	DEMO_COOKIE_NAME,
+	DEMO_REWRITE_HEADER,
+	isValidDemoCookie,
+} from '../../lib/demo-site/access';
+
+export const prerender = false;
+
+if (!isValidDemoCookie(Astro.cookies.get(DEMO_COOKIE_NAME)?.value)) {
+	return Astro.redirect('/demo-site?status=required', 302);
+}
+
+let target = `/${Astro.params.path ?? ''}`;
+const legacyArticle = target.match(/^\/articles\/(.+)$/);
+if (legacyArticle) target = `/laer/${legacyArticle[1]}`;
+
+const headers = new Headers(Astro.request.headers);
+headers.set(DEMO_REWRITE_HEADER, '1');
+
+return Astro.rewrite(new Request(new URL(`${target}${Astro.url.search}`, Astro.url), { headers }));
+---
