@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-label="Diagram over indeslutning: en agent adskilt fra rettighedslaget af en spærring, med et afbrydelsespunkt midt i kæden">
+  <rect width="1536" height="1024" fill="#F5F3EE"/>
+  <rect x="0" y="0" width="1536" height="1024" fill="none" stroke="#E7E5E3" stroke-width="2"/>
+  <rect x="128" y="128" width="96" height="6" fill="#B98B4E"/>
+  <text x="1408" y="186" text-anchor="end" font-family="Fraunces, Georgia, 'DejaVu Serif', serif" font-size="128" fill="#16283F" fill-opacity="0.08">41</text>
+
+  <defs>
+    <marker id="a41" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 11 6 L 1 11" fill="none" stroke="#57554F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- the model, acting -->
+  <circle cx="330" cy="500" r="92" fill="#004FA6"/>
+  <circle cx="330" cy="500" r="34" fill="#E8F1FE"/>
+
+  <!-- the containment boundary, where a human can interrupt -->
+  <line x1="700" y1="236" x2="700" y2="764" stroke="#B98B4E" stroke-width="6" stroke-dasharray="20 16" stroke-linecap="round"/>
+  <circle cx="700" cy="500" r="46" fill="#F5F3EE" stroke="#16283F" stroke-width="8"/>
+  <line x1="700" y1="478" x2="700" y2="522" stroke="#16283F" stroke-width="8" stroke-linecap="round"/>
+
+  <g stroke="#57554F" stroke-width="5" stroke-linecap="round" marker-end="url(#a41)">
+    <line x1="434" y1="500" x2="628" y2="500"/>
+  </g>
+
+  <!-- the permission layer: narrow, explicit, separate -->
+  <g fill="#F5F3EE" stroke="#004FA6" stroke-width="5">
+    <rect x="860" y="300" width="300" height="104" rx="26"/>
+    <rect x="860" y="448" width="300" height="104" rx="26"/>
+    <rect x="860" y="596" width="300" height="104" rx="26"/>
+  </g>
+  <g fill="#004FA6">
+    <circle cx="914" cy="352" r="18"/><circle cx="914" cy="500" r="18"/><circle cx="914" cy="648" r="18"/>
+  </g>
+  <g stroke="#E7E5E3" stroke-width="4" stroke-linecap="round">
+    <line x1="746" y1="470" x2="860" y2="352"/>
+    <line x1="752" y1="500" x2="860" y2="500"/>
+    <line x1="746" y1="530" x2="860" y2="648"/>
+  </g>
+
+  <!-- tamper-proof record -->
+  <g stroke="#57554F" stroke-width="4" stroke-linecap="round">
+    <line x1="1232" y1="352" x2="1324" y2="352"/>
+    <line x1="1232" y1="500" x2="1324" y2="500"/>
+    <line x1="1232" y1="648" x2="1324" y2="648"/>
+  </g>
+</svg>

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 
@@ -16,17 +17,17 @@ const categories = [
 		key: 'headlines-and-launches',
 		name: 'Headlines & Launches',
 		file: 'Headlines_and_Launches',
-		fallback: '/images/news/2026/week-36/modelnyheder-v2.jpg',
+		image: 'modelnyheder', fallback: '/images/news/2026/week-36/modelnyheder-v2.jpg',
 	},
 	{
 		key: 'deep-dives-and-analysis',
 		name: 'Deep Dives & Analysis',
 		file: 'Deep_Dives_and_Analysis',
-		fallback: '/images/news/2026/week-36/deep-dives-v2.jpg',
+		image: 'deep-dives', fallback: '/images/news/2026/week-36/deep-dives-v2.jpg',
 	},
-	{ key: 'marketing', name: 'Marketing', file: 'Marketing', fallback: '/images/news/2026/week-36/marketing-v2.jpg' },
-	{ key: 'business', name: 'Business', file: 'Business', fallback: '/images/news/2026/week-36/business-v2.jpg' },
-	{ key: 'education', name: 'Education', file: 'Education', fallback: '/images/news/2026/week-36/education-v2.jpg' },
+	{ key: 'marketing', name: 'Marketing', file: 'Marketing', image: 'marketing', fallback: '/images/news/2026/week-36/marketing-v2.jpg' },
+	{ key: 'business', name: 'Business', file: 'Business', image: 'business', fallback: '/images/news/2026/week-36/business-v2.jpg' },
+	{ key: 'education', name: 'Education', file: 'Education', image: 'education', fallback: '/images/news/2026/week-36/education-v2.jpg' },
 ];
 
 const packageFiles = new Set(await readdir(packageDir));
@@ -40,6 +41,14 @@ const includedCategories = categories.filter((category) => {
 });
 
 if (!includedCategories.length) throw new Error(`No complete DA/EN category pairs found in ${packageDir}`);
+
+// Each week ships its own artwork; the week 36 archive is the documented
+// fallback for a category whose image has not been produced yet.
+function weekVisual(category) {
+	const path = `/images/news/${year}/week-${week}/${category.image}.jpg`;
+	if (existsSync(resolve('public', `.${path}`))) return { path, status: 'original' };
+	return { path: category.fallback, status: 'fallback', fallbackFrom: '2026-week-36' };
+}
 
 const sqlString = (value) => `'${String(value).replaceAll("'", "''")}'`;
 const jsonSql = (value) => `${sqlString(JSON.stringify(value))}::jsonb`;
@@ -117,9 +126,14 @@ function makeItem(category, locale, markdown, fileName) {
 	const sources = parseSources(markdown);
 	const faq = parseFaq(markdown);
 	const headings = storyHeadings(markdown);
-	const imageCaption = english
-		? `Visual fallback from LearnAI's week 36 archive for ${category.name}; it was not generated for week ${week}.`
-		: `Visuel fallback fra LearnAI's uge 36-arkiv til ${category.name}; billedet er ikke genereret til uge ${week}.`;
+	const visual = weekVisual(category);
+	const imageCaption = visual.status === 'original'
+		? english
+			? `Editorial graphic produced for LearnAI's week ${week} ${category.name} roundup.`
+			: `Redaktionel grafik produceret til LearnAI's uge ${week}-opsamling for ${category.name}.`
+		: english
+			? `Visual fallback from LearnAI's week 36 archive for ${category.name}; it was not generated for week ${week}.`
+			: `Visuel fallback fra LearnAI's uge 36-arkiv til ${category.name}; billedet er ikke genereret til uge ${week}.`;
 	const sourceMetadata = {
 		year,
 		week,
@@ -130,12 +144,16 @@ function makeItem(category, locale, markdown, fileName) {
 		source_system: 'learnai-weekly-agents',
 		source_collection: 'weekly-package',
 		imported_at: new Date().toISOString(),
-		visual_status: 'fallback',
-		visual_fallback_from: '2026-week-36',
-		image: category.fallback,
-		imageAlt: english
-			? `Editorial illustration for ${category.name}, reused as a documented visual fallback`
-			: `Redaktionelt kategoribillede til ${category.name}, genbrugt som dokumenteret visuel fallback`,
+		visual_status: visual.status,
+		visual_fallback_from: visual.fallbackFrom,
+		image: visual.path,
+		imageAlt: visual.status === 'original'
+			? english
+				? `Editorial graphic for ${category.name} in LearnAI's week ${week} roundup`
+				: `Redaktionel grafik til ${category.name} i LearnAI's uge ${week}-opsamling`
+			: english
+				? `Editorial illustration for ${category.name}, reused as a documented visual fallback`
+				: `Redaktionelt kategoribillede til ${category.name}, genbrugt som dokumenteret visuel fallback`,
 		imageCaption,
 		summary: summary(markdown),
 		sources,
@@ -151,7 +169,7 @@ function makeItem(category, locale, markdown, fileName) {
 		excerpt,
 		locale,
 		body: { format: 'markdown', markdown: body(markdown) },
-		coverImageUrl: category.fallback,
+		coverImageUrl: visual.path,
 		sourceMetadata,
 	};
 }

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-label="Diagram over opbremsningen: en stiplet kurve fortsætter stejlt opad, mens en blå kurve bøjer af i et lavere tempo">
+  <rect width="1536" height="1024" fill="#F5F3EE"/>
+  <rect x="0" y="0" width="1536" height="1024" fill="none" stroke="#E7E5E3" stroke-width="2"/>
+  <rect x="128" y="128" width="96" height="6" fill="#B98B4E"/>
+  <text x="1408" y="186" text-anchor="end" font-family="Fraunces, Georgia, 'DejaVu Serif', serif" font-size="128" fill="#16283F" fill-opacity="0.08">38</text>
+
+  <!-- the gap the pacing plan opens up -->
+  <path d="M 700 600 C 880 500 1020 366 1300 262 L 1300 520 C 1100 552 900 576 700 600 Z" fill="#E8F1FE"/>
+
+  <!-- unconstrained trajectory, drawn as a neutral reference -->
+  <path d="M 208 800 C 400 764 580 696 700 600 C 880 500 1020 366 1300 262" fill="none" stroke="#57554F" stroke-width="5" stroke-dasharray="16 16" stroke-linecap="round"/>
+
+  <!-- paced trajectory -->
+  <path d="M 208 800 C 400 764 580 696 700 600 C 860 536 1090 522 1300 520" fill="none" stroke="#004FA6" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- where the two part ways -->
+  <line x1="700" y1="300" x2="700" y2="884" stroke="#B98B4E" stroke-width="3" stroke-dasharray="10 12"/>
+  <circle cx="700" cy="600" r="17" fill="#F5F3EE" stroke="#16283F" stroke-width="7"/>
+  <circle cx="1300" cy="520" r="16" fill="#004FA6"/>
+  <circle cx="1300" cy="262" r="12" fill="#57554F"/>
+
+  <line x1="208" y1="884" x2="1328" y2="884" stroke="#E7E5E3" stroke-width="4" stroke-linecap="round"/>
+</svg>
