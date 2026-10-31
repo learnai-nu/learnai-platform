@@ -29,6 +29,8 @@ describe('private demo site', () => {
 		expect(catchAll).toContain('Astro.rewrite(new Request');
 		expect(catchAll).toContain("headers.set(DEMO_REWRITE_HEADER, '1')");
 		expect(middleware).toContain('X-Robots-Tag');
+		// A client can send the rewrite header itself, so it must never bypass the cookie.
+		expect(middleware).toContain("headers.get(DEMO_REWRITE_HEADER) === '1' && authorized");
 		expect(read('../src/pages/robots.txt.ts')).toContain('Disallow: /');
 	});
 
