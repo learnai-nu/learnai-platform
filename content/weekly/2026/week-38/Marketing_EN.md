@@ -2,6 +2,8 @@
 
 **Standfirst:** Dreamforce and UNBOUND made agentic marketing the industry default in the same week Google and Meta removed another layer of manual control from advertisers.
 
+**Period:** 14–20 September 2026
+
 > **In brief**
 > - Dreamforce ran 15–17 September and HubSpot's UNBOUND 16–18 September, both themed on agentic go-to-market.
 > - Mediaocean launched Mediaocean AI Ventures to invest in advertising AI startups.

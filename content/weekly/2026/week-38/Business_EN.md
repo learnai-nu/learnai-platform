@@ -2,6 +2,8 @@
 
 **Standfirst:** Chip stocks fell on Monday's pacing debate, Anthropic moved its listing to November and OpenAI ruled out 2026 — all while capital expenditure plans stayed unchanged.
 
+**Period:** 14–20 September 2026
+
 > **In brief**
 > - Nvidia fell 3.4% on Monday 14 September, and the PHLX semiconductor index lost almost 6% — its worst day since early July.
 > - Anthropic moved its IPO from October to November, with investors discussing a valuation of up to $2 trillion.

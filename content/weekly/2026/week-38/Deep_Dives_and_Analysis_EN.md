@@ -2,6 +2,8 @@
 
 **Standfirst:** Week 38 showed both how the AI industry institutionalises its own slowdown — and how quickly that kind of agreement attracts a lawsuit.
 
+**Period:** 14–20 September 2026
+
 > **In brief**
 > - Amodei's 12 September essay turned into a paid evaluator deal, a measurement framework and an emerging standards body within one week.
 > - On Friday 19 September, four subscribers filed a class action calling the coordination an illegal agreement to slow product development.

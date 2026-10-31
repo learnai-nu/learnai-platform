@@ -2,6 +2,8 @@
 
 **Underrubrik:** Uge 38 viste både hvordan AI-branchen institutionaliserer sin egen opbremsning — og hvor hurtigt den slags aftaler bliver mødt af et søgsmål.
 
+**Periode:** 14.–20. september 2026
+
 > **Kort fortalt**
 > - Amodeis essay fra 12. september blev i løbet af én uge omsat til en betalt evaluatoraftale, et måleframework og et begyndende standardorgan.
 > - Fredag 19. september anlagde fire abonnenter et gruppesøgsmål, der kalder koordineringen en ulovlig aftale om at bremse produktudvikling.

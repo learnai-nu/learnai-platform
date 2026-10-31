@@ -2,6 +2,8 @@
 
 **Underrubrik:** Anthropic satte penge og personer bag Amodeis opbremsningsplan, OpenAI sendte en juridisk udgave af GPT-6 Astra på gaden, og DeepSeek flyttede sin API-trafik til en åben 552B-model.
 
+**Periode:** 14.–20. september 2026
+
 > **Kort fortalt**
 > - Anthropic og Accenture forpligtede sig 18. september til mindst 1 mia. dollar hver over fem år på indlejrede, uafhængige modelevaluatorer.
 > - OpenAI lancerede 17. september Astra for Law — en GPT-6 Astra-konfiguration til juridisk arbejde med eget søgeindeks og 26 partner-plugins.

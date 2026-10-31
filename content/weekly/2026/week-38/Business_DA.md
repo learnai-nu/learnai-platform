@@ -2,6 +2,8 @@
 
 **Underrubrik:** Chipaktierne faldt på mandagens opbremsningsdebat, Anthropic rykkede sin børsnotering til november, og OpenAI meldte fra på 2026 — alt sammen mens capex-planerne er uændrede.
 
+**Periode:** 14.–20. september 2026
+
 > **Kort fortalt**
 > - Nvidia faldt 3,4 % mandag 14. september, og PHLX-halvlederindekset tabte næsten 6 % — den værste dag siden begyndelsen af juli.
 > - Anthropic flyttede sin børsnotering fra oktober til november med drøftelser om op mod 2 bio. dollar i værdiansættelse.

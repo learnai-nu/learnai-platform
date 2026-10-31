@@ -2,6 +2,8 @@
 
 **Underrubrik:** Dreamforce og UNBOUND gjorde agentbaseret markedsføring til branchestandard i samme uge, som Google og Meta fjernede endnu et lag af manuel kontrol fra annoncørerne.
 
+**Periode:** 14.–20. september 2026
+
 > **Kort fortalt**
 > - Dreamforce 15.–17. september og HubSpots UNBOUND 16.–18. september kørte begge under temaet agentbaseret go-to-market.
 > - Mediaocean lancerede Mediaocean AI Ventures for at investere i reklame-AI-startups.
