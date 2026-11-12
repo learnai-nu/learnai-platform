@@ -41,6 +41,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	// The rewrite header is only a loop guard for /demo-site/[...path]. Anyone can send
 	// it, so it never grants access on its own: the demo cookie must be valid too.
 	if (context.request.headers.get(DEMO_REWRITE_HEADER) === '1' && authorized) {
+		context.locals.demoSite = true;
 		return addPrivateHeaders(await next());
 	}
 
@@ -53,11 +54,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	}
 
 	if (pathname === '/demo-site' || pathname === '/demo-site/') {
+		context.locals.demoSite = authorized;
 		return addPrivateHeaders(await next());
 	}
 
 	if (pathname.startsWith('/demo-site/')) {
 		if (!authorized) return redirect('/demo-site?status=required');
+		context.locals.demoSite = true;
 		return addPrivateHeaders(await next());
 	}
 
