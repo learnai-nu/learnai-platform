@@ -17,6 +17,13 @@ interface ImportMetaEnv {
 	readonly DEMO_SITE_COOKIE_SECRET?: string;
 }
 
+declare namespace App {
+	interface Locals {
+		/** Set by the middleware for authorised requests inside the private demo. */
+		demoSite?: boolean;
+	}
+}
+
 interface ImportMeta {
 	readonly env: ImportMetaEnv;
 }

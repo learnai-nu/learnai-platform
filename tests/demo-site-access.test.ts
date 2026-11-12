@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { homePath, resolveHomeLink } from '../src/lib/demo-site/links';
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8');
 
@@ -38,5 +39,16 @@ describe('private demo site', () => {
 		for (const path of ['[slug].astro', 'arbejdskompas.astro', 'en/index.astro', 'om-mig.astro', 'podcast.astro']) {
 			expect(read(`../src/pages/${path}`)).toContain('export const prerender = false');
 		}
+	});
+
+	it('keeps the logo and "Forside" links inside the demo', () => {
+		expect(homePath({ demoSite: true })).toBe('/demo-site');
+		expect(homePath({ demoSite: true }, 'en')).toBe('/demo-site/en');
+		expect(homePath({})).toBe('/');
+		expect(homePath({}, 'en')).toBe('/en');
+		expect(resolveHomeLink('/', { demoSite: true })).toBe('/demo-site');
+		expect(resolveHomeLink('/laer', { demoSite: true })).toBe('/laer');
+		expect(read('../src/components/ui/OrbitBrand.astro')).toContain('href={homePath(Astro.locals, locale)}');
+		expect(read('../src/middleware.ts')).toContain('context.locals.demoSite = true');
 	});
 });

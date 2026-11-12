@@ -1,5 +1,7 @@
 ---
 /** Visible breadcrumb trail — the schema counterpart lives in SiteLayout. */
+import { resolveHomeLink } from '../../lib/demo-site/links';
+
 interface Props {
 	items: { name: string; url?: string }[];
 	locale?: 'da' | 'en';
@@ -11,7 +13,7 @@ const { items, locale = 'da' } = Astro.props;
 	{items.map((item, index) => (
 		<>
 			{index > 0 && <span class="sep" aria-hidden="true">/</span>}
-			{item.url ? <a href={item.url}>{item.name}</a> : <span aria-current="page">{item.name}</span>}
+			{item.url ? <a href={resolveHomeLink(item.url, Astro.locals)}>{item.name}</a> : <span aria-current="page">{item.name}</span>}
 		</>
 	))}
 </nav>

@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+import { homePath } from '../lib/demo-site/links';
 
 export const prerender = false;
 
@@ -59,7 +60,7 @@ const pageType = pageTypes[Astro.params.slug as keyof typeof pageTypes] ?? 'WebP
 			<h1>{title}</h1>
 			<p class="hero-copy">{description}</p>
 			<div class="hero-actions">
-				<a class="button" href="/">Tilbage til forsiden</a>
+				<a class="button" href={homePath(Astro.locals)}>Tilbage til forsiden</a>
 			</div>
 		</div>
 	</section>
