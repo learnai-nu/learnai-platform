@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-label="Kæde af fem trin, hvor to manuelle kontroller er taget ud og tre automatiske trin er aktive, over en bjælke der viser 39 procent">
+  <rect width="1536" height="1024" fill="#F5F3EE"/>
+  <rect x="0" y="0" width="1536" height="1024" fill="none" stroke="#E7E5E3" stroke-width="2"/>
+  <rect x="128" y="128" width="96" height="6" fill="#B98B4E"/>
+  <text x="1408" y="186" text-anchor="end" font-family="Fraunces, Georgia, 'DejaVu Serif', serif" font-size="128" fill="#16283F" fill-opacity="0.08">38</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 11 6 L 1 11" fill="none" stroke="#57554F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- flow -->
+  <g stroke="#57554F" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)">
+    <line x1="374" y1="440" x2="446" y2="440"/>
+    <line x1="598" y1="440" x2="670" y2="440"/>
+    <line x1="822" y1="440" x2="894" y2="440"/>
+    <line x1="1046" y1="440" x2="1118" y2="440"/>
+  </g>
+
+  <!-- manual controls being retired -->
+  <g fill="#F5F3EE" stroke="#E7E5E3" stroke-width="5">
+    <rect x="238" y="312" width="136" height="256" rx="28"/>
+    <rect x="462" y="312" width="136" height="256" rx="28"/>
+  </g>
+  <g stroke="#B98B4E" stroke-width="5" stroke-linecap="round">
+    <line x1="264" y1="414" x2="348" y2="466"/>
+    <line x1="488" y1="414" x2="572" y2="466"/>
+  </g>
+
+  <!-- automated stages: soft, soft, solid -->
+  <rect x="686" y="312" width="136" height="256" rx="28" fill="#E8F1FE" stroke="#004FA6" stroke-width="5"/>
+  <rect x="910" y="312" width="136" height="256" rx="28" fill="#E8F1FE" stroke="#004FA6" stroke-width="5"/>
+  <rect x="1134" y="312" width="136" height="256" rx="28" fill="#004FA6"/>
+  <g fill="#004FA6">
+    <circle cx="754" cy="440" r="22"/><circle cx="978" cy="440" r="22"/>
+  </g>
+  <circle cx="1202" cy="440" r="22" fill="#E8F1FE"/>
+
+  <!-- share of agencies with AI in daily workflows -->
+  <rect x="238" y="740" width="1032" height="36" rx="18" fill="#E7E5E3"/>
+  <rect x="238" y="740" width="402" height="36" rx="18" fill="#004FA6"/>
+  <text x="238" y="872" font-family="Fraunces, Georgia, 'DejaVu Serif', serif" font-size="72" fill="#16283F">39&#8201;%</text>
+</svg>
