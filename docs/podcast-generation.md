@@ -39,7 +39,7 @@ rapporteres som fallback.
 
 ## Ugebrevet efter lukningen af learnai.nu
 
-learnai.nu er lukket og viser kun logoet; `/podcast` og artikelsiderne findes ikke længere.
+learnai.nu er lukket og viser kun logoet; `/podcast` og artikelsiderne findes kun bag adgangskode på `/demo-site`.
 Ugebrevet er derfor en privat mail, der kun sendes til adressen i `WEEKLY_BRIEF_TO`:
 
 - Historierne læses i selve mailen. `url` på en historie er valgfri og vises ikke.
@@ -47,7 +47,10 @@ Ugebrevet er derfor en privat mail, der kun sendes til adressen i `WEEKLY_BRIEF_
 - `podcastUrl` skal pege direkte på lydfilen, fx
   `https://learnai.nu/audio/news/2026/week-41/Podcast_Uge41_DA.mp3`. Lydfiler under
   `public/audio/` serveres stadig, selv om sitet er lukket.
-- `src/lib/podcast/latest-episode.ts` skal ikke længere opdateres; det vises ingen steder.
+- `src/lib/podcast/latest-episode.ts` skal stadig opdateres hver uge: den styrer `/demo-site/podcast`
+  og kortet "Lyt til uge X" på demositet. Ugens nyhedsspor i "Denne uge" hentes derimod fra databasen.
+
+Den samlede ugentlige rutine står i [`docs/weekly-agent.md`](weekly-agent.md).
 
 Kør som før:
 
