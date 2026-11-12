@@ -3,25 +3,53 @@
  * "Denne uge" — the homepage's living part.
  *
  * The weekly rhythm (news tracks, podcast, Ugebrief) is what a generated site
- * cannot fake, so the homepage leads with it. Everything is read from the
- * current episode, so updating the week in one place updates this section.
+ * cannot fake, so the homepage leads with it. The tracks come from the newest
+ * published week in the database; the hand-maintained episode file is only a
+ * fallback (and still drives the podcast card).
  */
 import OrbitButton from '../ui/OrbitButton.astro';
+import { summariseLatestWeek, trackCountWord, type WeeklyNewsRow } from '../../lib/content/weekly-news';
 import { formatMinutes, latestEpisode as episode } from '../../lib/podcast/latest-episode';
+import { createServerSupabaseClient } from '../../lib/supabase/server';
+
+let digest = null;
+try {
+	const supabase = createServerSupabaseClient(Astro.request, Astro.cookies);
+	const { data } = await supabase
+		.from('content_items')
+		.select('title,slug,excerpt,source_key,source_metadata')
+		.eq('type', 'news')
+		.eq('status', 'published')
+		.eq('locale', 'da')
+		.like('source_key', 'learnai-weekly:%')
+		.order('published_at', { ascending: false })
+		.limit(20);
+	digest = summariseLatestWeek((data ?? []) as WeeklyNewsRow[]);
+} catch {
+	// No database (or no connection): fall back to the episode file below.
+}
+
+const useDatabase = Boolean(
+	digest && digest.topics.length && (digest.year > episode.year || (digest.year === episode.year && digest.week >= episode.week)),
+);
+const week = useDatabase && digest ? digest.week : episode.week;
+const period = (useDatabase ? digest?.period : null) ?? (week === episode.week ? episode.period : null);
+const topics = useDatabase && digest ? digest.topics : episode.topics;
+const headline = week === episode.week ? episode.headline : 'Ugens vigtigste AI-nyt';
 ---
 
 <section class="orbit-section this-week" aria-labelledby="this-week-title">
 	<div class="this-week-head">
 		<div>
-			<p class="orbit-section-kicker">Denne uge · Uge {episode.week}</p>
-			<h2 id="this-week-title">{episode.headline}</h2>
+			<p class="orbit-section-kicker">Denne uge · Uge {week}</p>
+			<h2 id="this-week-title">{headline}</h2>
 		</div>
-		<p>Ugens vigtigste AI-nyt i fire spor, {episode.period}. Kort, på dansk og med kilderne i behold.</p>
+		<p>Ugens vigtigste AI-nyt i {trackCountWord(topics.length)} spor{period ? `, ${period}` : ''}. Kort, på dansk og med kilderne i behold.</p>
 	</div>
 
 	<div class="this-week-grid">
 		<ol class="this-week-topics">
-			{episode.topics.map((topic) => (
+			{topics.map((topic) => (
 				<li>
 					<a href={topic.href}>
 						<span class="this-week-label">{topic.label}</span>
